@@ -40,7 +40,7 @@ const Home = ()=> {
         <Container fluid>
           {/*<Row>*/}
           {/*  <Col md="auto" lg xl>*/}
-          <Image src={'/preview/preview3.png'} width={'1748'} height={'868'} />
+          <Image alt={'Untitled © skymagic 2022'} src={'/preview/preview3.png'} width={'1748'} height={'868'} />
             {/*</Col>*/}
           {/*</Row>*/}
         </Container>

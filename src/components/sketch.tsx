@@ -3,6 +3,8 @@ import p5Types from "p5"; //Import this for typechecking and intellisense
 import dynamic from 'next/dynamic'
 import { Container, Row } from "react-bootstrap";
 // Will only import `react-p5` on client-side
+
+// @ts-ignore
 const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
   ssr: false,
 })
@@ -14,7 +16,7 @@ interface ComponentProps {
 
 let vel = 0;
 let accel = 0;
-let previousHeading;
+let previousHeading:any;
 
 const HomepageSketch: React.FC<ComponentProps> = (props: ComponentProps) => {
 
