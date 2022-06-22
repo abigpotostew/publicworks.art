@@ -1,15 +1,19 @@
 .container {
   padding: 0 2rem;
+    background-color: #212529;
+    
 }
 
+
 .main {
-  min-height: 100vh;
-  padding: 4rem 0;
+  /*min-height: 100vh;*/
+  padding: 1rem 0rem 3rem 0rem;
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  /*align-items: center;*/
+    font-family: 'Manrope', sans-serif;
 }
 
 .footer {
@@ -19,15 +23,22 @@
   border-top: 1px solid #eaeaea;
   justify-content: center;
   align-items: center;
+    color: #ffffff;
+    font-family: 'Manrope', sans-serif;
 }
 
 .footer a {
+    color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-grow: 1;
 }
 
+.title {
+    color: #0070f3;
+    
+}
 .title a {
   color: #0070f3;
   text-decoration: none;
@@ -48,12 +59,17 @@
 .title,
 .description {
   text-align: center;
+
+    color: #ffffff
 }
 
 .description {
-  margin: 4rem 0;
+  margin: 1rem 0;
   line-height: 1.5;
   font-size: 1.5rem;
+
+    color: #ffffff;
+    font-family: 'Manrope', sans-serif;
 }
 
 .code {
@@ -104,8 +120,11 @@
 }
 
 .logo {
-  height: 1em;
-  margin-left: 0.5rem;
+  /*height: 1em;*/
+  /*margin-left: 0.5rem;*/
+    margin-top: .0rem;
+    color: white;
+    filter: invert();
 }
 
 @media (max-width: 600px) {
@@ -113,4 +132,8 @@
     width: 100%;
     flex-direction: column;
   }
+}
+
+.navTitle{
+    font-family: 'Manrope', sans-serif;
 }
