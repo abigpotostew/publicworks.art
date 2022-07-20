@@ -7,7 +7,8 @@ import MainLayout from "../src/layout/MainLayout";
 import { Footer } from "../src/components/Footer";
 import { NavBar } from "../src/components/Navbar";
 import { Col, Container, Row } from "react-bootstrap";
-import HomepageSketch from "../src/components/sketch";
+import HomepageSketch from "../src/components/logo-sketch";
+import SketchAnimation from "../src/components/SketchAnimation";
 
 const Home = ()=> {
   return (
@@ -25,6 +26,7 @@ const Home = ()=> {
         {/*</h1>*/}
         
         <HomepageSketch />
+        <SketchAnimation />
         
         {/*<h1 className={styles.title}>*/}
         {/*  Welcome to <a href="#">PublicWorks.art!</a>*/}

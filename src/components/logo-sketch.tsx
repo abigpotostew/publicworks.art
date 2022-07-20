@@ -5,7 +5,7 @@ import { Container, Row } from "react-bootstrap";
 // Will only import `react-p5` on client-side
 
 // @ts-ignore
-const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
+const LogoSketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
   ssr: false,
 })
 
@@ -22,13 +22,15 @@ const HomepageSketch: React.FC<ComponentProps> = (props: ComponentProps) => {
 
   const [doRender, setDoRender] = useState(false);
 
-  useEffect(() => setDoRender(true), [])
+  useEffect(() => {
+    console.log('i fire once');
+    setDoRender(true)
+  }, [])
 
   //See annotations in JS for more information
   const setup = (p5: p5Types, canvasParentRef: Element) => {
     p5.createCanvas(200, 200).parent(canvasParentRef);
     previousHeading = p5.createVector();
-
   };
 
   const mouseMoved = (p5: p5Types) => {
@@ -77,7 +79,7 @@ const HomepageSketch: React.FC<ComponentProps> = (props: ComponentProps) => {
   };
   return <Container style={{ display: 'flex', justifyContent: 'center', height: 200 }}>
     {doRender &&
-        <Sketch setup={setup} draw={draw} mouseMoved={mouseMoved}/>}
+        <LogoSketch setup={setup} draw={draw} mouseMoved={mouseMoved}/>}
   </Container>
   // return <Sketch setup={setup} draw={draw} />;
 };
