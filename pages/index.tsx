@@ -57,12 +57,12 @@ const Home = () => {
         <Container>
           <Row>
             <Col xs={0} sm={0} md={1} lg={1} xl={2} xxl={3}/>
-            <Col xs={12} sm={12} md={5} lg={5} xl={4} xxl={3}>
+            <Col xs={12} sm={12} md={5} lg={5} xl={4} xxl={3} className={'align-self-center'} >
               <Image src={'/img/homepage/hyperion-collection-image-final.jpg'} width={'200%'} height={'200%'} layout={'intrinsic'} />
               <p className={styles.subdescription_works}>Work 0 - Hyperion</p>
               <p className={styles.subdescription_works}>The seed project that started it all.</p>
             </Col>
-            <Col xs={12} sm={12} md={5} lg={5} xl={4} xxl={3}>
+            <Col xs={12} sm={12} md={5} lg={5} xl={4} xxl={3} className={'align-self-center'}>
               <div className={styles.align_center}>
               <p className={`${styles.subdescription}` }>Works are generative tokens that are co-created at mint time. Like Art Blocks, the minter and creator participate in the creation of unique on chain art.</p>
               </div>
@@ -75,9 +75,9 @@ const Home = () => {
           <Row>
             <Col xs={0} sm={0} md={1} lg={1} xl={2} xxl={3}/>
             
-            <Col xs={12} sm={12} md={5} lg={5} xl={4} xxl={3}>
+            <Col xs={12} sm={12} md={5} lg={5} xl={4} xxl={3} className={'align-self-center'}>
               <p className={styles.subdescription_works}>Work 2 - Kaleidoscope</p>
-              <p className={styles.subdescription_works}>The first official work to be released on public works.</p>
+              <p className={styles.subdescription_works}>The first official work to be released on public works. Hyperion token holders will receive whitelist spots.</p>
               <p className={styles.subdescription_works}>Drop date August 2022</p>
             </Col>
             <Col xs={12} sm={12} md={5} lg={5} xl={4} xxl={3} className={'al'}>
@@ -95,9 +95,9 @@ const Home = () => {
               <Image src={kaleidoPix} width={200} height={200} layout={"responsive"} />
             </Col>
 
-            <Col xs={12} sm={12} md={5} lg={5} xl={4} xxl={3}>
+            <Col xs={12} sm={12} md={5} lg={5} xl={4} xxl={3} className={'align-self-center'}>
               <p className={styles.subdescription_works}>Work 3 - ???</p>
-              <p className={styles.subdescription_works}>We're looking for creators.</p>
+              <p className={styles.subdescription_works}>Are you a generative artist or creator? We're looking for collection to release during beta. Reach out to @stewbracken on twitter.</p>
             </Col>
             <Col xs={0} sm={0} md={1} lg={1} xl={2} xxl={3}/>
           </Row>
@@ -116,11 +116,11 @@ const Home = () => {
             <Col xs={0} sm={0} md={1} lg={2} xl={4} xxl={4}/>
             <Col xs={12} sm={12} md={10} lg={8} xl={6} xxl={6}>
               <p className={`${styles.description} `} >
-                PublicWorks.art utilizes Stargaze. The off chain rendering pipeline is built on infrastructure that is powered by 100% renewable energy.  
+                PublicWorks.art is built for Stargaze.zone. It's off chain rendering pipeline is built on infrastructure that is powered by 100% renewable energy.  
               </p>
-              <p className={`${styles.description} `} >
-                
-              </p>
+              {/*<p className={`${styles.description} `} >*/}
+              {/*  Hyperion holders */}
+              {/*</p>*/}
             </Col>
             <Col xs={0} sm={0} md={1} lg={2} xl={4} xxl={4}/>
           </Row>
