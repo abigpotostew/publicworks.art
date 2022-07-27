@@ -6,7 +6,7 @@ export const NavBar = ()=>{
   return (
     <Navbar bg="dark" variant="dark" expand="sm" >
       <Container>
-        <Navbar.Brand className={styles.navTitle} href="#home">PUBLICWORKS.art</Navbar.Brand>
+        <Navbar.Brand className={styles.navTitle} href="#home">PublicWorks.Art</Navbar.Brand>
       </Container>
     </Navbar>
   )
