@@ -1,25 +1,17 @@
-import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import { ReactElement } from "react";
 import MainLayout from "../src/layout/MainLayout";
-import { Footer } from "../src/components/Footer";
-import { NavBar } from "../src/components/Navbar";
-import { Col, Container, Row } from "react-bootstrap";
-import HomepageSketch from "../src/components/logo-sketch";
+import { Button, Col, Container, Row } from "react-bootstrap";
 import SketchAnimation from "../src/components/SketchAnimation";
 import kaleidoPix from '../public/img/homepage/kaleido-pix.png'
+import Link from "next/link";
 
 const Home = () => {
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>PublicWorks.art</title>
-        <meta name="description" content="publicworks.art"/>
-        <link rel="icon" href="/favicon.ico"/>
-      </Head>
-      <NavBar/>
+    <div >
+      
 
       <main className={styles.main}>
         {/*<h1 className={styles.logo}>*/}
@@ -34,17 +26,28 @@ const Home = () => {
 
         <Container>
           <Row>
-          <Col xs={0} sm={0} md={1} lg={2} xl={4} xxl={4}/>
-          <Col xs={12} sm={12} md={10} lg={8} xl={6} xxl={6}>
-            <p className={`${styles.description} ${styles.home1description}`} style={{ marginTop: '1rem' }}>
-              Public Works is a new generative art platform built for Cosmos on a carbon neutral tech stack.
-            </p>
-          </Col>
-            <Col xs={0} sm={0} md={1} lg={2} xl={4} xxl={4}/>
+
+            <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3}/>
+            <Col xs={12} sm={12} md={10} lg={8} xl={6} xxl={6}>
+              <p className={`${styles.title} ${styles.titleheader}`} style={{ marginTop: '1rem' }}>
+                Public Works
+              </p>
+            </Col>
+            <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3}/>
           </Row>
-          
+          <Row>
+
+            <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3}/>
+            <Col xs={12} sm={12} md={10} lg={8} xl={6} xxl={6}>
+              <p className={`${styles.description} ${styles.home1description}`} style={{ marginTop: '1rem' }}>
+                A new generative art platform built for the Cosmos on a carbon neutral tech stack.
+              </p>
+            </Col>
+            <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3}/>
+          </Row>
+
         </Container>
-        
+
         <Container>
 
           <SketchAnimation/>
@@ -55,51 +58,93 @@ const Home = () => {
         </Container>
 
         <Container>
-          <Row>
-            <Col xs={0} sm={0} md={1} lg={1} xl={2} xxl={3}/>
-            <Col xs={12} sm={12} md={5} lg={5} xl={4} xxl={3} className={'align-self-center'} >
-              <Image src={'/img/homepage/hyperion-collection-image-final.jpg'} width={'200%'} height={'200%'} layout={'intrinsic'} />
+          <Row style={{ borderTop: 'solid 1px' }} className={styles.group2}>
+            <Col xs={{ span: 0, order:1 }} sm={{ span: 0, order:1 }} md={{ span: 1, order:1 }} lg={{ span:1, order:1 }} xl={{ span: 1, order:1 }} xxl={{ span: 3, order:1 }}/>
+            <Col xs={{ span: 12, order:3 }} sm={{ span: 12, order:3 }} md={{ span: 5, order:2 }} lg={{ span: 5, order:2 }} xl={{ span: 4, order:2 }} xxl={{ span: 3, order:2 }} className={'align-self-center'}>
+              <Image src={'/img/homepage/hyperion-collection-image-final.jpg'} width={'200%'} height={'200%'}
+                     layout={'intrinsic'}/>
               <p className={styles.subdescription_works}>Work 0 - Hyperion</p>
               <p className={styles.subdescription_works}>The seed project that started it all.</p>
             </Col>
-            <Col xs={12} sm={12} md={5} lg={5} xl={4} xxl={3} className={'align-self-center'}>
+            <Col xs={{ span: 12, order:2 }} sm={{ span: 12, order:2 }} md={{ span: 5, order:3 }} lg={{ span: 5, order:3 }} xl={{ span: 4, order:3 }} xxl={{ span: 3, order:3 }} className={'align-self-center'}>
               <div className={styles.align_center}>
-              <p className={`${styles.subdescription}` }>Works are generative tokens that are co-created at mint time. Like Art Blocks, the minter and creator participate in the creation of unique on chain art.</p>
+                <p className={`${styles.subdescription}`}>Works are generative tokens that are co-created at mint time.
+                  Like Art Blocks, the minter and creator participate in the creation of unique on chain art.</p>
               </div>
             </Col>
-            <Col xs={0} sm={0} md={1} lg={1} xl={2} xxl={3}/>
+            <Col xs={{ span: 0, order:4 }} sm={{ span: 0, order:4 }} md={{ span: 1, order:4 }} lg={{ span:1, order:4 }} xl={{ span: 1, order:4 }} xxl={{ span: 3, order:4 }}/>
           </Row>
         </Container>
 
         <Container className={styles.group2}>
           <Row>
-            <Col xs={0} sm={0} md={1} lg={1} xl={2} xxl={3}/>
-            
-            <Col xs={12} sm={12} md={5} lg={5} xl={4} xxl={3} className={'align-self-center'}>
-              <p className={styles.subdescription_works}>Work 2 - Kaleidoscope</p>
-              <p className={styles.subdescription_works}>The first official work to be released on public works. Hyperion token holders will receive whitelist spots.</p>
-              <p className={styles.subdescription_works}>Drop date August 2022</p>
+            <Col xs={0} sm={0} md={1} lg={2} xl={2} xxl={3}/>
+
+            <Col xs={12} sm={12} md={5} lg={4} xl={4} xxl={3} className={'align-self-center'}>
+              <p className={`${styles.subdescription_works} ${styles.subdescription_works_large}`}>Work 1 - Kaleidoscope</p>
+              <p className={`${styles.subdescription_works} ${styles.subdescription_works_large}`}>The first official work to be released on public works.
+                Hyperion token holders will receive whitelist spots.</p>
+              <p className={`${styles.subdescription_works} ${styles.subdescription_works_large}`}>Drop date August 2022</p>
+              <p><Link href={'/work/kaleido'}><Button>Learn more</Button></Link> </p>
             </Col>
-            <Col xs={12} sm={12} md={5} lg={5} xl={4} xxl={3} className={'al'}>
-              <Image src={kaleidoPix} width={200} height={200} layout={"responsive"} />
+            <Col xs={12} sm={12} md={5} lg={4} xl={4} xxl={3} className={'al'}>
+              <Image src={kaleidoPix} width={200} height={200} layout={"responsive"}/>
             </Col>
-            <Col xs={0} sm={0} md={1} lg={1} xl={2} xxl={3}/>
+            <Col xs={0} sm={0} md={1} lg={2} xl={2} xxl={3}/>
           </Row>
         </Container>
 
         <Container className={styles.group2}>
           <Row>
-            <Col xs={0} sm={0} md={1} lg={1} xl={2} xxl={3}/>
+            <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3}/>
+            <Col xs={12} sm={12} md={10} lg={8} xl={6} xxl={6}>
+              <p className={`${styles.description} `}>
+                {"The team behind PublicWorks.art is building open NFT tools for generative collections. Soon, anyone can submit a generative collection. Think fxhash for the Cosmos." }
+              </p>
+              {/*<p className={`${styles.description} `} >*/}
+              {/*  Hyperion holders */}
+              {/*</p>*/}
+            </Col>
+            <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3}/>
+          </Row>
 
-            <Col xs={12} sm={12} md={5} lg={5} xl={4} xxl={3} className={'al'}>
-              <Image src={kaleidoPix} width={200} height={200} layout={"responsive"} />
+        </Container>
+        
+        <Container className={styles.group2}>
+          <Row>
+            <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3}/>
+            <Col xs={12} sm={12} md={5} lg={4} xl={3} xxl={3} className={`align-self-center ${styles.mysterywork}`} style={{minHeight:300}}>
+              {/*<Image src={kaleidoPix} width={200} height={200} layout={"responsive"} />*/}
+              <div className={`align-self-center `}>
+                ???
+              </div>
             </Col>
 
-            <Col xs={12} sm={12} md={5} lg={5} xl={4} xxl={3} className={'align-self-center'}>
-              <p className={styles.subdescription_works}>Work 3 - ???</p>
-              <p className={styles.subdescription_works}>{"Are you a generative artist or creator? We're looking for collection to release during beta. Reach out to @stewbracken on twitter."}</p>
+            <Col xs={12} sm={12} md={5} lg={4} xl={3} xxl={3} className={'align-self-center'}>
+              <p className={styles.subdescription_works}>Work 2 and beyond</p>
+              <p
+                className={`${styles.subdescription_works}`}>{"During beta we're looking for generative artists and creators to release on PublicWorks.art. Reach out to @stewbracken on twitter."}</p>
             </Col>
-            <Col xs={0} sm={0} md={1} lg={1} xl={2} xxl={3}/>
+            <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3}/>
+          </Row>
+        </Container>
+
+        <Container className={styles.group2}>
+          <Row>
+            <Col xs={0} sm={0} md={4} lg={2} xl={5} xxl={5}/>
+            <Col xs={12} sm={12} md={4} lg={8} xl={2} xxl={2} className={`align-self-center`} >
+              {/*<Image src={kaleidoPix} width={200} height={200} layout={"responsive"} />*/}
+              <p>Join the discussion</p>
+              <Link href={'https://twitter.com/stewbracken'}><Button>Twitter</Button></Link>
+              <Link href={'https://discord.gg/X6hSmrxdtW'}><Button>Discord</Button></Link>
+            </Col>
+
+            {/*<Col xs={12} sm={12} md={5} lg={4} xl={3} xxl={3} className={'align-self-center'}>*/}
+            {/*  <p className={styles.subdescription_works}>Work 3 and beyond</p>*/}
+            {/*  <p*/}
+            {/*    className={`${styles.subdescription_works}`}>{"During beta we're looking for generative artists and creators to release on PublicWorks.art. Reach out to @stewbracken on twitter."}</p>*/}
+            {/*</Col>*/}
+            <Col xs={0} sm={0} md={4} lg={2} xl={5} xxl={5}/>
           </Row>
         </Container>
 
@@ -111,24 +156,10 @@ const Home = () => {
         {/*  /!*</Row>*!/*/}
         {/*</Container>*/}
 
-        <Container style={{ marginTop: '100px' }}>
-          <Row>
-            <Col xs={0} sm={0} md={1} lg={2} xl={4} xxl={4}/>
-            <Col xs={12} sm={12} md={10} lg={8} xl={6} xxl={6}>
-              <p className={`${styles.description} `} >
-                {"PublicWorks.art is built for Stargaze.zone. It's off chain rendering pipeline is built on infrastructure that is powered by 100% renewable energy."}  
-              </p>
-              {/*<p className={`${styles.description} `} >*/}
-              {/*  Hyperion holders */}
-              {/*</p>*/}
-            </Col>
-            <Col xs={0} sm={0} md={1} lg={2} xl={4} xxl={4}/>
-          </Row>
-
-        </Container>
         
+
       </main>
-      <Footer/>
+
 
       {/*<footer className={styles.footer}>*/}
       {/*  PublicWorks.art 2022*/}

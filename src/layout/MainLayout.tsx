@@ -3,7 +3,7 @@ import { FC } from "react";
 import Head from "next/head";
 import { NavBar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
-
+import styles from "../../styles/Home.module.css"
 interface ILayout {
   description?: string;
   metaTitle?: string;
@@ -39,8 +39,10 @@ const MainLayout: FC<ILayout> = ({
       {/*<header>*/}
       {/*</header>*/}
 
-        <Container>{children}</Container>
+      <div className={styles.container}>
+        {children}
       <Footer/>
+      </div>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 .container {
-  padding: 0 2rem;
+  /*padding: 0 2rem;*/
     background-color: #212529;
     
 }
@@ -13,7 +13,7 @@
   flex-direction: column;
   justify-content: center;
   /*align-items: center;*/
-    font-family: 'Manrope', sans-serif;
+    font-family: 'Roboto', sans-serif;
     color: #ffffff;
 }
 
@@ -25,7 +25,7 @@
   justify-content: center;
   align-items: center;
     color: #ffffff;
-    font-family: 'Manrope', sans-serif;
+    /*font-family: 'Manrope', sans-serif;*/
 }
 
 .footer a {
@@ -38,8 +38,14 @@
 
 .title {
     color: #0070f3;
+    font-family: 'Advent Pro', sans-serif;
     
 }
+
+.titleheader{
+    letter-spacing: 5px;
+}
+
 .title a {
   color: #0070f3;
   text-decoration: none;
@@ -78,9 +84,10 @@
     /*background-position: center;*/
     /*padding: 10% 20% 10% 20%;*/
     font-size: 36px;
-    font-weight: bolder;
+    font-weight: bold;
     padding-top: 80px;
 }
+
 
 .subdescription_works{
     /*margin: 1rem 0;*/
@@ -88,14 +95,22 @@
     font-size: 18px;
 
 }
+
+.subdescription_works_large{
+    /*margin: 1rem 0;*/
+    line-height: 1.5;
+    font-size: 24px;
+
+}
 .subdescription{
     /*margin: 1rem 0;*/
     line-height: 1.5;
     font-size: 24px;
 
-    justify-content: center;
-    align-items: center;
-    display: flex;
+    text-align: center;
+    /*justify-content: center;*/
+    /*align-items: center;*/
+    /*display: flex;*/
 }
 .group2{
     padding-top: 75px;
@@ -104,6 +119,16 @@
 
     display: flex;
     align-items: center;
+}
+
+.mysterywork{
+    display: flex;
+    justify-content: center;
+    border-radius: 5px;
+    border: #fff;
+    border-style: dashed;
+    font-size: 3rem;
+    letter-spacing: 5px;
 }
 
 .code {
@@ -169,7 +194,8 @@
 }
 
 .navTitle{
-    font-family: 'Manrope', sans-serif;
+    letter-spacing: 3px;
+    font-family: 'Advent Pro', sans-serif;
 }
 
 

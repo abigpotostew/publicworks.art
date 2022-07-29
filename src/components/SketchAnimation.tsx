@@ -6,6 +6,13 @@ import useSize from "@react-hook/size";
 import { hashCode } from "../util/hashcode";
 // Will only import `react-p5` on client-side
 
+/**
+ * The magic box should be smaller and more 3d
+ * poof coming out when the mint comes out
+ * animate the bottom to be more 3d by moving up and down as well as top face
+ */
+
+
 // @ts-ignore
 const LogoSketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
   ssr: false,
@@ -25,8 +32,8 @@ function ease(x:number):number{
   return easeInOutQuart(x)
 }
 
-const xn = 8;
-const yn = 8;
+const xn = 7;
+const yn = 5;
 const bgColor = '#212529'
 
 const colorModifiers = new Array(xn * yn).fill(0);
@@ -38,6 +45,8 @@ const numNfts = 2;
 const nftNames=['GenArt','PFP','1of1',"Interactive","JS Art", 'AI Art'];
 let nftIds:string[]=[];
 const animationDuration=3000;
+let puff:Puff;
+let newPuff:()=>void;
 const createNftName=(p5:p5Types, existing:string[])=>{
   while(true){
     const nameTry = p5.random(nftNames)
@@ -79,6 +88,15 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
      const smaller=p5.min(p5.width*0.25,p5.height*0.8)
      width = smaller * 0.8
      height = smaller * 0.8
+    newPuff = ()=>{
+      puff = new Puff(10, (i)=>{
+        const s = {x:0,y:0}
+        const end = {x: p5.random(0.15)*width*2 + .1*width, y: (p5.random()-p5.random())*height*0.8}
+        return new Particle(s,end)
+      })
+    }
+    newPuff()
+    
   };
   //
   const mouseMoved = (p5: p5Types) => {
@@ -95,7 +113,8 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
     const localWidthBorder = (p5.width-width)/2* .25;
     const n = 2;
     const localWidthIndiv=localWidth/n;
-    const boxSize=localWidthIndiv*0.4;
+    const boxSize=localWidthIndiv*0.7;
+    const halfBoxSize = boxSize*0.5
     p5.push()
 
 
@@ -105,17 +124,35 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
     
     const drawMint=()=>{
       p5.fill(50);
-      p5.rect(0, 0, boxSize,boxSize)
+      // p5.rect(0, 0, boxSize,boxSize)
+      p5.fill(100);
+      const lineWidth = boxSize*0.2
+      const lineWidthHalft = lineWidth*0.5;
+      //top left
+      p5.rect(0, 0, lineWidth,lineWidthHalft)
+      p5.rect(0, 0, lineWidthHalft,lineWidth)
+      // top right
+      p5.rect(boxSize-lineWidthHalft, 0, lineWidthHalft,lineWidth)
+      p5.rect(boxSize-lineWidth, 0, lineWidth,lineWidthHalft)
+      // bottom right
+      p5.rect(boxSize-lineWidthHalft, boxSize-lineWidth, lineWidthHalft,lineWidth)
+      p5.rect(boxSize-lineWidth, boxSize-lineWidthHalft, lineWidth,lineWidthHalft)
+      // bottom left
+      p5.rect(0, boxSize-lineWidth, lineWidthHalft,lineWidth)
+      p5.rect(0, boxSize-lineWidthHalft, lineWidth,lineWidthHalft)
+      
       p5.fill(100)
       p5.textAlign(p5.CENTER,p5.CENTER)
+      p5.textSize(width/10)
       p5.text('Mint',boxSize/2,boxSize/2)
     }
-    
+
+    let boxYOffset = p5.height/2-boxSize*0.75;
     if(aniTime<0.5){
       //render still
       for (let i = 0; i < n; i++) {
         p5.push()
-        p5.translate(localWidthBorder + localWidth*(i/n), p5.height/2-boxSize*0.5)
+        p5.translate(localWidthBorder + localWidth*(i/n), boxYOffset)
         drawMint()
         p5.pop()
       }
@@ -127,7 +164,7 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
       for (let i = 0; i < n+1; i++) {
         p5.push()
         const aniOffset=ease(aniTimeLocal);
-        p5.translate(localWidthBorder + localWidth*(i/n) +aniOffset*localWidth*((1)/n) - localWidth*((1)/n), p5.height/2-boxSize*0.5)
+        p5.translate(localWidthBorder + localWidth*(i/n) +aniOffset*localWidth*((1)/n) - localWidth*((1)/n), boxYOffset)
         drawMint()
         p5.pop()
       }
@@ -144,12 +181,12 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
     const aniTime =( p5.millis() % animationDuration )/animationDuration;
     const localWidth = (p5.width-width)/2* .75;
 
-    const localWidthBorder = (p5.width-width)/2* .25;
+    const localWidthBorder = (p5.width-width)/2* .16;
     
     const localWidthIndiv=localWidth/numNfts;
-    const boxSize=localWidthIndiv*0.4;
+    const boxSize=localWidthIndiv*0.7;
     p5.push()
-
+    let boxYOffset = p5.height/2-boxSize*0.75;
 
     // @ts-ignore
     // p5.drawingContext.clearRect(0, 0, localWidthBorder, p5.height);
@@ -164,6 +201,7 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
       p5.textAlign(p5.CENTER,p5.CENTER)
       
       // const name = p5.random(nftNames)
+      p5.textSize(width/10)
       p5.text(name,boxSize/2,boxSize/2)
     }
 
@@ -174,7 +212,7 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
       //render still
       for (let i = 0; i < numNfts; i++) {
         p5.push()
-        p5.translate(width/3 + localWidthBorder + localWidth*(i/numNfts), p5.height/2-boxSize*0.5)
+        p5.translate(width/3 + localWidthBorder + localWidth*(i/numNfts), boxYOffset)
         drawNft(nftIds[i])
         p5.pop()
       }
@@ -185,21 +223,32 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
         createNftName(p5,nftIds)
       }
       //render moving
-
+      
       const aniTimeLocal = (aniTime-0.5)*2;
+      
       for (let i = 0; i < numNfts+1; i++) {
         p5.push()
         const aniOffset=ease(aniTimeLocal);
-        p5.translate(width/3 + localWidthBorder + localWidth*(i/numNfts) +aniOffset*localWidth*((1)/numNfts) - localWidth*((1)/numNfts), p5.height/2-boxSize*0.5)
+        p5.translate(width/3 + localWidthBorder + localWidth*(i/numNfts) +aniOffset*localWidth*((1)/numNfts) - localWidth*((1)/numNfts), p5.height/2-boxSize*0.75)
         drawNft(nftIds[i])
         p5.pop()
       }
+    }
+    const spuff = 0.6;
+    if(aniTime>spuff){
+      const aniTimeLocal = p5.map(aniTime,spuff,1,0,1)
+      p5.push()
+      p5.translate(boxSize*.7,p5.height/2-boxSize*.5)
+      puff.draw(p5, aniTimeLocal)
+      p5.pop()
     }
     p5.erase();
     // p5.fill(255)
     p5.rect(p5.width/2-localWidthBorder*1.1,0, localWidthBorder*1.1,p5.height)
     p5.noErase()
 
+    
+    
     p5.pop()
   }
   
@@ -217,7 +266,7 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
     
 
     const sizeBox = Math.round(1 / xn * width);
-    const offsetMax = width * 0.2
+    const offsetMax = width * 0.15
     // for (let x = 0; x < xn; x++) {
     //   for (let y = 0; y < yn; y++) {
     const faces = [];
@@ -242,7 +291,7 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
         const i = y * xn + x;
         // p5.push()
         const noise = (nfunc(x, y));
-        const offset = Math.round(noise * offsetMax*.5 + (bouncing*offsetMax*0.25));
+        const offset = Math.round(noise * offsetMax*.75 + (bouncing*offsetMax*0.5));
         const color = bouncing * 100 * 0.4;//(i) / (m) * 100 ;
 
         const xp = Math.floor(x / xn * (width)) + offset;
@@ -258,7 +307,8 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
             time=ease(time)
           }
           // const color= (( time* 100) + xn % 100);
-          
+          // const newcol = p5.lerpColor(p5.color(0,80,70), p5.color(100), time)
+          // p5.fill(100 - (color /*+ 20 * colorModifiers[i]*.2*/ ))
           p5.fill(100 - (color /*+ 20 * colorModifiers[i]*.2*/ ))
           p5.rect(xp, yp, sizeBox, sizeBox)
         })
@@ -266,18 +316,19 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
           //bottom
           p5.fill(Math.round(100-color + 100 * 0.1))
           p5.beginShape()
+          // face bottom left
           p5.vertex(xp, yp + sizeBox)
           p5.vertex(xp + sizeBox, yp + sizeBox)
-          p5.vertex(xp + sizeBox - offset, yp + sizeBox + offset)
-          p5.vertex(xp - offset, yp + sizeBox + offset)
+          p5.vertex(xp + sizeBox - offset*2, yp + sizeBox + offset*2)
+          p5.vertex(xp - offset*2, yp + sizeBox + offset*2)
           p5.endShape()
 //left
           p5.fill(Math.round(100-color - color * .1))
           p5.beginShape()
           p5.vertex(xp, yp)
           p5.vertex(xp, yp + sizeBox)
-          p5.vertex(xp - offset, yp + offset + sizeBox)
-          p5.vertex(xp - offset, yp + offset)
+          p5.vertex(xp - offset*2, yp + offset*2 + sizeBox)
+          p5.vertex(xp - offset*2, yp + offset*2)
           p5.endShape()
         })
       }
@@ -328,4 +379,41 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
   </Container>
   // return <Sketch setup={setup} draw={draw} />;
 };
+
+interface Vector{
+  x:number;y:number
+}
+class Particle{
+  pos:Vector;
+  end:Vector;
+  constructor(pos:Vector,end:Vector) {
+    this.pos=pos;
+    this.end=end;
+  }
+}
+//easeOutExpo
+const easeParticle=(x: number): number=> {
+  return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
+}
+class Puff{
+  particles:Particle[];
+  constructor(num:number, gen:(i:number)=>Particle) {
+    this.particles=[];
+    for (let i = 0; i < num; i++) {
+      this.particles[i] = gen(i);
+    }
+    console.log(this.particles)
+  }
+  draw(p5:p5Types, time:number){
+    for (let i = 0; i < this.particles.length; i++) {
+      const s = this.particles[i].pos
+      const e = this.particles[i].end
+      const dir = p5.createVector(e.x-s.x,e.y-s.y)
+      const len = dir.mag();
+      const pos = dir.normalize().mult(easeParticle(time)*len).add(s.x,s.y)
+      p5.rect(pos.x,pos.y,height*0.1,height*0.1)
+    }
+  }
+}
+
 export default SketchAnimation
