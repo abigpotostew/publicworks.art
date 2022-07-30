@@ -1,0 +1,39 @@
+.paddingTop{
+    margin-top: 50px;
+}
+
+.workHeader{
+    border-top: 1px solid #fff;
+
+    font-family: 'Roboto', sans-serif;
+    /*padding-top: ;*/
+}
+.workTitle{
+    font-size: 2rem;
+    font-family: 'Advent Pro', sans-serif;
+    font-weight: bold;
+}
+.workAuthor{
+    font-family: 'Advent Pro', sans-serif;
+    font-size: 1.5rem;
+}
+.workDescription{
+    font-family: 'Roboto', sans-serif;
+
+}
+.displayLinebreak {
+    white-space: pre-line;
+}
+.align_center{
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.workAuthorLink{
+    font-family: 'Roboto', sans-serif;
+}
+.sectionBreak{
+    padding-top: 24px;
+}

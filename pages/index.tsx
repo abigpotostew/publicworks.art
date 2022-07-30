@@ -13,7 +13,6 @@ const Home = () => {
     <div >
       
 
-      <main className={styles.main}>
         {/*<h1 className={styles.logo}>*/}
         {/*  <Image src={'/img/hyperion-logo2.svg'} width={100} height={100}/>*/}
         {/*</h1>*/}
@@ -157,8 +156,7 @@ const Home = () => {
         {/*</Container>*/}
 
         
-
-      </main>
+s
 
 
       {/*<footer className={styles.footer}>*/}
