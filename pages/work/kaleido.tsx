@@ -50,7 +50,7 @@ const WorkPage = () => {
               {work.description}
             </div>
             <div className={`${styles.workAuthorLink} ${styles.sectionBreak}`}>
-              <a href={work.authorLink} target={'_blank'}>
+              <a href={work.authorLink} rel="noreferrer"  target={'_blank'}>
               {work.authorLink}
               </a>
             </div>
