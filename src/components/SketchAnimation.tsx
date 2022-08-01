@@ -42,7 +42,7 @@ let border:number;
 let width:number;
 let height:number;
 const numNfts = 2;
-const nftNames=['GenArt','PFP','1of1',"Interactive","JS Art", 'AI Art'];
+const nftNames=['GenArt','PFP',"ASCII",'1of1','Animation',"Interactive","JS Art", 'AI Art'];
 let nftIds:string[]=[];
 const animationDuration=3000;
 let puff:Puff;
@@ -58,6 +58,7 @@ const createNftName=(p5:p5Types, existing:string[])=>{
 }
 
 const containerHeight = 400;
+let fontRegular:p5Types.Font;
 const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
   const ref = useRef(null);
   const [sketchKey, setSketchKey]=useState(0)
@@ -72,6 +73,9 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
     setDoRender(true)
   }, [])
 
+  const preload = (p5:p5Types)=>{
+    fontRegular = p5.loadFont('/font/AdventPro-Medium.ttf');
+  }
   
   //See annotations in JS for more information
   const setup = (p5: p5Types, canvasParentRef: Element) => {
@@ -143,7 +147,8 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
       
       p5.fill(100)
       p5.textAlign(p5.CENTER,p5.CENTER)
-      p5.textSize(width/10)
+      // p5.textSize(width/10)
+      p5.textFont(fontRegular, width/8)
       p5.text('Mint',boxSize/2,boxSize/2)
     }
 
@@ -201,7 +206,8 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
       p5.textAlign(p5.CENTER,p5.CENTER)
       
       // const name = p5.random(nftNames)
-      p5.textSize(width/10)
+      // p5.textSize(width/10)
+      p5.textFont(fontRegular, width/8)
       p5.text(name,boxSize/2,boxSize/2)
     }
 
@@ -376,7 +382,7 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
   
   return <Container ref={ref} style={{ display: 'flex', justifyContent: 'center', height: containerHeight }}>
     {doRender &&
-        <LogoSketch key={sketchKey} setup={setup} draw={draw} mouseMoved={mouseMoved}/>}
+        <LogoSketch key={sketchKey} preload={preload} setup={setup} draw={draw} mouseMoved={mouseMoved}/>}
   </Container>
   // return <Sketch setup={setup} draw={draw} />;
 };
@@ -403,7 +409,6 @@ class Puff{
     for (let i = 0; i < num; i++) {
       this.particles[i] = gen(i);
     }
-    console.log(this.particles)
   }
   draw(p5:p5Types, time:number){
     for (let i = 0; i < this.particles.length; i++) {
