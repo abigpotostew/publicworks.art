@@ -13,7 +13,7 @@
   flex-direction: column;
   justify-content: center;
   /*align-items: center;*/
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto Flex', sans-serif;
     color: #ffffff;
 }
 
@@ -66,16 +66,14 @@
 .title,
 .description {
   text-align: center;
-
     color: #ffffff
 }
 
 
 .description {
-  margin: 1rem 0;
+  /*margin: 1rem 0;*/
   line-height: 1.5;
   font-size: 24px;
-
     color: #ffffff;
 }
 .home1description{
@@ -84,8 +82,8 @@
     /*background-position: center;*/
     /*padding: 10% 20% 10% 20%;*/
     font-size: 36px;
-    font-weight: bold;
-    padding-top: 80px;
+    /*font-weight: lighter;*/
+    padding-top: 75px;
 }
 
 
@@ -107,13 +105,19 @@
     line-height: 1.5;
     font-size: 24px;
 
-    text-align: center;
+    /*text-align: justify;*/
     /*justify-content: center;*/
     /*align-items: center;*/
     /*display: flex;*/
 }
+.groupDivider{
+ padding: 75px;
+}
+.sectionGroupDivider{
+ padding-top: 75px;
+}
 .group2{
-    padding-top: 75px;
+ /*padding-top: 75px;*/
 }
 .align_center{
 
@@ -124,13 +128,14 @@
     justify-content: center;
     text-align: center;
 }
-
+.leftPadded{
+    margin-left: 65px;
+}
 .mysterywork{
     display: flex;
     justify-content: center;
     border-radius: 5px;
-    border: #fff;
-    border-style: dashed;
+    border: #fff 10px dashed;
     font-size: 3rem;
     letter-spacing: 5px;
 }

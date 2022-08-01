@@ -91,7 +91,7 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
     newPuff = ()=>{
       puff = new Puff(10, (i)=>{
         const s = {x:0,y:0}
-        const end = {x: p5.random(0.15)*width*2 + .1*width, y: (p5.random()-p5.random())*height*0.8}
+        const end = {x: p5.random(0.15)*width*2 + .1*width, y: (p5.random()-p5.random())*height*0.6}
         return new Particle(s,end)
       })
     }
@@ -234,7 +234,8 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
         p5.pop()
       }
     }
-    const spuff = 0.6;
+    const aniTimePuff =(( p5.millis() % animationDuration )/animationDuration + 0.5)%1;
+    const spuff = 0.75;
     if(aniTime>spuff){
       const aniTimeLocal = p5.map(aniTime,spuff,1,0,1)
       p5.push()
@@ -411,7 +412,7 @@ class Puff{
       const dir = p5.createVector(e.x-s.x,e.y-s.y)
       const len = dir.mag();
       const pos = dir.normalize().mult(easeParticle(time)*len).add(s.x,s.y)
-      p5.rect(pos.x,pos.y,height*0.1,height*0.1)
+      p5.rect(pos.x,pos.y,height*0.05,height*0.05)
     }
   }
 }

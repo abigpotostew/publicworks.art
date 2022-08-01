@@ -31,8 +31,25 @@
     justify-content: center;
     text-align: center;
 }
+.workAuthorLink a:link {
+    color:#fff;
+}
 .workAuthorLink{
     font-family: 'Roboto', sans-serif;
+}
+/* visited link */
+.workAuthorLink a:visited {
+    color:#fff;
+}
+
+/* mouse over link */
+.workAuthorLink a:hover {
+    color: #b7bac4;
+}
+
+/* selected link */
+.workAuthorLink a:active {
+    color:#fff;
 }
 .sectionBreak{
     padding-top: 24px;

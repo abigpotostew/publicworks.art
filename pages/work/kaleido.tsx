@@ -15,6 +15,7 @@ const work = {
     "Vivamus ut tincidunt mi, non pharetra leo. Praesent faucibus suscipit orci, et efficitur ex elementum sed. Aenean sapien justo, volutpat id ullamcorper vel, vulputate at tellus. Nam dignissim ornare bibendum. Praesent blandit ultricies pellentesque. Nullam sagittis pellentesque convallis. Curabitur eu felis sit amet elit consequat consequat. Sed tortor magna, blandit sit amet facilisis sed, blandit eget est.",
   url: 'https://abigpotostew.github.io/hyp2/?hash=E846ACA602B70CC28122D5BCC37EEDB33326103BDB502254D9EA041831BD22B4?pixelRatio=1&preview=false',
   collectionSize: 1000,
+  mintedCount: 0,
   authorLink: 'https://stewart.codes/nft'
 
 }
@@ -41,19 +42,26 @@ const WorkPage = () => {
             <span className={styles.workAuthor}>
               {" - " + work.author}
             </span>
+            <span className={styles.workAuthor}>
+              {" - " + work.mintedCount +" of " + work.collectionSize + ' minted'}
+            </span>
             </div>
             <div className={`${styles.workDescription} ${styles.displayLinebreak} ${styles.sectionBreak}`}>
               {work.description}
             </div>
             <div className={`${styles.workAuthorLink} ${styles.sectionBreak}`}>
+              <a href={work.authorLink} target={'_blank'}>
               {work.authorLink}
+              </a>
             </div>
+            
             <div className={`${styles.sectionBreak}`}>
-              <Link href={'https://stargaze.zone'}>
+              <a href={'https://stargaze.zone'} target={"_blank"}>
                 <Button>Mint on Stargaze.zone</Button>
-              </Link>
+              </a>
             </div>
           </div>
+          price and license info
         </RowThinContainer>
       </Container>
     </div>
