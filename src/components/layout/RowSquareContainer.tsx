@@ -1,5 +1,5 @@
 import { Col, Row } from "react-bootstrap";
-import { ReactElement } from "react";
+import { ReactElement, ReactNode } from "react";
 
 export const RowSquareContainer = ({ children,className }: { className?:string;children: ReactNode }) => {
   return (
