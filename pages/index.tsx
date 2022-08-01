@@ -185,7 +185,7 @@ const Home = () => {
               <p
                 className={`${styles.subdescription_works_large}`}>
                 <span>{"During beta we're looking for generative artists and creators to release on PublicWorks.art. Reach out to "}</span>
-                <span className={stylesWorks.workAuthorLink}><a target={'_blank'} href={'https://twitter.com/stewbracken'} >@stewbracken</a></span>{" on twitter."}
+                <span className={stylesWorks.workAuthorLink}><a rel="noreferrer" target={'_blank'} href={'https://twitter.com/stewbracken'} >@stewbracken</a></span>{" on twitter."}
               </p>
             </div>
           </FlexBox>

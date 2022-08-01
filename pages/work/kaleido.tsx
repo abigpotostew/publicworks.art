@@ -56,7 +56,7 @@ const WorkPage = () => {
             </div>
             
             <div className={`${styles.sectionBreak}`}>
-              <a href={'https://stargaze.zone'} target={"_blank"}>
+              <a href={'https://stargaze.zone'} rel="noreferrer" target={"_blank"}>
                 <Button>Mint on Stargaze.zone</Button>
               </a>
             </div>
