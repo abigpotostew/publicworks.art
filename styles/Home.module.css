@@ -145,13 +145,12 @@ flex: 1 1 160px;
     margin-left: 65px;
 }
 .mysterywork{
-    display: flex;
     justify-content: center;
-    border-radius: 5px;
+    border-radius: 10px;
     border: #fff 10px dashed;
     font-size: 3rem;
     letter-spacing: 5px;
-    align-content: center;
+    /*align-content: center;*/
 }
 
 .code {

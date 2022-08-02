@@ -87,7 +87,7 @@ const Home = () => {
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <img src={'/img/homepage/hyperion-collection-image-final.jpg'} height={'400px'}/>
             </div>
-            <div style={{ minWidth: 200, 'textAlign': 'center' }}>
+            <div style={{ minWidth: 250, 'textAlign': 'center' }}>
               <div className={`${styles.subdescription_works}  ${stylesWorks.workTitle}`}>Hyperion</div>
               <div className={styles.subdescription_works_large}>Work 0. The seed project that started it all.</div>
             </div>
@@ -103,7 +103,7 @@ const Home = () => {
           {/*<Row style={{ borderTop: 'solid 1px' }} className={`${styles.group2} ${styles.sectionGroupDivider}`}>*/}
 
           <FlexBox style={{ justifyContent: 'center', 'textAlign': 'center' }}>
-            <div style={{ minWidth: 350, 'textAlign': 'center' }}>
+            <div style={{ minWidth: 250, 'textAlign': 'center' }}>
               <p
                 className={`${styles.subdescription_works} ${styles.subdescription_works_large} ${stylesWorks.workTitle}`}>Kaleidoscope</p>
               <p className={`${styles.subdescription_works} ${styles.subdescription_works_large}`}>Work 1. The first
@@ -170,17 +170,20 @@ const Home = () => {
         <RowThinContainer>
           {/*<Row style={{ borderTop: 'solid 1px' }} className={`${styles.group2} ${styles.sectionGroupDivider}`}>*/}
 
-          <FlexBox>
+          <FlexBox style={{ justifyContent: 'center', 'textAlign': 'center' }}>
             <div style={{
-              width: 350,
-              height: 350,
+              width: 300,
+              minWidth: 300,
+              minHeight: 300,
+              maxHeight:300,
+              maxWidth:300,
               display: 'flex',
               alignItems: "center"
             }} className={`${styles.mysterywork}`}>
               ???
             </div>
 
-            <div>
+            <div  style={{ minWidth: 250, 'textAlign': 'center' }}>
               <p className={`${styles.subdescription_works_large} ${stylesWorks.workTitle}`}>Work 2 and beyond</p>
               <p
                 className={`${styles.subdescription_works_large}`}>
