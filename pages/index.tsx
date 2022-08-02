@@ -25,17 +25,6 @@ const Home = () => {
   return (
     <div>
 
-
-      {/*<h1 className={styles.logo}>*/}
-      {/*  <Image src={'/img/hyperion-logo2.svg'} width={100} height={100}/>*/}
-      {/*</h1>*/}
-
-      {/*<HomepageSketch />*/}
-
-      {/*<h1 className={styles.title}>*/}
-      {/*  Welcome to <a href="#">PublicWorks.art!</a>*/}
-      {/*</h1>*/}
-
       <Container>
         <Row>
 
@@ -63,10 +52,7 @@ const Home = () => {
       <Container>
 
         <SketchAnimation/>
-
-        {/*<p className={styles.description}>*/}
-        {/*  The team behind Public Works is dedicated to bringing the best generative art to the cosmos.*/}
-        {/*</p>*/}
+        }
       </Container>
 
       <GroupDivider/>
@@ -81,7 +67,6 @@ const Home = () => {
 
       <Container fluid>
         <RowThinContainer>
-          {/*<Row style={{ borderTop: 'solid 1px' }} className={`${styles.group2} ${styles.sectionGroupDivider}`}>*/}
 
           <FlexBox>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -100,7 +85,6 @@ const Home = () => {
 
       <Container fluid>
         <RowThinContainer>
-          {/*<Row style={{ borderTop: 'solid 1px' }} className={`${styles.group2} ${styles.sectionGroupDivider}`}>*/}
 
           <FlexBox style={{ justifyContent: 'center', 'textAlign': 'center' }}>
             <div style={{ minWidth: 250, 'textAlign': 'center' }}>
@@ -117,35 +101,11 @@ const Home = () => {
 
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <img src={kaleidoPix.src} height={'400px'}/>
-              {/*<Image src={kaleidoPix} width={200} height={200} layout={"responsive"}/>*/}
             </div>
           </FlexBox>
 
         </RowThinContainer>
       </Container>
-
-      {/*<Container className={styles.group2}>*/}
-      {/*  <Container fluid>*/}
-      {/*    <div style={{ 'textAlign': 'center' }} className={`${styles.flexWrapCenter}`}>*/}
-      {/*      <div style={{ minWidth: 300 }}>*/}
-      {/*        <p*/}
-      {/*          className={`${styles.subdescription_works} ${styles.subdescription_works_large} ${stylesWorks.workTitle}`}>Kaleidoscope</p>*/}
-      {/*        <p className={`${styles.subdescription_works} ${styles.subdescription_works_large}`}>Work 1. The first*/}
-      {/*          official work*/}
-      {/*          to be released on public works.*/}
-      {/*          Hyperion token holders will receive whitelist spots.</p>*/}
-      {/*        <p className={`${styles.subdescription_works} ${styles.subdescription_works_large}`}>Drop date August*/}
-      {/*          2022</p>*/}
-      {/*        <p><Link href={'/work/kaleido'}><Button>Learn more</Button></Link></p>*/}
-      {/*      </div>*/}
-
-      {/*      <div>*/}
-      {/*        <img src={kaleidoPix.src} height={'400px'}/>*/}
-      {/*        /!*<Image src={kaleidoPix} width={200} height={200} layout={"responsive"}/>*!/*/}
-      {/*      </div>*/}
-      {/*    </div>*/}
-      {/*  </Container>*/}
-      {/*</Container>*/}
 
       <GroupDivider/>
       <Container className={styles.group2}>
@@ -155,9 +115,6 @@ const Home = () => {
             <p className={`${styles.description} `}>
               {"The team behind PublicWorks.art is dedicated to building open NFT tools for generative collections. Soon, anyone can submit a generative collection. Think fxhash for the Cosmos."}
             </p>
-            {/*<p className={`${styles.description} `} >*/}
-            {/*  Hyperion holders */}
-            {/*</p>*/}
           </Col>
           <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3}/>
         </Row>
@@ -168,27 +125,27 @@ const Home = () => {
 
       <Container fluid>
         <RowThinContainer>
-          {/*<Row style={{ borderTop: 'solid 1px' }} className={`${styles.group2} ${styles.sectionGroupDivider}`}>*/}
 
           <FlexBox style={{ justifyContent: 'center', 'textAlign': 'center' }}>
             <div style={{
               width: 300,
               minWidth: 300,
               minHeight: 300,
-              maxHeight:300,
-              maxWidth:300,
+              maxHeight: 300,
+              maxWidth: 300,
               display: 'flex',
               alignItems: "center"
             }} className={`${styles.mysterywork}`}>
               ???
             </div>
 
-            <div  style={{ minWidth: 250, 'textAlign': 'center' }}>
+            <div style={{ minWidth: 250, 'textAlign': 'center' }}>
               <p className={`${styles.subdescription_works_large} ${stylesWorks.workTitle}`}>Work 2 and beyond</p>
               <p
                 className={`${styles.subdescription_works_large}`}>
                 <span>{"During beta we're looking for generative artists and creators to release on PublicWorks.art. Reach out to "}</span>
-                <span className={stylesWorks.workAuthorLink}><a rel="noreferrer" target={'_blank'} href={'https://twitter.com/stewbracken'} >@stewbracken</a></span>{" on twitter."}
+                <span className={stylesWorks.workAuthorLink}><a rel="noreferrer" target={'_blank'}
+                                                                href={'https://twitter.com/stewbracken'}>@stewbracken</a></span>{" on twitter."}
               </p>
             </div>
           </FlexBox>
@@ -196,83 +153,31 @@ const Home = () => {
         </RowThinContainer>
       </Container>
 
-      {/*<Container className={styles.group2}>*/}
-      {/*  <Row>*/}
-      {/*    <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3}/>*/}
-      {/*    <Col xs={12} sm={12} md={5} lg={4} xl={3} xxl={3} className={`align-self-center ${styles.mysterywork}`}*/}
-      {/*         style={{ minHeight: 300 }}>*/}
-      {/*      /!*<Image src={kaleidoPix} width={200} height={200} layout={"responsive"} />*!/*/}
-      {/*      <div className={`align-self-center `}>*/}
-      {/*        ???*/}
-      {/*      </div>*/}
-      {/*    </Col>*/}
-
-      {/*    <Col xs={12} sm={12} md={5} lg={4} xl={3} xxl={3} className={'align-self-center'}>*/}
-      {/*      <p className={styles.subdescription_works}>Work 2 and beyond</p>*/}
-      {/*      <p*/}
-      {/*        className={`${styles.subdescription_works}`}>{"During beta we're looking for generative artists and creators to release on PublicWorks.art. Reach out to @stewbracken on twitter."}</p>*/}
-      {/*    </Col>*/}
-      {/*    <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3}/>*/}
-      {/*  </Row>*/}
-      {/*</Container>*/}
-
       <GroupDivider/>
 
       <Container fluid>
         <RowThinContainer>
-          {/*<Row style={{ borderTop: 'solid 1px' }} className={`${styles.group2} ${styles.sectionGroupDivider}`}>*/}
 
-          <FlexBox style={{alignItems:'center'}}>
-            <div className={styles.subdescription_works_large}  style={{display:'flex',justifyContent:'center', alignItems:'center', gap:40}}>
-            <div>
-              <p>Have thoughts or want to participate?</p>
-              <p>Join the discussion</p>
-            </div>
-            <div style={{display:'flex',justifyContent:'center', alignItems:'center', gap:40}}>
-            
-              <Link href={'https://twitter.com/stewbracken'}><Button>Twitter</Button></Link>
-            
-              <Link href={'https://discord.gg/X6hSmrxdtW'}><Button>Discord</Button></Link>
-            
-            </div>
+          <FlexBox style={{ alignItems: 'center' }}>
+            <div className={styles.subdescription_works_large}
+                 style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 40 }}>
+              <div>
+                <p>Have thoughts or want to participate?</p>
+                <p>Join the discussion</p>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 40 }}>
+
+                <Link href={'https://twitter.com/stewbracken'}><Button>Twitter</Button></Link>
+
+                <Link href={'https://discord.gg/X6hSmrxdtW'}><Button>Discord</Button></Link>
+
+              </div>
             </div>
           </FlexBox>
 
         </RowThinContainer>
       </Container>
 
-      {/*<Container className={styles.group2}>*/}
-      {/*  <Row>*/}
-      {/*    <Col xs={0} sm={0} md={4} lg={2} xl={5} xxl={5}/>*/}
-      {/*    <Col xs={12} sm={12} md={4} lg={8} xl={2} xxl={2} className={`align-self-center`}>*/}
-      {/*      /!*<Image src={kaleidoPix} width={200} height={200} layout={"responsive"} />*!/*/}
-      {/*      <p>Have thoughts or want to participate?</p>*/}
-      {/*      <p>Join the discussion</p>*/}
-      {/*      <Link href={'https://twitter.com/stewbracken'}><Button>Twitter</Button></Link>*/}
-      {/*      <Link href={'https://discord.gg/X6hSmrxdtW'}><Button>Discord</Button></Link>*/}
-      {/*    </Col>*/}
-      
-      {/*    /!*<Col xs={12} sm={12} md={5} lg={4} xl={3} xxl={3} className={'align-self-center'}>*!/*/}
-      {/*    /!*  <p className={styles.subdescription_works}>Work 3 and beyond</p>*!/*/}
-      {/*    /!*  <p*!/*/}
-      {/*    /!*    className={`${styles.subdescription_works}`}>{"During beta we're looking for generative artists and creators to release on PublicWorks.art. Reach out to @stewbracken on twitter."}</p>*!/*/}
-      {/*    /!*</Col>*!/*/}
-      {/*    <Col xs={0} sm={0} md={4} lg={2} xl={5} xxl={5}/>*/}
-      {/*  </Row>*/}
-      {/*</Container>*/}
-
-      {/*<Container fluid>*/}
-      {/*  /!*<Row>*!/*/}
-      {/*  /!*  <Col md="auto" lg xl>*!/*/}
-      {/*  <Image alt={'Untitled © skymagic 2022'} src={'/preview/preview3.png'} width={'1748'} height={'868'}/>*/}
-      {/*  /!*</Col>*!/*/}
-      {/*  /!*</Row>*!/*/}
-      {/*</Container>*/}
-
-
-      {/*<footer className={styles.footer}>*/}
-      {/*  PublicWorks.art 2022*/}
-      {/*</footer>*/}
     </div>
   )
 }
