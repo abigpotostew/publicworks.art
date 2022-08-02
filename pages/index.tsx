@@ -52,7 +52,6 @@ const Home = () => {
       <Container>
 
         <SketchAnimation/>
-        }
       </Container>
 
       <GroupDivider/>
