@@ -13,7 +13,7 @@ const work = {
   description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut mollis suscipit purus vel fermentum. Aliquam erat volutpat. Sed in turpis non mi laoreet facilisis ac sit amet sem. Maecenas aliquet leo ex, in fermentum urna molestie a. Integer porttitor est a lacus vehicula finibus. Nam felis diam, rutrum sit amet erat nec, fringilla ornare nisl. Mauris et mi aliquam, molestie dolor nec, pellentesque sem. Phasellus porta vulputate purus, vitae egestas nulla ultricies vitae. Integer pellentesque fringilla metus, quis vehicula lacus pretium sed. Phasellus a mi a ipsum lobortis luctus quis accumsan tortor. Morbi dictum magna tortor, et efficitur nisi porta id. Sed venenatis enim ac lectus rhoncus pretium. Mauris at ante ex. Maecenas dui urna, rutrum eu lectus dictum, venenatis sagittis nisi. Donec vel pulvinar mauris, ut pretium risus. In ultricies mollis auctor.\n" +
     "\n" +
     "Vivamus ut tincidunt mi, non pharetra leo. Praesent faucibus suscipit orci, et efficitur ex elementum sed. Aenean sapien justo, volutpat id ullamcorper vel, vulputate at tellus. Nam dignissim ornare bibendum. Praesent blandit ultricies pellentesque. Nullam sagittis pellentesque convallis. Curabitur eu felis sit amet elit consequat consequat. Sed tortor magna, blandit sit amet facilisis sed, blandit eget est.",
-  url: 'https://abigpotostew.github.io/hyp2/?hash=3D68382DBA3BC5672767A8CB567A45A01087B4A5689DDC13EEC878C87E5E74CB?pixelRatio=1&preview=false',
+  url: 'https://abigpotostew.github.io/hyp2/?hash=52CC735D83B8353AE8932047799E2819C34EA18BA19E973D73B56487C864C297?pixelRatio=1&preview=false',
   collectionSize: 1000,
   mintedCount: 0,
   authorLink: 'https://stewart.codes/nft'
