@@ -8,7 +8,7 @@ import { RowSquareContainer } from "../../src/components/layout/RowSquareContain
 import Link from "next/link";
 
 const work = {
-  title: "Kaleidoscope",
+  title: "Helio",
   author: 'skymagic',
   description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut mollis suscipit purus vel fermentum. Aliquam erat volutpat. Sed in turpis non mi laoreet facilisis ac sit amet sem. Maecenas aliquet leo ex, in fermentum urna molestie a. Integer porttitor est a lacus vehicula finibus. Nam felis diam, rutrum sit amet erat nec, fringilla ornare nisl. Mauris et mi aliquam, molestie dolor nec, pellentesque sem. Phasellus porta vulputate purus, vitae egestas nulla ultricies vitae. Integer pellentesque fringilla metus, quis vehicula lacus pretium sed. Phasellus a mi a ipsum lobortis luctus quis accumsan tortor. Morbi dictum magna tortor, et efficitur nisi porta id. Sed venenatis enim ac lectus rhoncus pretium. Mauris at ante ex. Maecenas dui urna, rutrum eu lectus dictum, venenatis sagittis nisi. Donec vel pulvinar mauris, ut pretium risus. In ultricies mollis auctor.\n" +
     "\n" +

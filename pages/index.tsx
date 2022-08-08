@@ -88,7 +88,7 @@ const Home = () => {
           <FlexBox style={{ justifyContent: 'center', 'textAlign': 'center' }}>
             <div style={{ minWidth: 250, 'textAlign': 'center' }}>
               <p
-                className={`${styles.subdescription_works} ${styles.subdescription_works_large} ${stylesWorks.workTitle}`}>Kaleidoscope</p>
+                className={`${styles.subdescription_works} ${styles.subdescription_works_large} ${stylesWorks.workTitle}`}>Helio</p>
               <p className={`${styles.subdescription_works} ${styles.subdescription_works_large}`}>Work 1. The first
                 official work
                 to be released on public works.
