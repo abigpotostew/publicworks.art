@@ -56,13 +56,19 @@ const Home = () => {
       </Container>
 
       <GroupDivider/>
-      <RowThinContainer>
-        <div style={{ 'textAlign': 'center' }}>
-          <p className={`${styles.subdescription} `}>Works are generative tokens that are co-created
-            at mint time.
-            Like Art Blocks, the minter and creator participate in the creation of unique on chain art.</p>
-        </div>
-      </RowThinContainer>
+
+
+      <Container className={styles.group2}>
+        <RowThinContainer>
+            <div style={{ 'textAlign': 'center' }}>
+              <p className={`${styles.subdescription} `}>Works are generative tokens that are co-created
+                at mint time.
+                Like Art Blocks, the minter and creator participate in the creation of unique on chain art.</p>
+            </div>
+        </RowThinContainer>
+      </Container>
+      
+    
       <GroupDivider/>
 
       <Container fluid>
