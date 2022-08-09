@@ -1,8 +1,19 @@
+.container ::-webkit-scrollbar {
+    width: 0;  /* Remove scrollbar space */
+    background: transparent;  /* Optional: just make scrollbar invisible */
+}
+
 .container {
   /*padding: 0 2rem;*/
     background-color: #212529;
-    
+
+    /*!*hide scrollbar*!*/
+    /*-ms-overflow-style: none;  !* Internet Explorer 10+ *!*/
+    /*scrollbar-width: none;  !* Firefox *!*/
 }
+/*.container::-webkit-scrollbar {*/
+/*    display: none;  !* Safari and Chrome *!*/
+/*}*/
 
 
 .main {

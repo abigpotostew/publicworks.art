@@ -8,6 +8,7 @@ import kaleidoPix from '../public/img/homepage/kaleido-pix.png'
 import Link from "next/link";
 import { RowThinContainer } from '../src/components/layout/RowThinContainer';
 import { FlexBox } from "../src/components/layout/FlexBox";
+import Image from 'react-bootstrap/Image'
 
 function GroupDivider() {
   return <Container className={styles.groupDivider}>
@@ -69,7 +70,7 @@ const Home = () => {
 
           <FlexBox>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <img src={'/img/homepage/hyperion-collection-image-final.jpg'} height={'400px'}/>
+              <Image fluid={true} src={'/img/homepage/hyperion-collection-image-final.jpg'} style={{ minWidth: 300 }}/>
             </div>
             <div style={{ minWidth: 250, 'textAlign': 'center' }}>
               <div className={`${styles.subdescription_works}  ${stylesWorks.workTitle}`}>Hyperion</div>
@@ -99,7 +100,7 @@ const Home = () => {
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <img src={kaleidoPix.src} height={'400px'}/>
+              <Image fluid={true} src={kaleidoPix.src} style={{ minWidth: '300px' }}/>
             </div>
           </FlexBox>
 
@@ -157,21 +158,22 @@ const Home = () => {
       <Container fluid>
         <RowThinContainer>
 
-          <FlexBox style={{ alignItems: 'center' }}>
+          <FlexBox style={{ justifyContent: 'center', alignItems: 'center' }}>
             <div className={styles.subdescription_works_large}
-                 style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 40 }}>
+                 style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 40,  'textAlign': 'center' }}>
               <div>
                 <p>Have thoughts or want to participate?</p>
                 <p>Join the discussion</p>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 40 }}>
+            </div>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 10 }}>
 
                 <Link href={'https://twitter.com/stewbracken'}><Button>Twitter</Button></Link>
 
                 <Link href={'https://discord.gg/X6hSmrxdtW'}><Button>Discord</Button></Link>
 
               </div>
-            </div>
+            
           </FlexBox>
 
         </RowThinContainer>
