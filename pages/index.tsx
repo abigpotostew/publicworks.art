@@ -63,7 +63,8 @@ const Home = () => {
             <div style={{ 'textAlign': 'center' }}>
               <p className={`${styles.subdescription} `}>Works are generative tokens that are co-created
                 at mint time.
-                Like Art Blocks, the minter and creator participate in the creation of unique on chain art.</p>
+                Like Art Blocks, the minter and creator participate in the creation of unique on chain art.
+              </p>
             </div>
         </RowThinContainer>
       </Container>
@@ -115,17 +116,38 @@ const Home = () => {
 
       <GroupDivider/>
       <Container className={styles.group2}>
-        <Row>
-          <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3}/>
-          <Col xs={12} sm={12} md={10} lg={8} xl={6} xxl={6}>
-            <p className={`${styles.description} `}>
-              {"The team behind PublicWorks.art is dedicated to building open NFT tools for generative collections. Soon, anyone can submit a generative collection. Think fxhash for the Cosmos."}
+        <FlexBox style={{ justifyContent: 'center', 'textAlign': 'center' }}>
+          <div style={{ minWidth: 250, 'textAlign': 'center' }}>
+            <p className={`${styles.subdescription} `}>
+              Smart contracts enable programmable money. Public Works enables programmable art.
             </p>
-          </Col>
-          <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3}/>
-        </Row>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+
+            <p className={`${styles.description} `}>
+              Publicworks.art is not a launchpad-- it is tech that enables programmable art. Publicworks.art works in tandem with the Stargaze launchpad. You can mint Works on Stargaze!
+            </p>
+          </div>
+        </FlexBox>
+
+            
 
       </Container>
+
+      {/*<GroupDivider/>*/}
+      {/*<Container className={styles.group2}>*/}
+      {/*  <Row>*/}
+      {/*    <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3}/>*/}
+      {/*    <Col xs={12} sm={12} md={10} lg={8} xl={6} xxl={6}>*/}
+      {/*      <p className={`${styles.description} `}>*/}
+      {/*        {"The team behind PublicWorks.art is dedicated to building open NFT tools for generative collections. Soon, anyone can submit a generative collection. Think fxhash for the Cosmos."}*/}
+      {/*      </p>*/}
+      {/*    </Col>*/}
+      {/*    <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3}/>*/}
+      {/*  </Row>*/}
+      
+      {/*</Container>*/}
 
       <GroupDivider/>
 
