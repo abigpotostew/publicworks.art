@@ -103,7 +103,7 @@ const Home = () => {
                 Hyperion token holders will receive whitelist spots.</p>
               <p className={`${styles.subdescription_works} ${styles.subdescription_works_large}`}>Drop date August
                 2022</p>
-              <p><Link href={'/work/kaleido'}><Button>Learn more</Button></Link></p>
+              <p><Link href={'/work/helio'}><Button>Learn more</Button></Link></p>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'center' }}>
