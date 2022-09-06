@@ -87,7 +87,7 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
     }
     p5.createCanvas(widthContainer, containerHeight).parent(canvasParentRef);
     // p5.noSmooth()
-     sizeNorm = 0.8;
+     sizeNorm = 0.9;
      border = (1 - sizeNorm) * 0.5;
      const smaller=p5.min(p5.width*0.25,p5.height*0.8)
      width = smaller * 0.8
@@ -114,7 +114,7 @@ const SketchAnimation: React.FC<ComponentProps> = (props: ComponentProps) => {
     const aniTime =( p5.millis() % animationDuration )/animationDuration;
     const localWidth = (p5.width-width)/2* .75;
     
-    const localWidthBorder = (p5.width-width)/2* .25;
+    const localWidthBorder = (p5.width-width)/2* .15;
     const n = 2;
     const localWidthIndiv=localWidth/n;
     const boxSize=localWidthIndiv*0.7;

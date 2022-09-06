@@ -124,6 +124,9 @@
 .groupDivider{
  padding: 75px;
 }
+.groupDividerBottomOnly{
+ padding-bottom: 75px;
+}
 .sectionGroupDivider{
  padding-top: 75px;
 }

@@ -6,6 +6,8 @@ const nextConfig = {
             allowFutureImage: true,
         },
     },
+    productionBrowserSourceMaps: true,
+
 }
 
 module.exports = nextConfig

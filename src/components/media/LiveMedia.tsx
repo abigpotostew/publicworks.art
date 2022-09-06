@@ -22,7 +22,7 @@ export const LiveMedia: FC<LiveMediaParams> =(params:LiveMediaParams)=>{
   },[frame])
   return (
     <iframe ref={frame} allow={"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"} allowFullScreen
-            height={"100%"} sandbox={"allow-scripts"} src={params.ipfsUrl}
+            height={"100%"} sandbox={"allow-scripts allow-downloads"} src={params.ipfsUrl}
             width={"100%"}
             // onLoad={(e)=>{e.currentTarget.contentWindow?.focus()}}
             style={{ "minHeight": params.minHeight }}

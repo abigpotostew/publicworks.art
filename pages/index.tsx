@@ -10,11 +10,20 @@ import { RowThinContainer } from '../src/components/layout/RowThinContainer';
 import { FlexBox } from "../src/components/layout/FlexBox";
 import Image from 'react-bootstrap/Image'
 
+function GroupDividerBottom() {
+  return (
+    <div  className={styles.groupDividerBottomOnly}>
+            <span className={styles.align_center}>
+      • • •
+            </span></div>
+      );
+}
+
 function GroupDivider() {
   return <Container className={styles.groupDivider}>
     <Row>
       <Col>
-            <span className={styles.align_center}>
+        <span className={styles.align_center}>
       • • •
             </span>
       </Col>
@@ -55,7 +64,7 @@ const Home = () => {
         <SketchAnimation/>
       </Container>
 
-      <GroupDivider/>
+      <GroupDividerBottom/>
 
 
       <Container className={styles.group2}>
@@ -101,7 +110,7 @@ const Home = () => {
                 official work
                 to be released on public works.
                 Hyperion token holders will receive whitelist spots.</p>
-              <p className={`${styles.subdescription_works} ${styles.subdescription_works_large}`}>Drop date August
+              <p className={`${styles.subdescription_works} ${styles.subdescription_works_large}`}>Drop date September
                 2022</p>
               <p><Link href={'/work/helio'}><Button>Learn more</Button></Link></p>
             </div>
