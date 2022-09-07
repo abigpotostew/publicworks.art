@@ -1,12 +1,12 @@
 import { Col, Row } from "react-bootstrap";
-import { FC, ReactElement } from "react";
+import React, { FC, ReactElement } from "react";
 
 interface RowWideContainerParams{
-  children:ReactElement
+  children?: React.ReactNode;
   className?:string
 }
 
-export const RowWideContainer : FC<RowWideContainerParams> = ({ className, children }: RowWideContainerParams) => {
+export const RowWideContainer : FC<RowWideContainerParams> = ({className, children}) => {
   return (
     <Row className={className}>
 

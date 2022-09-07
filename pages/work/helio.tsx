@@ -44,14 +44,14 @@ Helio keeps realtime animation as its upmost priority by utilizing client graphi
   authorLink: 'https://stewart.codes/helio',
   //todo change to mainnet values
   sg721: 'stars1kp82qny9vf086chmlqe9wdasxra4a0423vxuterv0k8ddeggyzwqaz3kxw',
-  minter: 'stars1j4p0qkqhnqeukw6s7u94w8rscq5cpskncxendvj6maw50ukh4wfstwtqc3'
+  minter: 'stars1j4p0qkqhnqeukw6s7u94w8rscq5cpskncxendvj6maw50ukh4wfstwtqc3',
+  previewImg:'https://publicworks.mypinata.cloud/ipfs/bafybeif5hfb26yvlhbe6ssjyset7t6soug7j5gxbhsz3kqf4cowvigrzze'
 }
 
 export const getStaticProps: GetStaticProps = async () => {
   let metadata: NftMetadata | null = null;
   try {
     metadata = await getTokenMetadata(work.sg721, '1')
-
   } catch (e) {
 
   }
@@ -101,8 +101,8 @@ const WorkPage = ({ metadata }: InferGetStaticPropsType<typeof getStaticProps>) 
             </div>
 
             <div className={`${styles.sectionBreak}`}>
-              <a href={'https://stargaze.zone'} rel="noreferrer" target={"_blank"}>
-                <Button>Mint on Stargaze.zone</Button>
+              <a className={"btn disabled"} href={'https://www.stargaze.zone/launchpad/'+work.minter} rel="noreferrer" target={"_blank"}>
+                <Button disabled={true}>Mint on Stargaze.zone</Button>
               </a>
             </div>
           </div>

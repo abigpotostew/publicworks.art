@@ -123,26 +123,26 @@ const Home = () => {
         </RowThinContainer>
       </Container>
 
-      <GroupDivider/>
-      <Container className={styles.group2}>
-        <FlexBox style={{ justifyContent: 'center', 'textAlign': 'center' }}>
-          <div style={{ minWidth: 250, 'textAlign': 'center' }}>
-            <p className={`${styles.subdescription} `}>
-              Smart contracts enable programmable money. Public Works enables programmable art.
-            </p>
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-
-            <p className={`${styles.description} `}>
-              Publicworks.art is not a launchpad-- it is tech that enables programmable art. Publicworks.art works in tandem with the Stargaze launchpad. You can mint Works on Stargaze!
-            </p>
-          </div>
-        </FlexBox>
-
-            
-
-      </Container>
+      {/*<GroupDivider/>*/}
+      {/*<Container className={styles.group2}>*/}
+      {/*  <FlexBox style={{ justifyContent: 'center', 'textAlign': 'center' }}>*/}
+      {/*    <div style={{ minWidth: 250, 'textAlign': 'center' }}>*/}
+      {/*      <p className={`${styles.subdescription} `}>*/}
+      {/*        Smart contracts enable programmable money. Public Works enables programmable art.*/}
+      {/*      </p>*/}
+      {/*    </div>*/}
+      
+      {/*    <div style={{ display: 'flex', justifyContent: 'center' }}>*/}
+      
+      {/*      <p className={`${styles.description} `}>*/}
+      {/*        Publicworks.art is not a launchpad-- it is tech that enables programmable art. Publicworks.art works in tandem with the Stargaze launchpad. You can mint Works on Stargaze!*/}
+      {/*      </p>*/}
+      {/*    </div>*/}
+      {/*  </FlexBox>*/}
+      
+      {/*      */}
+      
+      {/*</Container>*/}
 
       {/*<GroupDivider/>*/}
       {/*<Container className={styles.group2}>*/}
@@ -182,7 +182,7 @@ const Home = () => {
                 className={`${styles.subdescription_works_large}`}>
                 <span>{"During beta we're looking for generative artists and creators to release on PublicWorks.art. Reach out to "}</span>
                 <span className={stylesWorks.workAuthorLink}><a rel="noreferrer" target={'_blank'}
-                                                                href={'https://twitter.com/stewbracken'}>@stewbracken</a></span>{" on twitter."}
+                                                                href={'https://twitter.com/stewbracken'}>@skymagic.eth</a></span>{" on twitter."}
               </p>
             </div>
           </FlexBox>
