@@ -11,6 +11,7 @@ export const NavBar = ()=>{
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
           <Nav className="me-auto">
+            <Nav.Link href="/works">Works</Nav.Link>
             <Nav.Link href="/about">About</Nav.Link>
             <Nav.Link href="/roadmap">Roadmap</Nav.Link>
           </Nav>
