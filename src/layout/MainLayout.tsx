@@ -11,9 +11,9 @@ interface ILayout {
   children: any;
 }
 const MainLayout: FC<ILayout> = ({
-                                        description = 'Hello gen art!',
-                                        metaTitle = 'Public Works',
-                                        image = '',
+                                        description = 'A new generative art platform built for the Cosmos on a carbon neutral tech stack.',
+                                        metaTitle = 'publicworks.art',
+                                        image = '/img/metatag/metatag-image1.jpg',
                                         children,
                                       }) => {
 

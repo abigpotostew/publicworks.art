@@ -6,10 +6,10 @@ import { LiveMedia } from "../../src/components/media/LiveMedia";
 import { RowThinContainer } from "../../src/components/layout/RowThinContainer";
 import { RowSquareContainer } from "../../src/components/layout/RowSquareContainer";
 import { NumMinted } from "../../src/components/work/NumMinted";
-import { useNftMetadata } from "../../src/hooks/useNftMetadata";
+import { NftMetadata } from "../../src/hooks/useNftMetadata";
 import SpinnerLoading from "../../src/components/loading/Loader";
 import { getTokenMetadata } from "../../src/wasm/metadata";
-import { GetServerSideProps, GetStaticProps, InferGetStaticPropsType } from "next";
+import { GetStaticProps, InferGetStaticPropsType } from "next";
 
 const work = {
   title: "Helio",
@@ -41,42 +41,40 @@ Helio has 9 traits consisting of 20 hand picked color palettes and numerous othe
 Helio keeps realtime animation as its upmost priority by utilizing client graphics hardware through WebGL. The animation is created by a single fragment shader. Helio requires WebGL2 and Google Chrome >= v105.`,
   preview_url: 'https://abigpotostew.github.io/hyp2/?hash=52CC735D83B8353AE8932047799E2819C34EA18BA19E973D73B56487C864C297?pixelRatio=1&preview=false',
   code_url: 'https://abigpotostew.github.io/hyp2/',
-  authorLink: 'https://stewart.codes/nft',
+  authorLink: 'https://stewart.codes/helio',
   //todo change to mainnet values
   sg721: 'stars1kp82qny9vf086chmlqe9wdasxra4a0423vxuterv0k8ddeggyzwqaz3kxw',
-  minter:'stars1j4p0qkqhnqeukw6s7u94w8rscq5cpskncxendvj6maw50ukh4wfstwtqc3'
+  minter: 'stars1j4p0qkqhnqeukw6s7u94w8rscq5cpskncxendvj6maw50ukh4wfstwtqc3'
 }
 
-export const getStaticProps:GetStaticProps=async ()=>{
+export const getStaticProps: GetStaticProps = async () => {
+  let metadata: NftMetadata | null = null;
   try {
-    const metadata = await getTokenMetadata(work.sg721, '1')
-    return {props:{
-        metadata
-      }
-    }
-  }catch (e) {
-    
-      return {
-        notFound: true,
-      }
-    
+    metadata = await getTokenMetadata(work.sg721, '1')
+
+  } catch (e) {
+
   }
- 
+  return {
+    props: {
+      metadata
+    }
+  }
+
 }
 
-const WorkPage = ({metadata}:InferGetStaticPropsType<typeof getStaticProps>) => {
+const WorkPage = ({ metadata }: InferGetStaticPropsType<typeof getStaticProps>) => {
 
-  // const {metadata, loading, error:errorMetadata}=useNftMetadata({sg721:work.sg721,tokenId: '1'})
 
-  const loading=false;
-  const errorMetadata =false;
-  console.log('metadata', metadata)
+  const loading = false;
+  const errorMetadata = false;
   return (<>
     <div>
       <Container>
         <RowSquareContainer>
-          <div className={`${styles.align_center} align-self-center`} style={{minHeight:500}}>
-            {loading ? <SpinnerLoading /> : errorMetadata? <div>Something went wrong</div>:<LiveMedia ipfsUrl={metadata?.animation_url||work.preview_url} minHeight={500}/>}
+          <div className={`${styles.align_center} align-self-center`} style={{ minHeight: 500 }}>
+            {loading ? <SpinnerLoading/> : errorMetadata ? <div>Something went wrong</div> :
+              <LiveMedia ipfsUrl={metadata?.animation_url || work.preview_url} minHeight={500}/>}
           </div>
         </RowSquareContainer>
       </Container>
@@ -84,31 +82,31 @@ const WorkPage = ({metadata}:InferGetStaticPropsType<typeof getStaticProps>) => 
 
         <RowThinContainer className={`${styles.paddingTop} ${styles.workHeader}`}>
           <div className={styles.paddingTop}>
-            <div >
+            <div>
             <span className={styles.workTitle}>
               {work.title}
             </span>
-            <span className={styles.workAuthor}>
+              <span className={styles.workAuthor}>
               {" - " + work.author}
             </span>
-              <NumMinted sg721={work.sg721} minter={work.minter} />
+              <NumMinted sg721={work.sg721} minter={work.minter}/>
             </div>
             <div className={`${styles.workDescription} ${styles.displayLinebreak} ${styles.sectionBreak}`}>
               {work.description}
             </div>
             <div className={`${styles.workAuthorLink} ${styles.sectionBreak}`}>
-              <a href={work.authorLink} rel="noreferrer"  target={'_blank'}>
-              {work.authorLink}
+              <a href={work.authorLink} rel="noreferrer" target={'_blank'}>
+                {work.authorLink}
               </a>
             </div>
-            
+
             <div className={`${styles.sectionBreak}`}>
               <a href={'https://stargaze.zone'} rel="noreferrer" target={"_blank"}>
                 <Button>Mint on Stargaze.zone</Button>
               </a>
             </div>
           </div>
-          price and license info
+          Mint Price TBD 
         </RowThinContainer>
       </Container>
     </div>
