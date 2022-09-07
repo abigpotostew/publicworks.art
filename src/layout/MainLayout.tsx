@@ -13,7 +13,7 @@ interface ILayout {
 const MainLayout: FC<ILayout> = ({
                                         description = 'A new generative art platform built for the Cosmos on a carbon neutral tech stack.',
                                         metaTitle = 'publicworks.art',
-                                        image = '/img/metatag/metatag-image1.jpg',
+                                        image = 'https://publicworks.art/img/metatag/metatag-image1.png',
                                         children,
                                       }) => {
 
