@@ -37,14 +37,14 @@ export function normalizeMetadataUri(ipfsUri: string) {
 export function normalizeIpfsUri(ipfsUri: string) {
   return ipfsUri.replace(
     /ipfs:\/\//i,
-    process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://publicworks.mypinata.cloud/ipfs/'
+    process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://ipfs.publicworks.art/ipfs/'
   );
 }
 
 export function normalizeIpfsAnimationUri(ipfsUri: string) {
   return ipfsUri.replace(
     /ipfs:\/\//i,
-    process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://publicworks.mypinata.cloud/ipfs/'
+    process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://ipfs.publicworks.art/ipfs/'
   );
 }
 

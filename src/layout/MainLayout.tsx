@@ -34,6 +34,7 @@ const MainLayout: FC<ILayout> = ({
         {description && <meta property="twitter:description" content={description}/>}
         {image && <meta property="og:image" content={image}/>}
         {image && <meta property="twitter:card" content="summary_large_image"/>}
+        <meta name="twitter:dnt" content="on" />
       </Head>
       <NavBar />
       {/*<header>*/}
