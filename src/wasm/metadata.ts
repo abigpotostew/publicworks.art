@@ -26,11 +26,11 @@ export async function fetchTokenUriInfo(tokenUri: string) {
   return nftInfo as NftMetadata;
 }
 
-export function normalizeMetadataUri(ipfsUri: string) {
+export function normalizeMetadataUri(ipfsUri: string, ipfsHost?:string) {
   return ipfsUri.replace(
     /ipfs:\/\//i,
     process.env.NEXT_PUBLIC_IPFS_GATEWAY ||
-    `https://cloudflare-ipfs.com/ipfs/`
+    ipfsHost||`https://cloudflare-ipfs.com/ipfs/`
   );
 }
 
@@ -52,7 +52,7 @@ export function getImageUri(ipfsUri: string, queryArgs: string = '') {
   return `${normalizeIpfsUri(ipfsUri)}${queryArgs}`;
 }
 
-export const getTokenMetadata =async (sg721:string, tokenId:string)=>{
+export const getTokenMetadata =async (sg721:string, tokenId:string, ipfsHost='https://cloudflare-ipfs.com/ipfs/')=>{
   const msgBase64 =  Buffer.from(JSON.stringify({ nft_info: { token_id: tokenId } })).toString('base64')
   const res = await fetch(`${config.restEndpoint}/cosmwasm/wasm/v1/contract/${sg721}/smart/${msgBase64}`)
   if(!res.ok){
@@ -62,5 +62,5 @@ export const getTokenMetadata =async (sg721:string, tokenId:string)=>{
   const data = await res.json()
   const url = data?.data?.token_uri;
   if(!url){throw new Error('missing token_uri')}
-  return await fetchTokenUriInfo(normalizeMetadataUri(url));
+  return await fetchTokenUriInfo(normalizeMetadataUri(url, ipfsHost));
 }

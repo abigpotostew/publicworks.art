@@ -17,13 +17,15 @@ export const tokenDetails = (tokenId: string) => {
 export const Token = ({ tokenId,sg721,slug }: { sg721:string;tokenId: string;slug:string }) => {
 
   const token = tokenDetails(tokenId);
-  const { metadata } = useNftMetadata({tokenId,sg721})
+  const { metadata, loading } = useNftMetadata({tokenId,sg721})
 
+  const imageUrl = metadata?.image ? metadata?.image+'?img-width=330&img-height=187&img-quality=80':'/img/rendering-in-progress.png'
   return (
     <Card className={styles.workCardContainer}>
 
       <Link href={`/work/${slug}/${tokenId}`}>
-      <Card.Img variant="top" src={metadata?.image+'?img-width=330&img-height=187&img-quality=80'}/>
+        {loading? <Card.Img variant="top" src={''}/> : <Card.Img variant="top" src={imageUrl}/>}
+      
       </Link>
       <Card.Body>
         <Card.Title>#{tokenId}</Card.Title>

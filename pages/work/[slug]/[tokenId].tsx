@@ -1,22 +1,19 @@
 import { ReactElement } from "react";
 import MainLayout from "../../../src/layout/MainLayout";
 import styles from "../../../styles/Work.module.css";
-import { Button, Container } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { LiveMedia } from "../../../src/components/media/LiveMedia";
 import { RowThinContainer } from "../../../src/components/layout/RowThinContainer";
 import { RowSquareContainer } from "../../../src/components/layout/RowSquareContainer";
-import { NumMinted } from "../../../src/components/work/NumMinted";
 import { NftMetadata } from "../../../src/hooks/useNftMetadata";
 import SpinnerLoading from "../../../src/components/loading/Loader";
 import { getTokenMetadata } from "../../../src/wasm/metadata";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { useNumMinted } from "../../../src/hooks/useNumMinted";
-import { useCollectionSize } from "../../../src/hooks/useCollectionSize";
 import { work } from "../../../src/helio";
 import Link from "next/link";
 
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const slug = context.params?.slug;
   const tokenId = context.params?.tokenId;
   if (!tokenId || Array.isArray(tokenId) || !Number.isFinite(parseInt(tokenId))) {
     return {
@@ -24,18 +21,30 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-
   let metadata: NftMetadata | null = null;
   try {
     metadata = await getTokenMetadata(work.sg721, tokenId)
   } catch (e) {
-    
+    console.warn(`error fetching ${slug} ${tokenId}`,e)
   }
   if(!metadata){
+    try{
+      metadata = await getTokenMetadata(work.sg721, tokenId, 'https://ipfs.publicworks.art/ipfs/')
+    }
+    catch (e) {
+      console.warn(`error fetching attempt 2 ${slug} ${tokenId}`,e)
+    }
+  }
+  if (!metadata) {
     return {
       notFound: true,
     };
   }
+  context.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=300, stale-while-revalidate=400'
+  )
+  
   return {
     props: {
       work,
@@ -46,14 +55,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 }
 
-const WorkTokenPage = ({ metadata, work ,tokenId}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  
+const WorkTokenPage = ({ metadata, work, tokenId }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+
 
   const loading = false;
   const errorMetadata = false;
   return (<>
     <div>
-      
+
       <Container>
         <Link href={`/work/${work.slug}`} passHref><span>{`<- Back to ${work.title}`}</span></Link>
         <RowSquareContainer>

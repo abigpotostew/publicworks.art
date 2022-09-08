@@ -9,8 +9,6 @@ import { work } from "../src/helio";
 
 
 const WorksPage = () => {
-
-
   return (<>
     <div>
       {/* eslint-disable-next-line react/jsx-no-undef */}
