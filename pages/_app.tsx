@@ -6,6 +6,9 @@ import type { AppProps } from 'next/app'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { SSRProvider } from 'react-bootstrap';
 import { SWRConfig } from 'swr';
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import * as ga from '../src/lib/ga'
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode
@@ -38,6 +41,22 @@ const fetcher = async (url:string) => {
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout || ((page) => page)
+  const router = useRouter()
+  useEffect(() => {
+    const handleRouteChange = (url:string) => {
+      ga.pageview(url)
+    }
+    //When the component is mounted, subscribe to router changes
+    //and log those page views
+    router.events.on('routeChangeComplete', handleRouteChange)
+
+    // If the component is unmounted, unsubscribe
+    // from the event with the `off` method
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange)
+    }
+  }, [router.events])
+  
   return getLayout(<SSRProvider>
     <SWRConfig
       value={{
