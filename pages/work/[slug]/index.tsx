@@ -83,24 +83,40 @@ const WorkPage = ({ metadata, work }: InferGetStaticPropsType<typeof getStaticPr
             </span>
               <NumMinted sg721={work.sg721} minter={work.minter}/>
             </div>
+            
             {work.testnet ? <div>** Showing Testnet Mints **</div> : <></>}
-            <div className={`${styles.workDescription} ${styles.displayLinebreak} ${styles.sectionBreak}`}>
-              {work.description}
-            </div>
-            <div className={`${styles.workAuthorLink} ${styles.sectionBreak}`}>
-              <a href={work.authorLink} rel="noreferrer" target={'_blank'}>
-                {work.authorLink}
-              </a>
-            </div>
 
-            <div className={`${styles.sectionBreak}`}>
+
+            <p className={`${styles.sectionBreak}`}>
               <a className={"btn disabled"} href={'https://www.stargaze.zone/launchpad/' + work.minter} rel="noreferrer"
                  target={"_blank"}>
                 <Button disabled={true}>Mint on stargaze.zone</Button>
               </a>
+            </p>
+            
+            <div className={`${styles.workDescription} ${styles.displayLinebreak} ${styles.sectionBreak}`}>
+              {work.description}
+            </div>
+            <hr />
+            <div>
+              <p>
+                Additional Description:
+              </p>
+              <p>
+                {work.additionalDescription}
+
+              </p>
+            </div>
+            <hr />
+            <div className={`${styles.workAuthorLink} ${styles.sectionBreak}`}>
+              {'External Link: '}
+              <a href={work.authorLink} rel="noreferrer" target={'_blank'}>
+                {work.authorLink}
+              </a>
+            </div>
+            <div className={`${styles.sectionBreak}`}>
             </div>
           </div>
-          Mint Price TBD
         </RowThinContainer>
       </Container>
 

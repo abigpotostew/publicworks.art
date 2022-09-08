@@ -38,10 +38,9 @@ const Home = () => {
               <h2>
                 Roadmap
               </h2>
-              {/*<p className={`${styles.abouttext} `}>*/}
-              {/*  The team behind PublicWorks.art is so excited to build tools on Stargaze and Cosmos.*/}
-              {/*</p>*/}
-              {/*  */}
+              <p>
+                The team behind public works is excited to build creator tools for generative art on Stargaze. We hope you can join us for this journey. 
+              </p>
               <ul>
                 <li>
                   <p className={`${styles.abouttext} `}>
