@@ -15,6 +15,7 @@ import { useNumMinted } from "../../../src/hooks/useNumMinted";
 import { useCollectionSize } from "../../../src/hooks/useCollectionSize";
 import { PagedGallery } from "../../../src/components/media/PagedGallery";
 import { work } from "../../../src/helio";
+import Head from "next/head";
 
 
 export async function getStaticPaths() {
@@ -61,6 +62,9 @@ const WorkPage = ({ metadata, work }: InferGetStaticPropsType<typeof getStaticPr
   const loading = false;
   const errorMetadata = false;
   return (<>
+    <Head>
+      <title key={'title'}>{`${work.title} - publicworks.art`}</title>
+    </Head>
     <div>
       <Container>
         <RowSquareContainer>
@@ -133,7 +137,7 @@ const WorkPage = ({ metadata, work }: InferGetStaticPropsType<typeof getStaticPr
 
 WorkPage.getLayout = function getLayout(page: ReactElement) {
   return (
-    <MainLayout>
+    <MainLayout metaTitle={'publicworks.art'}>
       {page}
     </MainLayout>
   );

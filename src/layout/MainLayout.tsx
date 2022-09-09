@@ -12,7 +12,7 @@ interface ILayout {
 }
 const MainLayout: FC<ILayout> = ({
                                         description = 'A new generative art platform built for the Cosmos on a carbon neutral tech stack.',
-                                        metaTitle = 'publicworks.art',
+                                        metaTitle = '',
                                         image = 'https://publicworks.art/img/metatag/metatag-image1.png',
                                         children,
                                       }) => {
@@ -20,7 +20,7 @@ const MainLayout: FC<ILayout> = ({
   return (
     <div>
       <Head>
-        <title>{metaTitle}</title>
+        <title key={'title'}>{(!metaTitle)?'publicworks.art':`${metaTitle} - publicworks.art`}</title>
         <link rel="icon" href="/favicon.png"/>
         {metaTitle && <meta property="og:title" content={metaTitle}/>}
         {metaTitle && <meta property="twitter:title" content={metaTitle}/>}

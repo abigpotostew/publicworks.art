@@ -83,7 +83,7 @@ const Home = () => {
 
 Home.getLayout = function getLayout(page: ReactElement) {
   return (
-    <MainLayout>
+    <MainLayout metaTitle={'Roadmap'}>
       {page}
     </MainLayout>
   );

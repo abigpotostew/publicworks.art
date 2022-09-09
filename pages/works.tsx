@@ -54,7 +54,7 @@ const WorksPage = () => {
 
 WorksPage.getLayout = function getLayout(page: ReactElement) {
   return (
-    <MainLayout>
+    <MainLayout metaTitle={'Works'}>
       {page}
     </MainLayout>
   );

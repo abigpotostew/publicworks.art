@@ -6,7 +6,8 @@ import {
   useCallback,
   useState
 } from 'react';
-import { Button } from "react-bootstrap";
+import { Button, Container, Form } from "react-bootstrap";
+import { RowThinContainer } from "../layout/RowThinContainer";
 
 
 const formatInTimeZone = (date: Date, fmt: string, tz: string) =>
@@ -31,6 +32,7 @@ export const CreateWork = () => {
   const user = { address: 'stars1up88jtqzzulr6z72cq6uulw9yx6uau6ew0zegy' };
   const [projectName, setProjectName] = useState<string>('');
   const [projectDescription, setProjectDescription] = useState<string>('');
+  const [projectBlurb, setProjectBlurb] = useState<string>('');
   const [projectSize, setProjectSize] = useState<number>(1);
   const [startDate, setStartDate] = useState<Date>(defaultDate());
   const [royaltyAddress, setRoyaltyAddress] = useState<string>(user.address);
@@ -64,85 +66,90 @@ export const CreateWork = () => {
   );
 
   return (
-    <div>
-      <form onSubmit={onSubmit}>
-        <label className={'block'}>
-          <span className='text-gray-700'>Project Title</span>
-          <input
-            type={'text'}
-            className={'form-input mt-1 block w-full'}
-            placeholder='My Project'
-            name='project_name'
-            onChange={(e) => setProjectName(e.target.value)}
-          />
-        </label>
-        <label className={'block'}>
-          <span className='text-gray-700'>Description</span>
-          <textarea
-            rows={3}
-            className={'form-textarea mt-1 block h-24 w-full'}
-            placeholder='My Project is...'
-            name='project_description'
-            onChange={(e) => setProjectDescription(e.target.value)}
-          />
-        </label>
-        <label className={'block'}>
-          <span className={'text-gray-700'}>Collection Size (number)</span>
-          <input
-            type={'number'}
-            max={10_000}
-            min={1}
-            defaultValue={1}
-            name='project_collection_size'
-            className={'form-input mt-1 block w-full'}
-            onChange={(e) => setProjectSize(parseInt(e.target.value, 10) || 1)}
-          />
-        </label>
+    <Container>
+      <RowThinContainer>
+      
+      <Form onSubmit={onSubmit}>
+        <Form.Group className="mb-3" controlId="formWorkName">
+          <Form.Label>Name</Form.Label>
+          <Form.Control type="text" placeholder="My Work" name='project_name' />
+          {/*<Form.Text className="text-muted">*/}
+          {/*  {"We'll never share your email with anyone else."}*/}
+          {/*</Form.Text>*/}
+        </Form.Group>
 
-        <label className={'block'}>
-          <span className={'text-gray-700'}>Start Date</span>
-          <input
-            type={'datetime-local'}
-            defaultValue={defaultTime()}
-            className={'form-input mt-1 block w-full'}
-            name='project_public_start_time'
-            onChange={onDateChange}
+        <Form.Group className="mb-3" controlId="formWorkDescription">
+          <Form.Label>Description</Form.Label>
+          <Form.Control as="textarea" rows={3} placeholder={'Appears in every NFT description'}
+                        onChange={(e) => setProjectDescription(e.target.value)}
+                        name='project_description'
           />
-          <span className={'text-gray-700'}>{`${format(
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="formWorkBlurb">
+          <Form.Label>Blurb</Form.Label>
+          <Form.Control as="textarea" rows={3} placeholder={'Appears on publicworks.art'}
+                        onChange={(e) => setProjectBlurb(e.target.value)}
+                        name='project_blurb'
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formWorkSize">
+          <Form.Label>Collection Size</Form.Label>
+          <Form.Control type={'number'}  placeholder={'1'} min={"1"} max={"10000"}
+                        onChange={(e) => setProjectSize(parseInt(e.target.value, 10) || 1)}
+                        name='project_collection_size'
+          />
+        </Form.Group>
+        {/*<Form.Group className="mb-3" controlId="formBasicCheckbox">*/}
+        {/*  <Form.Check type="checkbox" label="Check me out" />*/}
+        {/*</Form.Group>*/}
+
+
+
+        <Form.Group className="mb-3" controlId="formWorkSize">
+          <Form.Label>Start Time</Form.Label>
+          <Form.Control type={'datetime-local'} 
+
+                        defaultValue={defaultTime()}
+                        // className={'form-input mt-1 block w-full'}
+                        name='project_public_start_time'
+                        onChange={onDateChange}
+          />
+          <Form.Label>{`${format(
             startDate,
             'LLLL d, yyyy kk:mm',
             {
               timeZone: 'UTC'
             }
-          )} UTC`}</span>
-        </label>
+          )} UTC`}</Form.Label>
 
-        <label className={'block'}>
-          <span className='text-gray-700'>Royalty Receiver</span>
-          <input
-            type={'text'}
-            className={'form-input mt-1 block w-full'}
-            placeholder={user.address}
-            name='project_royalty_address'
-            onChange={(e) => setRoyaltyAddress(e.target.value)}
-          />
-        </label>
 
-        <label className={'block'}>
-          <span className={'text-gray-700'}>Royalty Percentage</span>
-          <input
-            type={'number'}
-            max={100}
-            min={0}
-            defaultValue={1}
-            className={'form-input mt-1 block w-full'}
-            name='project_royalty_percentage'
-            onChange={(e) => setRoyaltyPercent(parseFloat(e.target.value) || 1)}
-          />
-        </label>
-
-        <Button type={'submit'}>Save Changes</Button>
-      </form>
-    </div>
+          <Form.Group className="mb-3" controlId="formRoyaltyAddress">
+            <Form.Label>Royalty Address</Form.Label>
+            <Form.Control type="text" placeholder={user.address}
+                          name='project_royalty_address'
+                          onChange={(e) => setRoyaltyAddress(e.target.value)}
+            />
+          </Form.Group>
+          
+          <Form.Group className="mb-3" controlId="formRoyaltyPercent">
+            <Form.Label>Royalty Percent</Form.Label>
+            <Form.Control type={'number'}  placeholder={'5'} min={"0"} max={"100"}
+                          defaultValue={5}
+                          name='project_royalty_percentage'
+                          onChange={(e) => setRoyaltyPercent(parseFloat(e.target.value) || 1)}
+            />
+          </Form.Group>
+          
+        </Form.Group>
+        
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>
+      </Form>
+      
+      
+      </RowThinContainer>
+    </Container>
   );
 };

@@ -11,6 +11,7 @@ import { getTokenMetadata } from "../../../src/wasm/metadata";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { work } from "../../../src/helio";
 import Link from "next/link";
+import Head from "next/head";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const slug = context.params?.slug;
@@ -61,6 +62,9 @@ const WorkTokenPage = ({ metadata, work, tokenId }: InferGetServerSidePropsType<
   const loading = false;
   const errorMetadata = false;
   return (<>
+    <Head>
+      <title key={'title'}>{`${work.title} #${tokenId} - publicworks.art`}</title>
+    </Head>
     <div>
 
       <Container>

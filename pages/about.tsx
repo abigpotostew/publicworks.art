@@ -100,7 +100,7 @@ const Home = () => {
 
 Home.getLayout = function getLayout(page: ReactElement) {
   return (
-    <MainLayout>
+    <MainLayout metaTitle={'About'}>
       {page}
     </MainLayout>
   );
