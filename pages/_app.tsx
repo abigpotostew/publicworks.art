@@ -2,13 +2,14 @@ import '../styles/globals.css'
 
 import type { ReactElement, ReactNode } from 'react'
 import type { NextPage } from 'next'
-import type { AppProps } from 'next/app'
+import type { AppProps, NextWebVitalsMetric } from 'next/app'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { SSRProvider } from 'react-bootstrap';
 import { SWRConfig } from 'swr';
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import * as ga from '../src/lib/ga'
+import { GoogleAnalytics, event } from "nextjs-google-analytics";
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode
@@ -21,6 +22,16 @@ type AppPropsWithLayout = AppProps & {
 interface SwrError extends Error {
   info?: any;
   status?: number | string;
+}
+
+export function reportWebVitals(metric: NextWebVitalsMetric) {
+  const { id, name, label, value } = metric;
+  event(name, {
+    category: label === "web-vital" ? "Web Vitals" : "Next.js custom metric",
+    value: Math.round(name === "CLS" ? value * 1000 : value), // values must be integers
+    label: id, // id unique to current page load
+    nonInteraction: true, // avoids affecting bounce rate.
+  });
 }
 
 const fetcher = async (url:string) => {
@@ -41,21 +52,8 @@ const fetcher = async (url:string) => {
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout || ((page) => page)
-  const router = useRouter()
-  useEffect(() => {
-    const handleRouteChange = (url:string) => {
-      ga.pageview(url)
-    }
-    //When the component is mounted, subscribe to router changes
-    //and log those page views
-    router.events.on('routeChangeComplete', handleRouteChange)
-
-    // If the component is unmounted, unsubscribe
-    // from the event with the `off` method
-    return () => {
-      router.events.off('routeChangeComplete', handleRouteChange)
-    }
-  }, [router.events])
+  
+  
   
   return getLayout(<SSRProvider>
     <SWRConfig
@@ -63,7 +61,9 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         fetcher,
       }}
     >
-    <Component {...pageProps} />
+      <GoogleAnalytics trackPageViews />
+
+      <Component {...pageProps} />
     </SWRConfig>
     </SSRProvider>
     
