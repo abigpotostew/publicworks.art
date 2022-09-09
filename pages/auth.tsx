@@ -7,14 +7,30 @@ import stylesWork from '../../styles/Work.module.css';
 import Link from "next/link";
 import { work } from "../src/helio";
 import { CreateWork } from "../src/components/creatework/CreateWork";
+import { useQueryContract } from "../src/hooks/useQueryContract";
 
 
 const AuthPage = () => {
-  const onLogin = useCallback(()=>{
+  const { queryClient } = useQueryContract()
+  const onLogin = useCallback(async ()=>{
     //request keplr tokenq
     //set cookie
     //
-  },[])
+    if (!queryClient) {
+      return;
+    }
+
+    await queryClient.connectKeplr()
+    const accounts = await queryClient.getAccounts()
+    if (accounts.length > 0) {
+      // window.location.href = '/share?account=' + accounts[0].address
+    }
+    console.log('accounts', accounts)
+    const otp = (Math.random()%100_000).toString()
+    await queryClient.signMessage(otp)
+    console.log("finished logging in")
+    //call backend auth with token
+  },[queryClient])
   return (<>
     <div>
       {/* eslint-disable-next-line react/jsx-no-undef */}
