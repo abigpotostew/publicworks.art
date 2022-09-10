@@ -20,7 +20,6 @@ export default function handler(
     return;
   }
   
-  req.
   
   res.status(200).json({ name: 'ok!' })
 }

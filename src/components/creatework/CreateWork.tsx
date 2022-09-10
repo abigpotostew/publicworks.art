@@ -32,7 +32,7 @@ export interface CreateProjectRequest{
   projectBlurb:string;
   projectSize:number;
   projectDescription:string;
-  startDate:Date;
+  startDate: string;
   royaltyAddress:string;
   royaltyPercent:number;
 }
@@ -72,7 +72,7 @@ export const CreateWork:FC<CreateWorkProps> = (props:CreateWorkProps) => {
         projectBlurb,
         projectSize,
         projectDescription,
-        startDate,
+        startDate:startDate.toISOString(),
         royaltyAddress,
         royaltyPercent
       })

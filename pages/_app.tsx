@@ -1,6 +1,6 @@
 import '../styles/globals.css'
 
-import type { ReactElement, ReactNode } from 'react'
+import type { FC, ReactElement, ReactNode } from 'react'
 import type { NextPage } from 'next'
 import type { AppProps, NextWebVitalsMetric } from 'next/app'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -52,7 +52,7 @@ const fetcher = async (url:string) => {
   return res.json();
 };
 
-function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+const MyApp:FC<AppPropsWithLayout>=({ Component, pageProps }: AppPropsWithLayout) =>{
   const getLayout = Component.getLayout || ((page) => page)
   
   
@@ -69,7 +69,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     </SWRConfig>
     </SSRProvider>
     
-  )
+  ) as ReactElement<any, any>
 }
 
 export default withTRPC<AppRouter>({

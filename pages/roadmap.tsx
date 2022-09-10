@@ -35,10 +35,10 @@ const Home = () => {
       <Container className={styles.group2}>
         <RowThinContainer>
             <div style={{  }}>
-              <h2>
+              <h1 >
                 Roadmap
-              </h2>
-              <p>
+              </h1>
+              <p className={`${styles.subtitle}`}>
                 The team behind public works is excited to build creator tools for generative art on Stargaze. We hope you can join us for this journey. 
               </p>
               <ul>
