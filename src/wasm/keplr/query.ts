@@ -130,7 +130,7 @@ export class QueryContract {
         })
       };
       
-      const response = await fetch(`/api/auth`, requestOptions);
+      const response = await fetch(`/api/login`, requestOptions);
 
       if (response.status !== 200) {
         console.error('response is', response.status)
@@ -139,7 +139,7 @@ export class QueryContract {
       // Successful
       const responseJson = await response.json()
       
-      console.log({responseJson})
+      
       
     } catch (e) {
       if ((e as any)?.message === 'Request rejected') {

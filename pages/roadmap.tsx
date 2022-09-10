@@ -69,7 +69,7 @@ const Home = () => {
                 </li>
                 <li>
                   <p className={`${styles.abouttext} `}>
-                    Q1-Q2 2023: Open platform to all artists. 
+                    Q1-Q2 2023: Open platform to all artists. Release V2 of smart contracts to facilitate on chain charitable giving.
                   </p>
                 </li>
               </ul>

@@ -6,7 +6,6 @@ import styles from '../../styles/Works.module.css';
 import stylesWork from '../../styles/Work.module.css';
 import Link from "next/link";
 import { work } from "../src/helio";
-import { CreateWork } from "../src/components/creatework/CreateWork";
 import { useQueryContract } from "../src/hooks/useQueryContract";
 
 

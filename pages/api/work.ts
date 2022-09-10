@@ -2,19 +2,25 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { verifyCookie } from "../../src/auth/jwt";
 
-type Data = {
-  name: string
-}
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse
 ) {
 
-  const ok = verifyCookie(req)
-  if (!ok) {
-    res.status(401).json({ name: 'bad token' })
+
+  if(req.method!=='POST'){
+    res.status(404).json({message:'not found'})
     return;
   }
+  
+  const ok = verifyCookie(req)
+  if (!ok) {
+    res.status(401).json({ message: 'unauthorized' })
+    return;
+  }
+  
+  req.
+  
   res.status(200).json({ name: 'ok!' })
 }

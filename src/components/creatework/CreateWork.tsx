@@ -1,7 +1,7 @@
 import { parseISO } from 'date-fns';
 import { format, utcToZonedTime } from 'date-fns-tz';
 import {
-  ChangeEventHandler,
+  ChangeEventHandler, FC,
   FormEventHandler,
   useCallback,
   useState
@@ -27,7 +27,20 @@ function defaultTime() {
   return out;
 }
 
-export const CreateWork = () => {
+export interface CreateProjectRequest{
+  projectName:string;
+  projectBlurb:string;
+  projectSize:number;
+  projectDescription:string;
+  startDate:Date;
+  royaltyAddress:string;
+  royaltyPercent:number;
+}
+
+export interface CreateWorkProps{
+  onCreateProject: ((req:CreateProjectRequest)=>void) | ( (req:CreateProjectRequest)=>Promise<void>)
+}
+export const CreateWork:FC<CreateWorkProps> = (props:CreateWorkProps) => {
   // auth context here
   const user = { address: 'stars1up88jtqzzulr6z72cq6uulw9yx6uau6ew0zegy' };
   const [projectName, setProjectName] = useState<string>('');
@@ -54,6 +67,15 @@ export const CreateWork = () => {
       e.preventDefault();
       // create project in api
       // create contract
+      props.onCreateProject({
+        projectName,
+        projectBlurb,
+        projectSize,
+        projectDescription,
+        startDate,
+        royaltyAddress,
+        royaltyPercent
+      })
     },
     [
       projectName,
@@ -72,7 +94,8 @@ export const CreateWork = () => {
       <Form onSubmit={onSubmit}>
         <Form.Group className="mb-3" controlId="formWorkName">
           <Form.Label>Name</Form.Label>
-          <Form.Control type="text" placeholder="My Work" name='project_name' />
+          <Form.Control type="text" placeholder="My Work" name='project_name' 
+          onChange={(e)=>setProjectName((e.target.value))}/>
           {/*<Form.Text className="text-muted">*/}
           {/*  {"We'll never share your email with anyone else."}*/}
           {/*</Form.Text>*/}

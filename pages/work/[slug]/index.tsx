@@ -12,7 +12,6 @@ import { getTokenMetadata } from "../../../src/wasm/metadata";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { RowWideContainer } from "../../../src/components/layout/RowWideContainer";
 import { useNumMinted } from "../../../src/hooks/useNumMinted";
-import { useCollectionSize } from "../../../src/hooks/useCollectionSize";
 import { PagedGallery } from "../../../src/components/media/PagedGallery";
 import { work } from "../../../src/helio";
 import Head from "next/head";
@@ -42,6 +41,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   } catch (e) {
 
   }
+  console.log("work here ", work, metadata)
   return {
     props: {
       work,
@@ -53,11 +53,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 const WorkPage = ({ metadata, work }: InferGetStaticPropsType<typeof getStaticProps>) => {
 
-
+  console.log('work', work)
   // fetch num tokens
-  const { numMinted, error: numMintedError, loading: numMintedLoading } = useNumMinted(work.sg721)
-  const { collectionSize, error: collectionSizeError, loading: collSizeLoading } = useCollectionSize(work.minter)
-
+  const { numMinted, error: numMintedError, loading: numMintedLoading } = useNumMinted(work?.sg721)
+  // const { collectionSize, error: collectionSizeError, loading: collSizeLoading } = useCollectionSize(work.minter)
 
   const loading = false;
   const errorMetadata = false;
@@ -87,7 +86,7 @@ const WorkPage = ({ metadata, work }: InferGetStaticPropsType<typeof getStaticPr
             </span>
               <NumMinted sg721={work.sg721} minter={work.minter}/>
             </div>
-            
+
             {work.testnet ? <div>** Showing Testnet Mints **</div> : <></>}
 
 
@@ -97,11 +96,11 @@ const WorkPage = ({ metadata, work }: InferGetStaticPropsType<typeof getStaticPr
                 <Button disabled={true}>Mint on stargaze.zone</Button>
               </a>
             </p>
-            
+
             <div className={`${styles.workDescription} ${styles.displayLinebreak} ${styles.sectionBreak}`}>
               {work.description}
             </div>
-            <hr />
+            <hr/>
             <div>
               <p>
                 Additional Description:
@@ -111,7 +110,7 @@ const WorkPage = ({ metadata, work }: InferGetStaticPropsType<typeof getStaticPr
 
               </p>
             </div>
-            <hr />
+            <hr/>
             <div className={`${styles.workAuthorLink} ${styles.sectionBreak}`}>
               {'External Link: '}
               <a href={work.authorLink} rel="noreferrer" target={'_blank'}>
@@ -127,8 +126,8 @@ const WorkPage = ({ metadata, work }: InferGetStaticPropsType<typeof getStaticPr
       <Container>
 
         <RowWideContainer className={`${styles.tokensGrid}`}>
-          {numMinted === 0  && <SpinnerLoading/>}
-          {numMinted  && <PagedGallery slug={work.slug} sg721={work.sg721} totalNumTokens={numMinted}/>}
+          {numMinted === 0 && <SpinnerLoading/>}
+          {numMinted && <PagedGallery slug={work.slug} sg721={work.sg721} totalNumTokens={numMinted}/>}
         </RowWideContainer>
       </Container>
     </div>

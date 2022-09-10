@@ -37,20 +37,21 @@ const Home = () => {
               <h2>
                 About Public Works
               </h2>
-              <h3 className={`${styles.subtitle} `}>
-                Mission
-              </h3>
-              <p className={`${styles.abouttext} `}>
+              <p className={`${styles.abouttext} ${styles.subtitle}`}>
                 CryptoPunks created the concept of pre-generated on-chain art 5 years ago.
                 All NFT projects on Stargaze have followed this trajectory by pre-generating and shuffling the collection order during minting.
                 This is fun for collectors to take their chances at finding a rare NFT.
                 But the set of NFTs is already decided before minting starts.
                 PublicWorks.art believes generative art can be so much more exciting.
-                </p>
+              </p>
+              <h3 className={`${styles.subtitle}`}>
+                Mission
+              </h3>
+              
 
               <p className={`${styles.abouttext} `}>
-                The goal of PublicWorks.art is to proliferate generative art into the world, starting with the Cosmos NFT space.
-                We&apos;re building artist tools to support programmable artworks that create NFTs at mint time. 
+                The goal of PublicWorks.art is to proliferate generative art into the world and give charitably. 
+                Starting with the Cosmos NFT space, we&apos;re building artist tools to support programmable artworks that create NFTs at mint time. 
                 No NFTs exist until a collector mints-- the artist and collector do not know what will be generated until an NFT is minted.
               </p>
 
@@ -77,7 +78,6 @@ const Home = () => {
               <p className={`${styles.abouttext} `}>
                 The future of generative art NFTs are interactive realtime multimedia powered by PublicWorks.art.
               </p>
-
 
 
 

@@ -1,5 +1,6 @@
 
 export const work = {
+  workId:1,
   title: "Helio",
   author: 'skymagic',
   description: `Helio is a celebration of the sustaining light of our sun. Endless symmetric patterns inhale and exhale to form one-of-a-kind, ethereal mandala structures that invite you to find your center and breathe together. Form and color unite, sometimes chaotically, other times gently, with its ever-changing kaleidoscope.
