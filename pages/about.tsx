@@ -43,7 +43,7 @@ const Home = () => {
               
 
               <p className={`${styles.abouttext} `}>
-                The goal of PublicWorks.art is to raise the profile of generative art in the world while also giving charitably. Starting with the Cosmos NFT space, we're building artist tools to support programmable artworks that create NFTs at mint time. No NFTs exist until a collector mints-- neither the artist nor collector know what will be generated until an NFT is minted. PublicWorks.art is one of only a few spaces that offers the opportunity to create and experience entirely unique, rare artwork from generative on-chain code.
+                {"The goal of PublicWorks.art is to raise the profile of generative art in the world while also giving charitably. Starting with the Cosmos NFT space, we're building artist tools to support programmable artworks that create NFTs at mint time. No NFTs exist until a collector mints-- neither the artist nor collector know what will be generated until an NFT is minted. PublicWorks.art is one of only a few spaces that offers the opportunity to create and experience entirely unique, rare artwork from generative on-chain code."}
               </p>
 
               <p className={`${styles.abouttext} `}>

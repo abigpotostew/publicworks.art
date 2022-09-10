@@ -209,7 +209,7 @@ const isValidSignature = async (signed:any, signature:any, publicKey:any) => {
       binaryPublicKey,
     );
   } catch (e) {
-    logger.error('Issue trying to verify the signature', e);
+    console.error('Issue trying to verify the signature', e);
   } finally {
     return valid;
   }
