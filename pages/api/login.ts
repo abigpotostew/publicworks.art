@@ -32,6 +32,11 @@ export default async function handler(
     return;
   }
   
+  if(account.address!=='stars1524hf3dmcl8lagnfhuct4k2002pv73yswnl9cf'){
+    res.status(401).json({ message: "unauthorized" })
+    return;
+  }
+  
    issueToCookie(account.address, req,res)
   res.status(200).json({ message: 'ok'})
 }

@@ -5,6 +5,7 @@ import { TRPCError } from "@trpc/server";
 import { verify } from "crypto";
 import { verifyCookie } from "../../../src/auth/jwt";
 import { isISODate } from "../../../src/util/isISODate";
+import { Context, createContext } from '../../../src/server/context';
 export const appRouter = createRouter()
   .merge(
     'private.',
@@ -45,26 +46,6 @@ export default trpcNext.createNextApiHandler({
   createContext: createContext
 });
 
-// The app's context - is generated for each incoming request
-export async function createContext(opts?: trpcNext.CreateNextContextOptions) {
-  // Create your context based on the request object
-  // Will be available as `ctx` in all your resolvers
-  // This is just an example of something you'd might want to do in your ctx fn
-  async function getToken() {
-    if (opts?.req?.cookies && opts.req.cookies['PWToken']) {
-      // const user = await decodeJwtToken(req.headers.authorization.split(' ')[1])
-      // return user;
-      
-      return verifyCookie(opts.req) 
-    }
-    return false;
-  }
-  const ok = await getToken();
-  return {
-    authorized:ok,
-  };
-}
-export type Context = trpc.inferAsyncReturnType<typeof createContext>;
 // Helper function to create a router with your app's context
 export function createRouter() {
   return trpc.router<Context>();
