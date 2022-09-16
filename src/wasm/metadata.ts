@@ -64,3 +64,16 @@ export const getTokenMetadata =async (sg721:string, tokenId:string, ipfsHost='ht
   if(!url){throw new Error('missing token_uri')}
   return await fetchTokenUriInfo(normalizeMetadataUri(url, ipfsHost));
 }
+
+export const getTokenOwner = async(sg721:string, tokenId:string)=>{
+  const msgBase64 =  Buffer.from(JSON.stringify({ owner_of: { token_id: tokenId } })).toString('base64')
+  const res = await fetch(`${config.restEndpoint}/cosmwasm/wasm/v1/contract/${sg721}/smart/${msgBase64}`)
+  if(!res.ok){
+    console.log('status: '+res.status, " text: "+(await res.text()) )
+    return undefined;
+  }
+  const data = await res.json()
+  const owner = data?.data?.owner;
+  if(!owner){return undefined}
+  return owner;
+}

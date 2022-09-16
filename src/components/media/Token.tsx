@@ -3,6 +3,7 @@ import { Card } from "react-bootstrap";
 import styles from '../../../styles/Works.module.css'
 import { useNftMetadata } from "../../hooks/useNftMetadata";
 import slug from "../../../pages/work/[slug]";
+import { useTokenOwner } from "../../hooks/useTokenOwner";
 
 export const tokenDetails = (tokenId: string) => {
   return {
@@ -16,7 +17,7 @@ export const tokenDetails = (tokenId: string) => {
 
 export const Token = ({ tokenId,sg721,slug }: { sg721:string;tokenId: string;slug:string }) => {
 
-  const token = tokenDetails(tokenId);
+  
   const { metadata, loading } = useNftMetadata({tokenId,sg721})
 
   const imageUrl = metadata?.image ? metadata?.image+'?img-width=330&img-height=187&img-quality=80':'/img/rendering-in-progress.png'

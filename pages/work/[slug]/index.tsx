@@ -93,7 +93,7 @@ const WorkPage = ({ metadata, work }: InferGetStaticPropsType<typeof getStaticPr
             <p className={`${styles.sectionBreak}`}>
               <a className={"btn disabled"} href={'https://www.stargaze.zone/launchpad/' + work.minter} rel="noreferrer"
                  target={"_blank"}>
-                <Button disabled={true}>Mint on stargaze.zone</Button>
+                <Button>Mint on stargaze.zone</Button>
               </a>
             </p>
 

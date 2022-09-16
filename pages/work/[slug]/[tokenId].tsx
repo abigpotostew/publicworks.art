@@ -7,11 +7,12 @@ import { RowThinContainer } from "../../../src/components/layout/RowThinContaine
 import { RowSquareContainer } from "../../../src/components/layout/RowSquareContainer";
 import { NftMetadata } from "../../../src/hooks/useNftMetadata";
 import SpinnerLoading from "../../../src/components/loading/Loader";
-import { getTokenMetadata } from "../../../src/wasm/metadata";
+import { getTokenMetadata, getTokenOwner } from "../../../src/wasm/metadata";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { work } from "../../../src/helio";
 import Link from "next/link";
 import Head from "next/head";
+import { useTokenOwner } from "../../../src/hooks/useTokenOwner";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const slug = context.params?.slug;
@@ -23,19 +24,23 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   let metadata: NftMetadata | null = null;
-  try {
-    metadata = await getTokenMetadata(work.sg721, tokenId)
-  } catch (e) {
-    console.warn(`error fetching ${slug} ${tokenId}`,e)
-  }
-  if(!metadata){
-    try{
-      metadata = await getTokenMetadata(work.sg721, tokenId, 'https://ipfs.publicworks.art/ipfs/')
+  const fetchMd=async ()=>{
+    try {
+      metadata = await getTokenMetadata(work.sg721, tokenId)
+    } catch (e) {
+      console.warn(`error fetching ${slug} ${tokenId}`,e)
     }
-    catch (e) {
-      console.warn(`error fetching attempt 2 ${slug} ${tokenId}`,e)
+    if(!metadata){
+      try{
+        metadata = await getTokenMetadata(work.sg721, tokenId, 'https://ipfs.publicworks.art/ipfs/')
+      }
+      catch (e) {
+        console.warn(`error fetching attempt 2 ${slug} ${tokenId}`,e)
+      }
     }
   }
+  const [md, owner]=await Promise.all([fetchMd(), getTokenOwner(work.sg721, tokenId)])
+  
   if (!metadata) {
     return {
       notFound: true,
@@ -50,17 +55,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       work,
       metadata,
-      tokenId
+      tokenId,
+      tokenOwner:owner,
     }
   }
 
 }
 
-const WorkTokenPage = ({ metadata, work, tokenId }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-
-
+const WorkTokenPage = ({ metadata, work, tokenId, tokenOwner }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  
   const loading = false;
   const errorMetadata = false;
+  const {loading:ownerLoading,error,owner}=useTokenOwner({sg721:work.sg721, tokenId})
+  const tokenOwnerRealized = ((ownerLoading || error) && !owner) ? tokenOwner : owner;
   return (<>
     <Head>
       <title key={'title'}>{`${work.title} #${tokenId} - publicworks.art`}</title>
@@ -88,6 +95,11 @@ const WorkTokenPage = ({ metadata, work, tokenId }: InferGetServerSidePropsType<
             </span>
             </div>
             {work.testnet ? <div>** Showing Testnet Mints **</div> : <></>}
+
+            <div className={`${styles.workAuthorLink} ${styles.displayLinebreak} ${styles.sectionBreak}`}>
+              {'Owned by: '+tokenOwnerRealized}
+            </div>
+            
             <div className={`${styles.workDescription} ${styles.displayLinebreak} ${styles.sectionBreak}`}>
               {metadata.description}
             </div>
