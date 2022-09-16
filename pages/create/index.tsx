@@ -11,7 +11,7 @@ import { getCookie } from "../../src/util/cookie";
 
 const CreatePage = () => {
   const router = useRouter();
-  const mutation = trpc.useMutation(['private.createWork']);
+  const mutation = trpc.useMutation(['work.private.createWork']);
 
   useEffect(() => {
     const token = getCookie('PWToken')
@@ -33,7 +33,24 @@ const CreatePage = () => {
   }, [router]);
   
   const onCreateProject = useCallback(async (req:CreateProjectRequest)=>{
+    console.log("res",req)
      mutation.mutate( { ...req });
+  }, [])
+  
+  
+  const onUpload = useCallback(async (files:File[])=>{
+    // console.log("files",files)
+    
+    if(files.length!==1){
+      throw new Error('required single file')
+    }
+    const formData = new FormData();
+    formData.append("file", files[0])
+    const response = await fetch("/api/workUpload", {
+      method: "POST",
+      body: formData,
+    });
+    console.log('workUpload status',response.status)
   }, [])
   
   // useEffect(()=>{
@@ -50,7 +67,7 @@ const CreatePage = () => {
         
         <RowWideContainer>
           
-          <CreateWork onCreateProject={onCreateProject} />
+          <CreateWork onCreateProject={onCreateProject} onUpload={onUpload} />
           {mutation.isLoading && <SpinnerLoading />}
           {mutation.error && <p>{mutation.error.message}</p>}
 

@@ -26,8 +26,8 @@ Works on any screen size at any resolution. Helio requires WebGL2 and Google Chr
   // sg721: 'stars1kp82qny9vf086chmlqe9wdasxra4a0423vxuterv0k8ddeggyzwqaz3kxw',
   // minter: 'stars1j4p0qkqhnqeukw6s7u94w8rscq5cpskncxendvj6maw50ukh4wfstwtqc3',
   //new
-  sg721: 'stars132s438qxlzusuf7c0guvre4xks6d0g4uz80thtwm7qfgepakfetszm3quh',
-    minter: 'stars10u70wwqdmz6rllxe4ldxqkuvx59yefq64yspuxdthrzamhhrulvsg30wqv',
+  sg721: 'stars1u6vhtuupc3xrtgyzqn29r5hqz47tcagwtwnwm6kh0cnct24wt27q2594fw',
+    minter: 'stars1j8nh7cywrysw77gppstsuev3g52vn2w0yu6v4w5rvngm88rkdxts5sesa6',
   previewImg:'https://ipfs.publicworks.art/ipfs/bafybeif5hfb26yvlhbe6ssjyset7t6soug7j5gxbhsz3kqf4cowvigrzze',
   previewImgThumb: 'https://ipfs.publicworks.art/ipfs/bafybeif5hfb26yvlhbe6ssjyset7t6soug7j5gxbhsz3kqf4cowvigrzze?img-width=500&img-height=350&img-quality=80',
   slug:'helio',

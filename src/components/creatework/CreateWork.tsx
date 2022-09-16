@@ -1,5 +1,5 @@
 import { parseISO } from 'date-fns';
-import { format, utcToZonedTime } from 'date-fns-tz';
+import { format, formatInTimeZone, utcToZonedTime } from 'date-fns-tz';
 import {
   ChangeEventHandler, FC,
   FormEventHandler,
@@ -8,10 +8,11 @@ import {
 } from 'react';
 import { Button, Container, Form } from "react-bootstrap";
 import { RowThinContainer } from "../layout/RowThinContainer";
+import { DropZone } from "../DropZone";
 
 
-const formatInTimeZone = (date: Date, fmt: string, tz: string) =>
-  format(utcToZonedTime(date, tz), fmt, { timeZone: tz });
+// const formatInTimeZone = (date: Date, fmt: string, tz: string) =>
+//   format(utcToZonedTime(date, tz), fmt, { timeZone: tz });
 
 function defaultDate() {
   const date = new Date();
@@ -39,6 +40,12 @@ export interface CreateProjectRequest{
 
 export interface CreateWorkProps{
   onCreateProject: ((req:CreateProjectRequest)=>void) | ( (req:CreateProjectRequest)=>Promise<void>)
+  onUpload: (files:File[])=>Promise<void>
+}
+
+const formatInUTC=(date:Date)=>{
+  const out = formatInTimeZone(date, 'UTC', 'LLLL d, yyyy kk:mm') // 2014-10-25 06:46:20-04:00
+  return out
 }
 export const CreateWork:FC<CreateWorkProps> = (props:CreateWorkProps) => {
   // auth context here
@@ -86,6 +93,8 @@ export const CreateWork:FC<CreateWorkProps> = (props:CreateWorkProps) => {
       royaltyPercent
     ]
   );
+  
+  
 
   return (
     <Container>
@@ -138,13 +147,13 @@ export const CreateWork:FC<CreateWorkProps> = (props:CreateWorkProps) => {
                         name='project_public_start_time'
                         onChange={onDateChange}
           />
-          <Form.Label>{`${format(
-            startDate,
-            'LLLL d, yyyy kk:mm',
-            {
-              timeZone: 'UTC'
-            }
-          )} UTC`}</Form.Label>
+
+          <Form.Group className="mb-3" controlId="">
+          <Form.Label>{`${formatInUTC(startDate)} UTC`}</Form.Label>
+          </Form.Group>
+            <Form.Group className="mb-3" controlId="">
+          <Form.Label>{`${startDate.toISOString()}`}</Form.Label>
+            </Form.Group>
 
 
           <Form.Group className="mb-3" controlId="formRoyaltyAddress">
@@ -169,10 +178,23 @@ export const CreateWork:FC<CreateWorkProps> = (props:CreateWorkProps) => {
         <Button variant="primary" type="submit">
           Submit
         </Button>
+        
       </Form>
       
       
       </RowThinContainer>
+
+      <DropZone onUpload={(files)=>props.onUpload(files)} />
+
+      <Form action={'/api/workUpload'} method={'post'} encType={"multipart/form-data"}>
+        <Form.Group controlId="formFile" className="mb-3">
+          <Form.Label>Default file input example</Form.Label>
+          <Form.Control type="file" />
+        </Form.Group>
+      <Button variant="primary" type="submit"  >
+        Upload
+      </Button>
+      </Form>
     </Container>
   );
 };

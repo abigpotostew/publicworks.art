@@ -1,21 +1,19 @@
-
-// The app's context - is generated for each incoming request
 import * as trpcNext from "@trpc/server/adapters/next";
-import { verifyCookie } from "../auth/jwt";
-import * as trpc from "@trpc/server";
+import { verifyCookie } from "./jwt";
 import { UserRepo } from "../store/user";
-import { firestore, User } from "../store";
+import { firestore } from "../store";
+import { NextApiRequest, NextApiResponse } from "next";
 
-export async function createContext(opts?: trpcNext.CreateNextContextOptions) {
+export async function createContext(req:NextApiRequest, res:NextApiResponse) {
   // Create your context based on the request object
   // Will be available as `ctx` in all your resolvers
   // This is just an example of something you'd might want to do in your ctx fn
   async function getUser() {
-    if (opts?.req?.cookies && opts.req.cookies['PWToken']) {
+    if (req.cookies && req.cookies['PWToken']) {
       // const user = await decodeJwtToken(req.headers.authorization.split(' ')[1])
       // return user;
 
-      const payload = verifyCookie(opts.req)
+      const payload = verifyCookie(req)
       if(payload){
         return new UserRepo(firestore()).getUser(payload.account)
       }
@@ -35,10 +33,4 @@ export async function createContext(opts?: trpcNext.CreateNextContextOptions) {
       user:user,
     };
   }
-}
-
-export type Context = {authorized: false | null | undefined|''|0, user: null} | {authorized: true, user: User};
-
-export const createRouter = () => {
-  return trpc.router<Context>();
 }
