@@ -13,7 +13,7 @@ const configBase = {
     chainId: "stargaze-1",
     testnet:false,
   },
-  useTestnet: true, // Set to false on mainnet
+  useTestnet: false, // Set to false on mainnet
 };
 
 export type Config = typeof configBase.testnet & typeof configBase.production ;
