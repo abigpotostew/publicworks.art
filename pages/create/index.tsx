@@ -1,4 +1,4 @@
-import { ReactElement, useCallback, useEffect } from "react";
+import { ReactElement, useCallback, useEffect, useState } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { useRouter } from "next/router";
 import * as jwt from 'jsonwebtoken'
@@ -12,7 +12,7 @@ import { getCookie } from "../../src/util/cookie";
 const CreatePage = () => {
   const router = useRouter();
   const mutation = trpc.useMutation(['work.private.createWork']);
-
+const [authLoaded,setAuthLoaded]=useState(false);
   useEffect(() => {
     const token = getCookie('PWToken')
     if(!token ){
@@ -29,6 +29,7 @@ const CreatePage = () => {
       router.push('/login')
       return;
     }
+    setAuthLoaded(true)
     console.log('logged in')
   }, [router]);
   
@@ -66,8 +67,8 @@ const CreatePage = () => {
         </RowWideContainer>
         
         <RowWideContainer>
-          
-          <CreateWork onCreateProject={onCreateProject} onUpload={onUpload} />
+
+          {authLoaded && <CreateWork onCreateProject={onCreateProject} onUpload={onUpload} />}
           {mutation.isLoading && <SpinnerLoading />}
           {mutation.error && <p>{mutation.error.message}</p>}
 

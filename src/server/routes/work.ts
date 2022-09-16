@@ -41,9 +41,9 @@ export const workRouter = createRouter()
       .mutation('editWork', {
         input: z
           .object({
-            projectName: z.string().min(3).max(50).optional(),
-            projectBlurb: z.string().min(2).max(515).optional(),
-            projectSize: z.number().min(1).max(10_000).optional(),
+            name: z.string().min(3).max(50).optional(),
+            blurb: z.string().min(2).max(515).optional(),
+            max_tokens: z.number().min(1).max(10_000).optional(),
             projectDescription: z.string().min(2).max(2048).optional(),
             startDate: z.string().refine(isISODate, { message: "Not a valid ISO string date " }).optional(),
             royaltyAddress: z.string().optional(),
@@ -55,7 +55,7 @@ export const workRouter = createRouter()
           if (!user) {
             return null
           }
-          const project = await new ProjectRepo(firestore()).createProject(user, input)
+          const project = await new ProjectRepo(firestore()).updateProject(user, input)
 
           return {
             ...project

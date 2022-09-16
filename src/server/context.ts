@@ -6,7 +6,7 @@ import * as trpc from "@trpc/server";
 import { UserRepo } from "../store/user";
 import { firestore, User } from "../store";
 
-export async function createContext(opts?: trpcNext.CreateNextContextOptions) {
+export async function createContext(opts?: trpcNext.CreateNextContextOptions):Promise<Context> {
   // Create your context based on the request object
   // Will be available as `ctx` in all your resolvers
   // This is just an example of something you'd might want to do in your ctx fn
