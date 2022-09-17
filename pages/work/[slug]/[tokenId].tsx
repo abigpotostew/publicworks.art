@@ -30,20 +30,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let metadata: NftMetadata | null = null;
   const fetchMd = async () => {
     try {
-      metadata = await getTokenMetadata(work.sg721, tokenId);
+      metadata = await getTokenMetadata(
+        work.sg721,
+        tokenId,
+        "https://ipfs.publicworks.art/ipfs/"
+      );
     } catch (e) {
-      console.warn(`error fetching ${slug} ${tokenId}`, e);
-    }
-    if (!metadata) {
-      try {
-        metadata = await getTokenMetadata(
-          work.sg721,
-          tokenId,
-          "https://ipfs.publicworks.art/ipfs/"
-        );
-      } catch (e) {
-        console.warn(`error fetching attempt 2 ${slug} ${tokenId}`, e);
-      }
+      console.warn(`error fetching attempt 2 ${slug} ${tokenId}`, e);
     }
   };
   const [, owner] = await Promise.all([

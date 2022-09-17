@@ -6,7 +6,7 @@ export async function fetchTokenUriInfo(tokenUri: string) {
   // https://stackoverflow.com/questions/40649382/how-to-replace-double-multiple-slash-to-single-in-url
   tokenUri = tokenUri.replace(/(https?:\/\/)|(\/)+/g, "$1$2");
 
-  let response = await fetch(tokenUri);
+  const response = await fetch(tokenUri);
 
   if (!response.ok) throw Error("Failed to fetch URI: " + tokenUri);
   const textNftInfo = await response.text();
@@ -29,7 +29,7 @@ export function normalizeMetadataUri(ipfsUri: string, ipfsHost?: string) {
     /ipfs:\/\//i,
     process.env.NEXT_PUBLIC_IPFS_GATEWAY ||
       ipfsHost ||
-      `https://cloudflare-ipfs.com/ipfs/`
+      `https://ipfs.publicworks.art/ipfs/`
   );
 }
 
@@ -47,14 +47,14 @@ export function normalizeIpfsAnimationUri(ipfsUri: string) {
   );
 }
 
-export function getImageUri(ipfsUri: string, queryArgs: string = "") {
+export function getImageUri(ipfsUri: string, queryArgs = "") {
   return `${normalizeIpfsUri(ipfsUri)}${queryArgs}`;
 }
 
 export const getTokenMetadata = async (
   sg721: string,
   tokenId: string,
-  ipfsHost = "https://cloudflare-ipfs.com/ipfs/"
+  ipfsHost = "https://ipfs.publicworks.art/ipfs/"
 ) => {
   const msgBase64 = Buffer.from(
     JSON.stringify({ nft_info: { token_id: tokenId } })
