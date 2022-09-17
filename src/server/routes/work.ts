@@ -3,6 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { isISODate } from "../../util/isISODate";
 import { firestore, ProjectRepo } from "../../store";
+import { stores } from "../../store/stores";
 
 export const workRouter = createRouter()
   .merge(
@@ -31,7 +32,7 @@ export const workRouter = createRouter()
           if (!user) {
             return null
           }
-          const project = await new ProjectRepo(firestore()).createProject(user, input)
+          const project = await stores().project.createProject(user, input)
 
           return {
             ...project
@@ -55,7 +56,7 @@ export const workRouter = createRouter()
           if (!user) {
             return null
           }
-          const project = await new ProjectRepo(firestore()).updateProject(user, input)
+          const project = await stores().project.updateProject(user, input)
 
           return {
             ...project

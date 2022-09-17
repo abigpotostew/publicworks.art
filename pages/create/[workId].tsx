@@ -1,18 +1,13 @@
-import { RowThinContainer } from "../../src/components/layout/RowThinContainer";
-import { RowSquareContainer } from "../../src/components/layout/RowSquareContainer";
 import { work } from "../../src/helio";
-import { LiveMedia } from "../../src/components/media/LiveMedia";
-import { ReactElement } from "react";
+import { ReactElement, useCallback } from "react";
 import MainLayout from "../../src/layout/MainLayout";
 import { NftMetadata } from "../../src/hooks/useNftMetadata";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { Container } from "react-bootstrap";
-import { getTokenMetadata } from "../../src/wasm/metadata";
-import SpinnerLoading from "../../src/components/loading/Loader";
-import { inspect } from "util";
-import Link from "next/link";
 import Head from "next/head";
-import styles from '../../styles/Work.module.css'
+import { firestore, ProjectRepo } from "../../src/store";
+import { DropZone } from "../../src/components/DropZone";
+import { stores } from "../../src/store/stores";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const workId = context.params?.workId;
@@ -23,6 +18,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   let metadata: NftMetadata | null = null;
+  const project = await stores().project.getProject(workId)
   // try {
   //   metadata = await getTokenMetadata(work.sg721, tokenId)
   // } catch (e) {
@@ -45,10 +41,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   //   'Cache-Control',
   //   'public, s-maxage=300, stale-while-revalidate=400'
   // )
-  
+
   return {
     props: {
-      work,
+      work:project,
       workId
     }
   }
@@ -57,9 +53,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const EditWorkPage = ({ work, workId }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
+  const onUpload = useCallback(async (files:File[])=>{
+    // console.log("files",files)
 
-  const loading = false;
-  const errorMetadata = false;
+    if(files.length!==1){
+      throw new Error('required single file')
+    }
+    const formData = new FormData();
+    formData.append("file", files[0])
+    const response = await fetch(`/api/${workId}/workUpload`, {
+      method: "POST",
+      body: formData,
+    });
+    console.log('workUpload status',response.status)
+  }, [])
+  
   return (<>
     <Head>
       <title key={'title'}>{`Create ${workId} - publicworks.art`}</title>
@@ -67,10 +75,10 @@ const EditWorkPage = ({ work, workId }: InferGetServerSidePropsType<typeof getSe
     <div>
 
       <Container>
-        
+        <DropZone onUpload={(files)=>onUpload(files)} />
       </Container>
       <Container>
-        
+
       </Container>
 
     </div>

@@ -21,18 +21,18 @@ export enum TokenStatuses {
 
 
 export const ProjectFullZ = z.object({
-  code_cid: z.string().nullable(),
+  code_cid: z.string().optional().nullable(),
   creator: z.string(),
   max_tokens: z.number().min(1).max(10_000),
   name: z.string(),
   price_stars: z.number(),
   project_id: z.number(),
-  sg721: z.string().nullable(),
-  minter: z.string().nullable(),
-  description: z.string().nullable(),
-  resolution: z.string().nullable(),
-  selector: z.string().nullable(),
-  pixel_ratio: z.number().min(1).max(5).nullable(),
+  sg721: z.string().optional().nullable(),
+  minter: z.string().optional().nullable(),
+  description: z.string().optional().nullable(),
+  resolution: z.string().optional().nullable(),
+  selector: z.string().optional().nullable(),
+  pixel_ratio: z.number().min(1).max(5).optional().nullable(),
   slug: z.string(),
 });
 

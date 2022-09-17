@@ -3,6 +3,7 @@ import { verifyCookie } from "./jwt";
 import { UserRepo } from "../store/user";
 import { firestore } from "../store";
 import { NextApiRequest, NextApiResponse } from "next";
+import { stores } from "../store/stores";
 
 export async function createContext(req:NextApiRequest, res:NextApiResponse) {
   // Create your context based on the request object
@@ -15,7 +16,7 @@ export async function createContext(req:NextApiRequest, res:NextApiResponse) {
 
       const payload = verifyCookie(req)
       if(payload){
-        return new UserRepo(firestore()).getUser(payload.account)
+        return stores().user.getUser(payload.account)
       }
     }
     return null;
