@@ -19,7 +19,6 @@ export enum TokenStatuses {
   ERROR_QUEUEING = 4,
 }
 
-
 export const ProjectFullZ = z.object({
   code_cid: z.string().optional().nullable(),
   creator: z.string(),
@@ -38,15 +37,15 @@ export const ProjectFullZ = z.object({
 
 export type Project = z.infer<typeof ProjectFullZ>;
 
-
-export const CreateProjectRequestZ = z
-  .object({
-    projectName: z.string().min(3).max(50),
-    projectBlurb: z.string().min(2).max(515),
-    projectSize: z.number().min(1).max(10_000),
-    projectDescription: z.string().min(2).max(2048),
-    startDate: z.string().refine(isISODate, { message: "Not a valid ISO string date " }),
-    royaltyAddress: z.string(),
-    royaltyPercent: z.number().min(0).max(100),
-  })
-export type CreateProjectRequest=z.infer<typeof CreateProjectRequestZ>;
+export const CreateProjectRequestZ = z.object({
+  projectName: z.string().min(3).max(50),
+  projectBlurb: z.string().min(2).max(515),
+  projectSize: z.number().min(1).max(10_000),
+  projectDescription: z.string().min(2).max(2048),
+  startDate: z
+    .string()
+    .refine(isISODate, { message: "Not a valid ISO string date " }),
+  royaltyAddress: z.string(),
+  royaltyPercent: z.number().min(0).max(100),
+});
+export type CreateProjectRequest = z.infer<typeof CreateProjectRequestZ>;

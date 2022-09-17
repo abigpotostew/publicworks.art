@@ -1,65 +1,63 @@
-.paddingTop{
-    margin-top: 50px;
+.paddingTop {
+  margin-top: 50px;
 }
 
-.workHeader{
-    border-top: 1px solid #fff;
+.workHeader {
+  border-top: 1px solid #fff;
 
-    font-family: 'Roboto', sans-serif;
-    /*padding-top: ;*/
+  font-family: "Roboto", sans-serif;
+  /*padding-top: ;*/
 }
-.workTitle{
-    font-size: 2rem;
-    font-family: 'Advent Pro', sans-serif;
-    font-weight: bold;
+.workTitle {
+  font-size: 2rem;
+  font-family: "Advent Pro", sans-serif;
+  font-weight: bold;
 }
-.workAuthor{
-    font-family: 'Advent Pro', sans-serif;
-    font-size: 1.5rem;
+.workAuthor {
+  font-family: "Advent Pro", sans-serif;
+  font-size: 1.5rem;
 }
-.workDescription{
-    font-family: 'Roboto', sans-serif;
-
+.workDescription {
+  font-family: "Roboto", sans-serif;
 }
 .displayLinebreak {
-    white-space: pre-line;
+  white-space: pre-line;
 }
-.align_center{
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+.align_center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 .workAuthorLink a:link {
-    color:#fff;
+  color: #fff;
 }
-.workAuthorLink{
-    font-family: 'Roboto', sans-serif;
+.workAuthorLink {
+  font-family: "Roboto", sans-serif;
 }
 /* visited link */
 .workAuthorLink a:visited {
-    color:#fff;
+  color: #fff;
 }
 
 /* mouse over link */
 .workAuthorLink a:hover {
-    color: #b7bac4;
+  color: #b7bac4;
 }
 
 /* selected link */
 .workAuthorLink a:active {
-    color:#fff;
+  color: #fff;
 }
-.sectionBreak{
-    padding-top: 24px;
-}
-
-.tokensGrid{
-    border-top: 1px solid #eaeaea;
+.sectionBreak {
+  padding-top: 24px;
 }
 
-.workGalleryItem{
-    margin-bottom: 20px;
-    font-size: 12px;
+.tokensGrid {
+  border-top: 1px solid #eaeaea;
+}
+
+.workGalleryItem {
+  margin-bottom: 20px;
+  font-size: 12px;
 }

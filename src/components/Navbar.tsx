@@ -1,13 +1,17 @@
 import { Container, Nav, Navbar } from "react-bootstrap";
 
-import styles from '../../styles/Home.module.css'
+import styles from "../../styles/Home.module.css";
 import Link from "next/link";
 
-export const NavBar = ()=>{
+export const NavBar = () => {
   return (
-    <Navbar bg="dark" variant="dark" expand="sm" >
+    <Navbar bg="dark" variant="dark" expand="sm">
       <Container>
-        <Link href={'/'} passHref><Navbar.Brand className={styles.navTitle}>PublicWorks.Art</Navbar.Brand></Link>
+        <Link href={"/"} passHref>
+          <Navbar.Brand className={styles.navTitle}>
+            PublicWorks.Art
+          </Navbar.Brand>
+        </Link>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
           <Nav className="me-auto">
@@ -18,5 +22,5 @@ export const NavBar = ()=>{
         </Navbar.Collapse>
       </Container>
     </Navbar>
-  )
-}
+  );
+};

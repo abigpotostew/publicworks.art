@@ -1,5 +1,8 @@
 import config, { Config } from "../config";
-import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import {
+  CosmWasmClient,
+  SigningCosmWasmClient,
+} from "@cosmjs/cosmwasm-stargate";
 import { OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { keplrClient } from "./keplr-client";
 import { OfflineAminoSigner } from "@cosmjs/amino";
@@ -11,7 +14,10 @@ export class QueryContract {
   private readonly config: Config;
   private readonly client: CosmWasmClient;
   private keplrClient: SigningCosmWasmClient | undefined;
-  private keplerOfflineClient: OfflineAminoSigner |OfflineDirectSigner| undefined;
+  private keplerOfflineClient:
+    | OfflineAminoSigner
+    | OfflineDirectSigner
+    | undefined;
 
   constructor(config: Config, client: CosmWasmClient) {
     this.config = config;
@@ -24,7 +30,7 @@ export class QueryContract {
   }
 
   async getBalance(address: string) {
-    return this.client.getBalance(address, 'ustars');
+    return this.client.getBalance(address, "ustars");
   }
 
   // async getTokenInfo(tokenId: string) {
@@ -73,9 +79,9 @@ export class QueryContract {
   async getAccounts() {
     if (this.keplerOfflineClient) {
       const accounts = this.keplerOfflineClient.getAccounts();
-      return accounts
+      return accounts;
     } else {
-      throw new Error('Kepler Offline Client not initialized')
+      throw new Error("Kepler Offline Client not initialized");
     }
   }
 
@@ -88,64 +94,69 @@ export class QueryContract {
     this.keplerOfflineClient = offlineSigner;
   }
 
-  async signMessage (token:string) {
-    const messageToSign = 'Magic, please!' +' '+ token;
+  async signMessage(token: string) {
+    const messageToSign = "Magic, please!" + " " + token;
     const signDoc = {
-      msgs: [{
-        type: 'publicworks-login',
-        value: messageToSign
-      }],
+      msgs: [
+        {
+          type: "publicworks-login",
+          value: messageToSign,
+        },
+      ],
       fee: {
         amount: [],
         // Note: this needs to be 0 gas to comply with ADR36, but Keplr current throws an error. See: https://github.com/cosmos/cosmos-sdk/blob/master/docs/architecture/adr-036-arbitrary-signature.md#decision
-        gas: "1"
+        gas: "1",
       },
       chain_id: this.config.chainId,
       memo: "You are powerful and capable, friend.",
       account_number: "0",
       sequence: "0",
     };
-    
-    if(!this.keplrClient){
-      throw new Error("not connected to keplr")
+
+    if (!this.keplrClient) {
+      throw new Error("not connected to keplr");
     }
 
-    if(!this.keplerOfflineClient || !('signAmino' in this.keplerOfflineClient)){
-      throw new Error('missing sign amino')
+    if (
+      !this.keplerOfflineClient ||
+      !("signAmino" in this.keplerOfflineClient)
+    ) {
+      throw new Error("missing sign amino");
     }
-    
-    const accounts = await this.getAccounts()
+
+    const accounts = await this.getAccounts();
     try {
-      const {signed, signature} = await this.keplerOfflineClient.signAmino(accounts[0].address, signDoc);
+      const { signed, signature } = await this.keplerOfflineClient.signAmino(
+        accounts[0].address,
+        signDoc
+      );
       const travellerSessionToken = token;
 
       const requestOptions = {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           otp: travellerSessionToken,
           signed: signed,
           signature: signature.signature,
-          account: accounts[0]
-        })
+          account: accounts[0],
+        }),
       };
-      
+
       const response = await fetch(`/api/login`, requestOptions);
 
       if (response.status !== 200) {
-        console.error('response is', response.status)
-        throw new Error('bad response from auth')
+        console.error("response is", response.status);
+        throw new Error("bad response from auth");
       }
       // Successful
-      const responseJson = await response.json()
-      
-      
-      
+      const responseJson = await response.json();
     } catch (e) {
-      if ((e as any)?.message === 'Request rejected') {
-        console.log({message: 'Rejected signing 🙅'});
+      if ((e as any)?.message === "Request rejected") {
+        console.log({ message: "Rejected signing 🙅" });
       } else {
-        console.log({message: `Unknown error 😬: ${(e as any).message}`});
+        console.log({ message: `Unknown error 😬: ${(e as any).message}` });
       }
     }
   }
@@ -167,7 +178,8 @@ export interface Coin {
 
 export function serializeSignDoc(signDoc: StdSignDoc): Uint8Array {
   return toUtf8(sortedJsonStringify(signDoc));
-}export interface StdSignDoc {
+}
+export interface StdSignDoc {
   readonly chain_id: string;
   readonly account_number: string;
   readonly sequence: string;
@@ -197,7 +209,11 @@ export function sortedJsonStringify(obj: any): string {
   return JSON.stringify(sortedObject(obj));
 }
 
-const isValidSignature = async (signed:any, signature:any, publicKey:any) => {
+const isValidSignature = async (
+  signed: any,
+  signature: any,
+  publicKey: any
+) => {
   let valid = false;
   try {
     let binaryHashSigned = sha256(serializeSignDoc(signed));
@@ -206,11 +222,11 @@ const isValidSignature = async (signed:any, signature:any, publicKey:any) => {
     valid = await Secp256k1.verifySignature(
       Secp256k1Signature.fromFixedLength(fromBase64(signature)),
       binaryHashSigned,
-      binaryPublicKey,
+      binaryPublicKey
     );
   } catch (e) {
-    console.error('Issue trying to verify the signature', e);
+    console.error("Issue trying to verify the signature", e);
   } finally {
     return valid;
   }
-}
+};

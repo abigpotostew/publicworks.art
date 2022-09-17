@@ -65,7 +65,7 @@ const testnetConfig = {
 
 const addTestnetToKeplr = async () => {
   let client;
-  const windowKeplr = (<Window>window);
+  const windowKeplr = <Window>window;
   if (windowKeplr.keplr) {
     try {
       await windowKeplr.keplr.enable(testnetConfig.chainId);

@@ -5,33 +5,33 @@ import { firestore } from "../store";
 import { NextApiRequest, NextApiResponse } from "next";
 import { stores } from "../store/stores";
 
-export async function createContext(req:NextApiRequest, res:NextApiResponse) {
+export async function createContext(req: NextApiRequest, res: NextApiResponse) {
   // Create your context based on the request object
   // Will be available as `ctx` in all your resolvers
   // This is just an example of something you'd might want to do in your ctx fn
   async function getUser() {
-    if (req.cookies && req.cookies['PWToken']) {
+    if (req.cookies && req.cookies["PWToken"]) {
       // const user = await decodeJwtToken(req.headers.authorization.split(' ')[1])
       // return user;
 
-      const payload = verifyCookie(req)
-      if(payload){
-        return stores().user.getUser(payload.account)
+      const payload = verifyCookie(req);
+      if (payload) {
+        return stores().user.getUser(payload.account);
       }
     }
     return null;
   }
   const maybeUser = await getUser();
-  const user = maybeUser&&maybeUser.ok && maybeUser.value;
-  if(!user){
+  const user = maybeUser && maybeUser.ok && maybeUser.value;
+  if (!user) {
     return {
-      authorized:false,
-      user:null,
-    }
-  }else{
+      authorized: false,
+      user: null,
+    };
+  } else {
     return {
       authorized: true,
-      user:user,
+      user: user,
     };
   }
 }

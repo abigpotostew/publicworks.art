@@ -2,12 +2,12 @@ html,
 body {
   padding: 0;
   margin: 0;
-    font-family: 'Manrope', sans-serif;
-    background-color: #212529;
+  font-family: "Manrope", sans-serif;
+  background-color: #212529;
 }
 /*prevent overflow on right side*/
-body{
-    overflow-x:hidden;
+body {
+  overflow-x: hidden;
 }
 /*html {*/
 /*    overflow: scroll;*/
@@ -20,7 +20,7 @@ body{
 /*.container::-webkit-scrollbar {*/
 /*    display: none;  !* Safari and Chrome *!*/
 /*}*/
- 
+
 a {
   color: inherit;
   text-decoration: none;

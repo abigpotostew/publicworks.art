@@ -1,25 +1,25 @@
-import '../styles/globals.css'
+import "../styles/globals.css";
 
-import type { FC, ReactElement, ReactNode } from 'react'
-import type { NextPage } from 'next'
-import type { AppProps, NextWebVitalsMetric } from 'next/app'
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { SSRProvider } from 'react-bootstrap';
-import { SWRConfig } from 'swr';
+import type { FC, ReactElement, ReactNode } from "react";
+import type { NextPage } from "next";
+import type { AppProps, NextWebVitalsMetric } from "next/app";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { SSRProvider } from "react-bootstrap";
+import { SWRConfig } from "swr";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import * as ga from '../src/lib/ga'
+import * as ga from "../src/lib/ga";
 import { GoogleAnalytics, event } from "nextjs-google-analytics";
 import { withTRPC } from "@trpc/next";
 import { AppRouter } from "./api/trpc/[trpc]";
 
 export type NextPageWithLayout = NextPage & {
-  getLayout?: (page: ReactElement) => ReactNode
-}
+  getLayout?: (page: ReactElement) => ReactNode;
+};
 
 type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout
-}
+  Component: NextPageWithLayout;
+};
 
 interface SwrError extends Error {
   info?: any;
@@ -36,13 +36,15 @@ export function reportWebVitals(metric: NextWebVitalsMetric) {
   });
 }
 
-const fetcher = async (url:string) => {
+const fetcher = async (url: string) => {
   const res = await fetch(url);
 
   // If the status code is not in the range 200-299,
   // we still try to parse and throw it.
   if (!res.ok) {
-    const error: SwrError = new Error('An error occurred while fetching the data.');
+    const error: SwrError = new Error(
+      "An error occurred while fetching the data."
+    );
     // Attach extra info to the error object.
     error.info = await res.json();
     error.status = res.status;
@@ -52,25 +54,26 @@ const fetcher = async (url:string) => {
   return res.json();
 };
 
-const MyApp:FC<AppPropsWithLayout>=({ Component, pageProps }: AppPropsWithLayout) =>{
-  const getLayout = Component.getLayout || ((page) => page)
-  
-  
-  
-  return getLayout(<SSRProvider>
-    <SWRConfig
-      value={{
-        fetcher,
-      }}
-    >
-      <GoogleAnalytics trackPageViews />
+const MyApp: FC<AppPropsWithLayout> = ({
+  Component,
+  pageProps,
+}: AppPropsWithLayout) => {
+  const getLayout = Component.getLayout || ((page) => page);
 
-      <Component {...pageProps} />
-    </SWRConfig>
+  return getLayout(
+    <SSRProvider>
+      <SWRConfig
+        value={{
+          fetcher,
+        }}
+      >
+        <GoogleAnalytics trackPageViews />
+
+        <Component {...pageProps} />
+      </SWRConfig>
     </SSRProvider>
-    
-  ) as ReactElement<any, any>
-}
+  ) as ReactElement<any, any>;
+};
 
 export default withTRPC<AppRouter>({
   config({ ctx }) {
@@ -80,7 +83,7 @@ export default withTRPC<AppRouter>({
      */
     const url = process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}/api/trpc`
-      : 'http://localhost:3000/api/trpc';
+      : "http://localhost:3000/api/trpc";
     return {
       url,
       /**
@@ -94,4 +97,3 @@ export default withTRPC<AppRouter>({
    */
   ssr: false,
 })(MyApp);
-

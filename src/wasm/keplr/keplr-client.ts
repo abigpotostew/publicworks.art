@@ -3,9 +3,7 @@ import { Config } from "../config";
 import { Window } from "@keplr-wallet/types/build/window";
 import { addTestnetToKeplr } from "./keplr-testnet";
 
-
 export const keplrClient = async (config: Config) => {
-  
   const prefix = "wasm";
   const gasPrice = null;
 
@@ -18,16 +16,18 @@ export const keplrClient = async (config: Config) => {
     if (config.testnet) {
       const testnet = await addTestnetToKeplr();
     } else {
-      const windowKeplr = (<Window>window);
+      const windowKeplr = <Window>window;
       const chain = await windowKeplr.keplr?.enable(config.chainId);
     }
   };
 
   await checkChainOrTestnet();
-  const windowKeplr = (<Window>window);
+  const windowKeplr = <Window>window;
   if (windowKeplr.getOfflineSignerAuto) {
     // Setup signer
-    const offlineSigner = await windowKeplr.getOfflineSignerAuto(config.chainId);
+    const offlineSigner = await windowKeplr.getOfflineSignerAuto(
+      config.chainId
+    );
     // Init SigningCosmWasmClient client
     return {
       signer: await SigningCosmWasmClient.connectWithSigner(
@@ -44,4 +44,3 @@ export const keplrClient = async (config: Config) => {
     throw Error("Keplr not available");
   }
 };
-
