@@ -2,6 +2,7 @@ import Container from "react-bootstrap/Container";
 import { Col, Form, Pagination, Row } from "react-bootstrap";
 import { FC, useMemo, useState } from "react";
 import { Gallery } from "./Gallery";
+import { useRouter } from "next/router";
 
 interface Props {
   totalNumTokens: number;
@@ -14,7 +15,13 @@ export const PagedGallery: FC<Props> = ({
   totalNumTokens,
   sg721,
 }: Props) => {
-  const [page, setPage] = useState<number>(1);
+  const router = useRouter();
+  const pageIn =
+    typeof router.query?.page === "string" &&
+    Number.isFinite(parseInt(router.query.page))
+      ? parseInt(router.query.page)
+      : 1;
+  const [page, setPage] = useState<number>(pageIn);
 
   const limit = 9;
 
@@ -56,7 +63,21 @@ export const PagedGallery: FC<Props> = ({
   }, [lastPage, page]);
 
   const changePage = (page: number) => {
-    setPage(Math.max(pages[0], Math.min(page, pages[pages.length - 1])));
+    const newPage = Math.max(pages[0], Math.min(page, pages[pages.length - 1]));
+    router.push(
+      {
+        pathname: `./${slug}`,
+        query: { page: newPage.toString() },
+        // search: { page: page.toString() },
+      },
+      {
+        pathname: `./${slug}`,
+        query: { page: newPage.toString() },
+      },
+      { scroll: false }
+    );
+    setPage(newPage);
+
     // update whatever
     // window.scrollTo(0, 0);
   };
