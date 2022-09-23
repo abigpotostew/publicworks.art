@@ -3,13 +3,13 @@ import { CSSProperties, FC, useEffect, useRef } from "react";
 interface LiveMediaParams {
   ipfsUrl: string;
   minHeight: number;
-  style: CSSProperties | undefined;
+  style?: CSSProperties | undefined;
 }
 export const LiveMedia: FC<LiveMediaParams> = (params: LiveMediaParams) => {
   const frame = useRef(null);
   useEffect(() => {
     if (!frame.current) return;
-    frame?.current?.focus();
+    // frame?.current?.focus();
     setTimeout(() => {
       // const iframe = frame?.current as HTMLIFrameElement;
       // console.log("dev traits art", iframe.contentWindow.attributes);

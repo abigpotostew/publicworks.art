@@ -20,12 +20,7 @@
     "incremental": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
-    "emitDecoratorMetadata": true,
-    "paths": {
-      "@entities": [
-        "src/model/index.ts"
-      ]
-    }
+    "emitDecoratorMetadata": true
   },
   "include": [
     "next-env.d.ts",
