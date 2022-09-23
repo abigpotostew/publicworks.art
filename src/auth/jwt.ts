@@ -49,8 +49,10 @@ export const verify = (token: string) => {
   return payload as Token;
 };
 
-export const verifyCookie = (req: NextApiRequest): Token | null => {
-  const token = req.cookies[pwTokenName];
+export const verifyCookie = (cookies: {
+  [p: string]: string;
+}): Token | null => {
+  const token = cookies[pwTokenName];
   try {
     return verify(token);
   } catch (e) {

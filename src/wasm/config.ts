@@ -5,6 +5,12 @@ const configBase = {
     restEndpoint: "https://rest.elgafar-1.stargaze-apis.com",
     chainId: "elgafar-1",
     testnet: true,
+    sg721CodeId: 133,
+    minterCodeId: 134,
+    whitelistCodeId: 3,
+    finalizerCodeId: 132,
+    finalizer:
+      "stars107h5lh00zzdp8yqpdc3x8vtnaufh4ts5uay8x4vjyws9xzhrm3ysaw34as",
   },
   // Production Values
   production: {
@@ -12,8 +18,14 @@ const configBase = {
     restEndpoint: "https://rest.stargaze-apis.com",
     chainId: "stargaze-1",
     testnet: false,
+    sg721CodeId: 9,
+    minterCodeId: 10,
+    whitelistCodeId: 3,
+    finalizerCodeId: 11,
+    finalizer:
+      "stars1urdxzux805z7xltx0vzdaqhlmm3helvklprz03svwykmlhmaayyq7pwl8t",
   },
-  useTestnet: false, // Set to false on mainnet
+  useTestnet: process.env.NEXT_PUBLIC_TESTNET === "true", // Set to false on mainnet
 };
 
 export type Config = typeof configBase.testnet & typeof configBase.production;

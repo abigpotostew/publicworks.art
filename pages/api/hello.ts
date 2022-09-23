@@ -10,7 +10,7 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const ok = verifyCookie(req);
+  const ok = verifyCookie(req.cookies);
   if (!ok) {
     res.status(401).json({ name: "bad token" });
     return;

@@ -1,18 +1,37 @@
-import * as trpc from "@trpc/server";
+/**
+ * This file contains tRPC's HTTP response handler
+ */
 import * as trpcNext from "@trpc/server/adapters/next";
-import { Context, createContext } from "../../../src/server/context";
-import { workRouter } from "../../../src/server/routes/work";
+import { createContext } from "../../../src/server/context";
+import { appRouter } from "../../../src/server/routes/_app";
 
-export const appRouter = createRouter().merge("work.", workRouter); // prefix user procedures with "user."
 // export type definition of API
-export type AppRouter = typeof appRouter;
-// export API handler
+
 export default trpcNext.createNextApiHandler({
   router: appRouter,
-  createContext: createContext,
+  /**
+   * @link https://trpc.io/docs/context
+   */
+  createContext,
+  /**
+   * @link https://trpc.io/docs/error-handling
+   */
+  onError({ error }) {
+    if (error.code === "INTERNAL_SERVER_ERROR") {
+      // send to bug reporting
+      console.error("Something went wrong", error);
+    }
+  },
+  /**
+   * Enable query batching
+   */
+  batching: {
+    enabled: true,
+  },
+  /**
+   * @link https://trpc.io/docs/caching#api-response-caching
+   */
+  // responseMeta() {
+  //   // ...
+  // },
 });
-
-// Helper function to create a router with your app's context
-export function createRouter() {
-  return trpc.router<Context>();
-}

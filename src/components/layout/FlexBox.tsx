@@ -6,13 +6,15 @@ export const FlexBox = ({
   children,
   className,
   style,
+  fluid = true,
 }: {
   className?: string;
   children: ReactNode;
   style?: CSSProperties | undefined;
+  fluid?: boolean;
 }) => {
   return (
-    <Container fluid className={className}>
+    <Container fluid={!!fluid} className={className}>
       <div style={style} className={`${styles.flexWrapCenter}`}>
         {children}
       </div>

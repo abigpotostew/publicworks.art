@@ -3,7 +3,10 @@ import * as unzipper from "unzipper";
 import FormData from "form-data";
 import got from "got";
 
-export const pinZipToPinata = async (zipPath: string) => {
+export const pinZipToPinata = async (
+  zipPath: string,
+  metadata: { workId: string }
+) => {
   const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
   try {
     const zip = fs
@@ -11,6 +14,15 @@ export const pinZipToPinata = async (zipPath: string) => {
       .pipe(unzipper.Parse({ forceStream: true }));
 
     const data = new FormData();
+    data.append("pinataOptions", '{"cidVersion": 1}');
+    data.append(
+      "pinataMetadata",
+      JSON.stringify({
+        name: `work-${metadata.workId}-${Math.round(Date.now() / 1000)}`,
+        keyvalues: { workId: metadata.workId },
+      })
+    );
+
     for await (const entry of zip) {
       const fileName = entry.path;
       const type = entry.type; // 'Directory' or 'File'
@@ -36,11 +48,54 @@ export const pinZipToPinata = async (zipPath: string) => {
     });
 
     const body = JSON.parse(response.body);
-    const cid = body.IpfsHash;
+    const cid = body.IpfsHash as string;
     console.log("cid:", cid);
     return cid;
   } catch (error) {
     console.log(error);
     throw error;
   }
+};
+
+export const deleteCid = async (cid: string) => {
+  const config = {
+    method: "DELETE",
+    headers: {
+      Authorization: "Bearer " + process.env.PINATA_API_SECRET_JWT,
+    },
+  };
+
+  const res = await fetch(
+    `https://api.pinata.cloud/pinning/unpin/${cid}`,
+    config
+  );
+  if (!res.ok) {
+    console.log(`failed to delete cid ${cid}:` + (await res.text()));
+    return;
+  }
+};
+
+export const getMetadataWorkId = async (searchCid: string) => {
+  //
+  const config = {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + process.env.PINATA_API_SECRET_JWT,
+    },
+  };
+  const res = await fetch(
+    `https://api.pinata.cloud/data/pinList?hashContains=${searchCid}`,
+    config
+  );
+  if (!res.ok) {
+    return null;
+  }
+  const body = await res.json();
+  if (Array.isArray(body?.rows)) {
+    const row = body.rows.find(
+      (r: any) => r.date_unpinned === null && r.metadata?.keyvalues?.workId
+    );
+    return row.metadata?.keyvalues?.workId || null;
+  }
+  return null;
 };

@@ -1,68 +1,80 @@
-import { createRouter } from "../context";
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { isISODate } from "../../util/isISODate";
-import { firestore, ProjectRepo } from "../../store";
 import { stores } from "../../store/stores";
+import { authorizedProcedure, baseProcedure, t } from "../trpc";
+import { CreateProjectRequestZ, editProjectZod } from "../../store";
+import { TRPCError } from "@trpc/server";
+import { serializeWork } from "../../dbtypes/works/serialize-work";
 
-export const workRouter = createRouter().merge(
-  "private.",
-  createRouter()
-    .middleware(async ({ ctx, next }) => {
-      if (!ctx?.authorized) {
-        throw new TRPCError({ code: "UNAUTHORIZED" });
-      }
-      return next();
-    })
-    .mutation("createWork", {
-      input: z.object({
-        projectName: z.string().min(3).max(50),
-        projectBlurb: z.string().min(2).max(515),
-        projectSize: z.number().min(1).max(10_000),
-        projectDescription: z.string().min(2).max(2048),
-        startDate: z
-          .string()
-          .refine(isISODate, { message: "Not a valid ISO string date " }),
-        royaltyAddress: z.string(),
-        royaltyPercent: z.number().min(0).max(100),
-      }),
-      resolve: async ({ input, ctx }) => {
-        // do something in firebase
-        const user = ctx?.user;
-        if (!user) {
-          return null;
-        }
-        const project = await stores().project.createProject(user, input);
+const createWork = authorizedProcedure
+  .input(CreateProjectRequestZ)
+  .mutation(async ({ input, ctx }) => {
+    // do something in firebase
+    const user = ctx?.user;
+    if (!user) {
+      return null;
+    }
+    const project = await stores().project.createProject(user, input);
+    if (!project.ok) {
+      throw new TRPCError({ code: "BAD_REQUEST" });
+    }
+    return serializeWork(project.value);
+  });
+const editWork = authorizedProcedure
+  .input(editProjectZod)
 
-        return {
-          ...project,
-        };
-      },
+  .mutation(async ({ input, ctx }) => {
+    // do something in firebase
+    const user = ctx?.user;
+    if (!user) {
+      return null;
+    }
+    const project = await stores().project.updateProject(user, input);
+    if (!project.ok) {
+      throw new TRPCError({ code: "BAD_REQUEST" });
+    }
+    return serializeWork(project.value);
+  });
+const editWorkContracts = authorizedProcedure
+  .input(
+    z.object({
+      id: z.string(),
+      sg721: z.string(),
+      minter: z.string(),
     })
-    .mutation("editWork", {
-      input: z.object({
-        name: z.string().min(3).max(50).optional(),
-        blurb: z.string().min(2).max(515).optional(),
-        max_tokens: z.number().min(1).max(10_000).optional(),
-        projectDescription: z.string().min(2).max(2048).optional(),
-        startDate: z
-          .string()
-          .refine(isISODate, { message: "Not a valid ISO string date " })
-          .optional(),
-        royaltyAddress: z.string().optional(),
-        royaltyPercent: z.number().min(0).max(100).optional(),
-      }),
-      resolve: async ({ input, ctx }) => {
-        // do something in firebase
-        const user = ctx?.user;
-        if (!user) {
-          return null;
-        }
-        const project = await stores().project.updateProject(user, input);
+  )
 
-        return {
-          ...project,
-        };
-      },
+  .mutation(async ({ input, ctx }) => {
+    // do something in firebase
+    const user = ctx?.user;
+    if (!user) {
+      return null;
+    }
+    const project = await stores().project.updateProject(user, input);
+    if (!project.ok) {
+      throw new TRPCError({ code: "BAD_REQUEST" });
+    }
+    return serializeWork(project.value);
+  });
+const getWorkById = baseProcedure
+  .input(
+    z.object({
+      id: z.string(),
     })
-);
+  )
+
+  .query(async ({ input, ctx }) => {
+    const project = await stores().project.getProject(input.id);
+
+    if (!project) {
+      throw new TRPCError({ code: "NOT_FOUND" });
+    }
+    return serializeWork(project);
+  });
+export const workRouter = t.router({
+  // Public
+  createWork,
+  editWork,
+  editWorkContracts,
+  getWorkById,
+});

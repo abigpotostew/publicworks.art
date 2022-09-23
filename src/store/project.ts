@@ -1,92 +1,95 @@
-import { FirestoreStore } from "./firestore";
 import { Err, Ok, Result } from "../util/result";
-import { CreateProjectRequest } from "../components/creatework/CreateWork";
 import { User } from "./user.types";
-import { Project, ProjectFullZ } from "./project.types";
-import { Firestore } from "@google-cloud/firestore";
+import { CreateProjectRequest, EditProjectRequest } from "./project.types";
+import { dataSource } from "../typeorm/datasource";
+import { WorkEntity } from "../model";
 
 export class ProjectRepo {
-  private readonly store: FirestoreStore;
-  private readonly db: Firestore;
-  constructor(store: FirestoreStore) {
-    this.store = store;
-    this.db = this.store.db;
+  async getProject(id: string): Promise<WorkEntity | null> {
+    return dataSource()
+      .getRepository(WorkEntity)
+      .findOne({
+        where: {
+          id: id,
+        },
+      });
   }
 
-  async getProject(id: string): Promise<Project | null> {
-    const projectRef = this.db.collection("projects").doc(`project-${id}`);
-    const project = await projectRef.get();
-    if (project.exists) {
-      return ProjectFullZ.parse(project.data());
-    } else {
-      return null;
-    }
+  async getProjectBySlug(slug: string): Promise<WorkEntity | null> {
+    return dataSource().getRepository(WorkEntity).findOne({
+      where: {
+        slug,
+      },
+    });
   }
+
   async createProject(
     user: User,
     request: CreateProjectRequest
-  ): Promise<Result<Project>> {
-    const id = await this.nextProjectId();
-    const projectRef = this.db.collection("projects").doc(`project-${id}`);
-    const project: Project = {
-      code_cid: null,
+  ): Promise<Result<WorkEntity>> {
+    let work = new WorkEntity();
+    work = {
+      ...work,
+      ...request,
+      codeCid: "",
       creator: user.address,
-      max_tokens: request.projectSize,
+      maxTokens: request.projectSize || 0,
       name: request.projectName,
-      price_stars: 1,
-      project_id: id,
+      priceStars: 1,
       sg721: null,
       minter: null,
-      description: request.projectDescription,
+      description: request.projectDescription || "",
       slug: convertToSlug(request.projectName),
-      pixel_ratio: null,
+      pixelRatio: null,
       selector: null,
       resolution: null,
+      license: null,
+      startDate: request.startDate ? new Date(request.startDate) : null,
     };
-    await projectRef.set(project);
-    return Ok(project);
+    work = await dataSource().getRepository(WorkEntity).save(work);
+    return Ok(work);
   }
 
   async updateProject(
     user: User,
-    request: Partial<Project>
-  ): Promise<Result<Project>> {
-    if (!request.project_id) {
+    request: Partial<EditProjectRequest>
+  ): Promise<Result<WorkEntity>> {
+    if (!request.id) {
       return Err(new Error("missing project_id"));
     }
 
-    const id = request.project_id;
-    const projectRef = this.db.collection("projects").doc(`project-${id}`);
+    let toUpdate: Partial<WorkEntity> = new WorkEntity();
+    toUpdate = {
+      name: request.projectName,
+      blurb: request.projectBlurb,
+      maxTokens: request.projectSize,
+      description: request.projectDescription,
+      royaltyPercent: request.royaltyPercent,
+      royaltyAddress: request.royaltyAddress,
+      startDate: request.startDate ? new Date(request.startDate) : undefined,
+      codeCid: request.codeCid,
 
-    const project: Partial<Project> = {
-      ...request,
+      selector: request.selector,
+      resolution: request.resolution,
+      pixelRatio: request.pixelRatio,
+      priceStars: request.priceStars,
+      license: request.license,
+
+      sg721: request.sg721,
+      minter: request.minter,
     };
-    //cannot edit these fields
-    project.slug = undefined;
-    project.project_id = undefined;
-    await projectRef.set(project);
-    return Ok(ProjectFullZ.parse((await projectRef.get()).data()));
-  }
 
-  async nextProjectId(): Promise<number> {
-    const docRef = this.db.collection("serial").doc("projects");
-
-    try {
-      const newId = await this.db.runTransaction(function (transaction) {
-        return transaction.get(docRef).then(function (incDoc) {
-          //if no value exist, assume it as 0 and increase to 1
-          const newIncId: number = (incDoc?.data()?.autoincrement || 0) + 1;
-
-          transaction.update(docRef, { autoincrement: newIncId });
-          return newIncId;
-        });
-      });
-      console.log("New autoincremented number ", newId);
-      return newId;
-    } catch (e) {
-      console.error("failed to increment project id", e);
-      throw e;
+    const res = await dataSource().getRepository(WorkEntity).update(
+      {
+        id: request.id,
+      },
+      toUpdate
+    );
+    const work = await this.getProject(request.id);
+    if (!work) {
+      throw new Error("work not found");
     }
+    return Ok(work);
   }
 }
 

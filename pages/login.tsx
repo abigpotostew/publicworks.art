@@ -20,7 +20,7 @@ const AuthPage = () => {
       // window.location.href = '/share?account=' + accounts[0].address
     }
     console.log("accounts", accounts);
-    const otp = (Math.random() % 100_000).toString();
+    const otp = Math.floor(Math.random() * 100_000).toString();
     await queryClient.signMessage(otp);
     console.log("finished logging in");
     //call backend auth with token

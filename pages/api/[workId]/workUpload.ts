@@ -2,10 +2,14 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import multiparty from "multiparty";
 import * as fs from "fs";
-import { ProjectRepo, firestore } from "../../../src/store";
-import { createContext } from "../../../src/auth/apiauth";
-import { pinZipToPinata } from "../../../src/ipfs/pinata";
+import {
+  deleteCid,
+  getMetadataWorkId,
+  pinZipToPinata,
+} from "../../../src/ipfs/pinata";
 import { stores } from "../../../src/store/stores";
+import { getContext } from "../../../src/server/trpc";
+import { initializeIfNeeded } from "../../../src/typeorm/datasource";
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,7 +20,9 @@ export default async function handler(
     return;
   }
 
-  const ctx = await createContext(req, res);
+  await initializeIfNeeded();
+
+  const ctx = await getContext(req);
   if (!ctx.authorized || !ctx.user) {
     res.status(401).json({ message: "unauthorized" });
     return;
@@ -64,17 +70,29 @@ export default async function handler(
       return;
     }
     /// delete the prior work from ipfs
-
-    const project = stores().project.getProject(workId);
+    if (work.codeCid) {
+      const existinWorkId = await getMetadataWorkId(work.codeCid);
+      if (existinWorkId === work.id) {
+        //only delete it if the current user owns it.
+        await deleteCid(work.codeCid);
+      }
+    }
+    // const project = stores().project.getProject(workId);
     //upload to pinata and set the url.
     const tmpPath = fileObj.path;
-    const cid = await pinZipToPinata(tmpPath);
+    const cid = await pinZipToPinata(tmpPath, { workId: work.id });
     if (!cid) {
       res.status(400).json({ message: "cid missing" });
       return;
     }
 
-    await stores().project.updateProject(ctx?.user, { code_cid: cid });
+    const updateRes = await stores().project.updateProject(ctx?.user, {
+      codeCid: cid,
+      id: work.id,
+    });
+    if (!updateRes.ok) {
+      return res.status(500).json({ message: "failed to upload" });
+    }
 
     res.status(200).json({ url: `https://ipfs.publicworks.art/ipfs/${cid}` });
   } finally {

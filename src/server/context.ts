@@ -1,48 +1,43 @@
-// The app's context - is generated for each incoming request
-import * as trpcNext from "@trpc/server/adapters/next";
-import { verifyCookie } from "../auth/jwt";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as trpc from "@trpc/server";
-import { UserRepo } from "../store/user";
-import { firestore, User } from "../store";
-import { stores } from "../store/stores";
+import * as trpcNext from "@trpc/server/adapters/next";
+import { NextApiRequest } from "next";
+import { User } from "../store";
 
-export async function createContext(
-  opts?: trpcNext.CreateNextContextOptions
-): Promise<Context> {
-  // Create your context based on the request object
-  // Will be available as `ctx` in all your resolvers
-  // This is just an example of something you'd might want to do in your ctx fn
-  async function getUser() {
-    if (opts?.req?.cookies && opts.req.cookies["PWToken"]) {
-      // const user = await decodeJwtToken(req.headers.authorization.split(' ')[1])
-      // return user;
-
-      const payload = verifyCookie(opts.req);
-      if (payload) {
-        return stores().user.getUser(payload.account);
-      }
-    }
-    return null;
-  }
-  const maybeUser = await getUser();
-  const user = maybeUser && maybeUser.ok && maybeUser.value;
-  if (!user) {
-    return {
-      authorized: false,
-      user: null,
-    };
-  } else {
-    return {
-      authorized: true,
-      user: user,
-    };
-  }
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface CreateContextOptions {
+  // session: Session | null
 }
 
-export type Context =
-  | { authorized: false | null | undefined | "" | 0; user: null }
-  | { authorized: true; user: User };
+/**
+ * Inner function for `createContext` where we create the context.
+ * This is useful for testing when we don't want to mock Next.js' request/response
+ */
+export async function createContextInner(
+  opts: trpcNext.CreateNextContextOptions
+): Promise<Context> {
+  return {
+    req: opts.req,
+    authorized: false,
+    user: undefined,
+  };
+}
 
-export const createRouter = () => {
-  return trpc.router<Context>();
-};
+export interface Context {
+  req: NextApiRequest;
+  authorized: boolean | undefined;
+  user: User | undefined | null;
+  [key: string]: unknown;
+}
+
+/**
+ * Creates context for an incoming request
+ * @link https://trpc.io/docs/context
+ */
+export async function createContext(
+  opts: trpcNext.CreateNextContextOptions
+): Promise<Context> {
+  // for API-response caching see https://trpc.io/docs/caching
+
+  return await createContextInner(opts);
+}
