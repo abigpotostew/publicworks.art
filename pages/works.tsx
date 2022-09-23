@@ -38,7 +38,7 @@ const GalleryComponent = ({ work }: { work: WorkSerializable }) => {
 };
 
 const WorksPage = () => {
-  const query = trpcNextPW.works.listWorks.useQuery({ limit: 10, offset: 0 });
+  // const query = trpcNextPW.works.listWorks.useQuery({ limit: 10, offset: 0 });
 
   return (
     <>
@@ -49,11 +49,29 @@ const WorksPage = () => {
           </RowWideContainer>
           <RowWideContainer>
             <Row xs={1} md={2} className="g-6">
-              {query.isLoading && <SpinnerLoading />}
-              {query.isSuccess &&
-                query.data.map((w, idx) => (
-                  <GalleryComponent key={w.id} work={w}></GalleryComponent>
-                ))}
+              {/*{query.isLoading && <SpinnerLoading />}*/}
+              {/*{query.isSuccess &&*/}
+              {/*  query.data.map((w, idx) => (*/}
+              {/*    <GalleryComponent key={w.id} work={w}></GalleryComponent>*/}
+              {/*  ))}*/}
+              {[work].map((w, idx) => (
+                <Col key={w.sg721}>
+                  <Link href={"/work/" + w.slug} passHref>
+                    <Card
+                      style={{ width: "32rem" }}
+                      className={`${styles.workCardContainer} `}
+                    >
+                      <Card.Img variant="top" src={w.previewImgThumb} />
+                      <Card.Body>
+                        <Card.Title className={stylesWork.workTitle}>
+                          {w.title} - {w.author}
+                        </Card.Title>
+                        <Card.Text>{w.blurb}</Card.Text>
+                      </Card.Body>
+                    </Card>
+                  </Link>
+                </Col>
+              ))}
             </Row>
 
             {/*{[work].map((w) => {*/}
