@@ -27,23 +27,21 @@ export async function fetchTokenUriInfo(tokenUri: string) {
 export function normalizeMetadataUri(ipfsUri: string, ipfsHost?: string) {
   return ipfsUri.replace(
     /ipfs:\/\//i,
-    process.env.NEXT_PUBLIC_IPFS_GATEWAY ||
-      ipfsHost ||
-      `https://ipfs.publicworks.art/ipfs/`
+    process.env.NEXT_PUBLIC_IPFS_GATEWAY || ipfsHost || `https://ipfs.io/ipfs/`
   );
 }
 
 export function normalizeIpfsUri(ipfsUri: string) {
   return ipfsUri.replace(
     /ipfs:\/\//i,
-    process.env.NEXT_PUBLIC_IPFS_GATEWAY || "https://ipfs.publicworks.art/ipfs/"
+    process.env.NEXT_PUBLIC_IPFS_GATEWAY || "https://ipfs.io/ipfs/"
   );
 }
 
 export function normalizeIpfsAnimationUri(ipfsUri: string) {
   return ipfsUri.replace(
     /ipfs:\/\//i,
-    process.env.NEXT_PUBLIC_IPFS_GATEWAY || "https://ipfs.publicworks.art/ipfs/"
+    process.env.NEXT_PUBLIC_IPFS_GATEWAY || "https://ipfs.io/ipfs/"
   );
 }
 
@@ -54,7 +52,7 @@ export function getImageUri(ipfsUri: string, queryArgs = "") {
 export const getTokenMetadata = async (
   sg721: string,
   tokenId: string,
-  ipfsHost = "https://ipfs.publicworks.art/ipfs/"
+  ipfsHost = "https://ipfs.io/ipfs/"
 ) => {
   const msgBase64 = Buffer.from(
     JSON.stringify({ nft_info: { token_id: tokenId } })

@@ -2,9 +2,39 @@ import { Err, Ok, Result } from "../util/result";
 import { User } from "./user.types";
 import { CreateProjectRequest, EditProjectRequest } from "./project.types";
 import { dataSource } from "../typeorm/datasource";
-import { WorkEntity } from "../model";
+import { TokenEntity, UserEntity, WorkEntity } from "../model";
+import { IsNull, Not } from "typeorm";
 
 export class ProjectRepo {
+  async getProjectPreviewImage(id: string): Promise<TokenEntity | null> {
+    const res = await dataSource()
+      .getRepository(TokenEntity)
+      .findOne({
+        where: {
+          work: {
+            id,
+          },
+          image_url: Not(IsNull()),
+        },
+        order: {
+          token_id: "asc", //todo find a better order using mint block height??
+        },
+      });
+    return res;
+  }
+
+  async getProjects({
+    limit,
+    offset,
+  }: {
+    limit: number;
+    offset: number;
+  }): Promise<WorkEntity[]> {
+    return dataSource().getRepository(WorkEntity).find({
+      take: limit,
+      skip: offset,
+    });
+  }
   async getProject(id: string): Promise<WorkEntity | null> {
     return dataSource()
       .getRepository(WorkEntity)
@@ -12,6 +42,7 @@ export class ProjectRepo {
         where: {
           id: id,
         },
+        relations: ["owner"],
       });
   }
 
@@ -24,7 +55,7 @@ export class ProjectRepo {
   }
 
   async createProject(
-    user: User,
+    owner: UserEntity,
     request: CreateProjectRequest
   ): Promise<Result<WorkEntity>> {
     let work = new WorkEntity();
@@ -32,7 +63,7 @@ export class ProjectRepo {
       ...work,
       ...request,
       codeCid: "",
-      creator: user.address,
+      creator: owner.address,
       maxTokens: request.projectSize || 0,
       name: request.projectName,
       priceStars: 1,
@@ -45,6 +76,7 @@ export class ProjectRepo {
       resolution: null,
       license: null,
       startDate: request.startDate ? new Date(request.startDate) : null,
+      owner,
     };
     work = await dataSource().getRepository(WorkEntity).save(work);
     return Ok(work);

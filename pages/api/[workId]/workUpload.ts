@@ -10,6 +10,7 @@ import {
 import { stores } from "../../../src/store/stores";
 import { getContext } from "../../../src/server/trpc";
 import { initializeIfNeeded } from "../../../src/typeorm/datasource";
+import { ipfsUrl } from "../../../src/ipfs/gateway";
 
 export default async function handler(
   req: NextApiRequest,
@@ -29,13 +30,15 @@ export default async function handler(
   }
 
   const { workId } = req.query;
+
   if (typeof workId !== "string" || !Number.isFinite(parseInt(workId))) {
     res.status(400).json({ message: "bad id" });
     return;
   }
 
   const work = await stores().project.getProject(workId);
-  if (!work || work.creator !== ctx?.user?.address) {
+
+  if (work?.owner.id !== ctx.user.id) {
     res.status(404).json({ message: "not found" });
     return;
   }
@@ -94,7 +97,7 @@ export default async function handler(
       return res.status(500).json({ message: "failed to upload" });
     }
 
-    res.status(200).json({ url: `https://ipfs.publicworks.art/ipfs/${cid}` });
+    res.status(200).json({ url: ipfsUrl(cid) });
   } finally {
     if (data?.files) {
       for (const fileName of Object.keys(data.files)) {

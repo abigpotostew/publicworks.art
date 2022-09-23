@@ -69,7 +69,11 @@ export const CreateWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   const [projectDescription, setProjectDescription] = useState<string>(
     defaults.description
   );
-  const [projectBlurb, setProjectBlurb] = useState<string>(defaults.blurb);
+  const [projectBlurb, setProjectBlurbSt] = useState<string>(defaults.blurb);
+  const setProjectBlurb = (v: string) => {
+    console.log("blurb", v);
+    setProjectBlurbSt(v);
+  };
   const [projectSize, setProjectSize] = useState<number>(defaults.maxTokens);
   const [startDate, setStartDate] = useState<Date>(defaultDate());
   const [royaltyAddress, setRoyaltyAddress] = useState<string>(
@@ -98,31 +102,16 @@ export const CreateWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
     setStartDate(date);
   };
 
-  const onSubmit: FormEventHandler<HTMLFormElement> = useCallback(
-    (e) => {
-      e.preventDefault();
-      // create project in api
-      // create contract
-      props.onCreateProject({
-        projectName,
-        projectBlurb,
-        projectSize,
-        projectDescription,
-        startDate: startDate.toISOString(),
-        royaltyAddress,
-        royaltyPercent,
-        selector,
-        resolution,
-        priceStars,
-        pixelRatio,
-        license,
-      });
-    },
-    [
+  const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+    // create project in api
+    // create contract
+    const req = {
       projectName,
+      projectBlurb,
       projectSize,
       projectDescription,
-      startDate,
+      startDate: startDate.toISOString(),
       royaltyAddress,
       royaltyPercent,
       selector,
@@ -130,8 +119,10 @@ export const CreateWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
       priceStars,
       pixelRatio,
       license,
-    ]
-  );
+    };
+    console.log("hello heres the request", req);
+    props.onCreateProject(req);
+  };
 
   return (
     <Container>

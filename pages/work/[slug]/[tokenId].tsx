@@ -33,7 +33,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       metadata = await getTokenMetadata(
         work.sg721,
         tokenId,
-        "https://ipfs.publicworks.art/ipfs/"
+        process.env.NEXT_PUBLIC_IPFS_GATEWAY
       );
     } catch (e) {
       console.warn(`error fetching attempt 2 ${slug} ${tokenId}`, e);

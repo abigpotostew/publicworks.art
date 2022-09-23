@@ -32,7 +32,12 @@ const CreatePage = () => {
   useEffect(() => {
     const token = getCookie("PWToken");
     if (!token) {
-      router.push("/login");
+      router.push({
+        pathname: "/login",
+        query: {
+          redirect: "/create",
+        },
+      });
       return;
     }
     const decoded = jwt.decode(token);

@@ -47,7 +47,7 @@ const generateTxHash = () => {
     .map((_) => alphabet[(Math.random() * alphabet.length) | 0])
     .join("");
 };
-// type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+
 const EditWorkPage = () => {
   const router = useRouter();
   const { workId: workIdIn } = router.query;
@@ -171,7 +171,7 @@ const EditWorkPage = () => {
           {work?.sg721 && (
             <div>
               {" "}
-              <Button onClick={() => setStage("view")}>View</Button>
+              <Button onClick={() => setStage("view")}>Next</Button>
             </div>
           )}
         </Container>

@@ -10,6 +10,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { AuditedEntity } from "./audited-entity";
+import { UserEntity } from "./user.entity";
 
 @Entity({ name: "works" })
 export class WorkEntity extends AuditedEntity {
@@ -58,6 +59,9 @@ export class WorkEntity extends AuditedEntity {
 
   @OneToMany(() => TokenEntity, (r) => r.work)
   tokens: Relation<TokenEntity>[] | null;
+  @ManyToOne(() => UserEntity, (r) => r.ownedWorks)
+  @JoinColumn({ name: "owner_id" })
+  owner: UserEntity;
 }
 
 @Entity({ name: "work_tokens" })

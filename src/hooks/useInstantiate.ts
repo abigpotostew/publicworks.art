@@ -157,7 +157,7 @@ async function instantiate(work: WorkSerializable) {
       code_uri: "ipfs://" + work.codeCid,
       collection_info: {
         creator: account,
-        description: work.description,
+        description: work.blurb,
         image: "ipfs://QmU9rB3dEHjYF3YtXHTJLxCDW1R1MLh1NWpooxbYg5gV34", //TODO
         external_link: "https://example.com", //todo
         royalty_info: royaltyInfo,

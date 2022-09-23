@@ -1,12 +1,17 @@
-import { ReactElement, useCallback } from "react";
+import { ReactElement, useCallback, useState } from "react";
 import { RowWideContainer } from "../src/components/layout/RowWideContainer";
 import MainLayout from "../src/layout/MainLayout";
 import { Button, Container } from "react-bootstrap";
 import { useQueryContract } from "../src/hooks/useQueryContract";
+import { useRouter } from "next/router";
 
 const AuthPage = () => {
+  const router = useRouter();
+  const { query } = router;
   const { queryClient } = useQueryContract();
+  const [message, setMessage] = useState<string | null>(null);
   const onLogin = useCallback(async () => {
+    setMessage(null);
     //request keplr tokenq
     //set cookie
     //
@@ -21,10 +26,21 @@ const AuthPage = () => {
     }
     console.log("accounts", accounts);
     const otp = Math.floor(Math.random() * 100_000).toString();
-    await queryClient.signMessage(otp);
+    const ok = await queryClient.signMessage(otp);
     console.log("finished logging in");
+    if (!ok) {
+      //show an error
+      setMessage("Unauthrorized");
+    } else {
+      if (typeof query.redirect === "string") {
+        await router.push({
+          pathname: query.redirect,
+        });
+      }
+    }
+
     //call backend auth with token
-  }, [queryClient]);
+  }, [queryClient, router]);
   return (
     <>
       <div>

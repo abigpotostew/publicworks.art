@@ -109,7 +109,7 @@ export class QueryContract {
         gas: "1",
       },
       chain_id: this.config.chainId,
-      memo: "You are powerful and capable, friend.",
+      memo: "Welcome to publicworks.art",
       account_number: "0",
       sequence: "0",
     };
@@ -152,12 +152,14 @@ export class QueryContract {
       }
       // Successful
       const responseJson = await response.json();
+      return true;
     } catch (e) {
       if ((e as any)?.message === "Request rejected") {
         console.log({ message: "Rejected signing 🙅" });
       } else {
         console.log({ message: `Unknown error 😬: ${(e as any).message}` });
       }
+      return false;
     }
   }
 }
@@ -216,8 +218,8 @@ const isValidSignature = async (
 ) => {
   let valid = false;
   try {
-    let binaryHashSigned = sha256(serializeSignDoc(signed));
-    let binaryPublicKey = new Uint8Array(Object.values(publicKey));
+    const binaryHashSigned = sha256(serializeSignDoc(signed));
+    const binaryPublicKey = new Uint8Array(Object.values(publicKey));
 
     valid = await Secp256k1.verifySignature(
       Secp256k1Signature.fromFixedLength(fromBase64(signature)),
