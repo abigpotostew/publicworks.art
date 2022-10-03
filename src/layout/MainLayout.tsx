@@ -1,20 +1,18 @@
-import { Container } from "react-bootstrap";
 import { FC } from "react";
 import Head from "next/head";
 import { NavBar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 import styles from "../../styles/Home.module.css";
-import {
-  CosmosWalletProviderContext,
-  useCosmosWallet,
-} from "../components/provider/CosmosWalletProvider";
 import { useQueryContract } from "../hooks/useQueryContract";
+import { CosmosWalletProviderContext } from "../components/provider/CosmosWalletProvider";
+
 interface ILayout {
   description?: string;
   metaTitle?: string;
   image?: string;
   children: any;
 }
+
 const MainLayout: FC<ILayout> = ({
   description = "A new generative art platform built for the Cosmos on a carbon neutral tech stack.",
   metaTitle = "",
