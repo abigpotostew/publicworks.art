@@ -1,10 +1,12 @@
-import { ReactElement, useCallback, useState } from "react";
+import { FC, ReactElement, useCallback, useEffect, useState } from "react";
 import Head from "next/head";
 import { BsArrowRepeat } from "react-icons/bs";
 import { useRouter } from "next/router";
-import { CreateProjectRequest } from "../../../src/store";
-import { CreateWork } from "../../../src/components/creatework/CreateWork";
-import { FlexBox } from "../../../src/components/layout/FlexBox";
+import { EditProjectRequest } from "../../../src/store";
+import {
+  FlexBox,
+  FlexBoxCenter,
+} from "../../../src/components/layout/FlexBoxCenter";
 import { trpcNextPW } from "../../../src/server/utils/trpc";
 import { normalizeMetadataUri } from "../../../src/wasm/metadata";
 import SpinnerLoading from "../../../src/components/loading/Loader";
@@ -14,6 +16,19 @@ import MainLayout from "../../../src/layout/MainLayout";
 import { Button, Container } from "react-bootstrap";
 import { ConfirmConfig } from "../../../src/components/creatework/ConfirmConfig";
 import { useInstantiate } from "../../../src/hooks/useInstantiate";
+import {
+  Step,
+  StepProgressBar,
+} from "../../../src/components/progress/StepProgressBar";
+import { generateTxHash } from "../../../src/generateHash";
+import { NameWork } from "../../../src/components/creatework/NameWork";
+import { onWorkUpload } from "../../../src/works/upload";
+import { DescribeWork } from "../../../src/components/creatework/DescribeWork";
+import { NftDetails2 } from "../../../src/components/creatework/NftDetails2";
+import { UploadCoverImage } from "../../../src/components/creatework/UploadCoverImage";
+import { ConfettiScreen } from "../../../src/components/celebration/ConfettiScreen";
+import { useCosmosWallet } from "../../../src/components/provider/CosmosWalletProvider";
+import { TooltipInfo } from "../../../src/components/TooltipInfo";
 
 // export const getServerSideProps: GetServerSideProps = async (context) => {
 //   await initializeIfNeeded();
@@ -40,12 +55,50 @@ import { useInstantiate } from "../../../src/hooks/useInstantiate";
 //     },
 //   };
 // };
-const generateTxHash = () => {
-  const alphabet = "0123456789ABCDEF";
-  return Array(64)
-    .fill(0)
-    .map((_) => alphabet[(Math.random() * alphabet.length) | 0])
-    .join("");
+
+const stages = [
+  "name_art",
+  "text",
+  "nft_detail",
+  "cover_image",
+  // "review",
+  "submit",
+  "view",
+];
+const stageMd = {
+  name_art: {
+    label: "Code",
+  },
+  text: {
+    label: "Describe",
+  },
+  nft_detail: {
+    label: "Config",
+  },
+  cover_image: {
+    label: "Image",
+  },
+  submit: {
+    label: "Submit",
+  },
+  view: {
+    label: "Mint",
+  },
+};
+interface INavButtons {
+  onNextClick?: () => void;
+  onPrevClick?: () => void;
+}
+
+const NavButtons: FC<INavButtons> = ({ onNextClick, onPrevClick }) => {
+  return (
+    <Container fluid={true}>
+      <FlexBox style={{ justifyContent: "flex-end" }}>
+        {onPrevClick && <Button onClick={onPrevClick}>Prev</Button>}
+        {onNextClick && <Button onClick={onNextClick}>Next</Button>}
+      </FlexBox>
+    </Container>
+  );
 };
 
 const EditWorkPage = () => {
@@ -54,16 +107,19 @@ const EditWorkPage = () => {
   const workId = workIdIn?.toString() || "";
   const [hash, setHash] = useState<string>(generateTxHash());
 
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  const wallet = useCosmosWallet();
+
   const { stage: stageQp } = router.query;
-  const [stage, setStageState] = useState<string>(
-    stageQp?.toString() || "edit"
-  );
+  const [stage, setStageState] = useState<string>("");
+  useEffect(() => {
+    setStageState(router.query?.stage?.toString() || stages[0]);
+  }, [router]);
+  console.log("STAGE IS", stage);
   const setStage = (newStage: string) => {
+    setShowConfetti(false);
     setStageState(newStage);
-    // console.log("router", router);
-    // const url = new URL(router.asPath);
-    // url.searchParams.set("stage", newStage);
-    // router.push(url.href);
     const { pathname, query } = router;
     const { stage } = query;
     router.push({
@@ -74,6 +130,13 @@ const EditWorkPage = () => {
       },
     });
   };
+  const setStageNextFrom = (currStage: string) => {
+    setStage(stages[stages.indexOf(currStage) + 1]);
+  };
+  const setStagePrevFrom = (currStage: string) => {
+    mutation.reset();
+    setStage(stages[stages.indexOf(currStage) - 1]);
+  };
 
   const utils = trpcNextPW.useContext();
   const getWorkQuery = trpcNextPW.works.getWorkById.useQuery(
@@ -82,7 +145,6 @@ const EditWorkPage = () => {
     },
     { enabled: workId !== "" } //workId is temporarily empty string while router loads
   );
-  const codeUrl = getWorkQuery?.data?.codeCid;
   const work =
     !getWorkQuery.isLoading && !getWorkQuery.error && getWorkQuery.data
       ? getWorkQuery.data
@@ -101,7 +163,7 @@ const EditWorkPage = () => {
   });
 
   const onCreateProject = useCallback(
-    async (req: CreateProjectRequest) => {
+    async (req: Partial<EditProjectRequest>) => {
       console.log("workId", workId);
       console.log("edit request", { ...req, id: workId });
       mutation.mutate({ ...req, id: workId });
@@ -109,71 +171,99 @@ const EditWorkPage = () => {
     [mutation]
   );
 
-  const onUpload = useCallback(
-    async (files: File[]) => {
-      // console.log("files",files)
+  const onUpload = async (files: File[]) => {
+    await onWorkUpload(workId, files, utils);
+  };
 
-      if (files.length !== 1) {
-        throw new Error("required single file");
-      }
-      const formData = new FormData();
-      formData.append("file", files[0]);
-      const response = await fetch(`/api/${workId}/workUpload`, {
-        method: "POST",
-        body: formData,
-      });
-      if (!response.ok) {
-        //todo set error status
-        return;
-      }
-      const newCodeUrl = (await response.json()).url;
-      // setCodeUrl(newCodeUrl);
-      console.log("workUpload status", newCodeUrl);
-      utils.works.getWorkById.invalidate();
-    },
-    [workId]
-  );
-  const { instantiate } = useInstantiate();
+  const { instantiateMutation } = useInstantiate();
 
   const onClickRefreshHash = useCallback(() => {
     setHash(generateTxHash());
   }, []);
 
   const onInstantiate = useCallback(async () => {
-    if (!work) return;
-    const res = await instantiate(work);
-    mutationContracts.mutate({
-      sg721: res.sg721,
-      minter: res.minter,
-      id: work.id,
-    });
     //confetti
+    if (!work) return;
+    await instantiateMutation.mutateAsync(work);
+    console.log("instantiate and showing confettie");
+    setShowConfetti(true);
   }, [work]);
+
+  const createStep = (stageEnum: string): Step => {
+    const completed = stages.indexOf(stage) >= stages.indexOf(stageEnum);
+
+    return {
+      label: (stages.indexOf(stageEnum) + 1).toString(),
+      // @ts-ignore
+      description: stageMd[stageEnum]?.label || "<missing>",
+      active: stage === stageEnum,
+      completed,
+      onClick: completed ? () => setStage(stageEnum) : undefined,
+    };
+  };
+
+  // const steps: Step[] = [
+  //   {
+  //     label: "1",
+  //     description: "Edit",
+  //     active: stage === "edit",
+  //     completed: stages.indexOf(stage) >= stages.indexOf("edit"),
+  //   },
+  //   {
+  //     label: "2",
+  //     description: "Submit",
+  //     active: stage === "submit",
+  //     completed: stage !== "edit" && stage !== "submit",
+  //   },
+  //   {
+  //     label: "3",
+  //     description: "View",
+  //     active: stage === "view",
+  //     completed: stage !== "edit" && stage !== "view" && stage !== "submit",
+  //   },
+  // ];
+  const steps = stages.map((s) => {
+    return createStep(s);
+  });
 
   return (
     <>
       <Head>
         <title key={"title"}>{`Create ${workId} - publicworks.art`}</title>
       </Head>
+      {showConfetti && <ConfettiScreen />}
+      <StepProgressBar items={steps}></StepProgressBar>
       {stage === "submit" && (
         <Container fluid={false}>
-          <FlexBox fluid={false}>
+          <FlexBoxCenter fluid={false}>
             {work && <ConfirmConfig work={work} />}
-          </FlexBox>
+          </FlexBoxCenter>
           <div>
             {
-              <Button onClick={() => onInstantiate()}>
-                Instantiate On Chain
+              <Button
+                disabled={!wallet.isConnected}
+                onClick={() => onInstantiate()}
+              >
+                {work && !work.sg721 && <span>Instantiate On Chain</span>}
+                {work && work.sg721 && (
+                  <span>
+                    Instantiate + Replace Chain{" "}
+                    <TooltipInfo>
+                      Your contract is already deployed. Instantiating it again
+                      will replace the old instance on publicworks.art
+                    </TooltipInfo>
+                  </span>
+                )}
               </Button>
             }
           </div>
-          <div>{<Button onClick={() => setStage("edit")}>Back</Button>}</div>
-          {work?.sg721 && (
-            <div>
-              {" "}
-              <Button onClick={() => setStage("view")}>Next</Button>
-            </div>
-          )}
+
+          <NavButtons
+            onPrevClick={() => setStagePrevFrom("submit")}
+            onNextClick={
+              work?.sg721 ? () => setStageNextFrom("submit") : undefined
+            }
+          ></NavButtons>
         </Container>
       )}
       {stage === "view" && work && (
@@ -184,49 +274,170 @@ const EditWorkPage = () => {
           >
             Mint
           </a>
-          <div>{<Button onClick={() => setStage("submit")}>Back</Button>}</div>
+          <div>
+            {<Button onClick={() => setStagePrevFrom("view")}>Back</Button>}
+          </div>
         </Container>
       )}
-      {stage === "edit" && (
+
+      {stage === "text" && (
+        <Container fluid={false}>
+          {getWorkQuery.isLoading && <SpinnerLoading></SpinnerLoading>}
+          {getWorkQuery.error && <div>{getWorkQuery.error.message}</div>}
+          {work && (
+            <DescribeWork
+              defaultValues={work}
+              onCreateProject={onCreateProject}
+            ></DescribeWork>
+          )}
+          {mutation.isSuccess && <div>Successfully saved</div>}
+          <NavButtons
+            onPrevClick={() => setStagePrevFrom("text")}
+            onNextClick={() => setStageNextFrom("text")}
+          ></NavButtons>
+        </Container>
+      )}
+
+      {stage === "cover_image" && (
         <>
           {getWorkQuery.isLoading && <SpinnerLoading></SpinnerLoading>}
           {getWorkQuery.error && <div>{getWorkQuery.error.message}</div>}
           {work && (
-            <FlexBox fluid={false}>
-              <div>
-                <CreateWork
-                  onCreateProject={onCreateProject}
-                  defaultValues={work}
-                />
-                {!mutation.isLoading && mutation.error && (
-                  <div>{mutation.error.message}</div>
-                )}
-                {mutation.isSuccess && <div>Successfully saved</div>}
-                {<Button onClick={() => setStage("submit")}>Next</Button>}
-              </div>
-              <div>
-                {work && (
-                  <>
-                    <LiveMedia
-                      ipfsUrl={
-                        normalizeMetadataUri("ipfs://" + work.codeCid) +
-                        "?hash=" +
-                        hash
-                      }
-                      minHeight={500}
-                      style={{}}
-                    ></LiveMedia>
-                    <a onClick={onClickRefreshHash}>
-                      <BsArrowRepeat />
-                    </a>
-                  </>
-                )}
-                <DropZone onUpload={(files) => onUpload(files)} />
-              </div>
-            </FlexBox>
+            <Container>
+              <UploadCoverImage
+                onCreateProject={onCreateProject}
+                defaultValues={work}
+              />
+              {!mutation.isLoading && mutation.error && (
+                <div>{mutation.error.message}</div>
+              )}
+              {mutation.isSuccess && <div>Successfully saved</div>}
+              <NavButtons
+                onPrevClick={() => setStagePrevFrom("cover_image")}
+                onNextClick={() => setStageNextFrom("cover_image")}
+              ></NavButtons>
+            </Container>
           )}
         </>
       )}
+
+      {stage === "nft_detail" && (
+        <>
+          {getWorkQuery.isLoading && <SpinnerLoading></SpinnerLoading>}
+          {getWorkQuery.error && <div>{getWorkQuery.error.message}</div>}
+          {work && (
+            <Container>
+              <FlexBoxCenter fluid={false}>
+                <div>
+                  <NftDetails2
+                    onCreateProject={onCreateProject}
+                    defaultValues={work}
+                  />
+                  {!mutation.isLoading && mutation.error && (
+                    <div>{mutation.error.message}</div>
+                  )}
+                  {mutation.isSuccess && <div>Successfully saved</div>}
+                </div>
+                <div>
+                  {work && (
+                    <>
+                      <LiveMedia
+                        ipfsUrl={
+                          normalizeMetadataUri("ipfs://" + work.codeCid) +
+                          "?hash=" +
+                          hash
+                        }
+                        minHeight={500}
+                        style={{}}
+                      ></LiveMedia>
+                      <a onClick={onClickRefreshHash}>
+                        <FlexBox
+                          style={{
+                            justifyContent: "flex-start",
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          <div>New Hash</div>
+                          <BsArrowRepeat style={{ marginLeft: ".5rem" }} />
+                        </FlexBox>
+                      </a>
+                    </>
+                  )}
+                  <DropZone onUpload={(files) => onUpload(files)} />
+                </div>
+              </FlexBoxCenter>
+              <NavButtons
+                onPrevClick={() => setStagePrevFrom("nft_detail")}
+                onNextClick={
+                  mutation.isSuccess
+                    ? () => setStageNextFrom("nft_detail")
+                    : undefined
+                }
+              ></NavButtons>
+            </Container>
+          )}
+        </>
+      )}
+
+      {stage === "name_art" && (
+        <>
+          {getWorkQuery.isLoading && <SpinnerLoading></SpinnerLoading>}
+          {getWorkQuery.error && <div>{getWorkQuery.error.message}</div>}
+          {work && (
+            <Container>
+              <h2>Work Name & Code Upload</h2>
+              <FlexBoxCenter fluid={false}>
+                <div>
+                  <NameWork
+                    onUpload={onUpload}
+                    onCreateProject={onCreateProject}
+                    defaultValues={work}
+                  />
+                  {!mutation.isLoading && mutation.error && (
+                    <div>{mutation.error.message}</div>
+                  )}
+                  {mutation.isSuccess && <div>Successfully saved</div>}
+
+                  <NavButtons
+                    onNextClick={() => setStageNextFrom("name_art")}
+                    onPrevClick={() => setStagePrevFrom("name_art")}
+                  ></NavButtons>
+                </div>
+              </FlexBoxCenter>
+            </Container>
+          )}
+        </>
+      )}
+
+      {/*{stage === "review" && (*/}
+      {/*  <>*/}
+      {/*    {getWorkQuery.isLoading && <SpinnerLoading></SpinnerLoading>}*/}
+      {/*    {getWorkQuery.error && <div>{getWorkQuery.error.message}</div>}*/}
+      {/*    {work && (*/}
+      {/*      <Container>*/}
+      {/*        <h2>Review</h2>*/}
+
+      {/*        <div>*/}
+      {/*          <NameWork*/}
+      {/*            onUpload={onUpload}*/}
+      {/*            onCreateProject={onCreateProject}*/}
+      {/*            defaultValues={work}*/}
+      {/*          />*/}
+      {/*          {!mutation.isLoading && mutation.error && (*/}
+      {/*            <div>{mutation.error.message}</div>*/}
+      {/*          )}*/}
+      {/*          {mutation.isSuccess && <div>Successfully saved</div>}*/}
+
+      {/*          <NavButtons*/}
+      {/*            onPrevClick={() => setStagePrevFrom("review")}*/}
+      {/*            onNextClick={() => setStageNextFrom("review")}*/}
+      {/*          ></NavButtons>*/}
+      {/*        </div>*/}
+      {/*      </Container>*/}
+      {/*    )}*/}
+      {/*  </>*/}
+      {/*)}*/}
     </>
   );
 };

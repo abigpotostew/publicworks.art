@@ -10,6 +10,10 @@ import { Decimal } from "@stargazezone/types/contracts/minter/instantiate_msg";
 import { Coin } from "@stargazezone/types/contracts/minter/shared-types";
 import { coins } from "cosmwasm";
 import useAsync from "./useAsync";
+import { trpcNextPW } from "../server/utils/trpc";
+import { useMutation } from "@tanstack/react-query";
+import { useCosmosWallet } from "../components/provider/CosmosWalletProvider";
+import { ConnectedQueryContract, QueryContract } from "../wasm/keplr/query";
 
 function formatRoyaltyInfo(
   royaltyPaymentAddress: null | string,
@@ -77,21 +81,21 @@ function clean(obj: any) {
   }
   return obj;
 }
-let client:
+const client:
   | {
       signer: SigningCosmWasmClient;
       offlineSigner: OfflineSigner | OfflineDirectSigner;
     }
   | undefined = undefined;
-async function instantiate(work: WorkSerializable) {
+async function instantiate(
+  work: WorkSerializable,
+  client: ConnectedQueryContract
+) {
   if (!work.id) {
     throw new Error("work id invalid");
   }
-  if (!client) {
-    client = await keplrClient(config);
-  }
-  const { offlineSigner, signer } = client;
-  const [{ address }] = await offlineSigner.getAccounts();
+  const signer = client.keplrClient;
+  const [{ address }] = await client.getAccounts();
   const account = toStars(address);
   // const whitelistContract = config.whitelistContract
   //   ? toStars(config.whitelistContract)
@@ -145,6 +149,9 @@ async function instantiate(work: WorkSerializable) {
   if (!work.priceStars) {
     throw new Error("price invalid");
   }
+  if (!work.coverImageCid) {
+    throw new Error("missing cover image");
+  }
   const tempMsg: InstantiateMsg = {
     base_token_uri: `https://testnetmetadata.publicworks.art/${work.id}`,
     num_tokens: work.maxTokens,
@@ -158,8 +165,8 @@ async function instantiate(work: WorkSerializable) {
       collection_info: {
         creator: account,
         description: work.blurb,
-        image: "ipfs://QmU9rB3dEHjYF3YtXHTJLxCDW1R1MLh1NWpooxbYg5gV34", //TODO
-        external_link: "https://example.com", //todo
+        image: "ipfs://" + work.coverImageCid,
+        external_link: work.externalLink,
         royalty_info: royaltyInfo,
       },
     },
@@ -221,8 +228,26 @@ async function instantiate(work: WorkSerializable) {
 }
 
 export const useInstantiate = () => {
-  const instantiateCb = useCallback(async (work: WorkSerializable) => {
-    return await instantiate(work);
-  }, []);
-  return { instantiate: instantiateCb };
+  const utils = trpcNextPW.useContext();
+  const { onlineClient, isConnected } = useCosmosWallet();
+  const mutationContracts = trpcNextPW.works.editWorkContracts.useMutation({
+    onSuccess() {
+      utils.works.getWorkById.invalidate();
+    },
+  });
+
+  const instantiateMutation = useMutation(async (work: WorkSerializable) => {
+    ///
+    if (!onlineClient || !isConnected) return false;
+    if (!work) return false;
+    const res = await instantiate(work, onlineClient);
+    await mutationContracts.mutateAsync({
+      sg721: res.sg721,
+      minter: res.minter,
+      id: work.id,
+    });
+    return true;
+  });
+
+  return { instantiateMutation };
 };

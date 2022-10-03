@@ -4,11 +4,16 @@ import { Secp256k1, Secp256k1Signature, sha256 } from "@cosmjs/crypto";
 import { serializeSignDoc } from "../../src/wasm/keplr/query";
 import { fromBase64 } from "@cosmjs/encoding";
 import { issueToCookie } from "../../src/auth/jwt";
+import wasmConfig from "../../src/wasm/config";
+import { store } from "next/dist/build/output/store";
+import { stores } from "../../src/store/stores";
+import { initializeIfNeeded } from "../../src/typeorm/datasource";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  await initializeIfNeeded();
   if (req.method !== "POST") {
     res.status(404).json({ message: "not found" });
     return;
@@ -27,14 +32,23 @@ export default async function handler(
     res.status(403).json({ message: "forbidden" });
     return;
   }
-  const allowlist = [
-    "stars1euu359d2cwe46j8a8fqkmcrhzjq6j642htt7rn",
-    "stars1524hf3dmcl8lagnfhuct4k2002pv73yswnl9cf",
-    "stars1up88jtqzzulr6z72cq6uulw9yx6uau6ew0zegy",
-  ];
-  if (!allowlist.includes(account.address)) {
-    res.status(401).json({ message: "unauthorized" });
-    return;
+
+  if (!wasmConfig.testnet) {
+    const allowlist = [
+      "stars1euu359d2cwe46j8a8fqkmcrhzjq6j642htt7rn",
+      "stars1524hf3dmcl8lagnfhuct4k2002pv73yswnl9cf",
+      "stars1up88jtqzzulr6z72cq6uulw9yx6uau6ew0zegy",
+    ];
+    if (!allowlist.includes(account.address)) {
+      res.status(401).json({ message: "unauthorized" });
+      return;
+    }
+  }
+  try {
+    await stores().user.createIfNeeded(account.address);
+  } catch (e) {
+    console.error(e);
+    throw e;
   }
 
   issueToCookie(account.address, req, res);

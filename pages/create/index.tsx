@@ -8,7 +8,9 @@ import MainLayout from "../../src/layout/MainLayout";
 import SpinnerLoading from "../../src/components/loading/Loader";
 import { getCookie } from "../../src/util/cookie";
 import { trpcNextPW } from "../../src/server/utils/trpc";
-import { CreateProjectRequest } from "../../src/store";
+import { CreateProjectRequest, EditProjectRequest } from "../../src/store";
+import { NameWork } from "../../src/components/creatework/NameWork";
+import { onWorkUpload } from "../../src/works/upload";
 
 const CreatePage = () => {
   const utils = trpcNextPW.useContext();
@@ -20,7 +22,7 @@ const CreatePage = () => {
   });
 
   useEffect(() => {
-    console.log("in mutation effect", mutation);
+    // console.log("in mutation effect", mutation);
     if (mutation && mutation.isSuccess) {
       (async () => {
         await router.push(`/create/${mutation?.data?.id}`);
@@ -55,9 +57,12 @@ const CreatePage = () => {
   }, [router]);
 
   const onCreateProject = useCallback(
-    async (req: CreateProjectRequest) => {
-      console.log("res", req);
-      mutation.mutate({ ...req });
+    async (req: Partial<EditProjectRequest>) => {
+      // console.log("res", req);
+      if (!req.projectName) {
+        throw new Error("missing name");
+      }
+      mutation.mutate({ projectName: req.projectName });
     },
     [mutation]
   );
@@ -91,7 +96,7 @@ const CreatePage = () => {
           </RowWideContainer>
 
           <RowWideContainer>
-            {authLoaded && <CreateWork onCreateProject={onCreateProject} />}
+            {authLoaded && <NameWork onCreateProject={onCreateProject} />}
             {mutation.isLoading && <SpinnerLoading />}
             {mutation.error && <p>{mutation.error.message}</p>}
           </RowWideContainer>

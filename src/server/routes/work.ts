@@ -6,6 +6,12 @@ import { CreateProjectRequestZ, editProjectZod } from "../../store";
 import { TRPCError } from "@trpc/server";
 import { serializeWork } from "../../dbtypes/works/serialize-work";
 import { normalizeMetadataUri } from "../../wasm/metadata";
+import {
+  deleteCid,
+  getMetadataWorkId,
+  uploadFileToPinata,
+} from "../../ipfs/pinata";
+import { dataUrlToBuffer } from "../../base64/dataurl";
 
 const createWork = authorizedProcedure
   .input(CreateProjectRequestZ)
@@ -113,6 +119,42 @@ const workPreviewImg = baseProcedure
     return normalizeMetadataUri(preview.image_url);
   });
 
+const uploadPreviewImg = authorizedProcedure
+  .input(
+    z.object({
+      workId: z.string(),
+      coverImageDataUrl: z.string(),
+    })
+  )
+
+  .mutation(async ({ input, ctx }) => {
+    const work = await stores().project.getProject(input.workId);
+    if (!work || work.owner.id !== ctx.user.id) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+    const { buffer, contentType } = dataUrlToBuffer(input.coverImageDataUrl);
+    console.log("contentType", contentType);
+    if (work.coverImageCid) {
+      const existinWorkId = await getMetadataWorkId(work.coverImageCid);
+      if (existinWorkId === work.id) {
+        //only delete it if the current user owns it.
+        await deleteCid(work.coverImageCid);
+      }
+    }
+    const coverImageCid = await uploadFileToPinata(buffer, contentType, {
+      workId: work.id,
+    });
+    const response = await stores().project.updateProject(ctx.user, {
+      id: work.id,
+      coverImageCid,
+    });
+    if (!response.ok) {
+      throw response.error;
+    }
+
+    return { ok: true };
+  });
+
 export const workRouter = t.router({
   // Public
   createWork,
@@ -121,4 +163,5 @@ export const workRouter = t.router({
   getWorkById,
   listWorks,
   workPreviewImg,
+  uploadPreviewImg,
 });

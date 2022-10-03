@@ -107,6 +107,8 @@ export class ProjectRepo {
       priceStars: request.priceStars,
       license: request.license,
 
+      coverImageCid: request.coverImageCid,
+
       sg721: request.sg721,
       minter: request.minter,
     };

@@ -8,6 +8,14 @@ import { SSRProvider } from "react-bootstrap";
 import { SWRConfig } from "swr";
 import { event, GoogleAnalytics } from "nextjs-google-analytics";
 import { trpcNextPW } from "../src/server/utils/trpc";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryContract } from "../src/wasm/keplr/query";
+import { config } from "./api/[workId]/workUpload";
+import { useQueryContract } from "../src/hooks/useQueryContract";
+import {
+  CosmosWalletProviderContext,
+  CosmosWalletProviderDataClient,
+} from "../src/components/provider/CosmosWalletProvider";
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -50,23 +58,32 @@ const fetcher = async (url: string) => {
   return res.json();
 };
 
+const queryClient = new QueryClient();
+
 const MyApp: FC<AppPropsWithLayout> = ({
   Component,
   pageProps,
 }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout || ((page) => page);
-
+  // const {
+  //   queryClient: queryContractClient,
+  //   queryConnectedClient,
+  //   connectKeplrMutation,
+  // } = useQueryContract();
   return getLayout(
     <SSRProvider>
-      <SWRConfig
-        value={{
-          fetcher,
-        }}
-      >
-        <GoogleAnalytics trackPageViews />
+      <QueryClientProvider client={queryClient}>
+        <SWRConfig
+          value={{
+            fetcher,
+          }}
+        >
+          <GoogleAnalytics trackPageViews />
 
-        <Component {...pageProps} />
-      </SWRConfig>
+          <Component {...pageProps} />
+        </SWRConfig>
+        {/*</CosmosWalletProviderContext.Provider>*/}
+      </QueryClientProvider>
     </SSRProvider>
   ) as ReactElement<any, any>;
 };

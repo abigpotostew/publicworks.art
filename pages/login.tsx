@@ -24,10 +24,8 @@ const AuthPage = () => {
     if (accounts.length > 0) {
       // window.location.href = '/share?account=' + accounts[0].address
     }
-    console.log("accounts", accounts);
     const otp = Math.floor(Math.random() * 100_000).toString();
     const ok = await queryClient.signMessage(otp);
-    console.log("finished logging in");
     if (!ok) {
       //show an error
       setMessage("Unauthrorized");

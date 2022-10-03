@@ -3,9 +3,13 @@ import { DropEvent, FileRejection, useDropzone } from "react-dropzone";
 
 export interface DropZoneProps {
   onUpload: (files: File[]) => Promise<void>;
+  message?: string;
 }
 
-export const DropZone: FC<DropZoneProps> = ({ onUpload }: DropZoneProps) => {
+export const DropZone: FC<DropZoneProps> = ({
+  onUpload,
+  message,
+}: DropZoneProps) => {
   const onDrop: (
     acceptedFiles: File[],
     fileRejections: FileRejection[],
@@ -17,15 +21,12 @@ export const DropZone: FC<DropZoneProps> = ({ onUpload }: DropZoneProps) => {
     [onUpload]
   );
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-
+  message =
+    message || "Drag 'n' drop some files here, or click to select files";
   return (
     <div {...getRootProps()}>
       <input {...getInputProps()} />
-      {isDragActive ? (
-        <p>Drop the files here...</p>
-      ) : (
-        <p>{"Drag 'n' drop some files here, or click to select files"}</p>
-      )}
+      {isDragActive ? <p>Drop the files here...</p> : <p>{message}</p>}
     </div>
   );
 };

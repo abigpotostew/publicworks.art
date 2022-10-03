@@ -99,3 +99,47 @@ export const getMetadataWorkId = async (searchCid: string) => {
   }
   return null;
 };
+
+export const uploadFileToPinata = async (
+  buffer: Buffer,
+  contentType: string,
+  metadata: { workId: string }
+) => {
+  //
+
+  const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
+  try {
+    const data = new FormData();
+    data.append("pinataOptions", '{"cidVersion": 1}');
+    data.append(
+      "pinataMetadata",
+      JSON.stringify({
+        name: `work-${metadata.workId}-${Math.round(Date.now() / 1000)}`,
+        keyvalues: { workId: metadata.workId },
+      })
+    );
+    data.append("file", buffer, {
+      filename: "image",
+      contentType: contentType,
+    });
+
+    const response = await got(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": `multipart/form-data; boundary=${data.getBoundary()}`,
+        Authorization: "Bearer " + process.env.PINATA_API_SECRET_JWT,
+      },
+      body: data,
+    }).on("uploadProgress", (progress) => {
+      console.log(progress);
+    });
+
+    const body = JSON.parse(response.body);
+    const cid = body.IpfsHash as string;
+    console.log("cid:", cid);
+    return cid;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

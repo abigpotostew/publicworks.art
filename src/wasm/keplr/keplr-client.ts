@@ -3,8 +3,14 @@ import { Config } from "../config";
 import { Window } from "@keplr-wallet/types/build/window";
 import { addTestnetToKeplr } from "./keplr-testnet";
 import { GasPrice } from "cosmwasm";
+import { OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 
-export const keplrClient = async (config: Config) => {
+export interface KeplrClient {
+  offlineSigner: OfflineSigner | OfflineDirectSigner;
+  signer: SigningCosmWasmClient;
+}
+
+export const keplrClient = async (config: Config): Promise<KeplrClient> => {
   const prefix = "wasm";
   const gasPrice = GasPrice.fromString("0ustars");
 

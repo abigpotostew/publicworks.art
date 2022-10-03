@@ -19,6 +19,13 @@ export class WorkEntity extends AuditedEntity {
 
   @Column("text", { name: "code_cid" })
   codeCid: string;
+
+  @Column("text", { name: "cover_image_cid", nullable: true })
+  coverImageCid: string | null;
+
+  @Column("text", { name: "external_link", nullable: true })
+  externalLink: string | null;
+
   @Column("text", { name: "name" })
   name: string;
   @Column("text", { name: "creator" })

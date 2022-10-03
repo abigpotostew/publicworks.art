@@ -2,7 +2,7 @@ import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import { NextPageContext } from "next";
 import superjson from "superjson";
-import { AppRouter } from "../routes/_app";
+import { appRouter, AppRouter } from "../routes/_app";
 // ℹ️ Type-only import:
 // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-8.html#type-only-imports-and-export
 
@@ -87,3 +87,5 @@ export const trpcNextPW = createTRPCNext<AppRouter, SSRContext>({
    */
   ssr: false,
 });
+
+export type AppRouterUtilContext = ReturnType<typeof trpcNextPW.useContext>;

@@ -7,7 +7,7 @@ import SketchAnimation from "../src/components/SketchAnimation";
 import kaleidoPix from "../public/img/homepage/kaleido-pix.png";
 import Link from "next/link";
 import { RowThinContainer } from "../src/components/layout/RowThinContainer";
-import { FlexBox } from "../src/components/layout/FlexBox";
+import { FlexBoxCenter } from "../src/components/layout/FlexBoxCenter";
 import Image from "react-bootstrap/Image";
 
 function GroupDividerBottom() {
@@ -83,7 +83,7 @@ const Home = () => {
 
       <Container fluid>
         <RowThinContainer>
-          <FlexBox>
+          <FlexBoxCenter>
             <div style={{ display: "flex", justifyContent: "center" }}>
               <Image
                 fluid={true}
@@ -101,7 +101,7 @@ const Home = () => {
                 Work 0. The seed project that started it all.
               </div>
             </div>
-          </FlexBox>
+          </FlexBoxCenter>
         </RowThinContainer>
       </Container>
 
@@ -109,7 +109,9 @@ const Home = () => {
 
       <Container fluid>
         <RowThinContainer>
-          <FlexBox style={{ justifyContent: "center", textAlign: "center" }}>
+          <FlexBoxCenter
+            style={{ justifyContent: "center", textAlign: "center" }}
+          >
             <div style={{ minWidth: 250, textAlign: "center" }}>
               <p
                 className={`${styles.subdescription_works} ${styles.subdescription_works_large} ${stylesWorks.workTitle}`}
@@ -141,7 +143,7 @@ const Home = () => {
                 style={{ minWidth: "300px" }}
               />
             </div>
-          </FlexBox>
+          </FlexBoxCenter>
         </RowThinContainer>
       </Container>
 
@@ -184,7 +186,9 @@ const Home = () => {
 
       <Container fluid>
         <RowThinContainer>
-          <FlexBox style={{ justifyContent: "center", textAlign: "center" }}>
+          <FlexBoxCenter
+            style={{ justifyContent: "center", textAlign: "center" }}
+          >
             <div
               style={{
                 width: 300,
@@ -224,7 +228,7 @@ const Home = () => {
                 {" on twitter."}
               </p>
             </div>
-          </FlexBox>
+          </FlexBoxCenter>
         </RowThinContainer>
       </Container>
 
@@ -232,7 +236,9 @@ const Home = () => {
 
       <Container fluid>
         <RowThinContainer>
-          <FlexBox style={{ justifyContent: "center", alignItems: "center" }}>
+          <FlexBoxCenter
+            style={{ justifyContent: "center", alignItems: "center" }}
+          >
             <div
               className={styles.subdescription_works_large}
               style={{
@@ -264,7 +270,7 @@ const Home = () => {
                 <Button>Discord</Button>
               </Link>
             </div>
-          </FlexBox>
+          </FlexBoxCenter>
         </RowThinContainer>
       </Container>
     </div>

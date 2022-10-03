@@ -9,11 +9,10 @@ import {
 } from "react";
 import { Button, Container, Form } from "react-bootstrap";
 import { RowThinContainer } from "../layout/RowThinContainer";
-import { CreateProjectRequest } from "../../store";
+import { CreateProjectRequest, EditProjectRequest } from "../../store";
 import { WorkSerializable } from "../../dbtypes/works/workSerializable";
 import { RowWideContainer } from "../layout/RowWideContainer";
-import { useCosmosWallet } from "../provider/CosmosWalletProvider";
-import { firstOrThrow } from "../../array/util";
+import { TooltipInfo } from "../TooltipInfo";
 
 // const formatInTimeZone = (date: Date, fmt: string, tz: string) =>
 //   format(utcToZonedTime(date, tz), fmt, { timeZone: tz });
@@ -37,8 +36,8 @@ function formatDateInput(date: Date) {
 
 export interface CreateWorkProps {
   onCreateProject:
-    | ((req: CreateProjectRequest) => void)
-    | ((req: CreateProjectRequest) => Promise<void>);
+    | ((req: Partial<EditProjectRequest>) => void)
+    | ((req: Partial<EditProjectRequest>) => Promise<void>);
   defaultValues?: WorkSerializable;
 }
 
@@ -46,19 +45,12 @@ const formatInUTC = (date: Date) => {
   const out = formatInTimeZone(date, "UTC", "LLLL d, yyyy kk:mm"); // 2014-10-25 06:46:20-04:00
   return out;
 };
-export const CreateWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
+export const NftDetails: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   // auth context here
-  const wallet = useCosmosWallet();
   const user = { address: "stars1up88jtqzzulr6z72cq6uulw9yx6uau6ew0zegy" };
   const defaults = {
-    name: props.defaultValues?.name || "",
-    description: props.defaultValues?.description || "",
-    blurb: props.defaultValues?.blurb || "",
     maxTokens: props.defaultValues?.maxTokens || 0,
-    royaltyAddress:
-      props.defaultValues?.royaltyAddress ||
-      firstOrThrow(wallet?.onlineClient?.accounts).address ||
-      "",
+    royaltyAddress: props.defaultValues?.royaltyAddress || user.address,
     royaltyPercent:
       (props?.defaultValues?.royaltyPercent &&
         props.defaultValues.royaltyPercent) ||
@@ -71,15 +63,7 @@ export const CreateWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
     priceStars: props.defaultValues?.priceStars || 50,
   };
   console.log("Defaults,", defaults);
-  const [projectName, setProjectName] = useState<string>(defaults.name);
-  const [projectDescription, setProjectDescription] = useState<string>(
-    defaults.description
-  );
-  const [projectBlurb, setProjectBlurbSt] = useState<string>(defaults.blurb);
-  const setProjectBlurb = (v: string) => {
-    console.log("blurb", v);
-    setProjectBlurbSt(v);
-  };
+
   const [projectSize, setProjectSize] = useState<number>(defaults.maxTokens);
   const [startDate, setStartDate] = useState<Date>(defaultDate());
   const [royaltyAddress, setRoyaltyAddress] = useState<string>(
@@ -113,10 +97,7 @@ export const CreateWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
     // create project in api
     // create contract
     const req = {
-      projectName,
-      projectBlurb,
       projectSize,
-      projectDescription,
       startDate: startDate.toISOString(),
       royaltyAddress,
       royaltyPercent,
@@ -133,44 +114,7 @@ export const CreateWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   return (
     <Container>
       <RowWideContainer>
-        <Form onSubmit={onSubmit}>
-          <Form.Group className="mb-3" controlId="formWorkName">
-            <Form.Label>Name</Form.Label>
-            <Form.Control
-              type="text"
-              defaultValue={defaults.name}
-              placeholder="My Work"
-              name="project_name"
-              onChange={(e) => setProjectName(e.target.value)}
-            />
-            {/*<Form.Text className="text-muted">*/}
-            {/*  {"We'll never share your email with anyone else."}*/}
-            {/*</Form.Text>*/}
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="formWorkDescription">
-            <Form.Label>Description</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              defaultValue={defaults.description}
-              placeholder={"Appears in every NFT description"}
-              onChange={(e) => setProjectDescription(e.target.value)}
-              name="project_description"
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formWorkBlurb">
-            <Form.Label>Blurb</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              defaultValue={defaults.blurb}
-              placeholder={"Appears on publicworks.art"}
-              onChange={(e) => setProjectBlurb(e.target.value)}
-              name="project_blurb"
-            />
-          </Form.Group>
-
+        <Form onSubmit={onSubmit} noValidate>
           <Form.Group className="mb-3" controlId="formWorkSize">
             <Form.Label>Collection Size</Form.Label>
             <Form.Control
@@ -249,7 +193,13 @@ export const CreateWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formSelector">
-              <Form.Label>CSS Selector</Form.Label>
+              <Form.Label>
+                CSS Selector{" "}
+                <TooltipInfo>
+                  CSS selector targeting your sketch canvas element. Right click
+                  your canvas element in the console and copy the css selector
+                </TooltipInfo>
+              </Form.Label>
               <Form.Control
                 type={"text"}
                 placeholder={"#sketch > canvas"}
@@ -260,7 +210,15 @@ export const CreateWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formResolution">
-              <Form.Label>Image Preview Resolution</Form.Label>
+              <Form.Label>
+                <span>
+                  Image Preview Resolution{" "}
+                  <TooltipInfo>
+                    Dimensions of the NFT image in the format "width:height"
+                  </TooltipInfo>
+                </span>
+              </Form.Label>
+
               <Form.Control
                 type={"text"}
                 placeholder={"2000:2000"}
@@ -271,7 +229,12 @@ export const CreateWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formPixelRatio">
-              <Form.Label>Image Preview Pixel Ratio</Form.Label>
+              <Form.Label>
+                Image Preview Pixel Ratio{" "}
+                <TooltipInfo>
+                  Pixel density to render the image preview
+                </TooltipInfo>
+              </Form.Label>
               <Form.Control
                 type={"number"}
                 placeholder={"1"}

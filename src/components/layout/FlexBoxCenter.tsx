@@ -2,7 +2,7 @@ import { Container } from "react-bootstrap";
 import { CSSProperties, ReactNode } from "react";
 import styles from "../../../styles/Home.module.css";
 
-export const FlexBox = ({
+export const FlexBoxCenter = ({
   children,
   className,
   style,
@@ -19,5 +19,21 @@ export const FlexBox = ({
         {children}
       </div>
     </Container>
+  );
+};
+
+export const FlexBox = ({
+  children,
+  className,
+  style,
+}: {
+  className?: string;
+  children: ReactNode;
+  style?: CSSProperties | undefined;
+}) => {
+  return (
+    <div className={className} style={{ ...style, display: "flex" }}>
+      {children}
+    </div>
   );
 };

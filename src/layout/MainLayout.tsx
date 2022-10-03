@@ -4,6 +4,11 @@ import Head from "next/head";
 import { NavBar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 import styles from "../../styles/Home.module.css";
+import {
+  CosmosWalletProviderContext,
+  useCosmosWallet,
+} from "../components/provider/CosmosWalletProvider";
+import { useQueryContract } from "../hooks/useQueryContract";
 interface ILayout {
   description?: string;
   metaTitle?: string;
@@ -16,6 +21,12 @@ const MainLayout: FC<ILayout> = ({
   image = "https://publicworks.art/img/metatag/metatag-image1.png",
   children,
 }) => {
+  const {
+    queryClient: queryContractClient,
+    queryConnectedClient,
+    connectKeplrMutation,
+  } = useQueryContract();
+
   return (
     <div>
       <Head>
@@ -41,14 +52,33 @@ const MainLayout: FC<ILayout> = ({
         )}
         <meta name="twitter:dnt" content="on" />
       </Head>
-      <NavBar />
-      {/*<header>*/}
-      {/*</header>*/}
+      <CosmosWalletProviderContext.Provider
+        value={
+          {
+            client: queryContractClient,
+            connectWallet(): Promise<void> {
+              return connectKeplrMutation.mutateAsync();
+            },
+            isConnected: !!queryContractClient?.isConnected(),
+            loginMutation: connectKeplrMutation,
+            onlineClient: queryConnectedClient,
+          }
+          // new CosmosWalletProviderDataClient(
+          //   queryContractClient,
+          //   queryConnectedClient,
+          //   connectKeplrMutation
+          // )
+        }
+      >
+        <NavBar />
+        {/*<header>*/}
+        {/*</header>*/}
 
-      <div className={styles.container}>
-        <main className={styles.main}>{children}</main>
-        <Footer />
-      </div>
+        <div className={styles.container}>
+          <main className={styles.main}>{children}</main>
+          <Footer />
+        </div>
+      </CosmosWalletProviderContext.Provider>
     </div>
   );
 };

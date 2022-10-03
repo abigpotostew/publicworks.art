@@ -18,7 +18,10 @@ export const workZod = z.object({
     .optional()
     .transform((d) => d?.toISOString() || null),
 
-  resolution: z.string().nullable(),
+  resolution: z
+    .string()
+    .regex(/^\d+:\d+$/)
+    .nullable(),
 
   selector: z.string().nullable(),
   license: z.string().nullable(),
@@ -28,6 +31,8 @@ export const workZod = z.object({
   priceStars: z.number().nullable(),
   royaltyPercent: z.number().nullable().optional(),
   royaltyAddress: z.string().nullable().optional(),
+  coverImageCid: z.string().nullable().optional(),
+  externalLink: z.string().nullable().optional(),
 
   createdDate: z.date().transform((d) => d.toISOString()),
   updatedDate: z.date().transform((d) => d.toISOString()),

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { isISODate } from "../util/isISODate";
+import { cidRegex } from "../ipfs/cid";
 
 export interface Token {
   hash: string;
@@ -59,7 +60,7 @@ export type CreateProjectRequest = z.infer<typeof CreateProjectRequestZ>;
 
 export const editProjectZod = z.object({
   id: z.string(),
-  projectName: z.string().min(3).max(50),
+  projectName: z.string().min(3).max(50).optional(),
   projectBlurb: z.string().min(2).max(515).optional(),
   projectSize: z.number().min(1).max(10_000).optional().default(1),
   projectDescription: z.string().min(2).max(2048).optional(),
@@ -69,15 +70,15 @@ export const editProjectZod = z.object({
     .optional(),
   royaltyAddress: z.string().optional(),
   royaltyPercent: z.number().min(0).max(100).optional(),
-  codeCid: z
-    .string()
-    .regex(
-      /^(Qm[1-9A-HJ-NP-Za-km-z]{44,}|b[A-Za-z2-7]{58,}|B[A-Z2-7]{58,}|z[1-9A-HJ-NP-Za-km-z]{48,}|F[0-9A-F]{50,})$/
-    )
-    .optional(),
+  codeCid: z.string().regex(cidRegex).optional(),
 
-  resolution: z.string().optional(),
-  selector: z.string().optional(),
+  coverImageCid: z.string().regex(cidRegex).optional().nullable(),
+
+  resolution: z
+    .string()
+    .regex(/^\d+:\d+$/)
+    .optional(),
+  selector: z.string().min(1).optional(),
   license: z.string().optional().nullable(),
   pixelRatio: z.number().optional(),
   priceStars: z.number().optional(),
