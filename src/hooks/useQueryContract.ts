@@ -37,5 +37,19 @@ export const useQueryContract = () => {
     );
   });
 
-  return { queryClient, queryConnectedClient, connectKeplrMutation };
+  const logoutMutation = useMutation(async () => {
+    //
+    console.log("singout mutation");
+    if (!queryClient || !queryClient.keplrClient) return;
+    console.log("singout mutation disconnet");
+    queryClient.keplrClient.disconnect();
+    setQueryConnectedClient(undefined);
+  });
+
+  return {
+    queryClient,
+    queryConnectedClient,
+    connectKeplrMutation,
+    logoutMutation,
+  };
 };

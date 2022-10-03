@@ -35,9 +35,10 @@ export default async function handler(
 
   if (!wasmConfig.testnet) {
     const allowlist = [
-      "stars1euu359d2cwe46j8a8fqkmcrhzjq6j642htt7rn",
-      "stars1524hf3dmcl8lagnfhuct4k2002pv73yswnl9cf",
-      "stars1up88jtqzzulr6z72cq6uulw9yx6uau6ew0zegy",
+      "",
+      // "stars1euu359d2cwe46j8a8fqkmcrhzjq6j642htt7rn",
+      // "stars1524hf3dmcl8lagnfhuct4k2002pv73yswnl9cf",
+      // "stars1up88jtqzzulr6z72cq6uulw9yx6uau6ew0zegy",
     ];
     if (!allowlist.includes(account.address)) {
       res.status(401).json({ message: "unauthorized" });

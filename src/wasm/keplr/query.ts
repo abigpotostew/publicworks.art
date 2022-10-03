@@ -258,6 +258,9 @@ export class ConnectedQueryContract {
     this.keplrClient = signer;
     this.keplerOfflineClient = offlineSigner;
   }
+  disconnect() {
+    return this.keplrClient.disconnect();
+  }
 
   async signMessage(token: string) {
     const messageToSign = "Magic, please!" + " " + token;

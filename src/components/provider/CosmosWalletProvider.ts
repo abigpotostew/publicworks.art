@@ -9,6 +9,7 @@ export interface CosmosWalletProviderData {
   isConnected: boolean;
   connectWallet: () => Promise<void>;
   loginMutation: UseMutationResult<void, unknown, void, unknown> | undefined;
+  logoutMutation: UseMutationResult<void, unknown, void, unknown> | undefined;
 }
 
 export class CosmosWalletProviderDataClient
@@ -17,16 +18,18 @@ export class CosmosWalletProviderDataClient
   client: QueryContract | undefined;
   onlineClient: ConnectedQueryContract | undefined;
   loginMutation: UseMutationResult<void, unknown, void, unknown> | undefined;
+  logoutMutation: UseMutationResult<void, unknown, void, unknown> | undefined;
 
   constructor(
     client: QueryContract | undefined,
     queryConnectedClient: ConnectedQueryContract | undefined,
-    connectKeplrMutation: UseMutationResult<void, unknown, void, unknown>
+    connectKeplrMutation: UseMutationResult<void, unknown, void, unknown>,
+    logoutMutation: UseMutationResult<void, unknown, void, unknown>
   ) {
     this.client = client;
     this.onlineClient = queryConnectedClient;
     this.loginMutation = connectKeplrMutation;
-    console.log("in constructor", this);
+    this.logoutMutation = logoutMutation;
   }
 
   async connectWallet(): Promise<void> {
@@ -48,6 +51,7 @@ export const CosmosWalletProviderContext =
       return false;
     },
     loginMutation: undefined,
+    logoutMutation: undefined,
   });
 
 export function useCosmosWallet() {

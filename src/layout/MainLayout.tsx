@@ -21,11 +21,14 @@ const MainLayout: FC<ILayout> = ({
   image = "https://publicworks.art/img/metatag/metatag-image1.png",
   children,
 }) => {
+  const wallet = useQueryContract();
   const {
     queryClient: queryContractClient,
     queryConnectedClient,
     connectKeplrMutation,
-  } = useQueryContract();
+    logoutMutation,
+  } = wallet;
+  console.log("rendering main layout", wallet);
 
   return (
     <div>
@@ -59,8 +62,9 @@ const MainLayout: FC<ILayout> = ({
             connectWallet(): Promise<void> {
               return connectKeplrMutation.mutateAsync();
             },
-            isConnected: !!queryContractClient?.isConnected(),
+            isConnected: !!queryConnectedClient,
             loginMutation: connectKeplrMutation,
+            logoutMutation: logoutMutation,
             onlineClient: queryConnectedClient,
           }
           // new CosmosWalletProviderDataClient(

@@ -27,13 +27,24 @@ export const NavBar = () => {
         </Navbar.Collapse>
         <Navbar.Collapse className="justify-content-end">
           {wallet.isConnected && <Navbar.Text>Signed in</Navbar.Text>}
+          {wallet.isConnected && (
+            <Navbar.Text>
+              <span>
+                <Nav.Link
+                  onClick={() => {
+                    wallet.logoutMutation?.mutate();
+                  }}
+                >
+                  Sign out
+                </Nav.Link>
+              </span>
+            </Navbar.Text>
+          )}
           {!wallet.isConnected && (
             <Navbar.Text>
-              Not Signed in
               <span>
                 <Nav.Link
                   onClick={async () => {
-                    console.log("here", wallet);
                     await wallet.loginMutation?.mutate();
                   }}
                 >

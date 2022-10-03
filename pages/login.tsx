@@ -28,7 +28,7 @@ const AuthPage = () => {
     const ok = await queryClient.signMessage(otp);
     if (!ok) {
       //show an error
-      setMessage("Unauthrorized");
+      setMessage("Unauthorized");
     } else {
       if (typeof query.redirect === "string") {
         await router.push({
@@ -48,7 +48,15 @@ const AuthPage = () => {
           </RowWideContainer>
 
           <RowWideContainer>
+            <p>
+              While Publicworks.art is in beta, you can only log in to
+              <a href={"https://testnet.publicworks.art/"}>
+                https://testnet.publicworks.art/
+              </a>
+              .
+            </p>
             <Button onClick={onLogin}>Login</Button>
+            {message && <div>{message}</div>}
           </RowWideContainer>
         </Container>
       </div>
