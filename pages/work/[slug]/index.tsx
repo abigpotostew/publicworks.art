@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 import MainLayout from "../../../src/layout/MainLayout";
-import styles from "../../../styles/Work.module.css";
+import styles from "../../../styles/Work.module.scss";
 import { Button, Container } from "react-bootstrap";
 import { LiveMedia } from "../../../src/components/media/LiveMedia";
 import { RowThinContainer } from "../../../src/components/layout/RowThinContainer";

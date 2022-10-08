@@ -28,7 +28,6 @@ function easeInOutQuart(x: number): number {
 function ease(x: number): number {
   return easeInOutQuart(x);
 }
-
 const xn = 7;
 const yn = 5;
 const bgColor = "#212529";
@@ -39,6 +38,7 @@ let border: number;
 let width: number;
 let height: number;
 const numNfts = 2;
+
 const nftNames = [
   "GenArt",
   "PFP",

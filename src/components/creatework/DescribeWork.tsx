@@ -1,24 +1,15 @@
-import { parseISO } from "date-fns";
-import { format, formatInTimeZone } from "date-fns-tz";
-import {
-  ChangeEventHandler,
-  FC,
-  FormEventHandler,
-  useCallback,
-  useState,
-} from "react";
-import { Button, Container, Form } from "react-bootstrap";
-import { RowThinContainer } from "../layout/RowThinContainer";
-import { CreateProjectRequest, EditProjectRequest } from "../../store";
-import { WorkSerializable } from "../../dbtypes/works/workSerializable";
+import { FC, FormEventHandler, useCallback, useState } from "react";
+import { Container, Form } from "react-bootstrap";
+import { EditProjectRequest } from "src/store";
+import { WorkSerializable } from "src/dbtypes/works/workSerializable";
 import { RowWideContainer } from "../layout/RowWideContainer";
 import { LiveMedia } from "../media/LiveMedia";
-import { generateTxHash } from "../../generateHash";
-import { normalizeMetadataUri } from "../../wasm/metadata";
+import { generateTxHash } from "src/generateHash";
+import { normalizeMetadataUri } from "src/wasm/metadata";
 import { BsArrowRepeat } from "react-icons/bs";
 import { FlexBox } from "../layout/FlexBoxCenter";
-import { DropZone } from "../DropZone";
 import { TooltipInfo } from "../TooltipInfo";
+import { Button } from "@/components/button/Button";
 
 export interface CreateWorkProps {
   onCreateProject:

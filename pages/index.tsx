@@ -1,5 +1,5 @@
-import styles from "../styles/Home.module.css";
-import stylesWorks from "../styles/Work.module.css";
+import styles from "../styles/Home.module.scss";
+import stylesWorks from "../styles/Work.module.scss";
 import { ReactElement } from "react";
 import MainLayout from "../src/layout/MainLayout";
 import { Button, Col, Container, Row } from "react-bootstrap";
@@ -9,6 +9,7 @@ import Link from "next/link";
 import { RowThinContainer } from "../src/components/layout/RowThinContainer";
 import { FlexBoxCenter } from "../src/components/layout/FlexBoxCenter";
 import Image from "react-bootstrap/Image";
+import useBreakpoint from "../src/hooks/style/useBreakpoint";
 
 function GroupDividerBottom() {
   return (
@@ -263,11 +264,11 @@ const Home = () => {
               }}
             >
               <Link href={"https://twitter.com/stewbracken"}>
-                <Button>Twitter</Button>
+                <Button variant={"secondary"}>Twitter</Button>
               </Link>
 
               <Link href={"https://discord.gg/X6hSmrxdtW"}>
-                <Button>Discord</Button>
+                <Button variant={"secondary"}>Discord</Button>
               </Link>
             </div>
           </FlexBoxCenter>

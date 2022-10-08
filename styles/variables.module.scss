@@ -1,0 +1,11 @@
+/* variables.module.scss */
+
+$pw-bg-color: #1f2b37;
+//$pw-bg-color: #212529;
+$pw-text-color: #ffffff;
+
+:export {
+  pw-bg-color:$pw-bg-color;
+  pw-text-color:$pw-text-color
+}
+

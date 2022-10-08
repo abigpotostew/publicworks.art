@@ -12,11 +12,11 @@ export const RowWideContainer: FC<RowWideContainerParams> = ({
 }) => {
   return (
     <Row className={className}>
-      <Col xs={0} sm={0} md={0} lg={1} xl={1} xxl={1} />
-      <Col xs={12} sm={12} md={12} lg={10} xl={10} xxl={10}>
+      <Col />
+      <Col xs={12} sm={12} md={12} lg={10} xl={10} xxl={12}>
         {children}
       </Col>
-      <Col xs={0} sm={0} md={0} lg={1} xl={1} xxl={1} />
+      <Col />
     </Row>
   );
 };

@@ -1,6 +1,6 @@
 import { Col } from "react-bootstrap";
 import { Token } from "./Token";
-import styles from "../../../styles/Work.module.css";
+import styles from "../../../styles/Work.module.scss";
 
 export const Gallery = ({
   sg721,

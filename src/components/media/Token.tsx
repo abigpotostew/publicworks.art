@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Card } from "react-bootstrap";
-import styles from "../../../styles/Works.module.css";
+import styles from "../../../styles/Works.module.scss";
 import { useNftMetadata } from "../../hooks/useNftMetadata";
 
 export const Token = ({

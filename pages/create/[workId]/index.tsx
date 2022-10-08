@@ -2,33 +2,28 @@ import { FC, ReactElement, useCallback, useEffect, useState } from "react";
 import Head from "next/head";
 import { BsArrowRepeat } from "react-icons/bs";
 import { useRouter } from "next/router";
-import { EditProjectRequest } from "../../../src/store";
-import {
-  FlexBox,
-  FlexBoxCenter,
-} from "../../../src/components/layout/FlexBoxCenter";
-import { trpcNextPW } from "../../../src/server/utils/trpc";
-import { normalizeMetadataUri } from "../../../src/wasm/metadata";
+import { EditProjectRequest } from "src/store";
+import { FlexBox, FlexBoxCenter } from "src/components/layout/FlexBoxCenter";
+import { trpcNextPW } from "src/server/utils/trpc";
+import { normalizeMetadataUri } from "src/wasm/metadata";
 import SpinnerLoading from "../../../src/components/loading/Loader";
-import { LiveMedia } from "../../../src/components/media/LiveMedia";
-import { DropZone } from "../../../src/components/DropZone";
+import { LiveMedia } from "src/components/media/LiveMedia";
+import { DropZone } from "src/components/DropZone";
 import MainLayout from "../../../src/layout/MainLayout";
-import { Button, Container } from "react-bootstrap";
-import { ConfirmConfig } from "../../../src/components/creatework/ConfirmConfig";
-import { useInstantiate } from "../../../src/hooks/useInstantiate";
-import {
-  Step,
-  StepProgressBar,
-} from "../../../src/components/progress/StepProgressBar";
-import { generateTxHash } from "../../../src/generateHash";
-import { NameWork } from "../../../src/components/creatework/NameWork";
-import { onWorkUpload } from "../../../src/works/upload";
-import { DescribeWork } from "../../../src/components/creatework/DescribeWork";
-import { NftDetails2 } from "../../../src/components/creatework/NftDetails2";
-import { UploadCoverImage } from "../../../src/components/creatework/UploadCoverImage";
-import { ConfettiScreen } from "../../../src/components/celebration/ConfettiScreen";
-import { useCosmosWallet } from "../../../src/components/provider/CosmosWalletProvider";
-import { TooltipInfo } from "../../../src/components/TooltipInfo";
+import { Container } from "react-bootstrap";
+import { ConfirmConfig } from "src/components/creatework/ConfirmConfig";
+import { useInstantiate } from "src/hooks/useInstantiate";
+import { Step, StepProgressBar } from "src/components/progress/StepProgressBar";
+import { generateTxHash } from "src/generateHash";
+import { NameWork } from "src/components/creatework/NameWork";
+import { onWorkUpload } from "src/works/upload";
+import { DescribeWork } from "src/components/creatework/DescribeWork";
+import { NftDetails2 } from "src/components/creatework/NftDetails2";
+import { UploadCoverImage } from "src/components/creatework/UploadCoverImage";
+import { ConfettiScreen } from "src/components/celebration/ConfettiScreen";
+import { useCosmosWallet } from "src/components/provider/CosmosWalletProvider";
+import { TooltipInfo } from "src/components/TooltipInfo";
+import { Button } from "@/components/button/Button";
 
 // export const getServerSideProps: GetServerSideProps = async (context) => {
 //   await initializeIfNeeded();
@@ -201,6 +196,8 @@ const EditWorkPage = () => {
       onClick: completed ? () => setStage(stageEnum) : undefined,
     };
   };
+
+  console.log("hi");
 
   // const steps: Step[] = [
   //   {

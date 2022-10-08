@@ -1,4 +1,4 @@
-import styles from "../styles/About.module.css";
+import styles from "../styles/About.module.scss";
 import { ReactElement } from "react";
 import MainLayout from "../src/layout/MainLayout";
 import { Col, Container, Row } from "react-bootstrap";

@@ -1,0 +1,45 @@
+
+@import '/styles/variables.module';
+
+/*! `Custom` Bootstrap 5 theme */
+@import url(https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css);
+
+
+
+/*! `Custom` Bootstrap 5 theme */
+//@import url(https://fonts.googleapis.com/css?family=Roboto+Flex:200,300,400,700);
+@import url('https://fonts.googleapis.com/css2?family=Advent+Pro:wght@100;200;300;400;500;600;700&family=Roboto+Flex:opsz,wght@8..144,100;8..144,200;8..144,300;8..144,400;8..144,500;8..144,600;8..144,700&display=swap');
+
+$headings-font-family:"Advent Pro";
+$font-family-base:"Roboto Flex";
+/*! `Custom` Bootstrap 5 theme */
+//@import url(https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css);
+//@import url(https://fonts.googleapis.com/css?family=Galada:200,300,400,700);
+//$font-family-base:Galada;
+//@import url(https://fonts.googleapis.com/css?family=Comfortaa:200,300,400,700);
+//$headings-font-family:Comfortaa;
+
+$enable-grid-classes:true;
+$primary:#2f3c48;
+$secondary:#6f7f8c;
+$success:#3e4d59;
+$danger:#cc330d;
+$info:#5c8f94;
+$warning:#6e9fa5;
+$light:#eceeec;
+$dark:#1e2b37;
+$enable-gradients:false;
+$spacer:1.2rem;
+$border-width:3px;
+$btn-border-radius:1.35rem;
+
+$body-color: #fff;
+$body-bg: $pw-bg-color; 
+
+//:export
+
+@import '/node_modules/bootstrap/scss/bootstrap.scss';
+
+//@import "/node_modules/bootstrap/scss/functions";
+//@import "/node_modules/bootstrap/scss/variables";
+//@import "/node_modules/bootstrap/scss/mixins";

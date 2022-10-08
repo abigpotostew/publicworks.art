@@ -1,9 +1,10 @@
 import { ReactElement, useCallback, useState } from "react";
-import { RowWideContainer } from "../src/components/layout/RowWideContainer";
+import { RowWideContainer } from "src/components/layout/RowWideContainer";
 import MainLayout from "../src/layout/MainLayout";
-import { Button, Container } from "react-bootstrap";
-import { useQueryContract } from "../src/hooks/useQueryContract";
+import { Container } from "react-bootstrap";
+import { useQueryContract } from "src/hooks/useQueryContract";
 import { useRouter } from "next/router";
+import { Button } from "@/components/button/Button";
 
 const AuthPage = () => {
   const router = useRouter();

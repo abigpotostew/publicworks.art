@@ -1,6 +1,6 @@
 import { Container, Nav, Navbar } from "react-bootstrap";
 
-import styles from "../../styles/Home.module.css";
+import styles from "../../styles/Home.module.scss";
 import Link from "next/link";
 import { useCosmosWallet } from "./provider/CosmosWalletProvider";
 import config from "../wasm/config";
@@ -10,7 +10,7 @@ export const NavBar = () => {
 
   return (
     <Navbar bg="dark" variant="dark" expand="sm">
-      <Container>
+      <Container fluid>
         <Link href={"/"} passHref>
           <Navbar.Brand className={styles.navTitle}>
             PublicWorks.Art

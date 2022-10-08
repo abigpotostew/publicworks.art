@@ -1,5 +1,5 @@
 import { Container } from "react-bootstrap";
-import styles from "../../styles/Home.module.css";
+import styles from "../../styles/Home.module.scss";
 import { RowWideContainer } from "./layout/RowWideContainer";
 
 export const Footer = () => {

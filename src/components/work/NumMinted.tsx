@@ -1,5 +1,5 @@
 import { FC } from "react";
-import styles from "../../../styles/Work.module.css";
+import styles from "../../../styles/Work.module.scss";
 import { useNumMinted } from "../../hooks/useNumMinted";
 import { useCollectionSize } from "../../hooks/useCollectionSize";
 import SpinnerLoading from "../loading/Loader";

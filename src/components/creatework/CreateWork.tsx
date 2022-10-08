@@ -1,22 +1,13 @@
 import { parseISO } from "date-fns";
 import { format, formatInTimeZone } from "date-fns-tz";
-import {
-  ChangeEventHandler,
-  FC,
-  FormEventHandler,
-  useCallback,
-  useState,
-} from "react";
-import { Button, Container, Form } from "react-bootstrap";
-import { RowThinContainer } from "../layout/RowThinContainer";
-import { CreateProjectRequest } from "../../store";
-import { WorkSerializable } from "../../dbtypes/works/workSerializable";
+import { ChangeEventHandler, FC, FormEventHandler, useState } from "react";
+import { Container, Form } from "react-bootstrap";
+import { CreateProjectRequest } from "src/store";
+import { WorkSerializable } from "src/dbtypes/works/workSerializable";
 import { RowWideContainer } from "../layout/RowWideContainer";
 import { useCosmosWallet } from "../provider/CosmosWalletProvider";
-import { firstOrThrow } from "../../array/util";
-
-// const formatInTimeZone = (date: Date, fmt: string, tz: string) =>
-//   format(utcToZonedTime(date, tz), fmt, { timeZone: tz });
+import { firstOrThrow } from "src/array/util";
+import { Button } from "@/components/button/Button";
 
 function defaultDate() {
   const date = new Date();
@@ -29,6 +20,7 @@ function defaultTime() {
   const rounded = defaultDate();
   return formatDateInput(rounded);
 }
+
 function formatDateInput(date: Date) {
   const out = `${format(date, "yyyy-MM-dd")}T${format(date, "kk:mm")}`;
   // console.log("default date", out);

@@ -1,26 +1,16 @@
 import { parseISO } from "date-fns";
 import { format, formatInTimeZone } from "date-fns-tz";
-import {
-  ChangeEventHandler,
-  FC,
-  FormEventHandler,
-  useCallback,
-  useState,
-} from "react";
-import { Button, Container, Form } from "react-bootstrap";
-import { RowThinContainer } from "../layout/RowThinContainer";
-import {
-  CreateProjectRequest,
-  EditProjectRequest,
-  editProjectZod,
-} from "../../store";
-import { WorkSerializable } from "../../dbtypes/works/workSerializable";
+import { FC } from "react";
+import { Container, Form } from "react-bootstrap";
+import { EditProjectRequest } from "src/store";
+import { WorkSerializable } from "src/dbtypes/works/workSerializable";
 import { RowWideContainer } from "../layout/RowWideContainer";
 import { TooltipInfo } from "../TooltipInfo";
-import { Formik, useFormik } from "formik";
+import { useFormik } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
-import { isISODate } from "../../util/isISODate";
+import { isISODate } from "src/util/isISODate";
+import { Button } from "../button/Button";
 
 // const formatInTimeZone = (date: Date, fmt: string, tz: string) =>
 //   format(utcToZonedTime(date, tz), fmt, { timeZone: tz });
@@ -36,6 +26,7 @@ function defaultTime() {
   const rounded = defaultDate();
   return formatDateInput(rounded);
 }
+
 function formatDateInput(date: Date) {
   const out = `${format(date, "yyyy-MM-dd")}T${format(date, "kk:mm")}`;
   // console.log("default date", out);

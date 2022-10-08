@@ -2,8 +2,8 @@ import { ReactElement } from "react";
 import { RowWideContainer } from "../src/components/layout/RowWideContainer";
 import MainLayout from "../src/layout/MainLayout";
 import { Card, Col, Container, Row } from "react-bootstrap";
-import styles from "../styles/Works.module.css";
-import stylesWork from "../styles/Work.module.css";
+import styles from "../styles/Works.module.scss";
+import stylesWork from "../styles/Work.module.scss";
 import Link from "next/link";
 import { work } from "../src/helio";
 import { trpcNextPW } from "../src/server/utils/trpc";
@@ -41,9 +41,9 @@ const WorksPage = () => {
   // const query = trpcNextPW.works.listWorks.useQuery({ limit: 10, offset: 0 });
 
   return (
-    <>
-      <div>
-        <Container>
+    <Container>
+      <>
+        <>
           <RowWideContainer>
             <h1>Works</h1>
           </RowWideContainer>
@@ -80,9 +80,9 @@ const WorksPage = () => {
             {/*  )*/}
             {/*})}*/}
           </RowWideContainer>
-        </Container>
-      </div>
-    </>
+        </>
+      </>
+    </Container>
   );
 };
 

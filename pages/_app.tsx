@@ -1,21 +1,16 @@
-import "../styles/globals.css";
+// import "bootstrap/dist/css/bootstrap.min.css";
+import "../styles/globals.scss";
+import "../styles/bootstrap-theme/theme-dark.scss";
 
 import type { FC, ReactElement, ReactNode } from "react";
 import type { NextPage } from "next";
 import type { AppProps, NextWebVitalsMetric } from "next/app";
-import "bootstrap/dist/css/bootstrap.min.css";
+
 import { SSRProvider } from "react-bootstrap";
 import { SWRConfig } from "swr";
 import { event, GoogleAnalytics } from "nextjs-google-analytics";
 import { trpcNextPW } from "../src/server/utils/trpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { QueryContract } from "../src/wasm/keplr/query";
-import { config } from "./api/[workId]/workUpload";
-import { useQueryContract } from "../src/hooks/useQueryContract";
-import {
-  CosmosWalletProviderContext,
-  CosmosWalletProviderDataClient,
-} from "../src/components/provider/CosmosWalletProvider";
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;

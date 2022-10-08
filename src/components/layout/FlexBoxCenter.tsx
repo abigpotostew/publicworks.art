@@ -1,6 +1,6 @@
 import { Container } from "react-bootstrap";
 import { CSSProperties, ReactNode } from "react";
-import styles from "../../../styles/Home.module.css";
+import styles from "../../../styles/Home.module.scss";
 
 export const FlexBoxCenter = ({
   children,
