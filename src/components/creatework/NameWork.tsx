@@ -10,7 +10,7 @@ import { normalizeMetadataUri } from "../../wasm/metadata";
 import { BsArrowRepeat } from "react-icons/bs";
 import { FlexBox } from "../layout/FlexBoxCenter";
 import { DropZone } from "../DropZone";
-import { Button } from "@/components/button/Button";
+import { ButtonPW as Button } from "../button/Button";
 
 export interface CreateWorkProps {
   onCreateProject:

@@ -1,15 +1,15 @@
 import { FC, FormEventHandler, useCallback, useState } from "react";
 import { Container, Form } from "react-bootstrap";
-import { EditProjectRequest } from "src/store";
-import { WorkSerializable } from "src/dbtypes/works/workSerializable";
 import { RowWideContainer } from "../layout/RowWideContainer";
 import { LiveMedia } from "../media/LiveMedia";
-import { generateTxHash } from "src/generateHash";
-import { normalizeMetadataUri } from "src/wasm/metadata";
 import { BsArrowRepeat } from "react-icons/bs";
 import { FlexBox } from "../layout/FlexBoxCenter";
 import { TooltipInfo } from "../TooltipInfo";
-import { Button } from "@/components/button/Button";
+import { ButtonPW as Button } from "../button/Button";
+import { generateTxHash } from "src/generateHash";
+import { normalizeMetadataUri } from "src/wasm/metadata";
+import { WorkSerializable } from "src/dbtypes/works/workSerializable";
+import { EditProjectRequest } from "src/store";
 
 export interface CreateWorkProps {
   onCreateProject:

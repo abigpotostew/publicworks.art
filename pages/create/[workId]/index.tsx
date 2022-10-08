@@ -2,28 +2,28 @@ import { FC, ReactElement, useCallback, useEffect, useState } from "react";
 import Head from "next/head";
 import { BsArrowRepeat } from "react-icons/bs";
 import { useRouter } from "next/router";
-import { EditProjectRequest } from "src/store";
-import { FlexBox, FlexBoxCenter } from "src/components/layout/FlexBoxCenter";
-import { trpcNextPW } from "src/server/utils/trpc";
-import { normalizeMetadataUri } from "src/wasm/metadata";
-import SpinnerLoading from "../../../src/components/loading/Loader";
-import { LiveMedia } from "src/components/media/LiveMedia";
-import { DropZone } from "src/components/DropZone";
 import MainLayout from "../../../src/layout/MainLayout";
 import { Container } from "react-bootstrap";
-import { ConfirmConfig } from "src/components/creatework/ConfirmConfig";
+import { ButtonPW as Button } from "../../../src/components/button/Button";
+import { generateTxHash } from "../../../src/generateHash";
+import { useCosmosWallet } from "../../../src/components/provider/CosmosWalletProvider";
+import { FlexBox, FlexBoxCenter } from "src/components/layout/FlexBoxCenter";
 import { useInstantiate } from "src/hooks/useInstantiate";
-import { Step, StepProgressBar } from "src/components/progress/StepProgressBar";
-import { generateTxHash } from "src/generateHash";
-import { NameWork } from "src/components/creatework/NameWork";
+import { trpcNextPW } from "src/server/utils/trpc";
 import { onWorkUpload } from "src/works/upload";
-import { DescribeWork } from "src/components/creatework/DescribeWork";
-import { NftDetails2 } from "src/components/creatework/NftDetails2";
-import { UploadCoverImage } from "src/components/creatework/UploadCoverImage";
-import { ConfettiScreen } from "src/components/celebration/ConfettiScreen";
-import { useCosmosWallet } from "src/components/provider/CosmosWalletProvider";
+import { LiveMedia } from "src/components/media/LiveMedia";
+import { Step, StepProgressBar } from "src/components/progress/StepProgressBar";
 import { TooltipInfo } from "src/components/TooltipInfo";
-import { Button } from "@/components/button/Button";
+import { NameWork } from "src/components/creatework/NameWork";
+import { EditProjectRequest } from "src/store";
+import { DropZone } from "src/components/DropZone";
+import { normalizeMetadataUri } from "src/wasm/metadata";
+import { ConfettiScreen } from "src/components/celebration/ConfettiScreen";
+import SpinnerLoading from "src/components/loading/Loader";
+import { DescribeWork } from "src/components/creatework/DescribeWork";
+import { UploadCoverImage } from "src/components/creatework/UploadCoverImage";
+import { ConfirmConfig } from "src/components/creatework/ConfirmConfig";
+import { NftDetails2 } from "src/components/creatework/NftDetails2";
 
 // export const getServerSideProps: GetServerSideProps = async (context) => {
 //   await initializeIfNeeded();
@@ -86,6 +86,7 @@ interface INavButtons {
 }
 
 const NavButtons: FC<INavButtons> = ({ onNextClick, onPrevClick }) => {
+  // @ts-ignore
   return (
     <Container fluid={true}>
       <FlexBox style={{ justifyContent: "flex-end" }}>

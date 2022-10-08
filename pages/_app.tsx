@@ -11,6 +11,7 @@ import { SWRConfig } from "swr";
 import { event, GoogleAnalytics } from "nextjs-google-analytics";
 import { trpcNextPW } from "../src/server/utils/trpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import "../src/icon/icons";
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;

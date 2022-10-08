@@ -3,6 +3,7 @@ import { Col, Form, Pagination, Row } from "react-bootstrap";
 import { FC, useMemo, useState } from "react";
 import { Gallery } from "./Gallery";
 import { useRouter } from "next/router";
+import { PagesToRender } from "../../../src/hooks/usePagination";
 
 interface Props {
   totalNumTokens: number;
@@ -97,39 +98,58 @@ export const PagedGallery: FC<Props> = ({
             className={"text-center"}
             style={{ margin: "0 auto", width: "50%" }}
           >
-            <Pagination>
-              <Pagination.First
-                disabled={page === 1}
-                onClick={() => changePage(1)}
-              />
-              <Pagination.Prev
-                disabled={page === 1}
-                onClick={() => changePage(page - 1)}
-              />
-              {pagesToRender.ellipsisStart && <Pagination.Ellipsis />}
-              {pagesToRender.pagesToRender.map((pageN: number) => (
-                <Pagination.Item
-                  key={pageN}
-                  active={pageN === page}
-                  onClick={() => changePage(pageN)}
-                >
-                  {pageN}
-                </Pagination.Item>
-              ))}
-              {pagesToRender.ellipsisEnd && <Pagination.Ellipsis />}
-              <Pagination.Next
-                disabled={page === lastPage}
-                onClick={() => changePage(page + 1)}
-              />
-              <Pagination.Last
-                disabled={page === lastPage}
-                onClick={() => changePage(pages[pages.length - 1])}
-              />
-            </Pagination>
+            <PaginationComp
+              pages={page}
+              page={page}
+              changePage={changePage}
+              pagesToRender={pagesToRender}
+            ></PaginationComp>
           </div>
         </Col>
         <Col />
       </Row>
     </Container>
+  );
+};
+
+export const PaginationComp = ({
+  page,
+  changePage,
+  pagesToRender,
+  pages,
+}: {
+  page: number;
+  changePage: (n: number) => void;
+  pagesToRender: PagesToRender;
+  pages: number[];
+}) => {
+  const lastPage = pages[pages.length - 1];
+  return (
+    <Pagination>
+      <Pagination.First disabled={page === 1} onClick={() => changePage(1)} />
+      <Pagination.Prev
+        disabled={page === 1}
+        onClick={() => changePage(page - 1)}
+      />
+      {pagesToRender.ellipsisStart && <Pagination.Ellipsis />}
+      {pagesToRender.pagesToRender.map((pageN: number) => (
+        <Pagination.Item
+          key={pageN}
+          active={pageN === page}
+          onClick={() => changePage(pageN)}
+        >
+          {pageN}
+        </Pagination.Item>
+      ))}
+      {pagesToRender.ellipsisEnd && <Pagination.Ellipsis />}
+      <Pagination.Next
+        disabled={page === lastPage}
+        onClick={() => changePage(page + 1)}
+      />
+      <Pagination.Last
+        disabled={page === lastPage}
+        onClick={() => changePage(lastPage)}
+      />
+    </Pagination>
   );
 };

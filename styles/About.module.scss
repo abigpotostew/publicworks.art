@@ -1,3 +1,5 @@
+@import '/styles/variables.module';
+
 .container ::-webkit-scrollbar {
   width: 0; /* Remove scrollbar space */
   background: transparent; /* Optional: just make scrollbar invisible */
@@ -79,12 +81,13 @@
 }
 
 .abouttext {
-  line-height: 1.5;
+  line-height: $pw-p-content-line-height;
   font-size: 16px;
 }
 
 .subtitle {
-  padding-top: 1.5rem;
+  //padding-top: 1.5rem;
+  padding: 1.5rem 0 1.5rem  0;
 }
 
 .groupDivider {

@@ -1,9 +1,11 @@
-import { Container, Nav, Navbar } from "react-bootstrap";
+import { Button, ButtonGroup, Container, Nav, Navbar } from "react-bootstrap";
 
 import styles from "../../styles/Home.module.scss";
 import Link from "next/link";
 import { useCosmosWallet } from "./provider/CosmosWalletProvider";
 import config from "../wasm/config";
+import { ButtonPW } from "./button/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const NavBar = () => {
   const wallet = useCosmosWallet();
@@ -26,17 +28,30 @@ export const NavBar = () => {
           </Nav>
         </Navbar.Collapse>
         <Navbar.Collapse className="justify-content-end">
-          {wallet.isConnected && <Navbar.Text>Signed in</Navbar.Text>}
+          {/*{wallet.isConnected && <Navbar.Text>Signed in</Navbar.Text>}*/}
           {wallet.isConnected && (
             <Navbar.Text>
               <span>
-                <Nav.Link
-                  onClick={() => {
-                    wallet.logoutMutation?.mutate();
-                  }}
-                >
-                  Sign out
-                </Nav.Link>
+                <span>
+                  <ButtonGroup aria-label="Basic example">
+                    <Button variant="secondary">
+                      {wallet.onlineClient?.accounts[0].address.slice(0, 9)}
+                      ...{wallet.onlineClient?.accounts[0].address.slice(-5)}
+                    </Button>
+                    <Button variant="secondary">
+                      <Nav.Link
+                        onClick={() => {
+                          wallet.logoutMutation?.mutate();
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          icon={"arrow-right-from-bracket"}
+                          width={24}
+                        />
+                      </Nav.Link>
+                    </Button>
+                  </ButtonGroup>
+                </span>
               </span>
             </Navbar.Text>
           )}
@@ -48,7 +63,7 @@ export const NavBar = () => {
                     await wallet.loginMutation?.mutate();
                   }}
                 >
-                  Sign In
+                  <ButtonPW>Sign In</ButtonPW>
                 </Nav.Link>
               </span>
             </Navbar.Text>
