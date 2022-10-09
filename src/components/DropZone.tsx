@@ -1,14 +1,14 @@
-import React, { FC, useCallback } from "react";
+import React, { FC, ReactNode, useCallback } from "react";
 import { DropEvent, FileRejection, useDropzone } from "react-dropzone";
 
 export interface DropZoneProps {
   onUpload: (files: File[]) => Promise<void>;
-  message?: string;
+  children?: ReactNode;
 }
 
 export const DropZone: FC<DropZoneProps> = ({
   onUpload,
-  message,
+  children,
 }: DropZoneProps) => {
   const onDrop: (
     acceptedFiles: File[],
@@ -21,12 +21,19 @@ export const DropZone: FC<DropZoneProps> = ({
     [onUpload]
   );
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-  message =
-    message || "Drag 'n' drop some files here, or click to select files";
+  // message =
+  //   message || "Drag 'n' drop some files here, or click to select files";
   return (
     <div {...getRootProps()}>
       <input {...getInputProps()} />
-      {isDragActive ? <p>Drop the files here...</p> : <p>{message}</p>}
+      {isDragActive ? (
+        <p>Drop the files here...</p>
+      ) : (
+        <p>
+          {children ||
+            "Drag 'n' drop some files here, or click to select files"}
+        </p>
+      )}
     </div>
   );
 };

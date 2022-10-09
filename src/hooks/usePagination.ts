@@ -54,12 +54,12 @@ export const usePagination = ({
     const newPage = Math.max(pages[0], Math.min(page, pages[pages.length - 1]));
     router.push(
       {
-        pathname: `./${pageUrl}`,
+        pathname: `${pageUrl}`,
         query: { page: newPage.toString() },
         // search: { page: page.toString() },
       },
       {
-        pathname: `./${pageUrl}`,
+        pathname: `${pageUrl}`,
         query: { page: newPage.toString() },
       },
       { scroll: false }

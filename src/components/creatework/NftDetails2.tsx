@@ -148,9 +148,9 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   // };
 
   return (
-    <Container>
+    <>
       <h2>On Chain Configuration</h2>
-      <RowWideContainer>
+      <>
         <Form
           onSubmit={(...a) => {
             return formik.handleSubmit(...a);
@@ -373,7 +373,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
             Save
           </Button>
         </Form>
-      </RowWideContainer>
+      </>
 
       {/*<Form*/}
       {/*  action={"/api/workUpload"}*/}
@@ -388,6 +388,6 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
       {/*    Upload*/}
       {/*  </Button>*/}
       {/*</Form>*/}
-    </Container>
+    </>
   );
 };

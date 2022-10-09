@@ -100,6 +100,7 @@ export class QueryContract {
     const { signer, offlineSigner } = await keplrClient(config);
     this.keplrClient = signer;
     this.keplerOfflineClient = offlineSigner;
+
     return { signer, offlineSigner };
   }
 

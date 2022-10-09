@@ -4,42 +4,37 @@ import MainLayout from "../src/layout/MainLayout";
 import { Container } from "react-bootstrap";
 import { useQueryContract } from "src/hooks/useQueryContract";
 import { useRouter } from "next/router";
-import { Button } from "@/components/button/Button";
+import { ButtonPW } from "src/components/button/Button";
+import { useCosmosWallet } from "src/components/provider/CosmosWalletProvider";
 
 const AuthPage = () => {
   const router = useRouter();
   const { query } = router;
-  const { queryClient } = useQueryContract();
+  const wallet = useCosmosWallet();
+  // const { queryClient } = useQueryContract();
   const [message, setMessage] = useState<string | null>(null);
   const onLogin = useCallback(async () => {
     setMessage(null);
     //request keplr tokenq
     //set cookie
     //
-    if (!queryClient) {
+    if (!wallet?.loginMutation) {
       return;
     }
 
-    await queryClient.connectKeplr();
-    const accounts = await queryClient.getAccounts();
-    if (accounts.length > 0) {
-      // window.location.href = '/share?account=' + accounts[0].address
-    }
-    const otp = Math.floor(Math.random() * 100_000).toString();
-    const ok = await queryClient.signMessage(otp);
-    if (!ok) {
-      //show an error
-      setMessage("Unauthorized");
-    } else {
+    try {
+      await wallet.loginMutation.mutate();
       if (typeof query.redirect === "string") {
         await router.push({
           pathname: query.redirect,
         });
       }
+    } catch (e) {
+      setMessage("Unauthorized");
     }
 
     //call backend auth with token
-  }, [queryClient, router]);
+  }, [wallet, router]);
   return (
     <>
       <div>
@@ -49,14 +44,14 @@ const AuthPage = () => {
           </RowWideContainer>
 
           <RowWideContainer>
-            <p>
-              While Publicworks.art is in beta, you can only log in to
-              <a href={"https://testnet.publicworks.art/"}>
-                https://testnet.publicworks.art/
-              </a>
-              .
-            </p>
-            <Button onClick={onLogin}>Login</Button>
+            {/*<p>*/}
+            {/*  While Publicworks.art is in beta, you can only log in to*/}
+            {/*  <a href={"https://testnet.publicworks.art/"}>*/}
+            {/*    https://testnet.publicworks.art/*/}
+            {/*  </a>*/}
+            {/*  .*/}
+            {/*</p>*/}
+            <ButtonPW onClick={onLogin}>Login</ButtonPW>
             {message && <div>{message}</div>}
           </RowWideContainer>
         </Container>

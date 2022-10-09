@@ -8,7 +8,6 @@ import { trpcNextPW } from "../../server/utils/trpc";
 import SpinnerLoading from "../loading/Loader";
 import { normalizeIpfsUri } from "../../wasm/metadata";
 import { Container } from "react-bootstrap";
-import { Button } from "@/components/button/Button";
 
 export interface CreateWorkProps {
   onCreateProject:

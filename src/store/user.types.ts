@@ -6,3 +6,9 @@ export const UserFullZ = z.object({
 });
 
 export type User = z.infer<typeof UserFullZ>;
+
+export const EditUserRequestZ = z.object({
+  name: z.string(),
+});
+
+export type EditUserRequest = z.infer<typeof EditUserRequestZ>;

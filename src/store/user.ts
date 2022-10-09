@@ -1,12 +1,16 @@
 import { dataSource } from "../typeorm/datasource";
 import { UserEntity } from "../model";
 import cuid from "cuid";
+import { EditUserRequest } from "src/store/user.types";
 
 export class UserRepo {
   async getUser(address: string): Promise<UserEntity | null> {
     return dataSource().getRepository(UserEntity).findOne({
       where: { address },
     });
+  }
+  async editUser(userId: string, req: Partial<EditUserRequest>) {
+    return dataSource().getRepository(UserEntity).update({ id: userId }, req);
   }
   async createIfNeeded(address: string): Promise<UserEntity | null> {
     // return dataSource().getRepository(UserEntity).findOne({

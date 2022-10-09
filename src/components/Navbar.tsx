@@ -9,7 +9,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const NavBar = () => {
   const wallet = useCosmosWallet();
-
+  const address = wallet.onlineClient?.accounts
+    ? wallet.onlineClient?.accounts[0].address
+    : undefined;
   return (
     <Navbar bg="dark" variant="dark" expand="sm">
       <Container fluid>
@@ -24,7 +26,7 @@ export const NavBar = () => {
             <Nav.Link href="/works">Works</Nav.Link>
             <Nav.Link href="/about">About</Nav.Link>
             <Nav.Link href="/roadmap">Roadmap</Nav.Link>
-            {config.testnet && <Nav.Link href="/create">Create</Nav.Link>}
+            {<Nav.Link href="/create">Create</Nav.Link>}
           </Nav>
         </Navbar.Collapse>
         <Navbar.Collapse className="justify-content-end">
@@ -34,10 +36,12 @@ export const NavBar = () => {
               <span>
                 <span>
                   <ButtonGroup aria-label="Basic example">
-                    <Button variant="secondary">
-                      {wallet.onlineClient?.accounts[0].address.slice(0, 9)}
-                      ...{wallet.onlineClient?.accounts[0].address.slice(-5)}
-                    </Button>
+                    <Link passHref={true} href={"/profile"}>
+                      <Button variant="secondary">
+                        {address &&
+                          `${address.slice(0, 9)}...${address.slice(-5)}`}
+                      </Button>
+                    </Link>
                     <Button variant="secondary">
                       <Nav.Link
                         onClick={() => {

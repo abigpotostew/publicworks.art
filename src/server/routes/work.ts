@@ -95,7 +95,10 @@ const listWorks = baseProcedure
   )
 
   .query(async ({ input, ctx }) => {
-    const projects = await stores().project.getProjects(input);
+    const projects = await stores().project.getProjects({
+      ...input,
+      published: true,
+    });
 
     if (!projects) {
       throw new TRPCError({ code: "NOT_FOUND" });
@@ -111,6 +114,10 @@ const workPreviewImg = baseProcedure
   )
 
   .query(async ({ input, ctx }) => {
+    const project = await stores().project.getProject(input.workId);
+    if (project?.coverImageCid) {
+      return normalizeMetadataUri("ipfs://" + project.coverImageCid);
+    }
     const preview = await stores().project.getProjectPreviewImage(input.workId);
 
     if (!preview || !preview.image_url) {

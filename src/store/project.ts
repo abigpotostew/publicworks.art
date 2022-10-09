@@ -26,14 +26,21 @@ export class ProjectRepo {
   async getProjects({
     limit,
     offset,
+    published,
   }: {
     limit: number;
     offset: number;
+    published: boolean;
   }): Promise<WorkEntity[]> {
-    return dataSource().getRepository(WorkEntity).find({
-      take: limit,
-      skip: offset,
-    });
+    return dataSource()
+      .getRepository(WorkEntity)
+      .find({
+        where: {
+          sg721: Not(IsNull()),
+        },
+        take: limit,
+        skip: offset,
+      });
   }
   async getProject(id: string): Promise<WorkEntity | null> {
     return dataSource()

@@ -2,15 +2,14 @@ import { ReactElement, useCallback, useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import { useRouter } from "next/router";
 import * as jwt from "jsonwebtoken";
-import { CreateWork } from "../../src/components/creatework/CreateWork";
 import { RowWideContainer } from "../../src/components/layout/RowWideContainer";
 import MainLayout from "../../src/layout/MainLayout";
 import SpinnerLoading from "../../src/components/loading/Loader";
 import { getCookie } from "../../src/util/cookie";
 import { trpcNextPW } from "../../src/server/utils/trpc";
-import { CreateProjectRequest, EditProjectRequest } from "../../src/store";
-import { onWorkUpload } from "../../src/works/upload";
+import { EditProjectRequest } from "../../src/store";
 import { NameWork } from "../../src/components/creatework/NameWork";
+import { RowThinContainer } from "src/components/layout/RowThinContainer";
 
 const CreatePage = () => {
   const utils = trpcNextPW.useContext();
@@ -67,39 +66,17 @@ const CreatePage = () => {
     [mutation]
   );
 
-  // const onUpload = useCallback(async (files: File[]) => {
-  //   // console.log("files",files)
-  //
-  //   if (files.length !== 1) {
-  //     throw new Error("required single file");
-  //   }
-  //   const formData = new FormData();
-  //   formData.append("file", files[0]);
-  //   const response = await fetch("/api/workUpload", {
-  //     method: "POST",
-  //     body: formData,
-  //   });
-  //   console.log("workUpload status", response.status);
-  // }, []);
-
-  // useEffect(()=>{
-  //   if(mutation.error)
-  //   router.push(`/create/${body.workId}`)
-  // },[mutation])
-
   return (
     <>
       <div>
         <Container>
-          <RowWideContainer>
+          <RowThinContainer>
             <h1>Create Work</h1>
-          </RowWideContainer>
 
-          <RowWideContainer>
             {authLoaded && <NameWork onCreateProject={onCreateProject} />}
             {mutation.isLoading && <SpinnerLoading />}
             {mutation.error && <p>{mutation.error.message}</p>}
-          </RowWideContainer>
+          </RowThinContainer>
         </Container>
       </div>
     </>

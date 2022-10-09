@@ -17,6 +17,7 @@ const GalleryComponent = ({ work }: { work: WorkSerializable }) => {
   const query = trpcNextPW.works.workPreviewImg.useQuery({
     workId: work.id,
   });
+  console.log(query.data);
   const w = work;
   return (
     <>
@@ -41,12 +42,13 @@ const GalleryComponent = ({ work }: { work: WorkSerializable }) => {
 };
 
 const WorksPage = () => {
-  const pageCount = 100;
+  const pageCount = 2;
   const pageSize = 6;
   const pagination = usePagination({ pageSize, pageCount, pageUrl: "/works" });
+  console.log("currentPage", pagination.currentPage);
   const query = trpcNextPW.works.listWorks.useQuery({
     limit: pageSize,
-    offset: pagination.currentPage * pageSize,
+    offset: (pagination.currentPage - 1) * pageSize,
   });
 
   return (

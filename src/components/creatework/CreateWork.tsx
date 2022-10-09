@@ -7,7 +7,7 @@ import { WorkSerializable } from "src/dbtypes/works/workSerializable";
 import { RowWideContainer } from "../layout/RowWideContainer";
 import { useCosmosWallet } from "../provider/CosmosWalletProvider";
 import { firstOrThrow } from "src/array/util";
-import { Button } from "@/components/button/Button";
+import { ButtonPW } from "src/components/button/Button";
 
 function defaultDate() {
   const date = new Date();
@@ -287,9 +287,9 @@ export const CreateWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
             </Form.Group>
           </Form.Group>
 
-          <Button variant="primary" type="submit">
+          <ButtonPW variant="primary" type="submit">
             Save
-          </Button>
+          </ButtonPW>
         </Form>
       </RowWideContainer>
 

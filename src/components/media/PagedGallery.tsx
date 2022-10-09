@@ -41,13 +41,13 @@ export const PagedGallery: FC<Props> = ({
   );
 
   const pagesToRender = useMemo(() => {
-    const pagesToRender = [];
+    const pagesToRender: number[] = [];
     const start = Math.max(1, page - 3);
     const end = Math.min(lastPage, page + 3);
     for (let i = start; i <= end; i++) {
       pagesToRender.push(i);
     }
-    const ellipsisStart = start > 1 && pagesToRender.length;
+    const ellipsisStart = !!(start > 1 && pagesToRender.length);
     const ellipsisEnd = end < lastPage;
 
     return { ellipsisStart, ellipsisEnd, pagesToRender };
@@ -99,7 +99,7 @@ export const PagedGallery: FC<Props> = ({
             style={{ margin: "0 auto", width: "50%" }}
           >
             <PaginationComp
-              pages={page}
+              pages={pages}
               page={page}
               changePage={changePage}
               pagesToRender={pagesToRender}

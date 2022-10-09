@@ -12,6 +12,7 @@ import { event, GoogleAnalytics } from "nextjs-google-analytics";
 import { trpcNextPW } from "../src/server/utils/trpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "../src/icon/icons";
+import { ToastContainer } from "react-toastify";
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -77,6 +78,7 @@ const MyApp: FC<AppPropsWithLayout> = ({
           <GoogleAnalytics trackPageViews />
 
           <Component {...pageProps} />
+          <ToastContainer />
         </SWRConfig>
         {/*</CosmosWalletProviderContext.Provider>*/}
       </QueryClientProvider>

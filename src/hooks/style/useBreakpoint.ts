@@ -36,6 +36,8 @@ const resolveBreakpoint = (width: number | undefined): Breakpoint => {
     return SIZE_XL;
   } else if (width >= 1440) {
     return SIZE_XXL;
+  } else {
+    return SIZE_XS;
   }
 };
 

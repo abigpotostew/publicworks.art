@@ -10,6 +10,8 @@ import { generateTxHash } from "src/generateHash";
 import { normalizeMetadataUri } from "src/wasm/metadata";
 import { WorkSerializable } from "src/dbtypes/works/workSerializable";
 import { EditProjectRequest } from "src/store";
+import { RowThinContainer } from "src/components/layout/RowThinContainer";
+import { useToast } from "src/hooks/useToast";
 
 export interface CreateWorkProps {
   onCreateProject:
@@ -56,10 +58,11 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
 
   return (
     <>
-      <Container>
-        <h2>Work Description</h2>
-        {defaults.codeCid && (
-          <RowWideContainer>
+      <>
+        <>
+          <h2>Work Description</h2>
+
+          {defaults.codeCid && (
             <div>
               {defaults?.codeCid && (
                 <>
@@ -87,81 +90,81 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                 </>
               )}
             </div>
-          </RowWideContainer>
-        )}
-        <Form onSubmit={onSubmit}>
-          <Form.Group className="mb-3" controlId="formWorkDescription">
-            <Form.Label>
-              Description{" "}
-              <TooltipInfo>
-                Description is included in NFT metadata.
-              </TooltipInfo>
-            </Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              defaultValue={defaults.description}
-              placeholder={"Appears in every NFT description"}
-              onChange={(e) => setProjectDescription(e.target.value)}
-              name="project_description"
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formWorkBlurb">
-            <Form.Label>
-              Blurb{" "}
-              <TooltipInfo>
-                Short collection description that is stored on chain and
-                dsiaplayed on the launchpad. Cannot be changed after contract
-                creation.
-              </TooltipInfo>
-            </Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              defaultValue={defaults.blurb}
-              placeholder={"Appears on publicworks.art"}
-              onChange={(e) => setProjectBlurb(e.target.value)}
-              name="project_blurb"
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formExternalLink">
-            <Form.Label>
-              External Link{" "}
-              <TooltipInfo>
-                Optional link that is included on chain and displayed on
-                publicworks.art
-              </TooltipInfo>
-            </Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              defaultValue={defaults.externalLink}
-              placeholder={"artproject.com"}
-              onChange={(e) => setExternalLink(e.target.value)}
-              name="external_link"
-            />
-          </Form.Group>
+          )}
+          <Form onSubmit={onSubmit}>
+            <Form.Group className="mb-3" controlId="formWorkDescription">
+              <Form.Label>
+                Description{" "}
+                <TooltipInfo>
+                  Description is included in NFT metadata.
+                </TooltipInfo>
+              </Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                defaultValue={defaults.description}
+                placeholder={"Appears in every NFT description"}
+                onChange={(e) => setProjectDescription(e.target.value)}
+                name="project_description"
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formWorkBlurb">
+              <Form.Label>
+                Blurb{" "}
+                <TooltipInfo>
+                  Short collection description that is stored on chain and
+                  dsiaplayed on the launchpad. Cannot be changed after contract
+                  creation.
+                </TooltipInfo>
+              </Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                defaultValue={defaults.blurb}
+                placeholder={"Appears on publicworks.art"}
+                onChange={(e) => setProjectBlurb(e.target.value)}
+                name="project_blurb"
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formExternalLink">
+              <Form.Label>
+                External Link{" "}
+                <TooltipInfo>
+                  Optional link that is included on chain and displayed on
+                  publicworks.art
+                </TooltipInfo>
+              </Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                defaultValue={defaults.externalLink}
+                placeholder={"artproject.com"}
+                onChange={(e) => setExternalLink(e.target.value)}
+                name="external_link"
+              />
+            </Form.Group>
 
-          <Form.Group className="mb-3" controlId="formCreator">
-            <Form.Label>
-              Author Name{" "}
-              <TooltipInfo>
-                What name do you want displayed as the creator?
-              </TooltipInfo>
-            </Form.Label>
-            <Form.Control
-              defaultValue={defaults.creator}
-              placeholder={"skymagic.eth"}
-              onChange={(e) => setCreator(e.target.value)}
-              name="creator"
-            />
-          </Form.Group>
+            <Form.Group className="mb-3" controlId="formCreator">
+              <Form.Label>
+                Author Name{" "}
+                <TooltipInfo>
+                  What name do you want displayed as the creator?
+                </TooltipInfo>
+              </Form.Label>
+              <Form.Control
+                defaultValue={defaults.creator}
+                placeholder={"skymagic.eth"}
+                onChange={(e) => setCreator(e.target.value)}
+                name="creator"
+              />
+            </Form.Group>
 
-          <Button variant="primary" type="submit">
-            Save
-          </Button>
-        </Form>
-      </Container>
+            <Button variant="primary" type="submit">
+              Save
+            </Button>
+          </Form>
+        </>
+      </>
     </>
   );
 };

@@ -1,5 +1,5 @@
 import { FC, FormEventHandler, useCallback, useState } from "react";
-import { Container, Form } from "react-bootstrap";
+import { Container, Form, Row } from "react-bootstrap";
 import { RowThinContainer } from "../layout/RowThinContainer";
 import { EditProjectRequest } from "../../store";
 import { WorkSerializable } from "../../dbtypes/works/workSerializable";
@@ -11,6 +11,8 @@ import { BsArrowRepeat } from "react-icons/bs";
 import { FlexBox } from "../layout/FlexBoxCenter";
 import { DropZone } from "../DropZone";
 import { ButtonPW as Button } from "../button/Button";
+import { TooltipInfo } from "src/components/TooltipInfo";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export interface CreateWorkProps {
   onCreateProject:
@@ -43,12 +45,18 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   }, []);
 
   return (
-    <Container>
-      <RowThinContainer>
+    <>
+      <>
         <>
           <Form onSubmit={onSubmit}>
             <Form.Group className="mb-3" controlId="formWorkName">
-              <Form.Label>Name</Form.Label>
+              <Form.Label>
+                Name{" "}
+                <TooltipInfo>
+                  Your work name is highly visible, on and off chain. This can
+                  be changed later.
+                </TooltipInfo>
+              </Form.Label>
               <Form.Control
                 type="text"
                 defaultValue={defaults.name}
@@ -101,7 +109,10 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                     onUpload={async (files) =>
                       props?.onUpload && props.onUpload(files)
                     }
-                  />
+                  >
+                    <FontAwesomeIcon icon={"upload"} width={16} /> Drag and drop
+                    your project zip file here, or click to upload
+                  </DropZone>
                 </div>
               </RowWideContainer>
             )}
@@ -113,7 +124,7 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
             </Button>
           </Form>
         </>
-      </RowThinContainer>
-    </Container>
+      </>
+    </>
   );
 };

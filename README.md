@@ -1,4 +1,4 @@
 # PublicWorks.art
 
 Progress Notes:
-- Instantiate
+- Login-- need to separate the connect wallet with the login with token flow

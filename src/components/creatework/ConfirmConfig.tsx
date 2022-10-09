@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useCallback, useState } from "react";
 import { WorkSerializable } from "../../dbtypes/works/workSerializable";
 import { Col, Container, Form, Row } from "react-bootstrap";
 import styles from "./ConfirmConfig.module.css";
@@ -6,6 +6,8 @@ import { FlexBox } from "../layout/FlexBoxCenter";
 import { RowWideContainer } from "../layout/RowWideContainer";
 import { LiveMedia } from "../media/LiveMedia";
 import { normalizeIpfsUri } from "../../wasm/metadata";
+import { generateTxHash } from "src/generateHash";
+import { BsArrowRepeat } from "react-icons/bs";
 
 interface ConfirmConfigProps {
   work: WorkSerializable;
@@ -42,41 +44,68 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
     createdDate: null,
     updatedDate: null,
   };
+  const [hash, setHash] = useState<string>(generateTxHash());
+  const onClickRefreshHash = useCallback(() => {
+    setHash(generateTxHash());
+  }, []);
 
   //https://react-bootstrap.netlify.app/forms/layout/#horizontal-form-label-sizing
   return (
     <Container>
-      <FlexBox>
+      <h2>Confirm Collection Configuration</h2>
+      <>
+        <div>
+          <Container>
+            <RowWideContainer>
+              <LiveMedia
+                ipfsUrl={normalizeIpfsUri(
+                  "ipfs://" + w.codeCid + "?hash=" + hash
+                )}
+                minHeight={500}
+                style={{ minWidth: 500 }}
+              ></LiveMedia>
+              <a onClick={onClickRefreshHash}>
+                <FlexBox
+                  style={{
+                    justifyContent: "flex-start",
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <div>New Hash</div>
+                  <BsArrowRepeat style={{ marginLeft: ".5rem" }} />
+                </FlexBox>
+              </a>
+            </RowWideContainer>
+          </Container>
+        </div>
+        <br />
+        <hr />
         <div>
           {Object.keys(pairs)
             .filter((k) => !!pairs[k as keyof WorkSerializable])
             .map((k) => {
               return (
                 <Row key={k}>
-                  <Form.Label column="lg" lg={2} className={styles.labelTitle}>
-                    {pairs[k as keyof WorkSerializable]}
-                  </Form.Label>
-                  <Col>
-                    <Form.Label column="lg" size="lg">
-                      {w[k as keyof WorkSerializable]}
+                  <Form.Group>
+                    <Form.Label
+                      column="sm"
+                      lg={12}
+                      className={styles.labelTitle}
+                    >
+                      {pairs[k as keyof WorkSerializable]}
                     </Form.Label>
-                  </Col>
+                    <Col>
+                      <Form.Label column="lg" size="sm">
+                        {w[k as keyof WorkSerializable]}
+                      </Form.Label>
+                    </Col>
+                  </Form.Group>
                 </Row>
               );
             })}
         </div>
-        <div>
-          <Container>
-            <RowWideContainer>
-              <LiveMedia
-                ipfsUrl={normalizeIpfsUri("ipfs://" + w.codeCid)}
-                minHeight={500}
-                style={{ minWidth: 500 }}
-              ></LiveMedia>
-            </RowWideContainer>
-          </Container>
-        </div>
-      </FlexBox>
+      </>
     </Container>
   );
 };

@@ -24,6 +24,8 @@ import { DescribeWork } from "src/components/creatework/DescribeWork";
 import { UploadCoverImage } from "src/components/creatework/UploadCoverImage";
 import { ConfirmConfig } from "src/components/creatework/ConfirmConfig";
 import { NftDetails2 } from "src/components/creatework/NftDetails2";
+import { RowThinContainer } from "src/components/layout/RowThinContainer";
+import { useToast } from "src/hooks/useToast";
 
 // export const getServerSideProps: GetServerSideProps = async (context) => {
 //   await initializeIfNeeded();
@@ -146,8 +148,11 @@ const EditWorkPage = () => {
       ? getWorkQuery.data
       : null;
 
+  const toast = useToast();
   const mutation = trpcNextPW.works.editWork.useMutation({
     onSuccess() {
+      console.log("hello! pizzaa");
+      toast.success("Saved!");
       utils.works.getWorkById.invalidate();
     },
   });
@@ -198,8 +203,6 @@ const EditWorkPage = () => {
     };
   };
 
-  console.log("hi");
-
   // const steps: Step[] = [
   //   {
   //     label: "1",
@@ -230,104 +233,88 @@ const EditWorkPage = () => {
         <title key={"title"}>{`Create ${workId} - publicworks.art`}</title>
       </Head>
       {showConfetti && <ConfettiScreen />}
-      <StepProgressBar items={steps}></StepProgressBar>
-      {stage === "submit" && (
-        <Container fluid={false}>
-          <FlexBoxCenter fluid={false}>
-            {work && <ConfirmConfig work={work} />}
-          </FlexBoxCenter>
-          <div>
-            {
-              <Button
-                disabled={!wallet.isConnected}
-                onClick={() => onInstantiate()}
-              >
-                {work && !work.sg721 && <span>Instantiate On Chain</span>}
-                {work && work.sg721 && (
-                  <span>
-                    Instantiate + Replace Chain{" "}
-                    <TooltipInfo>
-                      Your contract is already deployed. Instantiating it again
-                      will replace the old instance on publicworks.art
-                    </TooltipInfo>
-                  </span>
-                )}
-              </Button>
-            }
-          </div>
 
-          <NavButtons
-            onPrevClick={() => setStagePrevFrom("submit")}
-            onNextClick={
-              work?.sg721 ? () => setStageNextFrom("submit") : undefined
-            }
-          ></NavButtons>
-        </Container>
-      )}
-      {stage === "view" && work && (
-        <Container fluid={false}>
-          <a
-            target={"_blank"}
-            href={`https://testnet.publicawesome.dev/launchpad/${work.minter}`}
-          >
-            Mint
-          </a>
-          <div>
-            {<Button onClick={() => setStagePrevFrom("view")}>Back</Button>}
-          </div>
-        </Container>
-      )}
+      <Container fluid={false}>
+        <StepProgressBar items={steps}></StepProgressBar>
+        <RowThinContainer>
+          {stage === "submit" && (
+            // <Container fluid={false}>
+            <>
+              <FlexBoxCenter fluid={false}>
+                {work && <ConfirmConfig work={work} />}
+              </FlexBoxCenter>
+              <div>
+                {
+                  <Button
+                    disabled={!wallet.isConnected}
+                    onClick={() => onInstantiate()}
+                    variant={"danger"}
+                  >
+                    {work && !work.sg721 && <span>Instantiate On Chain</span>}
+                    {work && work.sg721 && (
+                      <span>
+                        Instantiate + Replace Chain{" "}
+                        <TooltipInfo>
+                          Your contract is already deployed. Instantiating it
+                          again will replace the old instance on publicworks.art
+                        </TooltipInfo>
+                      </span>
+                    )}
+                  </Button>
+                }
+              </div>
 
-      {stage === "text" && (
-        <Container fluid={false}>
-          {getWorkQuery.isLoading && <SpinnerLoading></SpinnerLoading>}
-          {getWorkQuery.error && <div>{getWorkQuery.error.message}</div>}
-          {work && (
-            <DescribeWork
-              defaultValues={work}
-              onCreateProject={onCreateProject}
-            ></DescribeWork>
+              <NavButtons
+                onPrevClick={() => setStagePrevFrom("submit")}
+                onNextClick={
+                  work?.sg721 ? () => setStageNextFrom("submit") : undefined
+                }
+              ></NavButtons>
+            </>
+            // </Container>
           )}
-          {mutation.isSuccess && <div>Successfully saved</div>}
-          <NavButtons
-            onPrevClick={() => setStagePrevFrom("text")}
-            onNextClick={() => setStageNextFrom("text")}
-          ></NavButtons>
-        </Container>
-      )}
+          {stage === "view" && work && (
+            // <Container fluid={false}>
+            <>
+              <a
+                target={"_blank"}
+                href={`https://testnet.publicawesome.dev/launchpad/${work.minter}`}
+              >
+                Mint
+              </a>
+              <div>
+                {<Button onClick={() => setStagePrevFrom("view")}>Back</Button>}
+              </div>
+            </>
+            // </Container>
+          )}
 
-      {stage === "cover_image" && (
-        <>
-          {getWorkQuery.isLoading && <SpinnerLoading></SpinnerLoading>}
-          {getWorkQuery.error && <div>{getWorkQuery.error.message}</div>}
-          {work && (
-            <Container>
-              <UploadCoverImage
-                onCreateProject={onCreateProject}
-                defaultValues={work}
-              />
-              {!mutation.isLoading && mutation.error && (
-                <div>{mutation.error.message}</div>
+          {stage === "text" && (
+            <>
+              {getWorkQuery.isLoading && <SpinnerLoading></SpinnerLoading>}
+              {getWorkQuery.error && <div>{getWorkQuery.error.message}</div>}
+              {work && (
+                <DescribeWork
+                  defaultValues={work}
+                  onCreateProject={onCreateProject}
+                ></DescribeWork>
               )}
               {mutation.isSuccess && <div>Successfully saved</div>}
               <NavButtons
-                onPrevClick={() => setStagePrevFrom("cover_image")}
-                onNextClick={() => setStageNextFrom("cover_image")}
+                onPrevClick={() => setStagePrevFrom("text")}
+                onNextClick={() => setStageNextFrom("text")}
               ></NavButtons>
-            </Container>
+            </>
+            // </Container>
           )}
-        </>
-      )}
 
-      {stage === "nft_detail" && (
-        <>
-          {getWorkQuery.isLoading && <SpinnerLoading></SpinnerLoading>}
-          {getWorkQuery.error && <div>{getWorkQuery.error.message}</div>}
-          {work && (
-            <Container>
-              <FlexBoxCenter fluid={false}>
-                <div>
-                  <NftDetails2
+          {stage === "cover_image" && (
+            <>
+              {getWorkQuery.isLoading && <SpinnerLoading></SpinnerLoading>}
+              {getWorkQuery.error && <div>{getWorkQuery.error.message}</div>}
+              {work && (
+                <Container>
+                  <UploadCoverImage
                     onCreateProject={onCreateProject}
                     defaultValues={work}
                   />
@@ -335,107 +322,137 @@ const EditWorkPage = () => {
                     <div>{mutation.error.message}</div>
                   )}
                   {mutation.isSuccess && <div>Successfully saved</div>}
-                </div>
-                <div>
-                  {work && (
-                    <>
-                      <LiveMedia
-                        ipfsUrl={
-                          normalizeMetadataUri("ipfs://" + work.codeCid) +
-                          "?hash=" +
-                          hash
-                        }
-                        minHeight={500}
-                        style={{}}
-                      ></LiveMedia>
-                      <a onClick={onClickRefreshHash}>
-                        <FlexBox
-                          style={{
-                            justifyContent: "flex-start",
-                            flexDirection: "row",
-                            alignItems: "center",
-                          }}
-                        >
-                          <div>New Hash</div>
-                          <BsArrowRepeat style={{ marginLeft: ".5rem" }} />
-                        </FlexBox>
-                      </a>
-                    </>
-                  )}
-                  <DropZone onUpload={(files) => onUpload(files)} />
-                </div>
-              </FlexBoxCenter>
-              <NavButtons
-                onPrevClick={() => setStagePrevFrom("nft_detail")}
-                onNextClick={
-                  mutation.isSuccess
-                    ? () => setStageNextFrom("nft_detail")
-                    : undefined
-                }
-              ></NavButtons>
-            </Container>
-          )}
-        </>
-      )}
-
-      {stage === "name_art" && (
-        <>
-          {getWorkQuery.isLoading && <SpinnerLoading></SpinnerLoading>}
-          {getWorkQuery.error && <div>{getWorkQuery.error.message}</div>}
-          {work && (
-            <Container>
-              <h2>Work Name & Code Upload</h2>
-              <FlexBoxCenter fluid={false}>
-                <div>
-                  <NameWork
-                    onUpload={onUpload}
-                    onCreateProject={onCreateProject}
-                    defaultValues={work}
-                  />
-                  {!mutation.isLoading && mutation.error && (
-                    <div>{mutation.error.message}</div>
-                  )}
-                  {mutation.isSuccess && <div>Successfully saved</div>}
-
                   <NavButtons
-                    onNextClick={() => setStageNextFrom("name_art")}
-                    onPrevClick={() => setStagePrevFrom("name_art")}
+                    onPrevClick={() => setStagePrevFrom("cover_image")}
+                    onNextClick={() => setStageNextFrom("cover_image")}
                   ></NavButtons>
-                </div>
-              </FlexBoxCenter>
-            </Container>
+                </Container>
+              )}
+            </>
           )}
-        </>
-      )}
 
-      {/*{stage === "review" && (*/}
-      {/*  <>*/}
-      {/*    {getWorkQuery.isLoading && <SpinnerLoading></SpinnerLoading>}*/}
-      {/*    {getWorkQuery.error && <div>{getWorkQuery.error.message}</div>}*/}
-      {/*    {work && (*/}
-      {/*      <Container>*/}
-      {/*        <h2>Review</h2>*/}
+          {stage === "nft_detail" && (
+            <>
+              {getWorkQuery.isLoading && <SpinnerLoading></SpinnerLoading>}
+              {getWorkQuery.error && <div>{getWorkQuery.error.message}</div>}
+              {work && (
+                <>
+                  <FlexBoxCenter fluid={false}>
+                    <div>
+                      <NftDetails2
+                        onCreateProject={onCreateProject}
+                        defaultValues={work}
+                      />
+                      {!mutation.isLoading && mutation.error && (
+                        <div>{mutation.error.message}</div>
+                      )}
+                      {mutation.isSuccess && <div>Successfully saved</div>}
+                    </div>
+                    {/*<div>*/}
+                    {/*  {work && (*/}
+                    {/*    <>*/}
+                    {/*      <LiveMedia*/}
+                    {/*        ipfsUrl={*/}
+                    {/*          normalizeMetadataUri("ipfs://" + work.codeCid) +*/}
+                    {/*          "?hash=" +*/}
+                    {/*          hash*/}
+                    {/*        }*/}
+                    {/*        minHeight={500}*/}
+                    {/*        style={{}}*/}
+                    {/*      ></LiveMedia>*/}
+                    {/*      <a onClick={onClickRefreshHash}>*/}
+                    {/*        <FlexBox*/}
+                    {/*          style={{*/}
+                    {/*            justifyContent: "flex-start",*/}
+                    {/*            flexDirection: "row",*/}
+                    {/*            alignItems: "center",*/}
+                    {/*          }}*/}
+                    {/*        >*/}
+                    {/*          <div>New Hash</div>*/}
+                    {/*          <BsArrowRepeat style={{ marginLeft: ".5rem" }} />*/}
+                    {/*        </FlexBox>*/}
+                    {/*      </a>*/}
+                    {/*    </>*/}
+                    {/*  )}*/}
+                    {/*  <DropZone onUpload={(files) => onUpload(files)} />*/}
+                    {/*</div>*/}
+                  </FlexBoxCenter>
+                  <NavButtons
+                    onPrevClick={() => setStagePrevFrom("nft_detail")}
+                    onNextClick={
+                      mutation.isSuccess
+                        ? () => setStageNextFrom("nft_detail")
+                        : undefined
+                    }
+                  ></NavButtons>
+                  {/*</Container>*/}
+                </>
+              )}
+            </>
+          )}
 
-      {/*        <div>*/}
-      {/*          <NameWork*/}
-      {/*            onUpload={onUpload}*/}
-      {/*            onCreateProject={onCreateProject}*/}
-      {/*            defaultValues={work}*/}
-      {/*          />*/}
-      {/*          {!mutation.isLoading && mutation.error && (*/}
-      {/*            <div>{mutation.error.message}</div>*/}
-      {/*          )}*/}
-      {/*          {mutation.isSuccess && <div>Successfully saved</div>}*/}
+          {stage === "name_art" && (
+            <>
+              {getWorkQuery.isLoading && <SpinnerLoading></SpinnerLoading>}
+              {getWorkQuery.error && <div>{getWorkQuery.error.message}</div>}
+              {work && (
+                // <Container fluid={false}>
+                <>
+                  <h2>Work Name & Code Upload</h2>
+                  <FlexBoxCenter fluid={false}>
+                    <div>
+                      <NameWork
+                        onUpload={onUpload}
+                        onCreateProject={onCreateProject}
+                        defaultValues={work}
+                      />
+                      {!mutation.isLoading && mutation.error && (
+                        <div>{mutation.error.message}</div>
+                      )}
+                      {mutation.isSuccess && <div>Successfully saved</div>}
 
-      {/*          <NavButtons*/}
-      {/*            onPrevClick={() => setStagePrevFrom("review")}*/}
-      {/*            onNextClick={() => setStageNextFrom("review")}*/}
-      {/*          ></NavButtons>*/}
-      {/*        </div>*/}
-      {/*      </Container>*/}
-      {/*    )}*/}
-      {/*  </>*/}
-      {/*)}*/}
+                      <NavButtons
+                        onNextClick={() => setStageNextFrom("name_art")}
+                        onPrevClick={() => setStagePrevFrom("name_art")}
+                      ></NavButtons>
+                    </div>
+                  </FlexBoxCenter>
+                </>
+                // </Container>
+              )}
+            </>
+          )}
+
+          {/*{stage === "review" && (*/}
+          {/*  <>*/}
+          {/*    {getWorkQuery.isLoading && <SpinnerLoading></SpinnerLoading>}*/}
+          {/*    {getWorkQuery.error && <div>{getWorkQuery.error.message}</div>}*/}
+          {/*    {work && (*/}
+          {/*      <Container>*/}
+          {/*        <h2>Review</h2>*/}
+
+          {/*        <div>*/}
+          {/*          <NameWork*/}
+          {/*            onUpload={onUpload}*/}
+          {/*            onCreateProject={onCreateProject}*/}
+          {/*            defaultValues={work}*/}
+          {/*          />*/}
+          {/*          {!mutation.isLoading && mutation.error && (*/}
+          {/*            <div>{mutation.error.message}</div>*/}
+          {/*          )}*/}
+          {/*          {mutation.isSuccess && <div>Successfully saved</div>}*/}
+
+          {/*          <NavButtons*/}
+          {/*            onPrevClick={() => setStagePrevFrom("review")}*/}
+          {/*            onNextClick={() => setStageNextFrom("review")}*/}
+          {/*          ></NavButtons>*/}
+          {/*        </div>*/}
+          {/*      </Container>*/}
+          {/*    )}*/}
+          {/*  </>*/}
+          {/*)}*/}
+        </RowThinContainer>
+      </Container>
     </>
   );
 };

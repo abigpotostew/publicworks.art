@@ -6,6 +6,7 @@ import styles from "../../styles/Home.module.scss";
 import { useQueryContract } from "../hooks/useQueryContract";
 import { CosmosWalletProviderContext } from "../components/provider/CosmosWalletProvider";
 import { Container } from "react-bootstrap";
+import { useUserSession } from "src/hooks/useUserSession";
 
 interface ILayout {
   description?: string;
@@ -21,6 +22,7 @@ const MainLayout: FC<ILayout> = ({
   children,
 }) => {
   const wallet = useQueryContract();
+  // const user = useUserSession(wallet.queryConnectedClient);
   const {
     queryClient: queryContractClient,
     queryConnectedClient,
