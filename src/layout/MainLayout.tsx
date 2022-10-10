@@ -7,6 +7,8 @@ import { useQueryContract } from "../hooks/useQueryContract";
 import { CosmosWalletProviderContext } from "../components/provider/CosmosWalletProvider";
 import { Container } from "react-bootstrap";
 import { useUserSession } from "src/hooks/useUserSession";
+import { StargazeProvider, useWallet } from "@stargazezone/client";
+import stargazeClient from "src/stargaze/stargaze";
 
 interface ILayout {
   description?: string;
@@ -55,6 +57,7 @@ const MainLayout: FC<ILayout> = ({
         )}
         <meta name="twitter:dnt" content="on" />
       </Head>
+
       <CosmosWalletProviderContext.Provider
         value={
           {

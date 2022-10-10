@@ -14,6 +14,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "../src/icon/icons";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { StargazeProvider } from "@stargazezone/client";
+import stargazeClient from "src/stargaze/stargaze";
+import { UserProvider } from "src/context/user/UserProvider";
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -68,20 +71,24 @@ const MyApp: FC<AppPropsWithLayout> = ({
   //   queryConnectedClient,
   //   connectKeplrMutation,
   // } = useQueryContract();
-  return getLayout(
+  return (
     <SSRProvider>
-      <QueryClientProvider client={queryClient}>
-        <SWRConfig
-          value={{
-            fetcher,
-          }}
-        >
-          <GoogleAnalytics trackPageViews />
-          <ToastContainer />
-          <Component {...pageProps} />
-        </SWRConfig>
-        {/*</CosmosWalletProviderContext.Provider>*/}
-      </QueryClientProvider>
+      <StargazeProvider client={stargazeClient}>
+        <UserProvider>
+          {/*<QueryClientProvider client={queryClient}>*/}
+          <SWRConfig
+            value={{
+              fetcher,
+            }}
+          >
+            <GoogleAnalytics trackPageViews />
+            <ToastContainer />
+            {getLayout(<Component {...pageProps} />)}
+          </SWRConfig>
+          {/*</CosmosWalletProviderContext.Provider>*/}
+          {/*</QueryClientProvider>*/}
+        </UserProvider>
+      </StargazeProvider>
     </SSRProvider>
   ) as ReactElement<any, any>;
 };

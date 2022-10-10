@@ -7,12 +7,15 @@ import config from "../wasm/config";
 import { ButtonPW } from "./button/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SpinnerLoading from "src/components/loading/Loader";
+import { useWallet, WalletInfo } from "@stargazezone/client";
+import { FC } from "react";
+import { WalletContextValue } from "@stargazezone/client/react/wallet/WalletContext";
 
-export const NavBar = () => {
+export const NavBar: FC = () => {
+  const sgwallet = useWallet();
   const wallet = useCosmosWallet();
-  const address = wallet.onlineClient?.accounts
-    ? wallet.onlineClient?.accounts[0].address
-    : undefined;
+  const address = sgwallet?.wallet?.address;
+
   return (
     <Navbar bg="dark" variant="dark" expand="sm">
       <Container fluid>
@@ -30,9 +33,10 @@ export const NavBar = () => {
             {<Nav.Link href="/create">Create</Nav.Link>}
           </Nav>
         </Navbar.Collapse>
+
         <Navbar.Collapse className="justify-content-end">
           {/*{wallet.isConnected && <Navbar.Text>Signed in</Navbar.Text>}*/}
-          {wallet.isConnected && (
+          {sgwallet.wallet && (
             <Navbar.Text>
               <span>
                 <span>
@@ -46,7 +50,7 @@ export const NavBar = () => {
                     <Button variant="secondary">
                       <Nav.Link
                         onClick={() => {
-                          wallet.logoutMutation?.mutate();
+                          sgwallet.logout();
                         }}
                       >
                         <FontAwesomeIcon
@@ -60,25 +64,17 @@ export const NavBar = () => {
               </span>
             </Navbar.Text>
           )}
-          {!wallet.isConnected && !wallet?.loginMutation?.isLoading && (
+          {!sgwallet.wallet && (
             <Navbar.Text>
               <span>
                 <Nav.Link
                   onClick={async () => {
-                    await wallet.loginMutation?.mutateAsync(false);
+                    sgwallet.login();
                   }}
                 >
                   <ButtonPW>Sign In</ButtonPW>
                 </Nav.Link>
               </span>
-            </Navbar.Text>
-          )}
-          {!wallet.isConnected && wallet?.loginMutation?.isLoading && (
-            <Navbar.Text>
-              <ButtonPW>
-                {" "}
-                <SpinnerLoading />
-              </ButtonPW>
             </Navbar.Text>
           )}
         </Navbar.Collapse>

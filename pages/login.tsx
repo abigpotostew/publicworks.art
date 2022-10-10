@@ -8,11 +8,14 @@ import { ButtonPW } from "src/components/button/Button";
 import { useCosmosWallet } from "src/components/provider/CosmosWalletProvider";
 import { getCookie } from "src/util/cookie";
 import { RowThinContainer } from "src/components/layout/RowThinContainer";
+import { useWallet } from "@stargazezone/client";
+import useUserContext from "src/context/user/useUserContext";
 
 const AuthPage = () => {
   const router = useRouter();
   const { query } = router;
-  const wallet = useCosmosWallet();
+  const { user } = useUserContext();
+  const sgwallet = useWallet();
   // const { queryClient } = useQueryContract();
   const [message, setMessage] = useState<string | null>(null);
   const onLogin = useCallback(async () => {
@@ -20,6 +23,7 @@ const AuthPage = () => {
     //request keplr tokenq
     //set cookie
     //
+
     if (!wallet?.loginMutation) {
       return;
     }
