@@ -19,7 +19,7 @@ export const useNftMetadata = ({
   sg721,
   tokenId,
 }: {
-  sg721: string;
+  sg721: string | undefined;
   tokenId: string;
 }) => {
   const [loading, setLoading] = useState<boolean>(true);

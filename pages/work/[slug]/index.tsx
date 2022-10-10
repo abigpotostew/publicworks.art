@@ -6,7 +6,7 @@ import { LiveMedia } from "../../../src/components/media/LiveMedia";
 import { RowThinContainer } from "../../../src/components/layout/RowThinContainer";
 import { RowSquareContainer } from "../../../src/components/layout/RowSquareContainer";
 import { NumMinted } from "../../../src/components/work/NumMinted";
-import { NftMetadata } from "../../../src/hooks/useNftMetadata";
+import { NftMetadata, useNftMetadata } from "../../../src/hooks/useNftMetadata";
 import SpinnerLoading from "../../../src/components/loading/Loader";
 import { getTokenMetadata } from "../../../src/wasm/metadata";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
@@ -30,44 +30,41 @@ export async function getStaticPaths() {
     paths: works.map((s) => {
       return { params: { slug: s.slug } };
     }),
-    fallback: false,
+    fallback: "blocking",
   };
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const slug = context.params?.slug;
-  if (slug !== "helio") {
-    return {
-      notFound: true,
-    };
-  }
+  // if (slug !== "helio") {
+  //   return {
+  //     notFound: true,
+  //   };
+  // }
 
-  let metadata: NftMetadata | null = null;
-  try {
-    metadata = await getTokenMetadata(work.sg721, "1");
-  } catch (e) {
-    //
-  }
-  console.log("work here ", work, metadata);
+  // let metadata: NftMetadata | null = null;
+  // try {
+  //   metadata = await getTokenMetadata(work.sg721, "1");
+  // } catch (e) {
+  //   //
+  // }
+  // console.log("work here ", work, metadata);
   return {
     props: {
       work,
-      metadata,
     },
+    revalidate: 60, // In seconds
   };
 };
 
-const WorkPage = ({
-  metadata,
-  work,
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
-  console.log("work", work);
+const WorkPage = ({ work }: InferGetStaticPropsType<typeof getStaticProps>) => {
   // fetch num tokens
   const {
     numMinted,
     error: numMintedError,
     loading: numMintedLoading,
   } = useNumMinted(work?.sg721);
+  const metadata = useNftMetadata({ sg721: work.sg721, tokenId: "1" });
   // const { collectionSize, error: collectionSizeError, loading: collSizeLoading } = useCollectionSize(work.minter)
 
   const loading = false;
@@ -90,7 +87,9 @@ const WorkPage = ({
                 <div>Something went wrong</div>
               ) : (
                 <LiveMedia
-                  ipfsUrl={metadata?.animation_url || work.preview_url}
+                  ipfsUrl={
+                    metadata?.metadata?.animation_url || work.preview_url
+                  }
                   minHeight={500}
                 />
               )}
