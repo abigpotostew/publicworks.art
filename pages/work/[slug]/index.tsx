@@ -15,10 +15,19 @@ import { useNumMinted } from "../../../src/hooks/useNumMinted";
 import { PagedGallery } from "../../../src/components/media/PagedGallery";
 import { work } from "../../../src/helio";
 import Head from "next/head";
+import { stores } from "src/store/stores";
+import { initializeIfNeeded } from "src/typeorm/datasource";
 
 export async function getStaticPaths() {
+  await initializeIfNeeded();
+  const works = await stores().project.getProjects({
+    limit: 500,
+    offset: 0,
+    published: true,
+  });
+  // const static = [work];
   return {
-    paths: [work].map((s) => {
+    paths: works.map((s) => {
       return { params: { slug: s.slug } };
     }),
     fallback: false,
