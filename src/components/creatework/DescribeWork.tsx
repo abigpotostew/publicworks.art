@@ -1,6 +1,5 @@
-import { FC, FormEventHandler, useCallback, useState } from "react";
-import { Container, Form } from "react-bootstrap";
-import { RowWideContainer } from "../layout/RowWideContainer";
+import { FC, useCallback, useEffect, useState } from "react";
+import { Form } from "react-bootstrap";
 import { LiveMedia } from "../media/LiveMedia";
 import { BsArrowRepeat } from "react-icons/bs";
 import { FlexBox } from "../layout/FlexBoxCenter";
@@ -10,15 +9,24 @@ import { generateTxHash } from "src/generateHash";
 import { normalizeMetadataUri } from "src/wasm/metadata";
 import { WorkSerializable } from "src/dbtypes/works/workSerializable";
 import { EditProjectRequest } from "src/store";
-import { RowThinContainer } from "src/components/layout/RowThinContainer";
-import { useToast } from "src/hooks/useToast";
+import { useFormik } from "formik";
+import { toFormikValidationSchema } from "zod-formik-adapter";
+import { z } from "zod";
 
 export interface CreateWorkProps {
   onCreateProject:
     | ((req: Partial<EditProjectRequest>) => void)
     | ((req: Partial<EditProjectRequest>) => Promise<void>);
   defaultValues?: WorkSerializable;
+  formValid: (props: { isValid: boolean; isTouched: boolean }) => void;
 }
+
+export const schema = z.object({
+  description: z.string(),
+  blurb: z.string(),
+  creator: z.string(),
+  externalLink: z.string().url().optional(),
+});
 
 export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   // auth context here
@@ -27,35 +35,29 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
     description: props.defaultValues?.description || "",
     blurb: props.defaultValues?.blurb || "",
     codeCid: props.defaultValues?.codeCid,
-    externalLink: props.defaultValues?.externalLink || "",
+    externalLink: props.defaultValues?.externalLink || undefined,
     creator: props.defaultValues?.creator || "",
   };
-  const [projectDescription, setProjectDescription] = useState<string>(
-    defaults.description
-  );
-  const [projectBlurb, setProjectBlurb] = useState<string>(defaults.blurb);
-  const [externalLink, setExternalLink] = useState<string>(
-    defaults.externalLink
-  );
-  const [creator, setCreator] = useState<string>(defaults.creator);
+
+  const formik = useFormik({
+    initialValues: defaults,
+    onSubmit: async (values) => {
+      // console.log("values", values);
+      // alert(JSON.stringify(values, null, 2));
+      await props.onCreateProject(values);
+    },
+    validationSchema: toFormikValidationSchema(schema),
+  });
 
   const [hash, setHash] = useState<string>(generateTxHash());
-
-  const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-    const req = {
-      projectDescription,
-      projectBlurb,
-      creator,
-      externalLink,
-    };
-    props.onCreateProject(req);
-  };
 
   const onClickRefreshHash = useCallback(() => {
     setHash(generateTxHash());
   }, []);
 
+  useEffect(() => {
+    props.formValid({ isTouched: formik.dirty, isValid: formik.isValid });
+  }, [formik.isValid, formik.touched]);
   return (
     <>
       <>
@@ -91,7 +93,12 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               )}
             </div>
           )}
-          <Form onSubmit={onSubmit}>
+          <Form
+            onSubmit={(...a) => {
+              return formik.handleSubmit(...a);
+            }}
+            noValidate
+          >
             <Form.Group className="mb-3" controlId="formWorkDescription">
               <Form.Label>
                 Description{" "}
@@ -103,11 +110,25 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                 as="textarea"
                 rows={3}
                 defaultValue={defaults.description}
+                value={formik.values.description}
                 placeholder={"Appears in every NFT description"}
-                onChange={(e) => setProjectDescription(e.target.value)}
-                name="project_description"
+                onChange={formik.handleChange}
+                name="description"
+                isValid={
+                  formik.touched.description && !formik.errors.description
+                }
+                isInvalid={
+                  formik.touched.description && !!formik.errors.description
+                }
               />
+              <Form.Control.Feedback type={"valid"}>
+                Looks good!
+              </Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">
+                {formik.errors.description}
+              </Form.Control.Feedback>
             </Form.Group>
+
             <Form.Group className="mb-3" controlId="formWorkBlurb">
               <Form.Label>
                 Blurb{" "}
@@ -119,12 +140,21 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               </Form.Label>
               <Form.Control
                 as="textarea"
-                rows={3}
+                rows={2}
                 defaultValue={defaults.blurb}
+                value={formik.values.blurb}
                 placeholder={"Appears on publicworks.art"}
-                onChange={(e) => setProjectBlurb(e.target.value)}
-                name="project_blurb"
+                onChange={formik.handleChange}
+                isValid={formik.touched.blurb && !formik.errors.blurb}
+                isInvalid={formik.touched.blurb && !!formik.errors.blurb}
+                name="blurb"
               />
+              <Form.Control.Feedback type={"valid"}>
+                Looks good!
+              </Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">
+                {formik.errors.description}
+              </Form.Control.Feedback>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formExternalLink">
               <Form.Label>
@@ -135,13 +165,24 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                 </TooltipInfo>
               </Form.Label>
               <Form.Control
-                as="textarea"
-                rows={3}
                 defaultValue={defaults.externalLink}
+                value={formik.values.externalLink}
                 placeholder={"artproject.com"}
-                onChange={(e) => setExternalLink(e.target.value)}
-                name="external_link"
+                onChange={formik.handleChange}
+                isValid={
+                  formik.touched.externalLink && !formik.errors.externalLink
+                }
+                isInvalid={
+                  formik.touched.externalLink && !!formik.errors.externalLink
+                }
+                name="externalLink"
               />
+              <Form.Control.Feedback type={"valid"}>
+                Looks good!
+              </Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">
+                {formik.errors.externalLink}
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formCreator">
@@ -154,9 +195,18 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               <Form.Control
                 defaultValue={defaults.creator}
                 placeholder={"skymagic.eth"}
-                onChange={(e) => setCreator(e.target.value)}
                 name="creator"
+                onChange={formik.handleChange}
+                isValid={formik.touched.creator && !formik.errors.creator}
+                isInvalid={formik.touched.creator && !!formik.errors.creator}
+                value={formik.values.creator}
               />
+              <Form.Control.Feedback type={"valid"}>
+                Looks good!
+              </Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">
+                {formik.errors.creator}
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Button variant="primary" type="submit">

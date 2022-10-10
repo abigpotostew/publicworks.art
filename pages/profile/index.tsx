@@ -78,7 +78,7 @@ const ProfilePage = () => {
   const toast = useToast();
   const editUserMutation = trpcNextPW.users.editUser.useMutation({
     onSuccess: () => {
-      toast.success("success!");
+      toast.success("Saved!");
       // toast.success(createWithMsg);
       // toast.success("success");
 

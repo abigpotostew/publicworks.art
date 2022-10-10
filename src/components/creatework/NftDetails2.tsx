@@ -1,6 +1,6 @@
 import { parseISO } from "date-fns";
 import { format, formatInTimeZone } from "date-fns-tz";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { Container, Form } from "react-bootstrap";
 import { EditProjectRequest } from "src/store";
 import { WorkSerializable } from "src/dbtypes/works/workSerializable";
@@ -38,6 +38,7 @@ export interface CreateWorkProps {
     | ((req: Partial<EditProjectRequest>) => void)
     | ((req: Partial<EditProjectRequest>) => Promise<void>);
   defaultValues?: WorkSerializable;
+  formValid: (props: { isValid: boolean; isTouched: boolean }) => void;
 }
 
 export const schema = z.object({
@@ -101,6 +102,9 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
     },
     validationSchema: toFormikValidationSchema(schema),
   });
+  useEffect(() => {
+    props.formValid({ isTouched: formik.dirty, isValid: formik.isValid });
+  }, [formik.isValid, formik.touched]);
 
   // const [startDate, setStartDate] = useState<Date>(defaultDate());
   // const [royaltyAddress, setRoyaltyAddress] = useState<string>(
@@ -184,7 +188,6 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
           {/*<Form.Group className="mb-3" controlId="formBasicCheckbox">*/}
           {/*  <Form.Check type="checkbox" label="Check me out" />*/}
           {/*</Form.Group>*/}
-
           <Form.Group className="mb-3" controlId="formWorkStartTime">
             <Form.Label>
               Start Time <TooltipInfo>Public mint start time</TooltipInfo>
@@ -210,7 +213,6 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               {formik.errors.startDate}
             </Form.Control.Feedback>
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="priceStars">
             <Form.Label>
               Price in $Stars <TooltipInfo>Public mint price</TooltipInfo>
@@ -232,7 +234,6 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               {formik.errors.priceStars}
             </Form.Control.Feedback>
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="formRoyaltyAddress">
             <Form.Label>
               Royalty Address{" "}
@@ -260,7 +261,6 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               {formik.errors.royaltyAddress}
             </Form.Control.Feedback>
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="formRoyaltyPercent">
             <Form.Label>
               Royalty Percent{" "}
@@ -288,11 +288,13 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               {formik.errors.royaltyPercent}
             </Form.Control.Feedback>
           </Form.Group>
-
-          <Form.Group className="mb-3" controlId="formResolution">
+          <Form.Group className="mb-3" controlId="formSelector">
             <Form.Label>
-              Preview Resolution{" "}
-              <TooltipInfo>Width height resolution</TooltipInfo>
+              Canvas Selector{" "}
+              <TooltipInfo>
+                CSS selector targetting your sketch. This is used to capture the
+                preview image of your canvas.
+              </TooltipInfo>
             </Form.Label>
             <Form.Control
               placeholder={"#sketch > canvas"}
@@ -310,7 +312,6 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               {formik.errors.selector}
             </Form.Control.Feedback>
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="formResolution">
             <Form.Label>
               <span>
@@ -339,7 +340,6 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               {formik.errors.resolution}
             </Form.Control.Feedback>
           </Form.Group>
-
           {/*<Form.Group className="mb-3" controlId="formPixelRatio">*/}
           {/*  <Form.Label>*/}
           {/*    Image Preview Pixel Ratio{" "}*/}
@@ -357,7 +357,6 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
           {/*    onChange={(e) => setPixelRatio(parseFloat(e.target.value) || 1)}*/}
           {/*  />*/}
           {/*</Form.Group>*/}
-
           {/*<Form.Group className="mb-3" controlId="formLicense">*/}
           {/*  <Form.Label>License</Form.Label>*/}
           {/*  <Form.Control*/}
@@ -368,7 +367,6 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
           {/*    onChange={(e) => setLicense(e.target.value)}*/}
           {/*  />*/}
           {/*</Form.Group>*/}
-
           <Button variant="primary" type="submit">
             Save
           </Button>

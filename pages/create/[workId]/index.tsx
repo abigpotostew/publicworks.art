@@ -85,15 +85,24 @@ const stageMd = {
 interface INavButtons {
   onNextClick?: () => void;
   onPrevClick?: () => void;
+  nextDisabled?: boolean;
 }
 
-const NavButtons: FC<INavButtons> = ({ onNextClick, onPrevClick }) => {
+const NavButtons: FC<INavButtons> = ({
+  onNextClick,
+  onPrevClick,
+  nextDisabled,
+}) => {
   // @ts-ignore
   return (
     <Container fluid={true}>
       <FlexBox style={{ justifyContent: "flex-end" }}>
         {onPrevClick && <Button onClick={onPrevClick}>Prev</Button>}
-        {onNextClick && <Button onClick={onNextClick}>Next</Button>}
+        {onNextClick && (
+          <Button disabled={nextDisabled} onClick={onNextClick}>
+            Next
+          </Button>
+        )}
       </FlexBox>
     </Container>
   );
@@ -116,6 +125,7 @@ const EditWorkPage = () => {
   }, [router]);
   console.log("STAGE IS", stage);
   const setStage = (newStage: string) => {
+    setFormValid(false);
     setShowConfetti(false);
     setStageState(newStage);
     const { pathname, query } = router;
@@ -203,26 +213,16 @@ const EditWorkPage = () => {
     };
   };
 
-  // const steps: Step[] = [
-  //   {
-  //     label: "1",
-  //     description: "Edit",
-  //     active: stage === "edit",
-  //     completed: stages.indexOf(stage) >= stages.indexOf("edit"),
-  //   },
-  //   {
-  //     label: "2",
-  //     description: "Submit",
-  //     active: stage === "submit",
-  //     completed: stage !== "edit" && stage !== "submit",
-  //   },
-  //   {
-  //     label: "3",
-  //     description: "View",
-  //     active: stage === "view",
-  //     completed: stage !== "edit" && stage !== "view" && stage !== "submit",
-  //   },
-  // ];
+  const [formValid, setFormValid] = useState(true);
+  const [formTouched, setFormTouched] = useState(false);
+  const setFormState = (props: { isValid: boolean; isTouched: boolean }) => {
+    setFormValid(props.isValid);
+    setFormTouched(props.isTouched);
+  };
+  const canMoveToNext = formTouched
+    ? mutation.isSuccess && formValid
+    : formValid;
+
   const steps = stages.map((s) => {
     return createStep(s);
   });
@@ -297,12 +297,14 @@ const EditWorkPage = () => {
                 <DescribeWork
                   defaultValues={work}
                   onCreateProject={onCreateProject}
+                  formValid={setFormState}
                 ></DescribeWork>
               )}
-              {mutation.isSuccess && <div>Successfully saved</div>}
+              {/*{mutation.isSuccess && <div>Successfully saved</div>}*/}
               <NavButtons
                 onPrevClick={() => setStagePrevFrom("text")}
                 onNextClick={() => setStageNextFrom("text")}
+                nextDisabled={!canMoveToNext}
               ></NavButtons>
             </>
             // </Container>
@@ -321,7 +323,7 @@ const EditWorkPage = () => {
                   {!mutation.isLoading && mutation.error && (
                     <div>{mutation.error.message}</div>
                   )}
-                  {mutation.isSuccess && <div>Successfully saved</div>}
+                  {/*{mutation.isSuccess && <div>Successfully saved</div>}*/}
                   <NavButtons
                     onPrevClick={() => setStagePrevFrom("cover_image")}
                     onNextClick={() => setStageNextFrom("cover_image")}
@@ -342,11 +344,12 @@ const EditWorkPage = () => {
                       <NftDetails2
                         onCreateProject={onCreateProject}
                         defaultValues={work}
+                        formValid={setFormState}
                       />
                       {!mutation.isLoading && mutation.error && (
                         <div>{mutation.error.message}</div>
                       )}
-                      {mutation.isSuccess && <div>Successfully saved</div>}
+                      {/*{mutation.isSuccess && <div>Successfully saved</div>}*/}
                     </div>
                     {/*<div>*/}
                     {/*  {work && (*/}
@@ -379,11 +382,8 @@ const EditWorkPage = () => {
                   </FlexBoxCenter>
                   <NavButtons
                     onPrevClick={() => setStagePrevFrom("nft_detail")}
-                    onNextClick={
-                      mutation.isSuccess
-                        ? () => setStageNextFrom("nft_detail")
-                        : undefined
-                    }
+                    onNextClick={() => setStageNextFrom("nft_detail")}
+                    nextDisabled={!canMoveToNext}
                   ></NavButtons>
                   {/*</Container>*/}
                 </>
@@ -409,7 +409,7 @@ const EditWorkPage = () => {
                       {!mutation.isLoading && mutation.error && (
                         <div>{mutation.error.message}</div>
                       )}
-                      {mutation.isSuccess && <div>Successfully saved</div>}
+                      {/*{mutation.isSuccess && <div>Successfully saved</div>}*/}
 
                       <NavButtons
                         onNextClick={() => setStageNextFrom("name_art")}

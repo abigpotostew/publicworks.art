@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { deleteCookie, getCookie } from "src/util/cookie";
 import { deleteToken, getToken } from "src/util/auth-token";
+import { useToast } from "src/hooks/useToast";
 
 export const useQueryContract = () => {
   const [queryClient, setQueryClient] = useState<QueryContract | undefined>(
@@ -13,6 +14,7 @@ export const useQueryContract = () => {
   const [queryConnectedClient, setQueryConnectedClient] = useState<
     ConnectedQueryContract | undefined
   >(undefined);
+  const toast = useToast();
 
   const connectKeplrMutation = useMutation(async (loginToPw?: boolean) => {
     //

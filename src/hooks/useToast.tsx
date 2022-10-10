@@ -30,5 +30,17 @@ export const useToast = () => {
         progress: undefined,
       });
     },
+    error: (msg: string) => {
+      toast.error(msg, {
+        theme: "dark",
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+      });
+    },
   };
 };
