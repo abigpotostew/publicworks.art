@@ -64,7 +64,7 @@ export const NavBar = () => {
               <span>
                 <Nav.Link
                   onClick={async () => {
-                    await wallet.loginMutation?.mutate();
+                    await wallet.loginMutation?.mutateAsync(false);
                   }}
                 >
                   <ButtonPW>Sign In</ButtonPW>

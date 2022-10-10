@@ -7,6 +7,7 @@ const nextConfig = {
     },
   },
   productionBrowserSourceMaps: true,
+  distDir: "build",
 };
 
 module.exports = nextConfig;

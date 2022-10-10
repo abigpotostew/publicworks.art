@@ -8,7 +8,9 @@ export interface CosmosWalletProviderData {
   onlineClient?: ConnectedQueryContract;
   isConnected: boolean;
   connectWallet: () => Promise<void>;
-  loginMutation: UseMutationResult<void, unknown, void, unknown> | undefined;
+  loginMutation:
+    | UseMutationResult<void, unknown, boolean | undefined, unknown>
+    | undefined;
   logoutMutation: UseMutationResult<void, unknown, void, unknown> | undefined;
 }
 
@@ -17,13 +19,20 @@ export class CosmosWalletProviderDataClient
 {
   client: QueryContract | undefined;
   onlineClient: ConnectedQueryContract | undefined;
-  loginMutation: UseMutationResult<void, unknown, void, unknown> | undefined;
+  loginMutation:
+    | UseMutationResult<void, unknown, boolean | undefined, unknown>
+    | undefined;
   logoutMutation: UseMutationResult<void, unknown, void, unknown> | undefined;
 
   constructor(
     client: QueryContract | undefined,
     queryConnectedClient: ConnectedQueryContract | undefined,
-    connectKeplrMutation: UseMutationResult<void, unknown, void, unknown>,
+    connectKeplrMutation: UseMutationResult<
+      void,
+      unknown,
+      boolean | undefined,
+      unknown
+    >,
     logoutMutation: UseMutationResult<void, unknown, void, unknown>
   ) {
     this.client = client;
@@ -33,7 +42,7 @@ export class CosmosWalletProviderDataClient
   }
 
   async connectWallet(): Promise<void> {
-    await this.loginMutation?.mutateAsync();
+    await this.loginMutation?.mutateAsync(false);
   }
 
   get isConnected(): boolean {

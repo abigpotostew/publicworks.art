@@ -6,6 +6,7 @@ import { useQueryContract } from "src/hooks/useQueryContract";
 import { useRouter } from "next/router";
 import { ButtonPW } from "src/components/button/Button";
 import { useCosmosWallet } from "src/components/provider/CosmosWalletProvider";
+import { getCookie } from "src/util/cookie";
 
 const AuthPage = () => {
   const router = useRouter();
@@ -23,8 +24,11 @@ const AuthPage = () => {
     }
 
     try {
-      await wallet.loginMutation.mutate();
+      await wallet.loginMutation.mutateAsync(true);
+      const token = getCookie("PWToken");
+      console.log("here after login");
       if (typeof query.redirect === "string") {
+        console.log("redirecting to ", query.redirect);
         await router.push({
           pathname: query.redirect,
         });

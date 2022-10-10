@@ -14,7 +14,7 @@ export const useQueryContract = () => {
     ConnectedQueryContract | undefined
   >(undefined);
 
-  const connectKeplrMutation = useMutation(async () => {
+  const connectKeplrMutation = useMutation(async (loginToPw?: boolean) => {
     //
     console.log("in connect");
     if (!queryClient) return;
@@ -27,7 +27,9 @@ export const useQueryContract = () => {
 
     const loginPw = async () => {
       const token = getCookie("PWToken");
+      console.log("loginPw start");
       if (!token) {
+        console.log("not token inner");
         const otp = Math.floor(Math.random() * 100_000).toString();
         const ok = await queryClient.signMessage(otp);
         if (!ok) {
@@ -42,11 +44,14 @@ export const useQueryContract = () => {
           //   });
           // }
         }
+        console.log("not token end");
       }
+      console.log("loginPw end");
     };
     //this should only happen on the login page
-    // await loginPw();
+    if (loginToPw) await loginPw();
 
+    console.log("after pw login");
     setQueryConnectedClient(
       new ConnectedQueryContract(
         queryClient.config,
@@ -65,7 +70,7 @@ export const useQueryContract = () => {
         setQueryClient(queryClient);
       } else {
         if (getToken()) {
-          await connectKeplrMutation.mutateAsync();
+          await connectKeplrMutation.mutateAsync(false);
         }
       }
     })();

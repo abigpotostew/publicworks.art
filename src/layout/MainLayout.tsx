@@ -60,7 +60,7 @@ const MainLayout: FC<ILayout> = ({
           {
             client: queryContractClient,
             connectWallet(): Promise<void> {
-              return connectKeplrMutation.mutateAsync();
+              return connectKeplrMutation.mutateAsync(false);
             },
             isConnected: !!queryConnectedClient,
             loginMutation: connectKeplrMutation,

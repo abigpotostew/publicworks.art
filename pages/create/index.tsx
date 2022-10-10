@@ -32,6 +32,7 @@ const CreatePage = () => {
   const [authLoaded, setAuthLoaded] = useState(false);
   useEffect(() => {
     const token = getCookie("PWToken");
+
     if (!token) {
       router.push({
         pathname: "/login",
