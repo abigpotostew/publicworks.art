@@ -1,11 +1,38 @@
-import { toBech32, fromBech32 } from "cosmwasm";
+import { fromBech32, toBech32 } from "cosmwasm";
+import { z } from "zod";
+
+// const compatiblePrefixes = ["osmo", "cosmos", "stars", "regen"];
+const compatiblePrefixes = ["stars"];
+
+export const zodStarsAddress = z
+  .string()
+  .length(44)
+  .refine((val) => {
+    try {
+      toStars(val);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  });
+export const zodStarsContractAddress = z
+  .string()
+  .length(56)
+  .refine((val) => {
+    try {
+      toStars(val);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  });
 
 export const toStars = (addr: string) => {
   try {
     const { prefix, data } = fromBech32(addr);
     // limit to prefixes coin type 118, known to work with keplr
     // https://medium.com/chainapsis/keplr-explained-coin-type-118-9781d26b2c4e
-    const compatiblePrefixes = ["osmo", "cosmos", "stars", "regen"];
+
     if (!compatiblePrefixes.includes(prefix)) {
       throw new Error("Address not compatible with Keplr: " + addr);
     }
@@ -19,16 +46,4 @@ export const toStars = (addr: string) => {
   } catch (e) {
     throw new Error("Invalid address: " + addr + "," + e);
   }
-};
-
-export const isValidHttpUrl = (uri: string) => {
-  let url;
-
-  try {
-    url = new URL(uri);
-  } catch (_) {
-    return false;
-  }
-
-  return url.protocol === "http:" || url.protocol === "https:";
 };

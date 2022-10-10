@@ -4,6 +4,7 @@ import { CreateProjectRequest, EditProjectRequest } from "./project.types";
 import { dataSource } from "../typeorm/datasource";
 import { TokenEntity, UserEntity, WorkEntity } from "../model";
 import { IsNull, Not } from "typeorm";
+import { FindOptionsWhere } from "typeorm/find-options/FindOptionsWhere";
 
 export class ProjectRepo {
   async getProjectPreviewImage(id: string): Promise<TokenEntity | null> {
@@ -26,21 +27,37 @@ export class ProjectRepo {
   async getProjects({
     limit,
     offset,
-    published,
+    publishedState = "PUBLISHED",
   }: {
     limit: number;
-    offset: number;
-    published: boolean;
-  }): Promise<WorkEntity[]> {
-    return dataSource()
+    offset?: number | undefined;
+    // "PUBLISHED" | "UNPUBLISHED" | "ALL"
+    publishedState: string | null;
+  }): Promise<{ items: WorkEntity[]; nextOffset: number | undefined }> {
+    offset = offset || 0;
+    const where: FindOptionsWhere<WorkEntity>[] | FindOptionsWhere<WorkEntity> =
+      {};
+    if (publishedState === "PUBLISHED") {
+      where.sg721 = Not(IsNull());
+    } else if (publishedState === "UNPUBLISHED") {
+      where.sg721 = IsNull();
+    }
+    const items = await dataSource()
       .getRepository(WorkEntity)
       .find({
-        where: {
-          sg721: Not(IsNull()),
-        },
-        take: limit,
+        where,
+        take: limit + 1,
         skip: offset,
       });
+    let nextOffset: typeof offset | undefined = undefined;
+    if (items.length > limit) {
+      items.pop();
+      nextOffset = offset + limit;
+    }
+    return {
+      items,
+      nextOffset,
+    };
   }
   async getProject(id: string): Promise<WorkEntity | null> {
     return dataSource()

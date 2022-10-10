@@ -6,6 +6,7 @@ import { useCosmosWallet } from "./provider/CosmosWalletProvider";
 import config from "../wasm/config";
 import { ButtonPW } from "./button/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SpinnerLoading from "src/components/loading/Loader";
 
 export const NavBar = () => {
   const wallet = useCosmosWallet();
@@ -50,7 +51,7 @@ export const NavBar = () => {
                       >
                         <FontAwesomeIcon
                           icon={"arrow-right-from-bracket"}
-                          width={24}
+                          width={18}
                         />
                       </Nav.Link>
                     </Button>
@@ -59,7 +60,7 @@ export const NavBar = () => {
               </span>
             </Navbar.Text>
           )}
-          {!wallet.isConnected && (
+          {!wallet.isConnected && !wallet?.loginMutation?.isLoading && (
             <Navbar.Text>
               <span>
                 <Nav.Link
@@ -70,6 +71,14 @@ export const NavBar = () => {
                   <ButtonPW>Sign In</ButtonPW>
                 </Nav.Link>
               </span>
+            </Navbar.Text>
+          )}
+          {!wallet.isConnected && wallet?.loginMutation?.isLoading && (
+            <Navbar.Text>
+              <ButtonPW>
+                {" "}
+                <SpinnerLoading />
+              </ButtonPW>
             </Navbar.Text>
           )}
         </Navbar.Collapse>

@@ -4,11 +4,24 @@ $pw-bg-color: #1f2b37;
 //$pw-bg-color: #212529;
 $pw-text-color: #ffffff;
 
-$pw-p-content-line-height: 1.9rem;
+
+// boostrap vars
+$spacer:1.5rem;
+$border-width:3px;
+$btn-border-radius:1.35rem;
+$line-height-base:1.5;
+
+$pw-p-content-line-height: calc($spacer + 27%) rem;
+
+
 
 :export {
   pw-bg-color:$pw-bg-color;
   pw-text-color:$pw-text-color;
-  pw-p-content-line-height:$pw-p-content-line-height
+  pw-p-content-line-height:$pw-p-content-line-height;
+  spacer:$spacer;
+  border-width:$border-width;
+  btn-border-radius:$btn-border-radius;
+  line-height-base:$line-height-base;
 }
 

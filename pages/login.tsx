@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { ButtonPW } from "src/components/button/Button";
 import { useCosmosWallet } from "src/components/provider/CosmosWalletProvider";
 import { getCookie } from "src/util/cookie";
+import { RowThinContainer } from "src/components/layout/RowThinContainer";
 
 const AuthPage = () => {
   const router = useRouter();
@@ -43,11 +44,11 @@ const AuthPage = () => {
     <>
       <div>
         <Container>
-          <RowWideContainer>
+          <RowThinContainer>
             <h1>Login</h1>
-          </RowWideContainer>
+          </RowThinContainer>
 
-          <RowWideContainer>
+          <RowThinContainer>
             {/*<p>*/}
             {/*  While Publicworks.art is in beta, you can only log in to*/}
             {/*  <a href={"https://testnet.publicworks.art/"}>*/}
@@ -57,7 +58,7 @@ const AuthPage = () => {
             {/*</p>*/}
             <ButtonPW onClick={onLogin}>Login</ButtonPW>
             {message && <div>{message}</div>}
-          </RowWideContainer>
+          </RowThinContainer>
         </Container>
       </div>
     </>

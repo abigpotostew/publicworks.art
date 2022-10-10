@@ -1,19 +1,16 @@
-import { keplrClient } from "../wasm/keplr/keplr-client";
 import config from "../wasm/config";
-import { toStars } from "../util/stargaze/utils";
 import { WorkSerializable } from "../dbtypes/works/workSerializable";
-import { useCallback, useEffect } from "react";
 import { OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Timestamp } from "@stargazezone/types/contracts/sg721/shared-types";
 import { Decimal } from "@stargazezone/types/contracts/minter/instantiate_msg";
 import { Coin } from "@stargazezone/types/contracts/minter/shared-types";
 import { coins } from "cosmwasm";
-import useAsync from "./useAsync";
 import { trpcNextPW } from "../server/utils/trpc";
 import { useMutation } from "@tanstack/react-query";
 import { useCosmosWallet } from "../components/provider/CosmosWalletProvider";
-import { ConnectedQueryContract, QueryContract } from "../wasm/keplr/query";
+import { ConnectedQueryContract } from "../wasm/keplr/query";
+import { toStars } from "src/wasm/address";
 
 function formatRoyaltyInfo(
   royaltyPaymentAddress: null | string,
@@ -28,6 +25,7 @@ function formatRoyaltyInfo(
     return { payment_address: royaltyPaymentAddress, share: royaltyShare };
   }
 }
+
 function isValidIpfsUrl(uri: string) {
   let url;
 
@@ -39,7 +37,9 @@ function isValidIpfsUrl(uri: string) {
 
   return url.protocol === "ipfs:";
 }
+
 const NEW_COLLECTION_FEE = coins("1000000000", "ustars");
+
 export interface InstantiateMsg {
   base_token_uri: string;
   num_tokens: number;
@@ -49,8 +49,10 @@ export interface InstantiateMsg {
   start_time: Timestamp;
   unit_price: Coin;
   whitelist?: string | null;
+
   [k: string]: unknown;
 }
+
 export interface InstantiateMsg1 {
   collection_info: CollectionInfoFor_RoyaltyInfoResponse;
   minter: string;
@@ -58,21 +60,27 @@ export interface InstantiateMsg1 {
   symbol: string;
   code_uri: string;
   finalizer: string;
+
   [k: string]: unknown;
 }
+
 export interface CollectionInfoFor_RoyaltyInfoResponse {
   creator: string;
   description: string;
   external_link?: string | null;
   image: string;
   royalty_info?: RoyaltyInfoResponse | null;
+
   [k: string]: unknown;
 }
+
 export interface RoyaltyInfoResponse {
   payment_address: string;
   share: Decimal;
+
   [k: string]: unknown;
 }
+
 function clean(obj: any) {
   for (const propName in obj) {
     if (obj[propName] === null || obj[propName] === undefined) {
@@ -81,12 +89,14 @@ function clean(obj: any) {
   }
   return obj;
 }
+
 const client:
   | {
       signer: SigningCosmWasmClient;
       offlineSigner: OfflineSigner | OfflineDirectSigner;
     }
   | undefined = undefined;
+
 async function instantiate(
   work: WorkSerializable,
   client: ConnectedQueryContract
@@ -97,9 +107,7 @@ async function instantiate(
   const signer = client.keplrClient;
   const [{ address }] = await client.getAccounts();
   const account = toStars(address);
-  // const whitelistContract = config.whitelistContract
-  //   ? toStars(config.whitelistContract)
-  //   : null;
+
   const royaltyPaymentAddress = work.royaltyAddress
     ? toStars(work.royaltyAddress)
     : null;

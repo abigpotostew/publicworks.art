@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { isISODate } from "../util/isISODate";
 import { cidRegex } from "../ipfs/cid";
+import { zodStarsAddress } from "src/wasm/address";
 
 export interface Token {
   hash: string;
@@ -47,7 +48,7 @@ export const CreateProjectRequestZ = z.object({
     .string()
     .refine(isISODate, { message: "Not a valid ISO string date " })
     .optional(),
-  royaltyAddress: z.string().optional(),
+  royaltyAddress: zodStarsAddress.optional(),
   royaltyPercent: z.number().min(0).max(100).optional(),
 
   resolution: z.string().optional(),
@@ -68,7 +69,7 @@ export const editProjectZod = z.object({
     .string()
     .refine(isISODate, { message: "Not a valid ISO string date " })
     .optional(),
-  royaltyAddress: z.string().optional(),
+  royaltyAddress: zodStarsAddress.optional(),
   royaltyPercent: z.number().min(0).max(100).optional(),
   codeCid: z.string().regex(cidRegex).optional(),
 

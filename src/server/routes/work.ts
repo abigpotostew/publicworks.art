@@ -12,6 +12,7 @@ import {
   uploadFileToPinata,
 } from "../../ipfs/pinata";
 import { dataUrlToBuffer } from "../../base64/dataurl";
+import { zodStarsAddress } from "src/wasm/address";
 
 const createWork = authorizedProcedure
   .input(CreateProjectRequestZ)
@@ -89,21 +90,27 @@ const getWorkById = baseProcedure
 const listWorks = baseProcedure
   .input(
     z.object({
-      limit: z.number().min(1).max(100),
-      offset: z.number().min(0).max(10000),
+      limit: z.number().min(1).max(100).default(10),
+      cursor: z.number().min(0).max(10000).nullish(),
+      publishedState: z
+        .string()
+        .optional()
+        .default("PUBLISHED")
+        .refine((val) => {
+          return ["PUBLISHED", "UNPUBLISHED", "ALL"].includes(val);
+        }),
+      address: zodStarsAddress.optional(),
     })
   )
 
   .query(async ({ input, ctx }) => {
-    const projects = await stores().project.getProjects({
-      ...input,
-      published: true,
-    });
+    const { items, nextOffset: nextCursor } =
+      await stores().project.getProjects({
+        ...input,
+        offset: input.cursor || undefined,
+      });
 
-    if (!projects) {
-      throw new TRPCError({ code: "NOT_FOUND" });
-    }
-    return projects.map(serializeWork);
+    return { items: items.map(serializeWork), nextCursor };
   });
 
 const workPreviewImg = baseProcedure
@@ -168,7 +175,7 @@ export const workRouter = t.router({
   editWork,
   editWorkContracts,
   getWorkById,
-  listWorks,
+  listWorks: listWorks,
   workPreviewImg,
   uploadPreviewImg,
 });

@@ -6,9 +6,8 @@ import { LiveMedia } from "../../../src/components/media/LiveMedia";
 import { RowThinContainer } from "../../../src/components/layout/RowThinContainer";
 import { RowSquareContainer } from "../../../src/components/layout/RowSquareContainer";
 import { NumMinted } from "../../../src/components/work/NumMinted";
-import { NftMetadata, useNftMetadata } from "../../../src/hooks/useNftMetadata";
+import { useNftMetadata } from "../../../src/hooks/useNftMetadata";
 import SpinnerLoading from "../../../src/components/loading/Loader";
-import { getTokenMetadata } from "../../../src/wasm/metadata";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { RowWideContainer } from "../../../src/components/layout/RowWideContainer";
 import { useNumMinted } from "../../../src/hooks/useNumMinted";
@@ -20,10 +19,10 @@ import { initializeIfNeeded } from "src/typeorm/datasource";
 
 export async function getStaticPaths() {
   await initializeIfNeeded();
-  const works = await stores().project.getProjects({
+  const { items: works } = await stores().project.getProjects({
     limit: 500,
     offset: 0,
-    published: true,
+    publishedState: "PUBLISHED",
   });
   // const static = [work];
   return {

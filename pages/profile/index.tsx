@@ -1,4 +1,11 @@
-import { ReactElement, useCallback, useEffect, useState } from "react";
+import {
+  FC,
+  Fragment,
+  ReactElement,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { Button, Container, Toast } from "react-bootstrap";
 import { useRouter } from "next/router";
 import * as jwt from "jsonwebtoken";
@@ -17,7 +24,32 @@ import { useToast } from "src/hooks/useToast";
 import { ButtonPW } from "src/components/button/Button";
 import { ToastContent } from "react-toastify/dist/types";
 import { toast } from "react-toastify";
+import { UserProfile } from "src/components/profile/UserProfile";
+import { FlexBox } from "src/components/layout/FlexBoxCenter";
 // import "react-toastify/dist/ReactToastify.css";
+
+import { WorkSerializable } from "src/dbtypes/works/workSerializable";
+import Link from "next/link";
+
+interface Props {
+  work: WorkSerializable;
+}
+export const WorkLineItem: FC<Props> = ({ work }: Props) => {
+  return (
+    <div>
+      <span>
+        {work.name} {" | "}
+        <Link href={`/work/${work.slug}`} passHref={true}>
+          View
+        </Link>
+        {" | "}
+        <Link href={`/create/${work.id}`} passHref={true}>
+          Edit
+        </Link>
+      </span>
+    </div>
+  );
+};
 
 const ProfilePage = () => {
   const utils = trpcNextPW.useContext();
@@ -28,23 +60,40 @@ const ProfilePage = () => {
   const account = wallet.onlineClient?.accounts
     ? wallet.onlineClient?.accounts[0]
     : undefined;
-  // useEffect(() => {
-  //   const account = wallet.onlineClient?.accounts
-  //     ? wallet.onlineClient?.accounts[0]
-  //     : undefined;
-  //   if (!account) {
-  //     router.push({
-  //       pathname: "/login",
-  //       query: {
-  //         redirect: "/profile",
-  //       },
-  //     });
-  //   }
-  // }, [wallet.onlineClient?.accounts]);
+  useEffect(() => {
+    const account = wallet.onlineClient?.accounts
+      ? wallet.onlineClient?.accounts[0]
+      : undefined;
+    if (!account) {
+      router.push({
+        pathname: "/login",
+        query: {
+          redirect: "/profile",
+        },
+      });
+    }
+  }, [wallet.onlineClient?.accounts]);
 
   const user = trpcNextPW.users.getUser.useQuery({
     address: account?.address,
   });
+
+  const userWorks = trpcNextPW.works.listWorks.useInfiniteQuery(
+    {
+      limit: 4,
+      address: user?.data?.address,
+    },
+    {
+      getPreviousPageParam: (lastPage) => {
+        return lastPage.nextCursor;
+      },
+      getNextPageParam: (lastPage) => {
+        // console.log("hsdfdsfsdaasdf", lastPage);
+        return lastPage.nextCursor;
+      },
+      enabled: !user.isLoading,
+    }
+  );
 
   const [authLoaded, setAuthLoaded] = useState(false);
   useEffect(() => {
@@ -79,25 +128,40 @@ const ProfilePage = () => {
   const editUserMutation = trpcNextPW.users.editUser.useMutation({
     onSuccess: () => {
       toast.success("Saved!");
-      // toast.success(createWithMsg);
-      // toast.success("success");
 
       setEditMode(false);
+      utils.users.getUser.invalidate();
     },
   });
   const onSubmitEdit = (req: Partial<EditUserRequest>) => {
     editUserMutation.mutate(req);
   };
+
+  const userWorksPages = (userWorks.data?.pages || []).concat([]).reverse();
+
   //EditProfile
   return (
     <>
       <div>
         <Container>
           <RowThinContainer>
-            <h1>Profile</h1>
-            <p>{account?.address}</p>
+            <FlexBox style={{ display: "inline", alignItems: "center" }}>
+              <h1>
+                Profile -{" "}
+                {user.isLoading ? <SpinnerLoading /> : user.data?.name}
+              </h1>
+              {!editMode && (
+                <ButtonPW
+                  style={{ marginLeft: ".75 rem" }}
+                  onClick={() => setEditMode(true)}
+                >
+                  Edit
+                </ButtonPW>
+              )}
+            </FlexBox>
+
             {user.isLoading && <SpinnerLoading />}
-            {!editMode && user.isSuccess && <p>{user.data.name}</p>}
+            {!editMode && user.isSuccess && <UserProfile user={user.data} />}
             {editMode && (
               <EditProfile defaultValues={user.data} onSubmit={onSubmitEdit} />
             )}
@@ -105,7 +169,41 @@ const ProfilePage = () => {
             {/*{mutation.isLoading && <SpinnerLoading />}*/}
             {/*{mutation.error && <p>{mutation.error.message}</p>}*/}
             {!editMode && (
-              <ButtonPW onClick={() => setEditMode(true)}>Edit</ButtonPW>
+              <div>
+                <h2>Works</h2>
+                {userWorks.isLoading && <SpinnerLoading />}
+                {userWorks.isSuccess &&
+                  userWorksPages.length &&
+                  userWorksPages?.map((page, index) => (
+                    <>
+                      <Fragment key={page.items[0]?.id || index}>
+                        {page.items.map((w) => (
+                          <div key={w.id}>
+                            <WorkLineItem work={w}></WorkLineItem>
+                          </div>
+                        ))}
+                      </Fragment>
+                    </>
+                  ))}
+                {userWorks.isSuccess && userWorksPages.length && (
+                  <ButtonPW
+                    onClick={() => userWorks.fetchPreviousPage()}
+                    disabled={
+                      !userWorks.hasNextPage || userWorks.isFetchingNextPage
+                    }
+                  >
+                    {userWorks.isFetchingNextPage
+                      ? "Loading more..."
+                      : userWorks.hasNextPage
+                      ? "Load More"
+                      : "Nothing more to load"}
+                  </ButtonPW>
+                )}
+
+                {userWorks.isSuccess && !userWorksPages.length && (
+                  <div>You haven't created any Works.</div>
+                )}
+              </div>
             )}
           </RowThinContainer>
         </Container>
