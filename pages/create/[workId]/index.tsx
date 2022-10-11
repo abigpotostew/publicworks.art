@@ -123,7 +123,6 @@ const EditWorkPage = () => {
   useEffect(() => {
     setStageState(router.query?.stage?.toString() || stages[0]);
   }, [router]);
-  console.log("STAGE IS", stage);
   const setStage = (newStage: string) => {
     setFormValid(false);
     setShowConfetti(false);

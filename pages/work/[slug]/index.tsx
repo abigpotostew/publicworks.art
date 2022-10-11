@@ -65,7 +65,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
     props: {
       work: serializeWork(work),
     },
-    revalidate: 60, // In seconds
+    revalidate: 10, // In seconds
+    // fallback: "blocking",
   };
 };
 
@@ -79,6 +80,7 @@ const WorkPage = ({ work }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const metadata = useNftMetadata({ sg721: work.sg721, tokenId: "1" });
   // const { collectionSize, error: collectionSizeError, loading: collSizeLoading } = useCollectionSize(work.minter)
 
+  console.log("work", work);
   const loading = false;
   const errorMetadata = false;
   return (
@@ -114,8 +116,10 @@ const WorkPage = ({ work }: InferGetStaticPropsType<typeof getStaticProps>) => {
           >
             <div className={styles.paddingTop}>
               <div>
-                <span className={styles.workTitle}>{work.title}</span>
-                <span className={styles.workAuthor}>{" - " + work.author}</span>
+                <span className={styles.workTitle}>{work.name}</span>
+                <span className={styles.workAuthor}>
+                  {" - " + work.creator}
+                </span>
                 <NumMinted sg721={work.sg721} minter={work.minter} />
               </div>
 
@@ -140,15 +144,18 @@ const WorkPage = ({ work }: InferGetStaticPropsType<typeof getStaticProps>) => {
               <hr />
               <div>
                 <p>Additional Description:</p>
-                <p>{work.additionalDescription}</p>
+                <p>
+                  {work.slug === "helio" &&
+                    `Helio has 9 traits derived from over 23 internal parameters including 20 color palettes of varying rarity that ultimately produce unique animations.`}
+                </p>
               </div>
               <hr />
               <div
                 className={`${styles.workAuthorLink} ${styles.sectionBreak}`}
               >
                 {"External Link: "}
-                <a href={work.authorLink} rel="noreferrer" target={"_blank"}>
-                  {work.authorLink}
+                <a href={work.externalLink} rel="noreferrer" target={"_blank"}>
+                  {work.externalLink}
                 </a>
               </div>
               <div className={`${styles.sectionBreak}`}></div>
