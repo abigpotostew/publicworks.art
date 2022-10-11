@@ -106,11 +106,9 @@ export default function WalletProvider({ children }: { children: ReactNode }) {
   }
 
   const login = useCallback(async () => {
-    console.log("here i am", client);
     if (!client) {
       return;
     }
-    console.log("here i am 2", client);
 
     await client.connect();
 

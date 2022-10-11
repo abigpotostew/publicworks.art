@@ -8,28 +8,51 @@ import { ButtonPW } from "src/components/button/Button";
 import { useCosmosWallet } from "src/components/provider/CosmosWalletProvider";
 import { getCookie } from "src/util/cookie";
 import { RowThinContainer } from "src/components/layout/RowThinContainer";
-import { useWallet } from "@stargazezone/client";
+import { useStargazeClient, useWallet } from "@stargazezone/client";
 import useUserContext from "src/context/user/useUserContext";
+import { useMutation } from "@tanstack/react-query";
+import { ConnectedQueryContract } from "src/wasm/keplr/query";
+import { useToast } from "src/hooks/useToast";
+import { signMessageAndLogin } from "src/wasm/keplr/client-login";
 
 const AuthPage = () => {
   const router = useRouter();
   const { query } = router;
   const { user } = useUserContext();
   const sgwallet = useWallet();
+  const sgclient = useStargazeClient();
+  const toast = useToast();
   // const { queryClient } = useQueryContract();
   const [message, setMessage] = useState<string | null>(null);
-  const onLogin = useCallback(async () => {
-    setMessage(null);
-    //request keplr tokenq
-    //set cookie
-    //
 
-    if (!wallet?.loginMutation) {
+  const claimUserAccountMutation = useMutation(async () => {
+    if (!sgwallet.wallet?.address || !sgclient.client) {
       return;
     }
+    const otp = Math.floor(Math.random() * 100_000).toString();
+    const ok = await signMessageAndLogin(otp, sgclient.client);
 
+    if (!ok) {
+      //show an error
+      // setMessage("Unauthorized");
+      toast.error("Unauthorized");
+    } else {
+      toast.success("Logged in!");
+      // if (typeof query.redirect === "string") {
+      //   await router.push({
+      //     pathname: query.redirect,
+      //   });
+      // }
+    }
+
+    console.log("loginPw end");
+
+    console.log("after pw login");
+  });
+
+  const onLogin = async () => {
     try {
-      await wallet.loginMutation.mutateAsync(true);
+      await claimUserAccountMutation.mutateAsync();
       const token = getCookie("PWToken");
       console.log("here after login");
       if (typeof query.redirect === "string") {
@@ -43,7 +66,7 @@ const AuthPage = () => {
     }
 
     //call backend auth with token
-  }, [wallet, router]);
+  };
   return (
     <>
       <div>

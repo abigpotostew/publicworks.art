@@ -16,17 +16,7 @@ export const useQueryContract = () => {
   >(undefined);
   const toast = useToast();
 
-  const connectKeplrMutation = useMutation(async (loginToPw?: boolean) => {
-    //
-    console.log("in connect");
-    if (!queryClient) return;
-    console.log("after in connect");
-    const data = await queryClient.connectKeplr();
-    const accounts = await data.offlineSigner.getAccounts();
-    if (accounts.length < 1) {
-      throw new Error("no accounts connected");
-    }
-
+  const claimUserAccountMutation = useMutation(async (loginToPw?: boolean) => {
     const loginPw = async () => {
       const token = getCookie("PWToken");
       console.log("loginPw start");
@@ -72,7 +62,7 @@ export const useQueryContract = () => {
         setQueryClient(queryClient);
       } else {
         if (getToken()) {
-          await connectKeplrMutation.mutateAsync(false);
+          await claimUserAccountMutation.mutateAsync(false);
         }
       }
     })();
@@ -92,7 +82,7 @@ export const useQueryContract = () => {
   return {
     queryClient,
     queryConnectedClient,
-    connectKeplrMutation,
+    connectKeplrMutation: claimUserAccountMutation,
     logoutMutation,
   };
 };

@@ -1,5 +1,5 @@
-import React from 'react';
-import { StargazeClient } from '../../core';
+import React from "react";
+import { StargazeClient } from "../../core";
 
 const StargazeClientContext = React.createContext<{
   client: StargazeClient | null;
