@@ -16,6 +16,8 @@ import { work } from "../../../src/helio";
 import Head from "next/head";
 import { stores } from "src/store/stores";
 import { initializeIfNeeded } from "src/typeorm/datasource";
+import { serializeWork } from "src/dbtypes/works/serialize-work";
+import config from "src/wasm/config";
 
 export async function getStaticPaths() {
   await initializeIfNeeded();
@@ -35,12 +37,23 @@ export async function getStaticPaths() {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const slug = context.params?.slug;
+  if (typeof slug !== "string") {
+    return {
+      notFound: true,
+    };
+  }
+  await initializeIfNeeded();
+  const work = await stores().project.getProjectBySlug(slug);
   // if (slug !== "helio") {
   //   return {
   //     notFound: true,
   //   };
   // }
-
+  if (!work) {
+    return {
+      notFound: true,
+    };
+  }
   // let metadata: NftMetadata | null = null;
   // try {
   //   metadata = await getTokenMetadata(work.sg721, "1");
@@ -50,7 +63,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   // console.log("work here ", work, metadata);
   return {
     props: {
-      work,
+      work: serializeWork(work),
     },
     revalidate: 60, // In seconds
   };
@@ -111,7 +124,7 @@ const WorkPage = ({ work }: InferGetStaticPropsType<typeof getStaticProps>) => {
               <p className={`${styles.sectionBreak}`}>
                 <a
                   className={"btn"}
-                  href={"https://www.stargaze.zone/launchpad/" + work.minter}
+                  href={`${config.launchpadUrl}/` + work.minter}
                   rel="noreferrer"
                   target={"_blank"}
                 >

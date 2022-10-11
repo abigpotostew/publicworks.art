@@ -3,7 +3,6 @@ import Head from "next/head";
 import { NavBar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 import styles from "../../styles/Home.module.scss";
-import { useQueryContract } from "../hooks/useQueryContract";
 import { CosmosWalletProviderContext } from "../components/provider/CosmosWalletProvider";
 import { Container } from "react-bootstrap";
 import { useUserSession } from "src/hooks/useUserSession";
@@ -23,15 +22,6 @@ const MainLayout: FC<ILayout> = ({
   image = "https://publicworks.art/img/metatag/metatag-image1.png",
   children,
 }) => {
-  const wallet = useQueryContract();
-  // const user = useUserSession(wallet.queryConnectedClient);
-  const {
-    queryClient: queryContractClient,
-    queryConnectedClient,
-    connectKeplrMutation,
-    logoutMutation,
-  } = wallet;
-
   return (
     <div>
       <Head>
@@ -58,34 +48,34 @@ const MainLayout: FC<ILayout> = ({
         <meta name="twitter:dnt" content="on" />
       </Head>
 
-      <CosmosWalletProviderContext.Provider
-        value={
-          {
-            client: queryContractClient,
-            connectWallet(): Promise<void> {
-              return connectKeplrMutation.mutateAsync(false);
-            },
-            isConnected: !!queryConnectedClient,
-            loginMutation: connectKeplrMutation,
-            logoutMutation: logoutMutation,
-            onlineClient: queryConnectedClient,
-          }
-          // new CosmosWalletProviderDataClient(
-          //   queryContractClient,
-          //   queryConnectedClient,
-          //   connectKeplrMutation
-          // )
-        }
-      >
-        <NavBar />
-        {/*<header>*/}
-        {/*</header>*/}
+      {/*<CosmosWalletProviderContext.Provider*/}
+      {/*  value={*/}
+      {/*    {*/}
+      {/*      client: queryContractClient,*/}
+      {/*      connectWallet(): Promise<void> {*/}
+      {/*        return connectKeplrMutation.mutateAsync(false);*/}
+      {/*      },*/}
+      {/*      isConnected: !!queryConnectedClient,*/}
+      {/*      loginMutation: connectKeplrMutation,*/}
+      {/*      logoutMutation: logoutMutation,*/}
+      {/*      onlineClient: queryConnectedClient,*/}
+      {/*    }*/}
+      {/*    // new CosmosWalletProviderDataClient(*/}
+      {/*    //   queryContractClient,*/}
+      {/*    //   queryConnectedClient,*/}
+      {/*    //   connectKeplrMutation*/}
+      {/*    // )*/}
+      {/*  }*/}
+      {/*>*/}
+      <NavBar />
+      {/*<header>*/}
+      {/*</header>*/}
 
-        <div className={styles.container}>
-          <main className={styles.main}>{children}</main>
-          <Footer />
-        </div>
-      </CosmosWalletProviderContext.Provider>
+      <div className={styles.container}>
+        <main className={styles.main}>{children}</main>
+        <Footer />
+      </div>
+      {/*</CosmosWalletProviderContext.Provider>*/}
     </div>
   );
 };

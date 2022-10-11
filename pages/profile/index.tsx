@@ -1,39 +1,32 @@
-import {
-  FC,
-  Fragment,
-  ReactElement,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
-import { Button, Container, Toast } from "react-bootstrap";
+import { FC, Fragment, ReactElement, useEffect, useState } from "react";
+import { Container, Row, Toast } from "react-bootstrap";
 import { useRouter } from "next/router";
 import * as jwt from "jsonwebtoken";
-import { RowWideContainer } from "../../src/components/layout/RowWideContainer";
 import MainLayout from "../../src/layout/MainLayout";
 import SpinnerLoading from "../../src/components/loading/Loader";
-import { getCookie } from "../../src/util/cookie";
 import { trpcNextPW } from "../../src/server/utils/trpc";
-import { EditProjectRequest, EditUserRequest } from "../../src/store";
-import { NameWork } from "../../src/components/creatework/NameWork";
+import { EditUserRequest } from "../../src/store";
 import { RowThinContainer } from "src/components/layout/RowThinContainer";
 import { getToken } from "src/util/auth-token";
-import { useCosmosWallet } from "src/components/provider/CosmosWalletProvider";
 import { EditProfile } from "src/components/profile/EditProfile";
 import { useToast } from "src/hooks/useToast";
 import { ButtonPW } from "src/components/button/Button";
 import { ToastContent } from "react-toastify/dist/types";
-import { toast } from "react-toastify";
 import { UserProfile } from "src/components/profile/UserProfile";
 import { FlexBox } from "src/components/layout/FlexBoxCenter";
 // import "react-toastify/dist/ReactToastify.css";
-
 import { WorkSerializable } from "src/dbtypes/works/workSerializable";
 import Link from "next/link";
+import useUserContext from "src/context/user/useUserContext";
+import { useWallet } from "@stargazezone/client";
+import { UserSerializable } from "src/dbtypes/users/userSerializable";
+import { shortenAddress } from "src/wasm/address";
+import { useUserRequired } from "src/hooks/useUserRequired";
 
 interface Props {
   work: WorkSerializable;
 }
+
 export const WorkLineItem: FC<Props> = ({ work }: Props) => {
   return (
     <div>
@@ -51,37 +44,15 @@ export const WorkLineItem: FC<Props> = ({ work }: Props) => {
   );
 };
 
-const ProfilePage = () => {
-  const utils = trpcNextPW.useContext();
-  const router = useRouter();
-  const [editMode, setEditMode] = useState(false);
+interface UserWorksProps {
+  user: UserSerializable;
+}
 
-  const wallet = useCosmosWallet();
-  const account = wallet.onlineClient?.accounts
-    ? wallet.onlineClient?.accounts[0]
-    : undefined;
-  useEffect(() => {
-    const account = wallet.onlineClient?.accounts
-      ? wallet.onlineClient?.accounts[0]
-      : undefined;
-    if (!account) {
-      router.push({
-        pathname: "/login",
-        query: {
-          redirect: "/profile",
-        },
-      });
-    }
-  }, [wallet.onlineClient?.accounts]);
-
-  const user = trpcNextPW.users.getUser.useQuery({
-    address: account?.address,
-  });
-
-  const userWorks = trpcNextPW.works.listWorks.useInfiniteQuery(
+export const UserWorks: FC<UserWorksProps> = (props: UserWorksProps) => {
+  const userWorks = trpcNextPW.works.listAddressWorks.useInfiniteQuery(
     {
       limit: 4,
-      address: user?.data?.address,
+      address: props.user.address,
     },
     {
       getPreviousPageParam: (lastPage) => {
@@ -91,38 +62,94 @@ const ProfilePage = () => {
         // console.log("hsdfdsfsdaasdf", lastPage);
         return lastPage.nextCursor;
       },
-      enabled: !user.isLoading,
     }
   );
+  const hasItems = userWorks.data?.pages?.length
+    ? !!userWorks.data?.pages[0].items.length
+    : false;
+  const userWorksPages = (userWorks.data?.pages || []).concat([]).reverse();
+  console.log("userWorksPages", userWorksPages);
+  return (
+    <div>
+      <h2>Works</h2>
+      {userWorks.isLoading && <SpinnerLoading />}
+      {userWorks.isSuccess &&
+        hasItems &&
+        userWorksPages?.map((page, index) => (
+          <Fragment key={page.items[0]?.id || index}>
+            {page.items.map((w) => (
+              <div key={w.id}>
+                <WorkLineItem work={w}></WorkLineItem>
+              </div>
+            ))}
+          </Fragment>
+        ))}
+      {userWorks.isSuccess && hasItems && (
+        <ButtonPW
+          onClick={() => userWorks.fetchPreviousPage()}
+          disabled={!userWorks.hasNextPage || userWorks.isFetchingNextPage}
+        >
+          {userWorks.isFetchingNextPage
+            ? "Loading more..."
+            : userWorks.hasNextPage
+            ? "Load More"
+            : "Nothing more to load"}
+        </ButtonPW>
+      )}
+      {userWorks.isSuccess && !hasItems && (
+        <div>
+          <div>You haven't created any Works yet.</div>
+          <div>
+            <Link href={"/create"} passHref={true}>
+              <ButtonPW variant={"secondary"}>Create Work</ButtonPW>
+            </Link>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
-  const [authLoaded, setAuthLoaded] = useState(false);
-  useEffect(() => {
-    const redirectHere = () => {
-      return router.push({
-        pathname: "/login",
-        query: {
-          redirect: "/profile",
-        },
-      });
-    };
-    const token = getToken();
-    if (!token) {
-      redirectHere();
-      return;
-    }
-    const decoded = jwt.decode(token);
-    if (!decoded || typeof decoded === "string") {
-      redirectHere();
-      return;
-    }
-    if (Date.now() >= (decoded.exp || 0) * 1000) {
-      console.log("expired");
-      redirectHere();
-      return;
-    }
-    setAuthLoaded(true);
-    console.log("logged in");
-  }, [router]);
+const ProfilePage = () => {
+  const utils = trpcNextPW.useContext();
+  const [editMode, setEditMode] = useState(false);
+
+  const sgwallet = useWallet();
+
+  const { user } = useUserContext();
+  const address = sgwallet?.wallet?.address;
+  const username = user.data?.name;
+
+  useUserRequired("/profile");
+
+  // const [authLoaded, setAuthLoaded] = useState(false);
+  // useEffect(() => {
+  //   const redirectHere = () => {
+  //     return router.push({
+  //       pathname: "/login",
+  //       query: {
+  //         redirect: "/profile",
+  //       },
+  //     });
+  //   };
+  //   const token = getToken();
+  //   if (!token) {
+  //     redirectHere();
+  //     return;
+  //   }
+  //   const decoded = jwt.decode(token);
+  //   if (!decoded || typeof decoded === "string") {
+  //     redirectHere();
+  //     return;
+  //   }
+  //   if (Date.now() >= (decoded.exp || 0) * 1000) {
+  //     console.log("expired");
+  //     redirectHere();
+  //     return;
+  //   }
+  //   setAuthLoaded(true);
+  //   console.log("logged in");
+  // }, [router]);
 
   const toast = useToast();
   const editUserMutation = trpcNextPW.users.editUser.useMutation({
@@ -137,8 +164,8 @@ const ProfilePage = () => {
     editUserMutation.mutate(req);
   };
 
-  const userWorksPages = (userWorks.data?.pages || []).concat([]).reverse();
-
+  const displayUsername =
+    username && username === address ? shortenAddress(address) : username;
   //EditProfile
   return (
     <>
@@ -148,9 +175,9 @@ const ProfilePage = () => {
             <FlexBox style={{ display: "inline", alignItems: "center" }}>
               <h1>
                 Profile -{" "}
-                {user.isLoading ? <SpinnerLoading /> : user.data?.name}
+                {user.isLoading ? <SpinnerLoading /> : displayUsername || ""}
               </h1>
-              {!editMode && (
+              {!editMode && username && (
                 <ButtonPW
                   style={{ marginLeft: ".75 rem" }}
                   onClick={() => setEditMode(true)}
@@ -168,42 +195,16 @@ const ProfilePage = () => {
             {/*{authLoaded && <NameWork onCreateProject={onCreateProject} />}*/}
             {/*{mutation.isLoading && <SpinnerLoading />}*/}
             {/*{mutation.error && <p>{mutation.error.message}</p>}*/}
-            {!editMode && (
-              <div>
-                <h2>Works</h2>
-                {userWorks.isLoading && <SpinnerLoading />}
-                {userWorks.isSuccess &&
-                  userWorksPages.length &&
-                  userWorksPages?.map((page, index) => (
-                    <>
-                      <Fragment key={page.items[0]?.id || index}>
-                        {page.items.map((w) => (
-                          <div key={w.id}>
-                            <WorkLineItem work={w}></WorkLineItem>
-                          </div>
-                        ))}
-                      </Fragment>
-                    </>
-                  ))}
-                {userWorks.isSuccess && userWorksPages.length && (
-                  <ButtonPW
-                    onClick={() => userWorks.fetchPreviousPage()}
-                    disabled={
-                      !userWorks.hasNextPage || userWorks.isFetchingNextPage
-                    }
-                  >
-                    {userWorks.isFetchingNextPage
-                      ? "Loading more..."
-                      : userWorks.hasNextPage
-                      ? "Load More"
-                      : "Nothing more to load"}
-                  </ButtonPW>
-                )}
-
-                {userWorks.isSuccess && !userWorksPages.length && (
-                  <div>You haven't created any Works.</div>
-                )}
-              </div>
+            {!editMode && user.data && <UserWorks user={user.data} />}
+            {!user.isLoading && !user?.data?.id && (
+              <p>
+                Claim your profile by logging in.
+                <Link
+                  href={`/login?redirect=${encodeURIComponent("/profile")}`}
+                >
+                  <ButtonPW>Login</ButtonPW>
+                </Link>
+              </p>
             )}
           </RowThinContainer>
         </Container>

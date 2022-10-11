@@ -1,6 +1,9 @@
 import { fromBech32, toBech32 } from "cosmwasm";
 import { z } from "zod";
 
+export const shortenAddress = (address: string) => {
+  return `${address.slice(0, 9)}...${address.slice(-5)}`;
+};
 // const compatiblePrefixes = ["osmo", "cosmos", "stars", "regen"];
 const compatiblePrefixes = ["stars"];
 

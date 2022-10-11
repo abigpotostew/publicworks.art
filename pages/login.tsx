@@ -1,19 +1,16 @@
-import { ReactElement, useCallback, useState } from "react";
-import { RowWideContainer } from "src/components/layout/RowWideContainer";
+import { ReactElement, useState } from "react";
 import MainLayout from "../src/layout/MainLayout";
 import { Container } from "react-bootstrap";
-import { useQueryContract } from "src/hooks/useQueryContract";
 import { useRouter } from "next/router";
 import { ButtonPW } from "src/components/button/Button";
-import { useCosmosWallet } from "src/components/provider/CosmosWalletProvider";
 import { getCookie } from "src/util/cookie";
 import { RowThinContainer } from "src/components/layout/RowThinContainer";
 import { useStargazeClient, useWallet } from "@stargazezone/client";
 import useUserContext from "src/context/user/useUserContext";
 import { useMutation } from "@tanstack/react-query";
-import { ConnectedQueryContract } from "src/wasm/keplr/query";
 import { useToast } from "src/hooks/useToast";
 import { signMessageAndLogin } from "src/wasm/keplr/client-login";
+import { trpcNextPW } from "src/server/utils/trpc";
 
 const AuthPage = () => {
   const router = useRouter();
@@ -22,9 +19,8 @@ const AuthPage = () => {
   const sgwallet = useWallet();
   const sgclient = useStargazeClient();
   const toast = useToast();
-  // const { queryClient } = useQueryContract();
   const [message, setMessage] = useState<string | null>(null);
-
+  const utils = trpcNextPW.useContext();
   const claimUserAccountMutation = useMutation(async () => {
     if (!sgwallet.wallet?.address || !sgclient.client) {
       return;
@@ -53,6 +49,7 @@ const AuthPage = () => {
   const onLogin = async () => {
     try {
       await claimUserAccountMutation.mutateAsync();
+      utils.users.getUser.invalidate();
       const token = getCookie("PWToken");
       console.log("here after login");
       if (typeof query.redirect === "string") {
@@ -76,13 +73,11 @@ const AuthPage = () => {
           </RowThinContainer>
 
           <RowThinContainer>
-            {/*<p>*/}
-            {/*  While Publicworks.art is in beta, you can only log in to*/}
-            {/*  <a href={"https://testnet.publicworks.art/"}>*/}
-            {/*    https://testnet.publicworks.art/*/}
-            {/*  </a>*/}
-            {/*  .*/}
-            {/*</p>*/}
+            {user.isSuccess && <p>You're logged in as {user.data.name}</p>}
+            <p>
+              After clicking Login, keplr will request a signature from you that
+              is used to verify ownership of your wallet.
+            </p>
             <ButtonPW onClick={onLogin}>Login</ButtonPW>
             {message && <div>{message}</div>}
           </RowThinContainer>

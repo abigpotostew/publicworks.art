@@ -6,6 +6,7 @@ export type WalletContextValue = {
   login: () => void;
   logout: () => void;
   refreshBalance: () => void;
+  loading: boolean | undefined;
 };
 
 const WalletContext = React.createContext<WalletContextValue>({
@@ -13,5 +14,6 @@ const WalletContext = React.createContext<WalletContextValue>({
   login: () => {},
   logout: () => {},
   refreshBalance: () => {},
+  loading: undefined,
 });
 export default WalletContext;

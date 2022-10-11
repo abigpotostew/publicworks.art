@@ -10,9 +10,13 @@ import { trpcNextPW } from "../../src/server/utils/trpc";
 import { EditProjectRequest } from "../../src/store";
 import { NameWork } from "../../src/components/creatework/NameWork";
 import { RowThinContainer } from "src/components/layout/RowThinContainer";
+import { useUserRequired } from "src/hooks/useUserRequired";
+import useUserContext from "src/context/user/useUserContext";
 
 const CreatePage = () => {
-  const utils = trpcNextPW.useContext();
+  const { user } = useUserContext();
+  useUserRequired("/create");
+
   const router = useRouter();
   const mutation = trpcNextPW.works.createWork.useMutation({
     onSuccess: async () => {
@@ -28,33 +32,6 @@ const CreatePage = () => {
       })();
     }
   }, [mutation]);
-
-  const [authLoaded, setAuthLoaded] = useState(false);
-  useEffect(() => {
-    const token = getCookie("PWToken");
-
-    if (!token) {
-      router.push({
-        pathname: "/login",
-        query: {
-          redirect: "/create",
-        },
-      });
-      return;
-    }
-    const decoded = jwt.decode(token);
-    if (!decoded || typeof decoded === "string") {
-      router.push("/login");
-      return;
-    }
-    if (Date.now() >= (decoded.exp || 0) * 1000) {
-      console.log("expired");
-      router.push("/login");
-      return;
-    }
-    setAuthLoaded(true);
-    console.log("logged in");
-  }, [router]);
 
   const onCreateProject = useCallback(
     async (req: Partial<EditProjectRequest>) => {
@@ -74,7 +51,8 @@ const CreatePage = () => {
           <RowThinContainer>
             <h1>Create Work</h1>
 
-            {authLoaded && <NameWork onCreateProject={onCreateProject} />}
+            {user.isLoading && <SpinnerLoading />}
+            {user.isSuccess && <NameWork onCreateProject={onCreateProject} />}
             {mutation.isLoading && <SpinnerLoading />}
             {mutation.error && <p>{mutation.error.message}</p>}
           </RowThinContainer>

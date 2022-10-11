@@ -14,7 +14,7 @@ export const UserProvider: FC<Props> = ({ children }: Props) => {
     {
       address: sgwallet.wallet?.address,
     },
-    { enabled: !!sgwallet.wallet?.address }
+    { enabled: !!sgwallet.wallet?.address, retry: false }
   );
   return (
     <UserContext.Provider

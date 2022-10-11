@@ -2,7 +2,12 @@ import { parseISO } from "date-fns";
 import { format, formatInTimeZone } from "date-fns-tz";
 import { FC } from "react";
 import { Container, Form } from "react-bootstrap";
-import { EditProjectRequest, EditUserRequest } from "src/store";
+import {
+  EditProjectRequest,
+  EditUserRequest,
+  EditUserRequestZ,
+  usernameRegex,
+} from "src/store";
 import { WorkSerializable } from "src/dbtypes/works/workSerializable";
 import { RowWideContainer } from "../layout/RowWideContainer";
 import { TooltipInfo } from "../TooltipInfo";
@@ -23,10 +28,7 @@ export interface EditProfileProps {
   defaultValues?: UserSerializable;
 }
 
-export const schema = z.object({
-  name: z.string().min(3).max(18),
-});
-
+const schema = EditUserRequestZ;
 export const EditProfile: FC<EditProfileProps> = (props: EditProfileProps) => {
   // auth context here
   const defaults = {

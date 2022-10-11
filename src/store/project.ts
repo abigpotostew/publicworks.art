@@ -59,6 +59,44 @@ export class ProjectRepo {
       nextOffset,
     };
   }
+
+  async getAccountProjects({
+    address,
+    limit,
+    offset,
+    publishedState = "PUBLISHED",
+  }: {
+    address: string;
+    limit: number;
+    offset?: number | undefined;
+    // "PUBLISHED" | "UNPUBLISHED" | "ALL"
+    publishedState: string | null;
+  }): Promise<{ items: WorkEntity[]; nextOffset: number | undefined }> {
+    offset = offset || 0;
+    const where: FindOptionsWhere<WorkEntity>[] | FindOptionsWhere<WorkEntity> =
+      {};
+    if (publishedState === "PUBLISHED") {
+      where.sg721 = Not(IsNull());
+    } else if (publishedState === "UNPUBLISHED") {
+      where.sg721 = IsNull();
+    }
+    const items = await dataSource()
+      .getRepository(WorkEntity)
+      .find({
+        where: { ...where, owner: { address: address } },
+        take: limit + 1,
+        skip: offset,
+      });
+    let nextOffset: typeof offset | undefined = undefined;
+    if (items.length > limit) {
+      items.pop();
+      nextOffset = offset + limit;
+    }
+    return {
+      items,
+      nextOffset,
+    };
+  }
   async getProject(id: string): Promise<WorkEntity | null> {
     return dataSource()
       .getRepository(WorkEntity)
@@ -69,13 +107,15 @@ export class ProjectRepo {
         relations: ["owner"],
       });
   }
-
   async getProjectBySlug(slug: string): Promise<WorkEntity | null> {
-    return dataSource().getRepository(WorkEntity).findOne({
-      where: {
-        slug,
-      },
-    });
+    return dataSource()
+      .getRepository(WorkEntity)
+      .findOne({
+        where: {
+          slug,
+        },
+        relations: ["owner"],
+      });
   }
 
   async createProject(

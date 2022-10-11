@@ -36,8 +36,14 @@ export async function signMessageAndLogin(token: string, sg: StargazeClient) {
   if (!("signAmino" in offlineSigner)) {
     throw new Error("missing sign amino");
   }
+  const acounts = await offlineSigner.getAccounts();
+  const account = acounts.find((a) => a.address === sg.wallet.address);
+  if (!account) {
+    throw new Error("could not find account");
+  }
 
-  const account = await sg.signingCosmwasmClient.getAccount(sg.wallet.address);
+  // this returns the public key in this other format tendermint/PubKeySecp256k1 which I can't figure out how to convert to binary
+  // const account = await sg.signingCosmwasmClient.getAccount(sg.wallet.address);
 
   try {
     const { signed, signature } = await offlineSigner.signAmino(

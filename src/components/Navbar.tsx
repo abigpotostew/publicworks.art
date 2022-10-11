@@ -10,11 +10,13 @@ import SpinnerLoading from "src/components/loading/Loader";
 import { useWallet, WalletInfo } from "@stargazezone/client";
 import { FC } from "react";
 import { WalletContextValue } from "@stargazezone/client/react/wallet/WalletContext";
+import useUserContext from "src/context/user/useUserContext";
 
 export const NavBar: FC = () => {
   const sgwallet = useWallet();
-  const wallet = useCosmosWallet();
+  const { user } = useUserContext();
   const address = sgwallet?.wallet?.address;
+  const username = user.data?.name;
 
   return (
     <Navbar bg="dark" variant="dark" expand="sm">
@@ -30,29 +32,40 @@ export const NavBar: FC = () => {
             <Nav.Link href="/works">Works</Nav.Link>
             <Nav.Link href="/about">About</Nav.Link>
             <Nav.Link href="/roadmap">Roadmap</Nav.Link>
-            {<Nav.Link href="/create">Create</Nav.Link>}
           </Nav>
         </Navbar.Collapse>
 
         <Navbar.Collapse className="justify-content-end">
-          {/*{wallet.isConnected && <Navbar.Text>Signed in</Navbar.Text>}*/}
+          {sgwallet.wallet && (
+            <Navbar.Text>
+              <Link passHref={true} href={"/create"}>
+                <Button style={{ marginRight: "1rem" }} variant="primary">
+                  Create
+                </Button>
+              </Link>
+            </Navbar.Text>
+          )}
+
           {sgwallet.wallet && (
             <Navbar.Text>
               <span>
                 <span>
                   <ButtonGroup aria-label="Basic example">
                     <Link passHref={true} href={"/profile"}>
-                      <Button variant="secondary">
-                        {address &&
+                      <Button variant="info">
+                        {username ? username : undefined}
+                        {!username &&
+                          address &&
                           `${address.slice(0, 9)}...${address.slice(-5)}`}
                       </Button>
                     </Link>
-                    <Button variant="secondary">
-                      <Nav.Link
-                        onClick={() => {
-                          sgwallet.logout();
-                        }}
-                      >
+                    <Button
+                      variant="info"
+                      onClick={() => {
+                        sgwallet.logout();
+                      }}
+                    >
+                      <Nav.Link>
                         <FontAwesomeIcon
                           icon={"arrow-right-from-bracket"}
                           width={18}

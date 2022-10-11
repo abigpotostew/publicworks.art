@@ -1,6 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Secp256k1, Secp256k1Signature, sha256 } from "@cosmjs/crypto";
+import {
+  Secp256k1,
+  Secp256k1Signature,
+  sha256,
+  Secp256k1Keypair,
+} from "@cosmjs/crypto";
 import { serializeSignDoc } from "../../src/wasm/keplr/query";
 import { fromBase64 } from "@cosmjs/encoding";
 import { issueToCookie } from "../../src/auth/jwt";
@@ -64,6 +69,7 @@ const isValidSignature = async (
   let valid = false;
   try {
     const binaryHashSigned = sha256(serializeSignDoc(signed));
+
     const binaryPublicKey = new Uint8Array(Object.values(publicKey));
 
     valid = await Secp256k1.verifySignature(

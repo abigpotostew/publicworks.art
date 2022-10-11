@@ -2,7 +2,11 @@ import { z } from "zod";
 import { isISODate } from "../../util/isISODate";
 import { stores } from "../../store/stores";
 import { authorizedProcedure, baseProcedure, t } from "../trpc";
-import { CreateProjectRequestZ, editProjectZod } from "../../store";
+import {
+  CreateProjectRequestZ,
+  editProjectZod,
+  EditUserRequestZ,
+} from "../../store";
 import { TRPCError } from "@trpc/server";
 import { serializeWork } from "../../dbtypes/works/serialize-work";
 import { normalizeMetadataUri } from "../../wasm/metadata";
@@ -29,7 +33,7 @@ const getUser = baseProcedure
     return serializeUser(user);
   });
 const editUser = authorizedProcedure
-  .input(z.object({ name: z.string().optional() }))
+  .input(EditUserRequestZ)
 
   .mutation(async ({ input, ctx }) => {
     const user = ctx.user;

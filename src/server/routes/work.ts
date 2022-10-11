@@ -113,6 +113,32 @@ const listWorks = baseProcedure
     return { items: items.map(serializeWork), nextCursor };
   });
 
+const listAddressWorks = baseProcedure
+  .input(
+    z.object({
+      address: zodStarsAddress,
+      limit: z.number().min(1).max(100).default(10),
+      cursor: z.number().min(0).max(10000).nullish(),
+      publishedState: z
+        .string()
+        .optional()
+        .default("PUBLISHED")
+        .refine((val) => {
+          return ["PUBLISHED", "UNPUBLISHED", "ALL"].includes(val);
+        }),
+    })
+  )
+
+  .query(async ({ input, ctx }) => {
+    const { items, nextOffset: nextCursor } =
+      await stores().project.getAccountProjects({
+        ...input,
+        offset: input.cursor || undefined,
+      });
+
+    return { items: items.map(serializeWork), nextCursor };
+  });
+
 const workPreviewImg = baseProcedure
   .input(
     z.object({
@@ -178,4 +204,5 @@ export const workRouter = t.router({
   listWorks: listWorks,
   workPreviewImg,
   uploadPreviewImg,
+  listAddressWorks,
 });

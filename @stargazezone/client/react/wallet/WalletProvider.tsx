@@ -90,7 +90,7 @@ export default function WalletProvider({ children }: { children: ReactNode }) {
   const { client, connectSigning } = useStargazeClient();
   const [wallet, setWallet] = useState<WalletInfo>();
   const [noKeplr, setNoKeplr] = useState(false);
-
+  const [loading, setLoading] = useState<boolean | undefined>(undefined);
   const logout = useCallback(async () => {
     clearLocalStorage();
     setWallet(undefined);
@@ -147,6 +147,7 @@ export default function WalletProvider({ children }: { children: ReactNode }) {
 
       loginIfLocalData();
     });
+    setLoading(false);
   }, [login, loginIfLocalData]);
 
   async function refreshBalance() {
@@ -160,8 +161,6 @@ export default function WalletProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  console.log("i am in wallet context", wallet, login);
-
   return (
     <WalletContext.Provider
       value={{
@@ -169,6 +168,7 @@ export default function WalletProvider({ children }: { children: ReactNode }) {
         refreshBalance,
         login,
         logout,
+        loading,
       }}
     >
       {children}

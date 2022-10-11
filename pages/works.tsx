@@ -9,7 +9,6 @@ import Link from "next/link";
 import { trpcNextPW } from "../src/server/utils/trpc";
 import { WorkSerializable } from "../src/dbtypes/works/workSerializable";
 import SpinnerLoading from "../src/components/loading/Loader";
-import { usePagination } from "../src/hooks/usePagination";
 import { ButtonPW } from "src/components/button/Button";
 
 const GalleryComponent = ({ work }: { work: WorkSerializable }) => {
@@ -41,8 +40,6 @@ const GalleryComponent = ({ work }: { work: WorkSerializable }) => {
 };
 
 const WorksPage = () => {
-  const pageCount = 2;
-  const pageSize = 6;
   // const pagination = usePagination({ pageSize, pageCount, pageUrl: "/works" });
   // console.log("currentPage", pagination.currentPage);
   const query = trpcNextPW.works.listWorks.useInfiniteQuery(
@@ -50,9 +47,6 @@ const WorksPage = () => {
       limit: 6,
     },
     {
-      getPreviousPageParam: (lastPage) => {
-        return lastPage.nextCursor;
-      },
       getNextPageParam: (lastPage) => {
         // console.log("hsdfdsfsdaasdf", lastPage);
         return lastPage.nextCursor;
@@ -60,7 +54,7 @@ const WorksPage = () => {
     }
   );
 
-  const pages = (query.data?.pages || []).concat([]).reverse();
+  const pages = query.data?.pages;
   return (
     <Container>
       <>
@@ -109,10 +103,10 @@ const WorksPage = () => {
               }}
             >
               <ButtonPW
-                onClick={() => query.fetchPreviousPage()}
+                onClick={() => query.fetchNextPage()}
                 disabled={!query.hasNextPage || query.isFetchingNextPage}
               >
-                {query.isFetchingNextPage
+                {query.isLoading || query.isFetchingNextPage
                   ? "Loading more..."
                   : query.hasNextPage
                   ? "Load More"

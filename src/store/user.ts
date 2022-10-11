@@ -18,7 +18,7 @@ export class UserRepo {
     // });
     const user = new UserEntity();
     user.address = address;
-    user.name = "Change me";
+    user.name = address;
     user.id = cuid();
 
     const query = dataSource()
