@@ -58,9 +58,10 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
           <Container>
             <RowWideContainer>
               <LiveMedia
-                ipfsUrl={normalizeIpfsUri(
-                  "ipfs://" + w.codeCid + "?hash=" + hash
-                )}
+                ipfsUrl={{
+                  cid: w.codeCid,
+                  hash,
+                }}
                 minHeight={500}
                 style={{ minWidth: 500 }}
               ></LiveMedia>

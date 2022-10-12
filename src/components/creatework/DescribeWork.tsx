@@ -69,11 +69,10 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               {defaults?.codeCid && (
                 <>
                   <LiveMedia
-                    ipfsUrl={
-                      normalizeMetadataUri("ipfs://" + defaults.codeCid) +
-                      "?hash=" +
-                      hash
-                    }
+                    ipfsUrl={{
+                      cid: defaults.codeCid,
+                      hash,
+                    }}
                     minHeight={500}
                     style={{}}
                   ></LiveMedia>
