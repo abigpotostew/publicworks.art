@@ -105,10 +105,10 @@ export const CreateWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
     // create project in api
     // create contract
     const req = {
-      projectName,
-      projectBlurb,
-      projectSize,
-      projectDescription,
+      name: projectName,
+      blurb: projectBlurb,
+      maxTokens: projectSize,
+      description: projectDescription,
       startDate: startDate.toISOString(),
       royaltyAddress,
       royaltyPercent,

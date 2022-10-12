@@ -19,7 +19,7 @@ export const useNftMetadata = ({
   sg721,
   tokenId,
 }: {
-  sg721: string | undefined;
+  sg721: string | undefined | null;
   tokenId: string;
 }) => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -35,7 +35,9 @@ export const useNftMetadata = ({
   );
 
   const { data, error } = useSWR(
-    `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${sg721}/smart/${msgBase64}`
+    sg721
+      ? `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${sg721}/smart/${msgBase64}`
+      : null
   );
 
   useEffect(() => {

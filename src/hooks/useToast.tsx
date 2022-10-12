@@ -34,7 +34,7 @@ export const useToast = () => {
       toast.error(msg, {
         theme: "dark",
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 10_000,
         hideProgressBar: true,
         closeOnClick: true,
         pauseOnHover: true,

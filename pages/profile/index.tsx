@@ -22,6 +22,7 @@ import { useWallet } from "@stargazezone/client";
 import { UserSerializable } from "src/dbtypes/users/userSerializable";
 import { shortenAddress } from "src/wasm/address";
 import { useUserRequired } from "src/hooks/useUserRequired";
+import { NeedToLoginButton } from "src/components/login/NeedToLoginButton";
 
 interface Props {
   work: WorkSerializable;
@@ -51,7 +52,7 @@ interface UserWorksProps {
 export const UserWorks: FC<UserWorksProps> = (props: UserWorksProps) => {
   const userWorks = trpcNextPW.works.listAddressWorks.useInfiniteQuery(
     {
-      limit: 4,
+      limit: 100,
       address: props.user.address,
     },
     {
@@ -120,36 +121,7 @@ const ProfilePage = () => {
   const address = sgwallet?.wallet?.address;
   const username = user.data?.name;
 
-  useUserRequired("/profile");
-
-  // const [authLoaded, setAuthLoaded] = useState(false);
-  // useEffect(() => {
-  //   const redirectHere = () => {
-  //     return router.push({
-  //       pathname: "/login",
-  //       query: {
-  //         redirect: "/profile",
-  //       },
-  //     });
-  //   };
-  //   const token = getToken();
-  //   if (!token) {
-  //     redirectHere();
-  //     return;
-  //   }
-  //   const decoded = jwt.decode(token);
-  //   if (!decoded || typeof decoded === "string") {
-  //     redirectHere();
-  //     return;
-  //   }
-  //   if (Date.now() >= (decoded.exp || 0) * 1000) {
-  //     console.log("expired");
-  //     redirectHere();
-  //     return;
-  //   }
-  //   setAuthLoaded(true);
-  //   console.log("logged in");
-  // }, [router]);
+  // useUserRequired("/profile");
 
   const toast = useToast();
   const editUserMutation = trpcNextPW.users.editUser.useMutation({
@@ -177,6 +149,7 @@ const ProfilePage = () => {
                 Profile -{" "}
                 {user.isLoading ? <SpinnerLoading /> : displayUsername || ""}
               </h1>
+              <NeedToLoginButton url={"/profile"} />
               {!editMode && username && (
                 <ButtonPW
                   style={{ marginLeft: ".75 rem" }}

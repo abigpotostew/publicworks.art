@@ -35,7 +35,7 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     const req = {
-      projectName,
+      name: projectName,
     };
     props.onCreateProject(req);
   };

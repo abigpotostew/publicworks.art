@@ -29,11 +29,9 @@ export const schema = z.object({
 });
 
 export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
-  // auth context here
-  const user = { address: "stars1up88jtqzzulr6z72cq6uulw9yx6uau6ew0zegy" };
   const defaults = {
-    description: props.defaultValues?.description || "",
-    blurb: props.defaultValues?.blurb || "",
+    description: props.defaultValues?.description || undefined,
+    blurb: props.defaultValues?.blurb || undefined,
     codeCid: props.defaultValues?.codeCid,
     externalLink: props.defaultValues?.externalLink || undefined,
     creator: props.defaultValues?.creator || "",
@@ -47,6 +45,7 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
       await props.onCreateProject(values);
     },
     validationSchema: toFormikValidationSchema(schema),
+    // validateOnMount: true,
   });
 
   const [hash, setHash] = useState<string>(generateTxHash());
@@ -56,8 +55,11 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   }, []);
 
   useEffect(() => {
-    props.formValid({ isTouched: formik.dirty, isValid: formik.isValid });
-  }, [formik.isValid, formik.touched]);
+    props.formValid({
+      isTouched: formik.dirty,
+      isValid: formik.isValid,
+    });
+  }, [formik.isValid, formik.dirty]);
   return (
     <>
       <>

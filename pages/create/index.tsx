@@ -12,14 +12,18 @@ import { NameWork } from "../../src/components/creatework/NameWork";
 import { RowThinContainer } from "src/components/layout/RowThinContainer";
 import { useUserRequired } from "src/hooks/useUserRequired";
 import useUserContext from "src/context/user/useUserContext";
+import { useWallet } from "@stargazezone/client";
+import { NeedToLoginButton } from "src/components/login/NeedToLoginButton";
 
 const CreatePage = () => {
   const { user } = useUserContext();
-  useUserRequired("/create");
-
+  const { wallet } = useWallet();
+  // useUserRequired("/create");
+  const utils = trpcNextPW.useContext();
   const router = useRouter();
   const mutation = trpcNextPW.works.createWork.useMutation({
     onSuccess: async () => {
+      utils.works.getWorkById.invalidate();
       // await router.push(`/create/${mutation.data.id}`);
     },
   });
@@ -36,10 +40,10 @@ const CreatePage = () => {
   const onCreateProject = useCallback(
     async (req: Partial<EditProjectRequest>) => {
       // console.log("res", req);
-      if (!req.projectName) {
+      if (!req.name) {
         throw new Error("missing name");
       }
-      mutation.mutate({ projectName: req.projectName });
+      mutation.mutate({ name: req.name });
     },
     [mutation]
   );
@@ -53,6 +57,7 @@ const CreatePage = () => {
 
             {user.isLoading && <SpinnerLoading />}
             {user.isSuccess && <NameWork onCreateProject={onCreateProject} />}
+            <NeedToLoginButton url={"/create"} />
             {mutation.isLoading && <SpinnerLoading />}
             {mutation.error && <p>{mutation.error.message}</p>}
           </RowThinContainer>

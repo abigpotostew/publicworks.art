@@ -42,7 +42,7 @@ export interface CreateWorkProps {
 }
 
 export const schema = z.object({
-  projectSize: z.number().min(1).max(10_000).optional().default(1),
+  maxTokens: z.number().min(1).max(10_000).optional().default(1),
   startDate: z
     .string()
     .refine(isISODate, { message: "Not a valid ISO string date " })
@@ -76,7 +76,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   // auth context here
   const user = { address: "stars1up88jtqzzulr6z72cq6uulw9yx6uau6ew0zegy" };
   const defaults = {
-    projectSize: props.defaultValues?.maxTokens || 0,
+    maxTokens: props.defaultValues?.maxTokens || 0,
     royaltyAddress: props.defaultValues?.royaltyAddress || user.address,
     royaltyPercent:
       (props?.defaultValues?.royaltyPercent &&
@@ -101,10 +101,11 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
       await props.onCreateProject(values);
     },
     validationSchema: toFormikValidationSchema(schema),
+    // validateOnMount: true,
   });
   useEffect(() => {
     props.formValid({ isTouched: formik.dirty, isValid: formik.isValid });
-  }, [formik.isValid, formik.touched]);
+  }, [formik.isValid, formik.dirty]);
 
   // const [startDate, setStartDate] = useState<Date>(defaultDate());
   // const [royaltyAddress, setRoyaltyAddress] = useState<string>(
@@ -161,7 +162,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
           }}
           noValidate
         >
-          <Form.Group className="mb-3" controlId="formProjectSize">
+          <Form.Group className="mb-3" controlId="formMaxTokens">
             <Form.Label>
               Collection Size{" "}
               <TooltipInfo>
@@ -170,19 +171,17 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
             </Form.Label>
             <Form.Control
               type={"number"}
-              value={formik.values.projectSize}
+              value={formik.values.maxTokens}
               onChange={formik.handleChange}
-              isValid={formik.touched.projectSize && !formik.errors.projectSize}
-              isInvalid={
-                formik.touched.projectSize && !!formik.errors.projectSize
-              }
-              name="projectSize"
+              isValid={formik.touched.maxTokens && !formik.errors.maxTokens}
+              isInvalid={formik.touched.maxTokens && !!formik.errors.maxTokens}
+              name="maxTokens"
             />
             <Form.Control.Feedback type={"valid"}>
               Looks good!
             </Form.Control.Feedback>
             <Form.Control.Feedback type="invalid">
-              {formik.errors.projectSize}
+              {formik.errors.maxTokens}
             </Form.Control.Feedback>
           </Form.Group>
           {/*<Form.Group className="mb-3" controlId="formBasicCheckbox">*/}

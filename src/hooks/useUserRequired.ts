@@ -33,8 +33,8 @@ export const useUserRequired = (redirect: string) => {
     [router, user.isLoading, address]
   );
   useEffect(() => {
-    redirectTimer(false);
-  }, [router, user.isLoading, address]);
+    if (address) redirectTimer(false);
+  }, [router, user.isLoading, user?.data?.id, address]);
 
   useEffect(() => {
     const timer = setTimeout(() => redirectTimer(true), 1000);

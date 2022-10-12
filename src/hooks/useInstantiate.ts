@@ -11,6 +11,9 @@ import { useMutation } from "@tanstack/react-query";
 import { useCosmosWallet } from "../components/provider/CosmosWalletProvider";
 import { ConnectedQueryContract } from "../wasm/keplr/query";
 import { toStars } from "src/wasm/address";
+import { useWallet } from "@stargazezone/client";
+import useStargazeClient from "@stargazezone/client/react/client/useStargazeClient";
+import { useToast } from "src/hooks/useToast";
 
 function formatRoyaltyInfo(
   royaltyPaymentAddress: null | string,
@@ -235,9 +238,150 @@ async function instantiate(
   };
 }
 
+async function instantiateNew(
+  work: WorkSerializable,
+  address: string,
+  client: SigningCosmWasmClient
+) {
+  if (!work.id) {
+    throw new Error("work id invalid");
+  }
+  const signer = client;
+  // const [{ address }] = await client.getAccounts();
+  const account = toStars(address);
+
+  const royaltyPaymentAddress = work.royaltyAddress
+    ? toStars(work.royaltyAddress)
+    : null;
+  if (
+    work.royaltyPercent === null ||
+    work.royaltyPercent === undefined ||
+    !Number.isFinite(work.royaltyPercent)
+  ) {
+    throw new Error("royalty percent invalid");
+  }
+  const royaltyInfo = formatRoyaltyInfo(
+    royaltyPaymentAddress,
+    (work.royaltyPercent / 100).toString()
+  );
+
+  //if (!isValidIpfsUrl(config.baseTokenUri)) {
+  //  throw new Error('Invalid base token URI');
+  //}
+
+  //todo work image
+  // if (!isValidIpfsUrl(work.) && !isValidHttpUrl(work.image)) {
+  //   throw new Error("Image link is not valid. Must be IPFS or http(s)");
+  // }
+
+  if (work.maxTokens > 10_000) {
+    throw new Error("Too many tokens");
+  }
+
+  // if (!work.perAddressLimit || work.perAddressLimit === 0) {
+  //   throw new Error("perAddressLimit must be defined and greater than 0");
+  // }
+
+  // const client = await getClient();
+
+  // time expressed in nanoseconds (1 millionth of a millisecond)
+  if (!work.startDate) {
+    throw new Error("incorrect start date");
+  }
+  const startTime: Timestamp = (
+    new Date(work.startDate).getTime() * 1_000_000
+  ).toString();
+  // const startTime: Timestamp = (
+  //   (Date.now() + 10 * 1000) *
+  //   1_000_000
+  // ).toString();
+
+  if (!work.priceStars) {
+    throw new Error("price invalid");
+  }
+  if (!work.coverImageCid) {
+    throw new Error("missing cover image");
+  }
+  const tempMsg: InstantiateMsg = {
+    base_token_uri: `https://testnetmetadata.publicworks.art/${work.id}`,
+    num_tokens: work.maxTokens,
+    sg721_code_id: config.sg721CodeId,
+    sg721_instantiate_msg: {
+      name: work.name,
+      symbol: "TODO",
+      minter: account,
+      finalizer: config.finalizer,
+      code_uri: "ipfs://" + work.codeCid,
+      collection_info: {
+        creator: account,
+        description: work.blurb,
+        image: "ipfs://" + work.coverImageCid,
+        external_link: work.externalLink,
+        royalty_info: royaltyInfo,
+      },
+    },
+    per_address_limit: 50, //todo
+    whitelist: undefined,
+    start_time: startTime,
+    unit_price: {
+      amount: (work.priceStars * 1000000).toString(),
+      denom: "ustars",
+    },
+  };
+
+  if (
+    tempMsg.sg721_instantiate_msg.collection_info?.royalty_info
+      ?.payment_address === undefined &&
+    tempMsg.sg721_instantiate_msg.collection_info?.royalty_info?.share ===
+      undefined
+  ) {
+    tempMsg.sg721_instantiate_msg.collection_info.royalty_info = null;
+  }
+  const msg = clean(tempMsg);
+
+  // Get confirmation before preceding
+  console.log(
+    "Please confirm the settings for your minter and collection. THERE IS NO WAY TO UPDATE THIS ONCE IT IS ON CHAIN."
+  );
+  console.log(JSON.stringify(msg, null, 2));
+  console.log(
+    "Cost of minter instantiation: " +
+      NEW_COLLECTION_FEE[0].amount +
+      " " +
+      NEW_COLLECTION_FEE[0].denom
+  );
+  console.log("funds", NEW_COLLECTION_FEE);
+
+  const result = await signer.instantiate(
+    account,
+    config.minterCodeId,
+    msg,
+    work.name,
+    "auto",
+    { funds: NEW_COLLECTION_FEE, admin: account }
+  );
+  const wasmEvent = result.logs[0].events.find((e) => e.type === "wasm");
+  console.info(
+    "The `wasm` event emitted by the contract execution:",
+    wasmEvent
+  );
+  if (wasmEvent === undefined) {
+    throw new Error("wasm didn't return");
+  }
+  console.info("Add these contract addresses to config.js:");
+  console.info("minter contract address: ", wasmEvent.attributes[0]["value"]);
+  console.info("sg721 contract address: ", wasmEvent.attributes[5]["value"]);
+  return {
+    sg721: wasmEvent.attributes[5]["value"],
+    minter: wasmEvent.attributes[0]["value"],
+  };
+}
+
 export const useInstantiate = () => {
   const utils = trpcNextPW.useContext();
-  const { onlineClient, isConnected } = useCosmosWallet();
+  const sgwallet = useWallet();
+  const client = useStargazeClient();
+  const toast = useToast();
   const mutationContracts = trpcNextPW.works.editWorkContracts.useMutation({
     onSuccess() {
       utils.works.getWorkById.invalidate();
@@ -246,9 +390,28 @@ export const useInstantiate = () => {
 
   const instantiateMutation = useMutation(async (work: WorkSerializable) => {
     ///
-    if (!onlineClient || !isConnected) return false;
+    if (!sgwallet.wallet) return false;
+
     if (!work) return false;
-    const res = await instantiate(work, onlineClient);
+
+    if (!client.client) {
+      throw new Error("missing sg client");
+    }
+    const signingClient = await client.client.connectSigningClient();
+    if (!signingClient) {
+      throw new Error("Couldn't connect client");
+    }
+    let res: { sg721: string; minter: string } | undefined = undefined;
+    try {
+      res = await instantiateNew(work, sgwallet.wallet.address, signingClient);
+    } catch (e) {
+      //
+      toast.error("failed to instantiate on chain: " + (e as any)?.message);
+      return;
+    }
+    if (!res) {
+      return;
+    }
     await mutationContracts.mutateAsync({
       sg721: res.sg721,
       minter: res.minter,

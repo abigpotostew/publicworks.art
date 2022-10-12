@@ -18,6 +18,7 @@ import { stores } from "src/store/stores";
 import { initializeIfNeeded } from "src/typeorm/datasource";
 import { serializeWork } from "src/dbtypes/works/serialize-work";
 import config from "src/wasm/config";
+import { WorkSerializable } from "src/dbtypes/works/workSerializable";
 
 export async function getStaticPaths() {
   await initializeIfNeeded();
@@ -54,13 +55,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
       notFound: true,
     };
   }
-  // let metadata: NftMetadata | null = null;
-  // try {
-  //   metadata = await getTokenMetadata(work.sg721, "1");
-  // } catch (e) {
-  //   //
-  // }
-  // console.log("work here ", work, metadata);
   return {
     props: {
       work: serializeWork(work),
@@ -69,8 +63,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
     // fallback: "blocking",
   };
 };
-
-const WorkPage = ({ work }: InferGetStaticPropsType<typeof getStaticProps>) => {
+//InferGetStaticPropsType<typeof getStaticProps>
+const WorkPage = ({ work }: { work: WorkSerializable }) => {
   // fetch num tokens
   const {
     numMinted,
@@ -80,13 +74,12 @@ const WorkPage = ({ work }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const metadata = useNftMetadata({ sg721: work.sg721, tokenId: "1" });
   // const { collectionSize, error: collectionSizeError, loading: collSizeLoading } = useCollectionSize(work.minter)
 
-  console.log("work", work);
   const loading = false;
   const errorMetadata = false;
   return (
     <>
       <Head>
-        <title key={"title"}>{`${work.title} - publicworks.art`}</title>
+        <title key={"title"}>{`${work.name} - publicworks.art`}</title>
       </Head>
       <div>
         <Container>
@@ -99,13 +92,13 @@ const WorkPage = ({ work }: InferGetStaticPropsType<typeof getStaticProps>) => {
                 <SpinnerLoading />
               ) : errorMetadata ? (
                 <div>Something went wrong</div>
-              ) : (
+              ) : metadata?.metadata?.animation_url ? (
                 <LiveMedia
-                  ipfsUrl={
-                    metadata?.metadata?.animation_url || work.preview_url
-                  }
+                  ipfsUrl={metadata?.metadata?.animation_url}
                   minHeight={500}
                 />
+              ) : (
+                <div>missing animation_url</div>
               )}
             </div>
           </RowSquareContainer>
@@ -120,10 +113,14 @@ const WorkPage = ({ work }: InferGetStaticPropsType<typeof getStaticProps>) => {
                 <span className={styles.workAuthor}>
                   {" - " + work.creator}
                 </span>
-                <NumMinted sg721={work.sg721} minter={work.minter} />
+                {work.sg721 && work.minter ? (
+                  <NumMinted sg721={work.sg721} minter={work.minter} />
+                ) : (
+                  <div>Deploy your work to view</div>
+                )}
               </div>
 
-              {work.testnet ? <div>** Showing Testnet Mints **</div> : <></>}
+              {config.testnet ? <div>** Showing Testnet Mints **</div> : <></>}
 
               <p className={`${styles.sectionBreak}`}>
                 <a
@@ -153,10 +150,18 @@ const WorkPage = ({ work }: InferGetStaticPropsType<typeof getStaticProps>) => {
               <div
                 className={`${styles.workAuthorLink} ${styles.sectionBreak}`}
               >
-                {"External Link: "}
-                <a href={work.externalLink} rel="noreferrer" target={"_blank"}>
-                  {work.externalLink}
-                </a>
+                {work.externalLink && (
+                  <>
+                    {"External Link: "}
+                    <a
+                      href={work.externalLink}
+                      rel="noreferrer"
+                      target={"_blank"}
+                    >
+                      {work.externalLink}
+                    </a>
+                  </>
+                )}
               </div>
               <div className={`${styles.sectionBreak}`}></div>
             </div>
@@ -166,7 +171,12 @@ const WorkPage = ({ work }: InferGetStaticPropsType<typeof getStaticProps>) => {
         <Container>
           <RowWideContainer className={`${styles.tokensGrid}`}>
             {numMinted === 0 && <SpinnerLoading />}
-            {numMinted && (
+            {numMinted && !work.sg721 && (
+              <div>
+                <span>No NFTs minted</span>
+              </div>
+            )}
+            {numMinted && !!work.sg721 && (
               <PagedGallery
                 slug={work.slug}
                 sg721={work.sg721}

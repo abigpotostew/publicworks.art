@@ -26,6 +26,9 @@ import { ConfirmConfig } from "src/components/creatework/ConfirmConfig";
 import { NftDetails2 } from "src/components/creatework/NftDetails2";
 import { RowThinContainer } from "src/components/layout/RowThinContainer";
 import { useToast } from "src/hooks/useToast";
+import { useUserRequired } from "src/hooks/useUserRequired";
+import { useWallet } from "@stargazezone/client";
+import { NeedToLoginButton } from "src/components/login/NeedToLoginButton";
 
 // export const getServerSideProps: GetServerSideProps = async (context) => {
 //   await initializeIfNeeded();
@@ -111,15 +114,17 @@ const NavButtons: FC<INavButtons> = ({
 const EditWorkPage = () => {
   const router = useRouter();
   const { workId: workIdIn } = router.query;
-  const workId = workIdIn?.toString() || "";
+  const workId = typeof workIdIn === "string" ? workIdIn.split("?", 1)[0] : "";
   const [hash, setHash] = useState<string>(generateTxHash());
 
   const [showConfetti, setShowConfetti] = useState(false);
 
-  const wallet = useCosmosWallet();
+  const sgwallet = useWallet();
 
   const { stage: stageQp } = router.query;
   const [stage, setStageState] = useState<string>("");
+  // useUserRequired("/create/" + workIdIn + "?stage=" + stageQp);
+  const redirectUrl = "/create/" + workIdIn + "?stage=" + stageQp;
   useEffect(() => {
     setStageState(router.query?.stage?.toString() || stages[0]);
   }, [router]);
@@ -212,15 +217,17 @@ const EditWorkPage = () => {
     };
   };
 
-  const [formValid, setFormValid] = useState(true);
+  const [formValid, setFormValid] = useState(false);
   const [formTouched, setFormTouched] = useState(false);
   const setFormState = (props: { isValid: boolean; isTouched: boolean }) => {
+    console.log("props", props);
     setFormValid(props.isValid);
     setFormTouched(props.isTouched);
   };
   const canMoveToNext = formTouched
     ? mutation.isSuccess && formValid
     : formValid;
+  console.log("canMoveToNext", canMoveToNext);
 
   const steps = stages.map((s) => {
     return createStep(s);
@@ -235,6 +242,7 @@ const EditWorkPage = () => {
 
       <Container fluid={false}>
         <StepProgressBar items={steps}></StepProgressBar>
+        <NeedToLoginButton url={redirectUrl} />
         <RowThinContainer>
           {stage === "submit" && (
             // <Container fluid={false}>
@@ -245,7 +253,7 @@ const EditWorkPage = () => {
               <div>
                 {
                   <Button
-                    disabled={!wallet.isConnected}
+                    disabled={!sgwallet.wallet?.address}
                     onClick={() => onInstantiate()}
                     variant={"danger"}
                   >

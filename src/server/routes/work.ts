@@ -130,6 +130,7 @@ const listAddressWorks = baseProcedure
   )
 
   .query(async ({ input, ctx }) => {
+    console.log("input", input);
     const { items, nextOffset: nextCursor } =
       await stores().project.getAccountProjects({
         ...input,
@@ -197,7 +198,7 @@ const uploadPreviewImg = authorizedProcedure
 
 export const workRouter = t.router({
   // Public
-  createWork,
+  createWork: createWork,
   editWork,
   editWorkContracts,
   getWorkById,

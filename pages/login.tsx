@@ -22,7 +22,9 @@ const AuthPage = () => {
   const [message, setMessage] = useState<string | null>(null);
   const utils = trpcNextPW.useContext();
   const claimUserAccountMutation = useMutation(async () => {
+    await sgwallet.login();
     if (!sgwallet.wallet?.address || !sgclient.client) {
+      console.log("shortcircuit");
       return;
     }
     const otp = Math.floor(Math.random() * 100_000).toString();

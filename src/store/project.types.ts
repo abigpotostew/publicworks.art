@@ -40,10 +40,10 @@ export const ProjectFullZ = z.object({
 export type Project = z.infer<typeof ProjectFullZ>;
 
 export const CreateProjectRequestZ = z.object({
-  projectName: z.string().min(3).max(50),
-  projectBlurb: z.string().min(2).max(515).optional(),
-  projectSize: z.number().min(1).max(10_000).optional(),
-  projectDescription: z.string().min(2).max(2048).optional(),
+  name: z.string().min(3).max(50),
+  blurb: z.string().min(2).max(515).optional(),
+  maxTokens: z.number().min(1).max(10_000).optional(),
+  description: z.string().min(2).max(2048).optional(),
   startDate: z
     .string()
     .refine(isISODate, { message: "Not a valid ISO string date " })
@@ -61,10 +61,12 @@ export type CreateProjectRequest = z.infer<typeof CreateProjectRequestZ>;
 
 export const editProjectZod = z.object({
   id: z.string(),
-  projectName: z.string().min(3).max(50).optional(),
-  projectBlurb: z.string().min(2).max(515).optional(),
-  projectSize: z.number().min(1).max(10_000).optional().default(1),
-  projectDescription: z.string().min(2).max(2048).optional(),
+  name: z.string().min(3).max(50).optional(),
+  creator: z.string().optional(),
+  blurb: z.string().min(2).max(515).optional(),
+  maxTokens: z.number().min(1).max(10_000).optional().default(1),
+  description: z.string().min(2).max(2048).optional(),
+  externalLink: z.string().max(2048).optional(),
   startDate: z
     .string()
     .refine(isISODate, { message: "Not a valid ISO string date " })
