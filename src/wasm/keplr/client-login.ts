@@ -1,6 +1,16 @@
 import config from "src/wasm/config";
 import { StargazeClient } from "@stargazezone/client";
 import { Window } from "@keplr-wallet/types/build/window";
+import { getToken } from "src/util/auth-token";
+
+export async function signMessageAndLoginIfNeeded(sg: StargazeClient) {
+  const token = getToken();
+  if (!token) {
+    const otp = Math.floor(Math.random() * 100_000).toString();
+    return signMessageAndLogin(otp, sg);
+  }
+  return true;
+}
 
 export async function signMessageAndLogin(token: string, sg: StargazeClient) {
   const messageToSign = "Magic, please!" + " " + token;

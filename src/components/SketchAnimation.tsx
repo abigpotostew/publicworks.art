@@ -322,6 +322,7 @@ const SketchAnimation: React.FC = () => {
 
     const time = (p5.millis() % animationDuration) / animationDuration;
 
+    const timeWave = p5.sin(p5.millis() / animationDuration / 2) * 0.5 + 0.5;
     for (let x = xn - 1; x >= 0; x--) {
       const bouncing =
         p5.sin((time + 0.25) * p5.TWO_PI + (1 - x / xn) * p5.TWO_PI) * 0.5 +
@@ -333,7 +334,12 @@ const SketchAnimation: React.FC = () => {
         const offset = Math.round(
           noise * offsetMax * 0.75 + bouncing * offsetMax * 0.5
         );
-        const color = bouncing * 100 * 0.4; //(i) / (m) * 100 ;
+        //todo here pizzaset
+        const yf = y / yn;
+        const ycoloffset = (yf + timeWave) * 0.5;
+        const color = Math.round(
+          (ycoloffset * 0.5 + 0.5 * bouncing) * 360 * 0.75
+        ); //(i) / (m) * 100 ;
 
         const xp = Math.floor((x / xn) * width) + offset;
         const yp = Math.floor((y / yn) * height) - offset;
@@ -350,12 +356,13 @@ const SketchAnimation: React.FC = () => {
           // const color= (( time* 100) + xn % 100);
           // const newcol = p5.lerpColor(p5.color(0,80,70), p5.color(100), time)
           // p5.fill(100 - (color /*+ 20 * colorModifiers[i]*.2*/ ))
-          p5.fill(100 - color /*+ 20 * colorModifiers[i]*.2*/);
+          p5.fill(color, 90, 100);
           p5.rect(xp, yp, sizeBox, sizeBox);
         });
         sides.push(() => {
           //bottom
-          p5.fill(Math.round(100 - color + 100 * 0.1));
+          // p5.fill(Math.round(360 - color + 360 * 0.1), 100, 90);
+          p5.fill(color, 75, 85);
           p5.beginShape();
           // face bottom left
           p5.vertex(xp, yp + sizeBox);
@@ -364,7 +371,7 @@ const SketchAnimation: React.FC = () => {
           p5.vertex(xp - offset * 2, yp + sizeBox + offset * 2);
           p5.endShape();
           //left
-          p5.fill(Math.round(100 - color - color * 0.1));
+          p5.fill(color, 75, 70);
           p5.beginShape();
           p5.vertex(xp, yp);
           p5.vertex(xp, yp + sizeBox);

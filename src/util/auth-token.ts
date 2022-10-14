@@ -5,7 +5,7 @@
 import { deleteCookie, getCookie } from "src/util/cookie";
 
 export function getToken() {
-  return getCookie("PWToken");
+  return typeof document !== "undefined" && getCookie("PWToken");
 }
 
 export function deleteToken() {

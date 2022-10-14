@@ -40,13 +40,19 @@ const editUser = authorizedProcedure
     if (!user) {
       throw new TRPCError({ code: "NOT_FOUND" });
     }
-    await stores().user.editUser(user.id, input);
+    try {
+      await stores().user.editUser(user.id, input);
 
-    return serializeUser(user);
+      return serializeUser(user);
+    } catch (e) {
+      if ((e as Error).message?.includes("users_name_uniq")) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "username taken" });
+      }
+    }
   });
 
 export const userRouter = t.router({
   // Public
   getUser,
-  editUser,
+  editUser: editUser,
 });

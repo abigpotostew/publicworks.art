@@ -10,6 +10,7 @@ import { trpcNextPW } from "../src/server/utils/trpc";
 import { WorkSerializable } from "../src/dbtypes/works/workSerializable";
 import SpinnerLoading from "../src/components/loading/Loader";
 import { ButtonPW } from "src/components/button/Button";
+import { RowThinContainer } from "src/components/layout/RowThinContainer";
 
 const GalleryComponent = ({ work }: { work: WorkSerializable }) => {
   const query = trpcNextPW.works.workPreviewImg.useQuery({
@@ -22,7 +23,7 @@ const GalleryComponent = ({ work }: { work: WorkSerializable }) => {
       <Col key={w.sg721}>
         <Link href={"/work/" + w.slug} passHref>
           <Card
-            style={{ width: "24rem" }}
+            // style={{ width: "24rem" }}
             className={`${styles.workCardContainer} `}
           >
             <Card.Img variant="top" src={query.isSuccess ? query.data : ""} />
@@ -59,10 +60,10 @@ const WorksPage = () => {
     <Container>
       <>
         <>
-          <RowWideContainer>
+          <RowThinContainer>
             <h1>Works</h1>
-          </RowWideContainer>
-          <RowWideContainer>
+          </RowThinContainer>
+          <RowThinContainer>
             <Row xs={1} md={2} className="g-6">
               {query.isLoading && <SpinnerLoading />}
               {query.isSuccess &&
@@ -125,7 +126,7 @@ const WorksPage = () => {
             {/*  changePage={pagination.changePage}*/}
             {/*  pagesToRender={pagination.pagesToRender}*/}
             {/*></PaginationComp>*/}
-          </RowWideContainer>
+          </RowThinContainer>
         </>
       </>
     </Container>

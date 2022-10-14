@@ -1,6 +1,7 @@
 import { ToastContainer, toast } from "react-toastify";
 import { Toast } from "react-bootstrap";
 import { ToastContent } from "react-toastify/dist/types";
+import { UseToastTypes } from "src/hooks/useToast.types";
 
 const createToastWithMessage = (msg: string): ToastContent => {
   return ({ closeToast }) => {
@@ -16,7 +17,7 @@ const createToastWithMessage = (msg: string): ToastContent => {
     );
   };
 };
-export const useToast = () => {
+export const useToast = (): UseToastTypes => {
   return {
     success: (msg: string) => {
       toast.success(msg, {

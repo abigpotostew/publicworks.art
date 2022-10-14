@@ -27,8 +27,10 @@ import { NftDetails2 } from "src/components/creatework/NftDetails2";
 import { RowThinContainer } from "src/components/layout/RowThinContainer";
 import { useToast } from "src/hooks/useToast";
 import { useUserRequired } from "src/hooks/useUserRequired";
-import { useWallet } from "@stargazezone/client";
+import { useStargazeClient, useWallet } from "@stargazezone/client";
 import { NeedToLoginButton } from "src/components/login/NeedToLoginButton";
+import { signMessageAndLoginIfNeeded } from "src/wasm/keplr/client-login";
+import { onMutateLogin } from "src/trpc/onMutate";
 
 // export const getServerSideProps: GetServerSideProps = async (context) => {
 //   await initializeIfNeeded();
@@ -163,9 +165,10 @@ const EditWorkPage = () => {
       : null;
 
   const toast = useToast();
+  const sgclient = useStargazeClient();
   const mutation = trpcNextPW.works.editWork.useMutation({
+    onMutate: onMutateLogin(sgclient.client, toast),
     onSuccess() {
-      console.log("hello! pizzaa");
       toast.success("Saved!");
       utils.works.getWorkById.invalidate();
     },
@@ -242,7 +245,6 @@ const EditWorkPage = () => {
 
       <Container fluid={false}>
         <StepProgressBar items={steps}></StepProgressBar>
-        <NeedToLoginButton url={redirectUrl} />
         <RowThinContainer>
           {stage === "submit" && (
             // <Container fluid={false}>

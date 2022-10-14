@@ -12,8 +12,10 @@ import { NameWork } from "../../src/components/creatework/NameWork";
 import { RowThinContainer } from "src/components/layout/RowThinContainer";
 import { useUserRequired } from "src/hooks/useUserRequired";
 import useUserContext from "src/context/user/useUserContext";
-import { useWallet } from "@stargazezone/client";
+import { useStargazeClient, useWallet } from "@stargazezone/client";
 import { NeedToLoginButton } from "src/components/login/NeedToLoginButton";
+import { onMutateLogin } from "src/trpc/onMutate";
+import { useToast } from "src/hooks/useToast";
 
 const CreatePage = () => {
   const { user } = useUserContext();
@@ -21,7 +23,10 @@ const CreatePage = () => {
   // useUserRequired("/create");
   const utils = trpcNextPW.useContext();
   const router = useRouter();
+  const toast = useToast();
+  const sgclient = useStargazeClient();
   const mutation = trpcNextPW.works.createWork.useMutation({
+    onMutate: onMutateLogin(sgclient.client, toast),
     onSuccess: async () => {
       utils.works.getWorkById.invalidate();
       // await router.push(`/create/${mutation.data.id}`);
@@ -56,8 +61,8 @@ const CreatePage = () => {
             <h1>Create Work</h1>
 
             {user.isLoading && <SpinnerLoading />}
-            {user.isSuccess && <NameWork onCreateProject={onCreateProject} />}
             <NeedToLoginButton url={"/create"} />
+            {user.isSuccess && <NameWork onCreateProject={onCreateProject} />}
             {mutation.isLoading && <SpinnerLoading />}
             {mutation.error && <p>{mutation.error.message}</p>}
           </RowThinContainer>

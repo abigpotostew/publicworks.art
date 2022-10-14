@@ -18,11 +18,16 @@ import { FlexBox } from "src/components/layout/FlexBoxCenter";
 import { WorkSerializable } from "src/dbtypes/works/workSerializable";
 import Link from "next/link";
 import useUserContext from "src/context/user/useUserContext";
-import { useWallet } from "@stargazezone/client";
+import { useStargazeClient, useWallet } from "@stargazezone/client";
 import { UserSerializable } from "src/dbtypes/users/userSerializable";
 import { shortenAddress } from "src/wasm/address";
 import { useUserRequired } from "src/hooks/useUserRequired";
 import { NeedToLoginButton } from "src/components/login/NeedToLoginButton";
+import {
+  signMessageAndLogin,
+  signMessageAndLoginIfNeeded,
+} from "src/wasm/keplr/client-login";
+import { onMutateLogin } from "src/trpc/onMutate";
 
 interface Props {
   work: WorkSerializable;
@@ -85,6 +90,7 @@ export const UserWorks: FC<UserWorksProps> = (props: UserWorksProps) => {
             ))}
           </Fragment>
         ))}
+
       {userWorks.isSuccess && hasItems && (
         <ButtonPW
           onClick={() => userWorks.fetchPreviousPage()}
@@ -116,6 +122,7 @@ const ProfilePage = () => {
   const [editMode, setEditMode] = useState(false);
 
   const sgwallet = useWallet();
+  const sgclient = useStargazeClient();
 
   const { user } = useUserContext();
   const address = sgwallet?.wallet?.address;
@@ -125,17 +132,22 @@ const ProfilePage = () => {
 
   const toast = useToast();
   const editUserMutation = trpcNextPW.users.editUser.useMutation({
+    onMutate: onMutateLogin(sgclient.client, toast),
     onSuccess: () => {
       toast.success("Saved!");
 
       setEditMode(false);
       utils.users.getUser.invalidate();
     },
+    onError: (e) => {
+      setEditMode(false);
+      toast.error(e.message);
+    },
   });
   const onSubmitEdit = (req: Partial<EditUserRequest>) => {
     editUserMutation.mutate(req);
   };
-
+  const token = getToken();
   const displayUsername =
     username && username === address ? shortenAddress(address) : username;
   //EditProfile
@@ -149,8 +161,8 @@ const ProfilePage = () => {
                 Profile -{" "}
                 {user.isLoading ? <SpinnerLoading /> : displayUsername || ""}
               </h1>
-              <NeedToLoginButton url={"/profile"} />
-              {!editMode && username && (
+
+              {!editMode && (
                 <ButtonPW
                   style={{ marginLeft: ".75 rem" }}
                   onClick={() => setEditMode(true)}
@@ -159,12 +171,14 @@ const ProfilePage = () => {
                 </ButtonPW>
               )}
             </FlexBox>
+            <NeedToLoginButton url={"/profile"} />
 
             {user.isLoading && <SpinnerLoading />}
             {!editMode && user.isSuccess && <UserProfile user={user.data} />}
             {editMode && (
               <EditProfile defaultValues={user.data} onSubmit={onSubmitEdit} />
             )}
+            {editMode && editUserMutation.isLoading && <SpinnerLoading />}
             {/*{authLoaded && <NameWork onCreateProject={onCreateProject} />}*/}
             {/*{mutation.isLoading && <SpinnerLoading />}*/}
             {/*{mutation.error && <p>{mutation.error.message}</p>}*/}
