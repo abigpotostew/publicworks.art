@@ -11,11 +11,13 @@ import { useMutation } from "@tanstack/react-query";
 import { useToast } from "src/hooks/useToast";
 import { signMessageAndLogin } from "src/wasm/keplr/client-login";
 import { trpcNextPW } from "src/server/utils/trpc";
+import { getToken } from "src/util/auth-token";
 
 const AuthPage = () => {
   const router = useRouter();
   const { query } = router;
   const { user } = useUserContext();
+  console.log({ user });
   const sgwallet = useWallet();
   const sgclient = useStargazeClient();
   const toast = useToast();
@@ -66,6 +68,7 @@ const AuthPage = () => {
 
     //call backend auth with token
   };
+  const token = getToken();
   return (
     <>
       <div>
@@ -75,13 +78,21 @@ const AuthPage = () => {
           </RowThinContainer>
 
           <RowThinContainer>
-            {user.isSuccess && <p>You're logged in as {user.data.name}</p>}
-            <p>
-              After clicking Login, keplr will request a signature from you that
-              is used to verify ownership of your wallet.
-            </p>
-            <ButtonPW onClick={onLogin}>Login</ButtonPW>
-            {message && <div>{message}</div>}
+            {token && user.isSuccess && (
+              <p>You're logged in as {user.data.name}</p>
+            )}
+            {(!token || !user.isError) && (
+              <>
+                <p>Authenticate to claim your account.</p>
+                <p>
+                  After clicking Login, keplr will request a signature from you
+                  that is used to verify ownership of your wallet.
+                </p>
+
+                <ButtonPW onClick={onLogin}>Login</ButtonPW>
+                {message && <div>{message}</div>}
+              </>
+            )}
           </RowThinContainer>
         </Container>
       </div>
