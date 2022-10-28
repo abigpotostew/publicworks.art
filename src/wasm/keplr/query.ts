@@ -390,7 +390,6 @@ const isValidSignature = async (
     );
   } catch (e) {
     console.error("Issue trying to verify the signature", e);
-  } finally {
-    return valid;
   }
+  return valid;
 };

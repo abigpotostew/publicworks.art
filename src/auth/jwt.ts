@@ -49,10 +49,13 @@ export const verify = (token: string) => {
   return payload as Token;
 };
 
-export const verifyCookie = (cookies: {
-  [p: string]: string;
-}): Token | null => {
+export const verifyCookie = (
+  cookies: Partial<{
+    [p: string]: string;
+  }>
+): Token | null => {
   const token = cookies[pwTokenName];
+  if (!token) return null;
   try {
     return verify(token);
   } catch (e) {

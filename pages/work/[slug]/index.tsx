@@ -88,7 +88,7 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
               className={`${styles.align_center} align-self-center`}
               style={{ minHeight: 500 }}
             >
-              {loading ? (
+              {loading || metadata.loading ? (
                 <SpinnerLoading />
               ) : errorMetadata ? (
                 <div>Something went wrong</div>

@@ -1,12 +1,13 @@
 import styles from "../styles/About.module.scss";
 import { ReactElement } from "react";
 import MainLayout from "../src/layout/MainLayout";
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Nav, Row } from "react-bootstrap";
 import {
   RowThinContainer,
   RowThinContainerFlex,
 } from "../src/components/layout/RowThinContainer";
 import useBreakpoint from "../src/hooks/style/useBreakpoint";
+import Link from "next/link";
 
 function GroupDividerBottom() {
   return (
@@ -64,6 +65,14 @@ const AboutPage = () => {
           <p className={`${styles.abouttext} `}>
             Skymagic is a professional engineer, artist, and generative art
             enthusiast making generative artworks for over a decade.
+          </p>
+
+          <h3 className={`${styles.subtitle} `}>Roadmap</h3>
+
+          <p className={`${styles.abouttext} `}>
+            <Link href={"/roadmap"} passHref={true}>
+              Read the roadmap
+            </Link>
           </p>
         </div>
       </RowThinContainer>

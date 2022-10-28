@@ -11,9 +11,49 @@ $border-width:3px;
 $btn-border-radius:1.35rem;
 $line-height-base:1.5;
 
-$pw-p-content-line-height: calc($spacer + 27%) rem;
+$pw-p-content-line-height: calc($spacer + 10%) ;
+$pw-p-spacer: 1.25rem;
 
 
+$primary:#5C8F94;
+$secondary:#6f7f8c;
+$success:#3e4d59;
+$danger:#cc330d;
+$info:#2F3C48;
+$warning:#6e9fa5;
+$light:#eceeec;
+$dark:#1e2b37;
+
+.Margin-B-0{
+  margin-bottom: 0;
+}
+.Margin-B-1{
+  margin-bottom: calc($pw-p-spacer * 0.5);
+}
+.Margin-B-2{
+  margin-bottom: calc($pw-p-spacer * 1.0);
+}
+.Margin-B-4{
+  margin-bottom: calc($pw-p-spacer * 1.5);
+}
+.Margin-B-8{
+   margin-bottom: calc($pw-p-spacer * 2);
+ }
+.Margin-T-0{
+  margin-top: 0;
+}
+.Margin-T-1{
+  margin-top: calc($pw-p-spacer * 0.5);
+}
+.Margin-T-2{
+  margin-top: calc($pw-p-spacer * 1.0);
+}
+.Margin-T-4{
+  margin-top: calc($pw-p-spacer * 1.5);
+}
+.Margin-B-8{
+  margin-bottom: calc($pw-p-spacer * 2);
+}
 
 :export {
   pw-bg-color:$pw-bg-color;
@@ -23,5 +63,17 @@ $pw-p-content-line-height: calc($spacer + 27%) rem;
   border-width:$border-width;
   btn-border-radius:$btn-border-radius;
   line-height-base:$line-height-base;
+  pw-p-spacer:$pw-p-spacer;
+  //pw-section-spacer:$pw-section-spacer;
+  //pw-subsection-spacer:$pw-subsection-spacer;
+
+  primary:$primary;
+  secondary:$secondary;
+  success:$success;
+  danger:$danger;
+  info:$info;
+  warning:$warning;
+  light:$light;
+  dark:$dark;
 }
 

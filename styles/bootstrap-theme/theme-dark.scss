@@ -17,14 +17,14 @@ $font-family-base:"Roboto Flex";
 //https://themestr.app/theme?start=1&font=Roboto&palette=2&icons=simpleline&border-width=3px&spacer=1.2rem&btn-border-radius=1.35rem&enable-gradients=false
 
 
-$primary:#5C8F94;
-$secondary:#6f7f8c;
-$success:#3e4d59;
-$danger:#cc330d;
-$info:#2F3C48;
-$warning:#6e9fa5;
-$light:#eceeec;
-$dark:#1e2b37;
+//$primary:#5C8F94;
+//$secondary:#6f7f8c;
+//$success:#3e4d59;
+//$danger:#cc330d;
+//$info:#2F3C48;
+//$warning:#6e9fa5;
+//$light:#eceeec;
+//$dark:#1e2b37;
 $enable-gradients:false;
 //$spacer:1.5rem;
 //$border-width:3px;
@@ -33,7 +33,7 @@ $enable-gradients:false;
 
 $enable-grid-classes:true;
 $body-color: #fff;
-$body-bg: $pw-bg-color; 
+$body-bg: $pw-bg-color;
 
 //:export
 
@@ -42,3 +42,4 @@ $body-bg: $pw-bg-color;
 //@import "/node_modules/bootstrap/scss/functions";
 //@import "/node_modules/bootstrap/scss/variables";
 //@import "/node_modules/bootstrap/scss/mixins";
+

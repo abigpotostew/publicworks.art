@@ -8,3 +8,8 @@ todo:
 - add start date and more validations on the confirm page
 - prettify the confirm page
 - need to differentiate user with token with just address
+- skeleton loaders
+- upload directly to ipfs instead of nft.storage
+- add dutch auction support
+- documentation
+- 

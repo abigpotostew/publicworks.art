@@ -8,7 +8,6 @@ export const useUserRequired = (redirect: string) => {
   const { user } = useUserContext();
   const sgwallet = useWallet();
   const address = sgwallet?.wallet?.address;
-  const redirectNow = () => {};
 
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
   const redirectTimer = useCallback(
