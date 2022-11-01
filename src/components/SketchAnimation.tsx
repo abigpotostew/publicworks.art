@@ -103,7 +103,7 @@ const SketchAnimation: React.FC = () => {
       puff = new Puff(10, (i) => {
         const s = { x: 0, y: 0 };
         const end = {
-          x: p5.random(0.15) * width * 2 + 0.1 * width,
+          x: p5.random(0.15) * width * 3 + 0.1 * width,
           y: (p5.random() - p5.random()) * height * 0.6,
         };
         return new Particle(s, end);
@@ -303,7 +303,7 @@ const SketchAnimation: React.FC = () => {
     p5.noStroke();
 
     const sizeBox = Math.round((1 / xn) * width);
-    const offsetMax = width * 0.15;
+    const offsetMax = width * 0.18;
     // for (let x = 0; x < xn; x++) {
     //   for (let y = 0; y < yn; y++) {
     const faces = [];
@@ -323,6 +323,7 @@ const SketchAnimation: React.FC = () => {
     const time = (p5.millis() % animationDuration) / animationDuration;
 
     const timeWave = p5.sin(p5.millis() / animationDuration / 2) * 0.5 + 0.5;
+    const hueWave = p5.sin((p5.millis() / animationDuration) * 0.25);
     for (let x = xn - 1; x >= 0; x--) {
       const bouncing =
         p5.sin((time + 0.25) * p5.TWO_PI + (1 - x / xn) * p5.TWO_PI) * 0.5 +
@@ -331,15 +332,23 @@ const SketchAnimation: React.FC = () => {
         const i = y * xn + x;
         // p5.push()
         const noise = nfunc(x, y);
-        const offset = Math.round(
-          noise * offsetMax * 0.75 + bouncing * offsetMax * 0.5
-        );
+        const offset =
+          Math.pow(noise * offsetMax * 0.25, 1) + bouncing * offsetMax * 0.75;
         //todo here pizzaset
-        const yf = y / yn;
-        const ycoloffset = (yf + timeWave) * 0.5;
-        const color = Math.round(
-          (ycoloffset * 0.5 + 0.5 * bouncing) * 360 * 0.75
-        ); //(i) / (m) * 100 ;
+        const getBoxesColor = () => {
+          const yf = y / yn;
+          const ycoloffset = (yf + timeWave) * 0.5;
+
+          const color = p5.map(
+            ycoloffset * 0.5 + 0.5 * bouncing,
+            0,
+            1,
+            160 + hueWave * 30,
+            220 + hueWave * 30
+          );
+          return color;
+        };
+        const color360 = getBoxesColor();
 
         const xp = Math.floor((x / xn) * width) + offset;
         const yp = Math.floor((y / yn) * height) - offset;
@@ -356,13 +365,13 @@ const SketchAnimation: React.FC = () => {
           // const color= (( time* 100) + xn % 100);
           // const newcol = p5.lerpColor(p5.color(0,80,70), p5.color(100), time)
           // p5.fill(100 - (color /*+ 20 * colorModifiers[i]*.2*/ ))
-          p5.fill(color, 90, 100);
+          p5.fill(color360, 80, 75);
           p5.rect(xp, yp, sizeBox, sizeBox);
         });
         sides.push(() => {
           //bottom
           // p5.fill(Math.round(360 - color + 360 * 0.1), 100, 90);
-          p5.fill(color, 75, 85);
+          p5.fill(color360, 75, 85);
           p5.beginShape();
           // face bottom left
           p5.vertex(xp, yp + sizeBox);
@@ -371,7 +380,7 @@ const SketchAnimation: React.FC = () => {
           p5.vertex(xp - offset * 2, yp + sizeBox + offset * 2);
           p5.endShape();
           //left
-          p5.fill(color, 75, 70);
+          p5.fill(color360, 75, 70);
           p5.beginShape();
           p5.vertex(xp, yp);
           p5.vertex(xp, yp + sizeBox);
