@@ -11,6 +11,7 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
 import { isISODate } from "src/util/isISODate";
 import { ButtonPW as Button } from "../button/Button";
+import { useWallet } from "@stargazezone/client";
 
 // const formatInTimeZone = (date: Date, fmt: string, tz: string) =>
 //   format(utcToZonedTime(date, tz), fmt, { timeZone: tz });
@@ -74,10 +75,11 @@ const formatInUTC = (date: Date) => {
 };
 export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   // auth context here
-  const user = { address: "stars1up88jtqzzulr6z72cq6uulw9yx6uau6ew0zegy" };
+  const sgwallet = useWallet();
   const defaults = {
     maxTokens: props.defaultValues?.maxTokens || 0,
-    royaltyAddress: props.defaultValues?.royaltyAddress || user.address,
+    royaltyAddress:
+      props.defaultValues?.royaltyAddress || sgwallet.wallet?.address || "",
     royaltyPercent:
       (props?.defaultValues?.royaltyPercent &&
         props.defaultValues.royaltyPercent) ||
@@ -96,9 +98,15 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   const formik = useFormik({
     initialValues: defaults,
     onSubmit: async (values) => {
-      // console.log("values", values);
+      console.log("values", values);
       // alert(JSON.stringify(values, null, 2));
-      await props.onCreateProject(values);
+
+      await props.onCreateProject({
+        ...values,
+        startDate: values.startDate
+          ? parseISO(values.startDate).toISOString()
+          : undefined,
+      });
     },
     validationSchema: toFormikValidationSchema(schema),
     // validateOnMount: true,

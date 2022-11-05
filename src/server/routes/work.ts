@@ -145,7 +145,7 @@ const listAddressWorks = baseProcedure
   )
 
   .query(async ({ input, ctx }) => {
-    console.log("input", input);
+    // console.log("input", input);
     const { items, nextOffset: nextCursor } =
       await stores().project.getAccountProjects({
         ...input,

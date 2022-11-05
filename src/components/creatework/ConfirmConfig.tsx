@@ -5,7 +5,6 @@ import styles from "./ConfirmConfig.module.css";
 import { FlexBox } from "../layout/FlexBoxCenter";
 import { RowWideContainer } from "../layout/RowWideContainer";
 import { LiveMedia } from "../media/LiveMedia";
-import { normalizeIpfsUri } from "../../wasm/metadata";
 import { generateTxHash } from "src/generateHash";
 import { BsArrowRepeat } from "react-icons/bs";
 
@@ -40,7 +39,7 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
     slug: null,
     sg721: null,
     minter: null,
-    startDate: null,
+    startDate: "Start Date",
     createdDate: null,
     updatedDate: null,
   };

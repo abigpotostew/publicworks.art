@@ -41,7 +41,6 @@ const formatInUTC = (date: Date) => {
 export const CreateWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   // auth context here
   const wallet = useCosmosWallet();
-  const user = { address: "stars1up88jtqzzulr6z72cq6uulw9yx6uau6ew0zegy" };
   const defaults = {
     name: props.defaultValues?.name || "",
     description: props.defaultValues?.description || "",
@@ -219,7 +218,7 @@ export const CreateWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               <Form.Control
                 type="text"
                 defaultValue={defaults.royaltyAddress}
-                placeholder={user.address}
+                placeholder={"stars..."}
                 name="project_royalty_address"
                 onChange={(e) => setRoyaltyAddress(e.target.value)}
               />

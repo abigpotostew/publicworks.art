@@ -24,7 +24,6 @@ export interface CreateWorkProps {
 
 export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   // auth context here
-  const user = { address: "stars1up88jtqzzulr6z72cq6uulw9yx6uau6ew0zegy" };
   const defaults = {
     name: props.defaultValues?.name || "",
     codeCid: props.defaultValues?.codeCid,

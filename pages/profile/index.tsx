@@ -57,6 +57,7 @@ interface UserWorksProps {
 export const UserWorks: FC<UserWorksProps> = (props: UserWorksProps) => {
   const userWorks = trpcNextPW.works.listAddressWorks.useInfiniteQuery(
     {
+      publishedState: "ALL",
       limit: 100,
       address: props.user.address,
     },

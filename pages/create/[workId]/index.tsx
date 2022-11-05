@@ -230,7 +230,6 @@ const EditWorkPage = () => {
   const canMoveToNext = formTouched
     ? mutation.isSuccess && formValid
     : formValid;
-  console.log("canMoveToNext", canMoveToNext);
 
   const steps = stages.map((s) => {
     return createStep(s);

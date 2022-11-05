@@ -73,8 +73,6 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
   } = useNumMinted(work?.slug);
   const metadata = useNftMetadata({ sg721: work.sg721, tokenId: "1" });
 
-  console.log({ numMinted, numMintedError, numMintedLoading });
-
   const loading = false;
   const errorMetadata = false;
   return (
