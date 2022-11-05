@@ -11,6 +11,13 @@ import { WorkSerializable } from "../src/dbtypes/works/workSerializable";
 import SpinnerLoading from "../src/components/loading/Loader";
 import { ButtonPW } from "src/components/button/Button";
 import { RowThinContainer } from "src/components/layout/RowThinContainer";
+import { GetStaticPaths, GetStaticPropsContext } from "next";
+import { stores } from "src/store/stores";
+import { initializeIfNeeded } from "src/typeorm/datasource";
+import superjson from "superjson";
+import { appRouter } from "src/server/routes/_app";
+import { createProxySSGHelpers } from "@trpc/react/ssg";
+import { Context } from "src/server/context";
 
 const GalleryComponent = ({ work }: { work: WorkSerializable }) => {
   const query = trpcNextPW.works.workPreviewImg.useQuery({
@@ -39,6 +46,38 @@ const GalleryComponent = ({ work }: { work: WorkSerializable }) => {
     </>
   );
 };
+
+export async function getStaticProps(context: GetStaticPropsContext) {
+  await initializeIfNeeded();
+
+  console.log("in getStaticProps");
+  const ssg = await createProxySSGHelpers({
+    router: appRouter,
+    ctx: {} as Context,
+    transformer: superjson, // optional - adds superjson serialization
+  });
+  // const id = context.params?.id as string;
+  // prefetch `post.byId`
+  await ssg.works.listWorks.prefetch({
+    limit: 100,
+    cursor: undefined,
+  });
+  const works = await ssg.works.listWorks.fetch({
+    limit: 100,
+    cursor: undefined,
+  });
+  await Promise.all(
+    works.items.map((w) => {
+      return ssg.works.workPreviewImg.prefetch({ workId: w.id });
+    })
+  );
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+    revalidate: 160,
+  };
+}
 
 const WorksPage = () => {
   // const pagination = usePagination({ pageSize, pageCount, pageUrl: "/works" });

@@ -1,6 +1,6 @@
 import styles from "../styles/Home.module.scss";
 import stylesWorks from "../styles/Work.module.scss";
-import { ReactElement } from "react";
+import { FC, ReactElement, ReactNode } from "react";
 import MainLayout from "../src/layout/MainLayout";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import SketchAnimation from "../src/components/SketchAnimation";
@@ -9,7 +9,8 @@ import Link from "next/link";
 import { RowThinContainer } from "../src/components/layout/RowThinContainer";
 import { FlexBoxCenter } from "../src/components/layout/FlexBoxCenter";
 import Image from "react-bootstrap/Image";
-import useBreakpoint from "../src/hooks/style/useBreakpoint";
+import { AutoContainer } from "src/components/layout/AutoContainer";
+import { Pill } from "src/components/content/Pill";
 
 function GroupDividerBottom() {
   return (
@@ -65,6 +66,10 @@ const Home = () => {
       <Container>
         <SketchAnimation />
       </Container>
+
+      <AutoContainer>
+        <Pill>Metadata Generation</Pill>
+      </AutoContainer>
 
       <GroupDividerBottom />
 

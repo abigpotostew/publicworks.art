@@ -67,12 +67,13 @@ export const getStaticProps: GetStaticProps = async (context) => {
 const WorkPage = ({ work }: { work: WorkSerializable }) => {
   // fetch num tokens
   const {
-    numMinted,
+    data: numMinted,
     error: numMintedError,
-    loading: numMintedLoading,
-  } = useNumMinted(work?.sg721);
+    isLoading: numMintedLoading,
+  } = useNumMinted(work?.slug);
   const metadata = useNftMetadata({ sg721: work.sg721, tokenId: "1" });
-  // const { collectionSize, error: collectionSizeError, loading: collSizeLoading } = useCollectionSize(work.minter)
+
+  console.log({ numMinted, numMintedError, numMintedLoading });
 
   const loading = false;
   const errorMetadata = false;
@@ -114,7 +115,7 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
                   {" - " + work.creator}
                 </span>
                 {work.sg721 && work.minter ? (
-                  <NumMinted sg721={work.sg721} minter={work.minter} />
+                  <NumMinted slug={work.slug} minter={work.minter} />
                 ) : (
                   <div>Deploy your work to view</div>
                 )}

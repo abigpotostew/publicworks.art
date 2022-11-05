@@ -6,8 +6,8 @@ export const useTokenOwner = ({
   sg721,
   tokenId,
 }: {
-  sg721: string;
-  tokenId: string;
+  sg721?: string | null;
+  tokenId?: string | null;
 }) => {
   // num minted
   //
@@ -26,7 +26,9 @@ export const useTokenOwner = ({
   );
 
   const { data, error } = useSWR(
-    `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${sg721}/smart/${msgBase64}`,
+    !sg721 || !tokenId
+      ? null
+      : `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${sg721}/smart/${msgBase64}`,
     { refreshInterval: 1000 * 60 * 3 }
   );
 

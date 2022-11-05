@@ -5,16 +5,16 @@ import { useCollectionSize } from "../../hooks/useCollectionSize";
 import SpinnerLoading from "../loading/Loader";
 
 interface NumMintedParams {
-  sg721: string;
+  slug: string;
   minter: string;
 }
 
 export const NumMinted: FC<NumMintedParams> = (params: NumMintedParams) => {
   const {
-    numMinted,
+    data: numMinted,
     error: numMintedError,
-    loading: numMintedLoading,
-  } = useNumMinted(params.sg721);
+    isLoading: numMintedLoading,
+  } = useNumMinted(params.slug);
   const {
     collectionSize,
     error: collectionSizeError,

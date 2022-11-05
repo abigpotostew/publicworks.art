@@ -51,7 +51,7 @@ export const NavBar: FC = () => {
               <span>
                 <span>
                   <ButtonGroup aria-label="Basic example">
-                    <Link passHref={true} href={"/profile"}>
+                    <Link passHref={true} href={"/profile"} legacyBehavior>
                       <Button variant="info">
                         {username ? username : undefined}
                         {!username &&

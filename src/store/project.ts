@@ -118,6 +118,15 @@ export class ProjectRepo {
       });
   }
 
+  async getTokenCount(slug: string): Promise<number> {
+    return dataSource()
+      .getRepository(TokenEntity)
+      .createQueryBuilder("tokens")
+      .leftJoin("tokens.work", "work")
+      .where("work.slug = :slug", { slug })
+      .getCount();
+  }
+
   async createProject(
     owner: UserEntity,
     request: CreateProjectRequest

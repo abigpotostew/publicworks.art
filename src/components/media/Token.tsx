@@ -32,8 +32,9 @@ export const Token = ({
           <Link
             href={`/work/${slug}/${encodeURIComponent(tokenId)}`}
             as={`/work/${slug}/${encodeURIComponent(tokenId)}`}
+            className={"Token-link"}
           >
-            <a className={"Token-link"}>Details</a>
+            Details
           </Link>{" "}
           |{" "}
           <a href={metadata?.image} className={"Token-link"} download={"true"}>

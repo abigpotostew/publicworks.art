@@ -87,6 +87,21 @@ const getWorkById = baseProcedure
     }
     return serializeWork(project);
   });
+const getWorkBySlug = baseProcedure
+  .input(
+    z.object({
+      slug: z.string(),
+    })
+  )
+
+  .query(async ({ input, ctx }) => {
+    const project = await stores().project.getProjectBySlug(input.slug);
+
+    if (!project) {
+      throw new TRPCError({ code: "NOT_FOUND" });
+    }
+    return serializeWork(project);
+  });
 const listWorks = baseProcedure
   .input(
     z.object({
@@ -159,6 +174,15 @@ const workPreviewImg = baseProcedure
     }
     return normalizeMetadataUri(preview.image_url);
   });
+const workTokenCount = baseProcedure
+  .input(
+    z.object({
+      slug: z.string(),
+    })
+  )
+  .query(async ({ input, ctx }) => {
+    return stores().project.getTokenCount(input.slug);
+  });
 
 const uploadPreviewImg = authorizedProcedure
   .input(
@@ -202,8 +226,10 @@ export const workRouter = t.router({
   editWork,
   editWorkContracts,
   getWorkById,
+  getWorkBySlug,
   listWorks: listWorks,
   workPreviewImg,
   uploadPreviewImg,
   listAddressWorks,
+  workTokenCount: workTokenCount,
 });

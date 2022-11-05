@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import MainLayout from "../../../src/layout/MainLayout";
 import styles from "../../../styles/Work.module.scss";
 import { Container } from "react-bootstrap";
@@ -6,103 +6,153 @@ import { LiveMedia } from "../../../src/components/media/LiveMedia";
 import { RowThinContainer } from "../../../src/components/layout/RowThinContainer";
 import { RowSquareContainer } from "../../../src/components/layout/RowSquareContainer";
 import { NftMetadata } from "../../../src/hooks/useNftMetadata";
-import SpinnerLoading from "../../../src/components/loading/Loader";
-import { getTokenMetadata, getTokenOwner } from "../../../src/wasm/metadata";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { work } from "../../../src/helio";
+import { getTokenMetadata } from "../../../src/wasm/metadata";
 import Link from "next/link";
 import Head from "next/head";
 import { useTokenOwner } from "../../../src/hooks/useTokenOwner";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/router";
+import { trpcNextPW } from "src/server/utils/trpc";
+import SpinnerLoading from "src/components/loading/Loader";
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const slug = context.params?.slug;
-  const tokenId = context.params?.tokenId;
-  if (
-    !tokenId ||
-    Array.isArray(tokenId) ||
-    !Number.isFinite(parseInt(tokenId))
-  ) {
-    return {
-      notFound: true,
-    };
-  }
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+//   const slug = context.params?.slug;
+//   const tokenId = context.params?.tokenId;
+//   if (
+//     !tokenId ||
+//     Array.isArray(tokenId) ||
+//     !Number.isFinite(parseInt(tokenId))
+//   ) {
+//     return {
+//       notFound: true,
+//     };
+//   }
+//
+//   let metadata: NftMetadata | null = null;
+//   const fetchMd = async () => {
+//     try {
+//       metadata = await getTokenMetadata(
+//         work.sg721,
+//         tokenId,
+//         process.env.NEXT_PUBLIC_IPFS_GATEWAY
+//       );
+//     } catch (e) {
+//       console.warn(`error fetching attempt 2 ${slug} ${tokenId}`, e);
+//     }
+//   };
+//   const [, owner] = await Promise.all([
+//     fetchMd(),
+//     getTokenOwner(work.sg721, tokenId),
+//   ]);
+//
+//   if (!metadata) {
+//     return {
+//       notFound: true,
+//     };
+//   }
+//   context.res.setHeader(
+//     "Cache-Control",
+//     "public, s-maxage=300, stale-while-revalidate=400"
+//   );
+//
+//   return {
+//     props: {
+//       work,
+//       metadata,
+//       tokenId,
+//       tokenOwner: owner,
+//     },
+//   };
+// };
 
-  let metadata: NftMetadata | null = null;
-  const fetchMd = async () => {
-    try {
-      metadata = await getTokenMetadata(
-        work.sg721,
-        tokenId,
-        process.env.NEXT_PUBLIC_IPFS_GATEWAY
-      );
-    } catch (e) {
-      console.warn(`error fetching attempt 2 ${slug} ${tokenId}`, e);
-    }
-  };
-  const [, owner] = await Promise.all([
-    fetchMd(),
-    getTokenOwner(work.sg721, tokenId),
-  ]);
+const WorkTokenPage = () => {
+  const router = useRouter();
+  const { slug, tokenId } = router.query;
+  const [notFound, setNotFound] = useState(false);
 
-  if (!metadata) {
-    return {
-      notFound: true,
-    };
-  }
-  context.res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=300, stale-while-revalidate=400"
+  const workQuery = trpcNextPW.works.getWorkBySlug.useQuery(
+    { slug: slug?.toString() || "" },
+    { enabled: !!slug }
+  );
+  const { data: work } = workQuery;
+
+  const tokenMetadata = useQuery(
+    ["gettokenmetadata", slug, tokenId, work?.sg721],
+    async () => {
+      const sg721 = work?.sg721;
+      if (!sg721) {
+        return;
+      }
+      if (
+        !tokenId ||
+        Array.isArray(tokenId) ||
+        !Number.isFinite(parseInt(tokenId))
+      ) {
+        setNotFound(true);
+        return;
+      }
+
+      let metadata: NftMetadata | null = null;
+      const fetchMd = async () => {
+        try {
+          metadata = await getTokenMetadata(
+            sg721,
+            tokenId,
+            process.env.NEXT_PUBLIC_IPFS_GATEWAY
+          );
+        } catch (e) {
+          console.warn(`error fetching attempt 2 ${slug} ${tokenId}`, e);
+        }
+      };
+      await fetchMd();
+      console.log({ metadata });
+
+      return metadata;
+    },
+    { enabled: !!work }
   );
 
-  return {
-    props: {
-      work,
-      metadata,
-      tokenId,
-      tokenOwner: owner,
-    },
-  };
-};
-
-const WorkTokenPage = ({
-  metadata,
-  work,
-  tokenId,
-  tokenOwner,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const loading = false;
-  const errorMetadata = false;
+  const errorMetadata = tokenMetadata.isError;
   const {
     loading: ownerLoading,
     error,
     owner,
-  } = useTokenOwner({ sg721: work.sg721, tokenId });
-  const tokenOwnerRealized =
-    (ownerLoading || error) && !owner ? tokenOwner : owner;
+  } = useTokenOwner({ sg721: work?.sg721, tokenId: tokenId?.toString() });
+
+  const notFoundActual =
+    (!workQuery.isLoading && !workQuery.isSuccess && !workQuery.data) ||
+    notFound;
   return (
     <>
       <Head>
         <title
           key={"title"}
-        >{`${work.title} #${tokenId} - publicworks.art`}</title>
+        >{`${workQuery?.data?.name} #${tokenId} - publicworks.art`}</title>
       </Head>
       <div>
         <Container>
-          <Link href={`/work/${work.slug}`} passHref>
-            <span>{`<- Back to ${work.title}`}</span>
-          </Link>
+          {work ? (
+            <Link href={`/work/${work?.slug}`} passHref>
+              <span>{`<- Back to ${work?.slug}`}</span>
+            </Link>
+          ) : (
+            <></>
+          )}
+
           <RowSquareContainer>
             <div
               className={`${styles.align_center} align-self-center`}
               style={{ minHeight: 500 }}
             >
-              {loading ? (
-                <SpinnerLoading />
-              ) : errorMetadata ? (
+              {errorMetadata ? (
                 <div>Something went wrong</div>
+              ) : notFoundActual ? (
+                <div>Not Found</div>
+              ) : tokenMetadata.isLoading ? (
+                <SpinnerLoading />
               ) : (
                 <LiveMedia
-                  ipfsUrl={metadata?.animation_url || work.preview_url}
+                  ipfsUrl={tokenMetadata?.data?.animation_url || ""}
                   minHeight={500}
                 />
               )}
@@ -115,28 +165,44 @@ const WorkTokenPage = ({
           >
             <div className={styles.paddingTop}>
               <div>
-                <span className={styles.workTitle}>{metadata.name}</span>
-                <span className={styles.workAuthor}>{" - " + work.author}</span>
+                <span className={styles.workTitle}>
+                  {workQuery?.data?.name}
+                </span>
+                <span className={styles.workAuthor}>
+                  {" - " + workQuery?.data?.creator}
+                </span>
               </div>
-              {work.testnet ? <div>** Showing Testnet Mints **</div> : <></>}
+              {process.env.NEXT_PUBLIC_TESTNET === "true" ? (
+                <div>** Showing Testnet Mints **</div>
+              ) : (
+                <></>
+              )}
 
               <div
                 className={`${styles.workAuthorLink} ${styles.displayLinebreak} ${styles.sectionBreak}`}
               >
-                {"Owned by: " + tokenOwnerRealized}
+                {"Owned by: " + owner}
               </div>
 
               <div
                 className={`${styles.workDescription} ${styles.displayLinebreak} ${styles.sectionBreak}`}
               >
-                {metadata.description}
+                {tokenMetadata?.data?.description}
               </div>
               <div
                 className={`${styles.workAuthorLink} ${styles.sectionBreak}`}
               >
-                <a href={work.authorLink} rel="noreferrer" target={"_blank"}>
-                  {work.authorLink}
-                </a>
+                {workQuery?.data?.externalLink ? (
+                  <a
+                    href={workQuery?.data?.externalLink}
+                    rel="noreferrer"
+                    target={"_blank"}
+                  >
+                    {workQuery?.data?.externalLink}
+                  </a>
+                ) : (
+                  ""
+                )}
               </div>
             </div>
           </RowThinContainer>
