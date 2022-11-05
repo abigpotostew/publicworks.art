@@ -92,22 +92,31 @@ const WorkTokenPage = () => {
         return;
       }
 
-      let metadata: NftMetadata | null = null;
-      const fetchMd = async () => {
-        try {
-          metadata = await getTokenMetadata(
-            sg721,
-            tokenId,
-            process.env.NEXT_PUBLIC_IPFS_GATEWAY
-          );
-        } catch (e) {
-          console.warn(`error fetching attempt 2 ${slug} ${tokenId}`, e);
-        }
-      };
-      await fetchMd();
-      console.log({ metadata });
-
-      return metadata;
+      // let metadata: NftMetadata | null = null;
+      // const fetchMd = async () => {
+      //   try {
+      //     metadata = await getTokenMetadata(
+      //       sg721,
+      //       tokenId,
+      //       process.env.NEXT_PUBLIC_IPFS_GATEWAY
+      //     );
+      //   } catch (e) {
+      //     console.warn(`error fetching attempt 2 ${slug} ${tokenId}`, e);
+      //   }
+      // };
+      // await fetchMd();
+      // // console.log({ metadata });
+      //
+      // return metadata;
+      try {
+        return getTokenMetadata(
+          sg721,
+          tokenId,
+          process.env.NEXT_PUBLIC_IPFS_GATEWAY
+        );
+      } catch (e) {
+        return null;
+      }
     },
     { enabled: !!work }
   );
