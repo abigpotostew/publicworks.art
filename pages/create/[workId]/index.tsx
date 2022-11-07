@@ -204,6 +204,7 @@ const EditWorkPage = () => {
     if (!work) return;
     await instantiateMutation.mutateAsync(work);
     console.log("instantiate and showing confettie");
+    toast.success("Successfully instantiated!");
     setShowConfetti(true);
   }, [work]);
 

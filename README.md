@@ -13,3 +13,7 @@ todo:
 - add dutch auction support
 - documentation
 - 
+
+
+design inspiration:
+- https://nouns.build/

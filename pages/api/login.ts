@@ -13,6 +13,14 @@ import wasmConfig from "../../src/wasm/config";
 import { store } from "next/dist/build/output/store";
 import { stores } from "../../src/store/stores";
 import { initializeIfNeeded } from "../../src/typeorm/datasource";
+import {
+  SignAminoVerification,
+  SignArbitraryVerification,
+} from "src/wasm/keplr/strategies";
+import { buildMessage } from "src/wasm/keplr/sign-arbitrary";
+import { decodeSignature } from "@cosmjs/amino";
+import { verifyADR36Amino } from "@keplr-wallet/cosmos";
+import chainInfo from "src/stargaze/chainInfo";
 
 export default async function handler(
   req: NextApiRequest,
@@ -24,39 +32,57 @@ export default async function handler(
     return;
   }
 
-  const { signed, signature, account, otp } = req.body;
-  const publicKey = account.pubkey;
-  const valid = await isValidSignature(signed, signature, publicKey);
-  if (!valid) {
+  let { strategy } = req.body;
+  strategy = strategy || "SIGNAMINO";
+
+  let resolveAddress: string;
+  let verified = false;
+  if (strategy === "SIGNAMINO") {
+    const { signed, signature, account, otp } =
+      req.body as SignAminoVerification;
+    const publicKey = account.pubkey;
+    const valid = await isValidSignature(signed, signature, publicKey);
+    if (!valid) {
+      res.status(401).json({ message: "unauthorized" });
+      return;
+    }
+
+    verified = await isCorrectOtp(otp, signed);
+    resolveAddress = account.address;
+  } else if (strategy === "SIGNARBITRARY") {
+    //
+    const { signature, address, otp } = req.body as SignArbitraryVerification;
+    const { pubkey: decodedPubKey, signature: decodedSignature } =
+      decodeSignature(signature);
+    const data = JSON.stringify(buildMessage(otp));
+    // https://github.com/wgwz/simple-express-keplr-passport/pull/2
+    verified = verifyADR36Amino(
+      chainInfo.bech32Config.bech32PrefixAccAddr,
+      address,
+      data,
+      decodedPubKey,
+      decodedSignature
+    );
+    resolveAddress = address;
+  } else {
+    console.log("Unsupported signing strategy: ", strategy);
     res.status(401).json({ message: "unauthorized" });
     return;
   }
 
-  const correct = await isCorrectOtp(otp, signed);
-  if (!correct) {
+  if (!verified) {
     res.status(403).json({ message: "forbidden" });
     return;
   }
 
-  // if (!wasmConfig.testnet) {
-  //   const allowlist = [
-  //     "",
-  //     // "stars1euu359d2cwe46j8a8fqkmcrhzjq6j642htt7rn",
-  //     // "stars1524hf3dmcl8lagnfhuct4k2002pv73yswnl9cf",
-  //   ];
-  //   if (!allowlist.includes(account.address)) {
-  //     res.status(401).json({ message: "unauthorized" });
-  //     return;
-  //   }
-  // }
   try {
-    await stores().user.createIfNeeded(account.address);
+    await stores().user.createIfNeeded(resolveAddress);
   } catch (e) {
     console.error(e);
     throw e;
   }
 
-  issueToCookie(account.address, req, res);
+  issueToCookie(resolveAddress, req, res);
   res.status(200).json({ message: "ok" });
 }
 

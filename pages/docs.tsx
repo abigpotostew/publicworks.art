@@ -16,7 +16,7 @@ import styles from "../styles/About.module.scss";
 const markdown = `Welcome Creator! We're happy you're here :)
 
 ### What is Public Works?
-Public Works is a mint platform for creating generative collections that mint on-demand. A work is a generative collection with NFTs that are created upon mint. NFTs are not pre-generated. Instead, javascript and randomness derived from on-chain data generate new artworks. Public Works is a tool for creating on-chain interactive multimedia creative works!
+Public Works is a mint platform for creating NFT collections that mint on-demand. A work is a generative collection with NFTs that are created upon mint.  Instead of pre-generation, javascript and randomness derived from on-chain data generate new artworks. Public Works is a tool for creating on-chain interactive multimedia creative works!
 
 ### How does it work?
 
@@ -33,7 +33,12 @@ For a short period after minting, the public works backend intercepts the mint e
 
 ### How to create a work
 
-We recommend using the [web pack template](/docs#webpack-template) to get started. But we've laid out the full API for custom work implementations.
+Follow the quick start steps or read up on the full public works API below.
+
+#### Quick Start
+1. Use the [web pack template](/docs#webpack-template) to create your project or clone the [p5 demo work](https://github.com/abigpotostew/public-works-p5-demo-work).
+2. Head over to https://testnet.publicworks.art/create to test your work
+3. When everything looks good, create your work on Mainnet https://publicworks.art/create
 
 
 #### File Structure API
@@ -67,6 +72,8 @@ https://github.com/abigpotostew/public-works-basic-template
 
 The basic template is useful if you don't want to use npm and Webpack. This template requires manually zipping your project before submitting to publicworks.art
 
+#### Demo p5.js work
+https://github.com/abigpotostew/public-works-p5-demo-work
 
 ### Javascript API
 #### Lifecyle & Environment

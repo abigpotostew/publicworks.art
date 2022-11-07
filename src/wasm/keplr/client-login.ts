@@ -2,6 +2,13 @@ import config from "src/wasm/config";
 import { StargazeClient } from "@stargazezone/client";
 import { Window } from "@keplr-wallet/types/build/window";
 import { getToken } from "src/util/auth-token";
+import chainInfo from "src/stargaze/chainInfo";
+import { buildMessage } from "src/wasm/keplr/sign-arbitrary";
+import {
+  SignAminoVerification,
+  SignArbitraryVerification,
+  SignatureVerify,
+} from "src/wasm/keplr/strategies";
 
 export async function signMessageAndLoginIfNeeded(sg: StargazeClient) {
   const token = getToken();
@@ -12,8 +19,59 @@ export async function signMessageAndLoginIfNeeded(sg: StargazeClient) {
   return true;
 }
 
-export async function signMessageAndLogin(token: string, sg: StargazeClient) {
-  const messageToSign = "Magic, please!" + " " + token;
+export interface SigningStrategy<Res extends SignatureVerify> {
+  (otp: string, sg: StargazeClient, keplrWindow: Window): Promise<Res>;
+}
+
+export async function signMessageAndLogin(
+  token: string,
+  sg: StargazeClient,
+  strategy: "SIGNAMINO" | "SIGNARBITRARY" = "SIGNARBITRARY"
+) {
+  try {
+    const otp = token;
+
+    let msg: SignatureVerify;
+    const windowKeplr = <Window>window;
+    if (strategy === "SIGNAMINO") {
+      msg = await signLoginMessageWithAmino(otp, sg, windowKeplr);
+    } else if (strategy === "SIGNARBITRARY") {
+      msg = await signLoginMessageWithArbitrary(otp, sg, windowKeplr);
+    } else {
+      throw new Error("Unsupported signing strategy");
+    }
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...msg,
+        strategy,
+      }),
+    };
+
+    const response = await fetch(`/api/login`, requestOptions);
+
+    if (response.status !== 200) {
+      console.error("response is", response.status);
+      throw new Error("bad response from auth");
+    }
+    // Successful
+    const responseJson = await response.json();
+    return true;
+  } catch (e) {
+    if ((e as any)?.message === "Request rejected") {
+      console.log({ message: "Rejected signing 🙅" });
+    } else {
+      console.log({ message: `Unknown error 😬: ${(e as any).message}` });
+    }
+    return false;
+  }
+}
+
+const signLoginMessageWithAmino: SigningStrategy<
+  SignAminoVerification
+> = async (otp: string, sg: StargazeClient, keplrWindow: Window) => {
+  const messageToSign = "Magic, please!" + " " + otp;
   const signDoc = {
     msgs: [
       {
@@ -36,7 +94,7 @@ export async function signMessageAndLogin(token: string, sg: StargazeClient) {
     throw new Error("not connected to keplr");
   }
 
-  const windowKeplr = <Window>window;
+  const windowKeplr = keplrWindow;
   if (!windowKeplr.getOfflineSignerAuto) {
     // Setup signer
 
@@ -52,42 +110,32 @@ export async function signMessageAndLogin(token: string, sg: StargazeClient) {
     throw new Error("could not find account");
   }
 
-  // this returns the public key in this other format tendermint/PubKeySecp256k1 which I can't figure out how to convert to binary
-  // const account = await sg.signingCosmwasmClient.getAccount(sg.wallet.address);
+  const { signed, signature } = await offlineSigner.signAmino(
+    sg.wallet.address,
+    signDoc
+  );
+  return { signed, signature, account, otp };
+};
 
-  try {
-    const { signed, signature } = await offlineSigner.signAmino(
-      sg.wallet.address,
-      signDoc
-    );
-    const travellerSessionToken = token;
-
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        otp: travellerSessionToken,
-        signed: signed,
-        signature: signature.signature,
-        account,
-      }),
-    };
-
-    const response = await fetch(`/api/login`, requestOptions);
-
-    if (response.status !== 200) {
-      console.error("response is", response.status);
-      throw new Error("bad response from auth");
-    }
-    // Successful
-    const responseJson = await response.json();
-    return true;
-  } catch (e) {
-    if ((e as any)?.message === "Request rejected") {
-      console.log({ message: "Rejected signing 🙅" });
-    } else {
-      console.log({ message: `Unknown error 😬: ${(e as any).message}` });
-    }
-    return false;
+const signLoginMessageWithArbitrary: SigningStrategy<
+  SignArbitraryVerification
+> = async (otp: string, sg: StargazeClient, keplrWindow: Window) => {
+  const keplr = keplrWindow.keplr;
+  if (!keplr) {
+    throw new Error("Keplr not installed");
   }
-}
+  const key = await keplr.getKey(chainInfo.chainId);
+  const userAddress = key.bech32Address;
+
+  const signature = await keplr.signArbitrary(
+    chainInfo.chainId,
+    userAddress,
+    JSON.stringify(buildMessage(otp))
+  );
+
+  return {
+    signature,
+    address: userAddress,
+    otp,
+  };
+};

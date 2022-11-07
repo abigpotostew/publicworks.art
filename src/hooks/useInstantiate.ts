@@ -406,7 +406,7 @@ export const useInstantiate = () => {
       res = await instantiateNew(work, sgwallet.wallet.address, signingClient);
     } catch (e) {
       //
-      toast.error("failed to instantiate on chain: " + (e as any)?.message);
+      toast.error("Failed to instantiate on chain: " + (e as any)?.message);
       return;
     }
     if (!res) {

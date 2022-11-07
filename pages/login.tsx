@@ -12,6 +12,7 @@ import { useToast } from "src/hooks/useToast";
 import { signMessageAndLogin } from "src/wasm/keplr/client-login";
 import { trpcNextPW } from "src/server/utils/trpc";
 import { getToken } from "src/util/auth-token";
+import chainInfo from "src/stargaze/chainInfo";
 
 const AuthPage = () => {
   const router = useRouter();
@@ -68,6 +69,37 @@ const AuthPage = () => {
 
     //call backend auth with token
   };
+
+  // const onLoginNew = async () => {
+  //   try {
+  //     if (!sgclient?.client?.wallet || !sgwallet?.wallet?.address) {
+  //       throw new Error("yaaa");
+  //     }
+  //
+  //     const nonce = 111;
+  //     console.log("sgclient.client.wallet", sgclient.client.wallet);
+  //     console.log("window.keplr!.signArbitrary", window.keplr.signArbitrary);
+  //
+  //     const key = await window.keplr!.getKey(chainInfo.chainId);
+  //     const userAddress = key.bech32Address;
+  //
+  //     const signature: any = await window.keplr!.signArbitrary(
+  //       chainInfo.chainId,
+  //       sgwallet?.wallet?.address,
+  //       JSON.stringify({
+  //         title: "PW Login",
+  //         description:
+  //           "This is a transaction that allows PW to authenticate you with our application.",
+  //         nonce: nonce,
+  //       })
+  //     );
+  //     console.log({ signature });
+  //   } catch (e) {
+  //     setMessage("Fialed to sign: " + e?.message);
+  //   }
+  //
+  //   //call backend auth with token
+  // };
   const token = getToken();
   return (
     <>
@@ -93,6 +125,7 @@ const AuthPage = () => {
                 {message && <div>{message}</div>}
               </>
             )}
+            {/*<ButtonPW onClick={onLoginNew}>SIGN</ButtonPW>*/}
           </RowThinContainer>
         </Container>
       </div>
