@@ -136,7 +136,8 @@ const SpinAnimaton: React.FC = () => {
     p5.strokeCap(p5.ROUND);
     p5.strokeJoin(p5.ROUND);
     p5.strokeWeight(size / 5);
-    p5.stroke("purple");
+    const col = p5.color("#5fb7a9");
+    p5.stroke(col);
 
     const step = (p5.TWO_PI * phase) / res;
     for (let i = 0; i < res; i++) {
@@ -162,7 +163,7 @@ const SpinAnimaton: React.FC = () => {
       p5.sin(of * len + circleRotation) * fixRad,
       // p5.sin(of * len + circleRotation) * changingRad,
     ];
-    p5.fill("purple");
+    p5.fill(col);
     p5.noStroke();
     p5.ellipse(x, y, size / 2);
   };
