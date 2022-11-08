@@ -307,7 +307,7 @@ const segmentedSquad2 = (p5: p5Types, { size }: Opts) => {
 };
 const drawChasingTail = (p5: p5Types, { w, col }: Opts) => {
   const size = w * 0.35;
-  const res = size;
+  const res = size * 2;
   const aniTime = p5.millis() / 200;
   let a = aniTime;
   const len = p5.TWO_PI * 0.85;
@@ -385,6 +385,8 @@ const drawChasingTailMulti = (p5: p5Types, opts: Opts) => {
   drawChasingTail(p5, { ...opts });
   p5.translate(opts.w / 4, opts.w / 4);
   drawChasingTail(p5, { ...opts, w: opts.w / 2, col: p5.color("#cf67ec") });
+  p5.translate(opts.w / 6, opts.w / 6);
+  drawChasingTail(p5, { ...opts, w: opts.w / 6, col: p5.color("#ea1167") });
 };
 
 const segmentedSquad = (p5: p5Types, { size }: Opts) => {
