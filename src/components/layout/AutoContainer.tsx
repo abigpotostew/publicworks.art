@@ -1,8 +1,9 @@
-import React, { FC, ReactNode } from "react";
+import React, { CSSProperties, FC, ReactNode } from "react";
 import { Col, Container, Row } from "react-bootstrap";
-import Image from "next/image";
 
 interface Props {
+  style?: CSSProperties;
+  className?: string;
   children: ReactNode;
   bswidth?: number;
   containerClassName?: string | undefined;
@@ -11,8 +12,11 @@ interface Props {
 
 export const AutoContainer: FC<Props> = (props: Props) => {
   const bwid = props.bswidth || 2;
+  const classes = [props.containerClassName || "", props.className || ""].join(
+    " "
+  );
   return (
-    <Container fluid className={props.containerClassName}>
+    <Container style={props.style} fluid className={classes}>
       <Row>
         <Col xs={bwid} sm={bwid} md={bwid} lg={bwid} xl={bwid} xxl={bwid} />
         <Col className={props.colClassName}>{props.children}</Col>
