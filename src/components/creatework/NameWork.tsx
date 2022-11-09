@@ -19,7 +19,7 @@ export interface CreateWorkProps {
     | ((req: Partial<EditProjectRequest>) => void)
     | ((req: Partial<EditProjectRequest>) => Promise<void>);
   defaultValues?: WorkSerializable;
-  onUpload?: (files: File[]) => Promise<void>;
+  onUpload?: (files: File[]) => Promise<void> | void;
 }
 
 export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
