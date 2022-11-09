@@ -12,7 +12,6 @@ todo:
 - upload directly to ipfs instead of nft.storage
 - add dutch auction support
 - documentation
-- 
 
 
 design inspiration:
