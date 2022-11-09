@@ -6,6 +6,7 @@
 //$pw-text-color: #ffffff;
 
 
+
 // boostrap vars
 $spacer:1.5rem;
 $border-width:3px;
@@ -76,6 +77,7 @@ $dark:#212529;
   margin-top: calc($pw-p-spacer * 2.5);
 }
 
+
 :export {
   pw-bg-color:$pw-bg-color;
   pw-text-color:$pw-text-color;
@@ -96,5 +98,7 @@ $dark:#212529;
   warning:$warning;
   light:$light;
   dark:$dark;
+
+
 }
 

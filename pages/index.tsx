@@ -6,7 +6,10 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 import SketchAnimation from "../src/components/SketchAnimation";
 import kaleidoPix from "../public/img/homepage/kaleido-pix.png";
 import Link from "next/link";
-import { RowThinContainer } from "../src/components/layout/RowThinContainer";
+import {
+  RowLogoContainer,
+  RowThinContainer,
+} from "../src/components/layout/RowThinContainer";
 import { FlexBoxCenter } from "../src/components/layout/FlexBoxCenter";
 import Image from "react-bootstrap/Image";
 import { AutoContainer } from "src/components/layout/AutoContainer";
@@ -36,7 +39,9 @@ function GroupDivider() {
 const Home = () => {
   return (
     <div>
-      <LogoHeader />
+      <div className={"Margin-B-12"}>
+        <LogoHeader />
+      </div>
       {/*<Container>*/}
       {/*  <Row>*/}
       {/*    <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3} />*/}
@@ -64,11 +69,13 @@ const Home = () => {
       {/*    <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3} />*/}
       {/*  </Row>*/}
       {/*</Container>*/}
-      <AutoContainer>
-        <Pill>Metadata Generation</Pill>
-        <Pill>Mint on demand</Pill>
-      </AutoContainer>
-      <GroupDividerBottom />
+      <RowLogoContainer className={"Margin-B-8"}>
+        <Pill color={"green"}>Metadata Generation</Pill>
+        <Pill color={"red"}>Mint on demand</Pill>
+        <Pill color={"purple"}>Other one</Pill>
+        <Pill color={"orange"}>Orange one</Pill>
+      </RowLogoContainer>
+      {/*<GroupDividerBottom />*/}
       <Container className={styles.group2}>
         <RowThinContainer>
           <div style={{ textAlign: "center" }}>
