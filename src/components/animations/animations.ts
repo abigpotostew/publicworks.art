@@ -65,7 +65,7 @@ const dottedCircle = (p5: p5Types, { size, weightScale }: Opts) => {
 const orbits = (p5: p5Types, { size }: Opts) => {
   // size /= 2;
   const res = 1;
-  const t = p5.millis() / 6000;
+  const t = p5.millis() / 9000;
   const circum = (size / 2) * p5.TWO_PI;
   const ellipseRad = circum / 8;
   const orbitellipseRad = ellipseRad / 1.1 / 2;

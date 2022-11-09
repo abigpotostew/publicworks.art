@@ -66,6 +66,7 @@ const Home = () => {
       {/*</Container>*/}
       <AutoContainer>
         <Pill>Metadata Generation</Pill>
+        <Pill>Mint on demand</Pill>
       </AutoContainer>
       <GroupDividerBottom />
       <Container className={styles.group2}>
