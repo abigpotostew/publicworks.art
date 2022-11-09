@@ -38,9 +38,9 @@ const SpinAnimaton: React.FC<Props> = ({ animation, width, height }) => {
 
   const [doRender, setDoRender] = useState(true);
 
-  useEffect(() => {
-    setDoRender(true);
-  }, []);
+  // useEffect(() => {
+  //   // setDoRender(true);
+  // }, []);
 
   //See annotations in JS for more information
   const setup = (p5: p5Types, canvasParentRef: Element) => {
