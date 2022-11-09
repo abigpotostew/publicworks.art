@@ -11,7 +11,7 @@
 
 .container {
   /*padding: 0 2rem;*/
-    
+
   /*background-color: #212529;*/
 
   /*!*hide scrollbar*!*/
@@ -82,14 +82,14 @@
 .title,
 .description {
   text-align: center;
-  color: #ffffff;
+  color: $pw-text-color;
 }
 
 .description {
   /*margin: 1rem 0;*/
   line-height: 1.5;
   font-size: 24px;
-  color: #ffffff;
+  color: $pw-text-color;
 }
 .home1description {
   /*background-image: url('/img/homepage/border-background.svg');*/
@@ -218,7 +218,7 @@
   /*height: 1em;*/
   /*margin-left: 0.5rem;*/
   margin-top: 0rem;
-  color: white;
+  //color: $pw-text-color;
   //filter: invert();
 }
 

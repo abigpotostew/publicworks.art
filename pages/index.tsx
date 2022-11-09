@@ -11,6 +11,7 @@ import { FlexBoxCenter } from "../src/components/layout/FlexBoxCenter";
 import Image from "react-bootstrap/Image";
 import { AutoContainer } from "src/components/layout/AutoContainer";
 import { Pill } from "src/components/content/Pill";
+import { LogoHeader } from "src/components/logo/LogoHeader";
 
 function GroupDividerBottom() {
   return (
@@ -35,44 +36,38 @@ function GroupDivider() {
 const Home = () => {
   return (
     <div>
-      <Container>
-        <Row>
-          <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3} />
-          <Col xs={12} sm={12} md={10} lg={8} xl={6} xxl={6}>
-            <p
-              className={`${styles.title} ${styles.titleheader}`}
-              style={{ marginTop: "80px" }}
-            >
-              Public Works
-            </p>
-          </Col>
-          <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3} />
-        </Row>
-        <Row>
-          <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3} />
-          <Col xs={12} sm={12} md={10} lg={8} xl={6} xxl={6}>
-            <p
-              className={`${styles.description} ${styles.home1description}`}
-              style={{ marginTop: "1rem" }}
-            >
-              A new generative art platform built for the Cosmos on a carbon
-              neutral tech stack.
-            </p>
-          </Col>
-          <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3} />
-        </Row>
-      </Container>
-
-      <Container>
-        <SketchAnimation />
-      </Container>
-
+      <LogoHeader />
+      {/*<Container>*/}
+      {/*  <Row>*/}
+      {/*    <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3} />*/}
+      {/*    <Col xs={12} sm={12} md={10} lg={8} xl={6} xxl={6}>*/}
+      {/*      <p*/}
+      {/*        className={`${styles.title} ${styles.titleheader}`}*/}
+      {/*        style={{ marginTop: "80px" }}*/}
+      {/*      >*/}
+      {/*        Public Works*/}
+      {/*      </p>*/}
+      {/*    </Col>*/}
+      {/*    <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3} />*/}
+      {/*  </Row>*/}
+      {/*  <Row>*/}
+      {/*    <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3} />*/}
+      {/*    <Col xs={12} sm={12} md={10} lg={8} xl={6} xxl={6}>*/}
+      {/*      <p*/}
+      {/*        className={`${styles.description} ${styles.home1description}`}*/}
+      {/*        style={{ marginTop: "1rem" }}*/}
+      {/*      >*/}
+      {/*        A new generative art platform built for the Cosmos on a carbon*/}
+      {/*        neutral tech stack.*/}
+      {/*      </p>*/}
+      {/*    </Col>*/}
+      {/*    <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3} />*/}
+      {/*  </Row>*/}
+      {/*</Container>*/}
       <AutoContainer>
         <Pill>Metadata Generation</Pill>
       </AutoContainer>
-
       <GroupDividerBottom />
-
       <Container className={styles.group2}>
         <RowThinContainer>
           <div style={{ textAlign: "center" }}>
@@ -84,9 +79,7 @@ const Home = () => {
           </div>
         </RowThinContainer>
       </Container>
-
       <GroupDivider />
-
       <Container fluid>
         <RowThinContainer>
           <FlexBoxCenter>
@@ -110,9 +103,7 @@ const Home = () => {
           </FlexBoxCenter>
         </RowThinContainer>
       </Container>
-
       <GroupDivider />
-
       <Container fluid>
         <RowThinContainer>
           <FlexBoxCenter
@@ -152,7 +143,6 @@ const Home = () => {
           </FlexBoxCenter>
         </RowThinContainer>
       </Container>
-
       {/*<GroupDivider/>*/}
       {/*<Container className={styles.group2}>*/}
       {/*  <FlexBox style={{ justifyContent: 'center', 'textAlign': 'center' }}>*/}
@@ -161,19 +151,14 @@ const Home = () => {
       {/*        Smart contracts enable programmable money. Public Works enables programmable art.*/}
       {/*      </p>*/}
       {/*    </div>*/}
-
       {/*    <div style={{ display: 'flex', justifyContent: 'center' }}>*/}
-
       {/*      <p className={`${styles.description} `}>*/}
       {/*        Publicworks.art is not a launchpad-- it is tech that enables programmable art. Publicworks.art works in tandem with the Stargaze launchpad. You can mint Works on Stargaze!*/}
       {/*      </p>*/}
       {/*    </div>*/}
       {/*  </FlexBox>*/}
-
       {/*      */}
-
       {/*</Container>*/}
-
       {/*<GroupDivider/>*/}
       {/*<Container className={styles.group2}>*/}
       {/*  <Row>*/}
@@ -185,11 +170,8 @@ const Home = () => {
       {/*    </Col>*/}
       {/*    <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3}/>*/}
       {/*  </Row>*/}
-
       {/*</Container>*/}
-
       <GroupDivider />
-
       <Container fluid>
         <RowThinContainer>
           <FlexBoxCenter
@@ -237,7 +219,9 @@ const Home = () => {
           </FlexBoxCenter>
         </RowThinContainer>
       </Container>
-
+      <Container>
+        <SketchAnimation />
+      </Container>
       <GroupDivider />
 
       <Container fluid>

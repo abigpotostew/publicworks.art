@@ -14,6 +14,7 @@ import { ButtonPW } from "src/components/button/Button";
 import { ToastContent } from "react-toastify/dist/types";
 import { UserProfile } from "src/components/profile/UserProfile";
 import { FlexBox } from "src/components/layout/FlexBoxCenter";
+
 // import "react-toastify/dist/ReactToastify.css";
 import { WorkSerializable } from "src/dbtypes/works/workSerializable";
 import Link from "next/link";
@@ -160,7 +161,11 @@ const ProfilePage = () => {
             <FlexBox style={{ display: "inline", alignItems: "center" }}>
               <h1>
                 Profile -{" "}
-                {user.isLoading ? <SpinnerLoading /> : displayUsername || ""}
+                {user.isLoading ? (
+                  <SpinnerLoading />
+                ) : (
+                  <span className={"text-reset"}>{displayUsername || ""}</span>
+                )}
               </h1>
 
               {!editMode && (

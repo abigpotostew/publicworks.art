@@ -114,7 +114,7 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
 
             {/*divider*/}
 
-            <Button variant="info" type="submit">
+            <Button variant="primary" type="submit">
               Save
             </Button>
           </Form>

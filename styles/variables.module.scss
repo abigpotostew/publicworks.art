@@ -1,8 +1,9 @@
 /* variables.module.scss */
 
-$pw-bg-color: #1f2b37;
-//$pw-bg-color: #212529;
-$pw-text-color: #ffffff;
+//dark theme
+//$pw-bg-color: #1f2b37;
+////$pw-bg-color: #212529;
+//$pw-text-color: #ffffff;
 
 
 // boostrap vars
@@ -14,15 +15,29 @@ $line-height-base:1.5;
 $pw-p-content-line-height: calc($spacer + 10%) ;
 $pw-p-spacer: 1.25rem;
 
+$pw-bg-color: #ffffff;
+//$pw-bg-color: #212529;
+$pw-text-color: #000000;
 
-$primary:#5C8F94;
-$secondary:#6f7f8c;
-$success:#3e4d59;
-$danger:#cc330d;
-$info:#2F3C48;
-$warning:#6e9fa5;
-$light:#eceeec;
-$dark:#1e2b37;
+$primary: #212529;
+//$primary:#0d6efd;
+$secondary:#6c757d;
+$success:#198754;
+$danger:#dc3545;
+$info:#0dcaf0;
+$warning:#ffc107;
+$light:#f8f9fa;
+$dark:#212529;
+
+//dark theme
+//$primary:#5C8F94;
+//$secondary:#6f7f8c;
+//$success:#3e4d59;
+//$danger:#cc330d;
+//$info:#2F3C48;
+//$warning:#6e9fa5;
+//$light:#eceeec;
+//$dark:#1e2b37;
 
 .Margin-B-0{
   margin-bottom: 0;

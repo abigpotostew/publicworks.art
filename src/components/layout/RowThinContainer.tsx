@@ -36,6 +36,41 @@ export const RowThinContainer = ({
     </div>
   );
 };
+export const RowLogoContainer = ({
+  children,
+  className,
+}: {
+  className?: string;
+  children: ReactNode;
+}) => {
+  return (
+    <div>
+      <Row className={className}>
+        <Col />
+        {/*  1*/}
+        {/*</Col>*/}
+        {/*xs={0} sm={0} md={2} lg={3} xl={4} xxl={4}*/}
+        {/*<Col />*/}
+        <Col
+          className={"align-self-center"}
+          xs={12}
+          sm={10}
+          md={8}
+          lg={7}
+          xl={6}
+          xxl={5}
+        >
+          {/*xs={12} sm={12} md={8} lg={6} xl={3} xxl={3}*/}
+          {children}
+        </Col>
+        <Col />
+        {/*<Col xs={0} sm={0} md={2} lg={3} xl={4} xxl={4}>*/}
+        {/*  2*/}
+        {/*</Col>*/}
+      </Row>
+    </div>
+  );
+};
 
 export const RowThinContainerFlex = ({
   children,

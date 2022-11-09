@@ -19,7 +19,7 @@ export const NavBar: FC = () => {
   const username = user.data?.name;
 
   return (
-    <Navbar bg="dark" variant="dark" expand="sm">
+    <Navbar bg="white" variant="light" expand="sm">
       <Container fluid>
         <Link href={"/"} passHref>
           <Navbar.Brand className={styles.navTitle}>
@@ -52,7 +52,7 @@ export const NavBar: FC = () => {
                 <span>
                   <ButtonGroup aria-label="Basic example">
                     <Link passHref={true} href={"/profile"} legacyBehavior>
-                      <Button variant="info">
+                      <Button variant="secondary">
                         {username ? username : undefined}
                         {!username &&
                           address &&
@@ -60,7 +60,7 @@ export const NavBar: FC = () => {
                       </Button>
                     </Link>
                     <Button
-                      variant="info"
+                      variant="secondary"
                       onClick={() => {
                         sgwallet.logout();
                       }}

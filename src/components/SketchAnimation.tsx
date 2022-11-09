@@ -66,6 +66,8 @@ const createNftName = (p5: p5Types, existing: string[]) => {
 
 const containerHeight = 400;
 let fontRegular: p5Types.Font;
+let mintColor: p5Types.Color;
+let mintColorFrame: p5Types.Color;
 const SketchAnimation: React.FC = () => {
   const ref = useRef(null);
   const [sketchKey, setSketchKey] = useState(0);
@@ -110,6 +112,8 @@ const SketchAnimation: React.FC = () => {
       });
     };
     newPuff();
+    mintColor = p5.color("#000");
+    mintColorFrame = p5.color("#5d5d5d");
   };
   //
   const nftColor = (name: string) => hashCode(name) % 100;
@@ -131,35 +135,81 @@ const SketchAnimation: React.FC = () => {
     // p5.drawingContext.clearRect(0, 0, localWidthBorder, p5.height);
 
     const drawMint = () => {
-      p5.fill(50);
-      // p5.rect(0, 0, boxSize,boxSize)
-      p5.fill(100);
+      p5.stroke(mintColorFrame);
+      p5.noFill();
+      p5.strokeWeight(2);
       const lineWidth = boxSize * 0.2;
       const lineWidthHalft = lineWidth * 0.5;
-      //top left
-      p5.rect(0, 0, lineWidth, lineWidthHalft);
-      p5.rect(0, 0, lineWidthHalft, lineWidth);
-      // top right
-      p5.rect(boxSize - lineWidthHalft, 0, lineWidthHalft, lineWidth);
-      p5.rect(boxSize - lineWidth, 0, lineWidth, lineWidthHalft);
-      // bottom right
-      p5.rect(
-        boxSize - lineWidthHalft,
-        boxSize - lineWidth,
-        lineWidthHalft,
-        lineWidth
-      );
-      p5.rect(
-        boxSize - lineWidth,
-        boxSize - lineWidthHalft,
-        lineWidth,
-        lineWidthHalft
-      );
-      // bottom left
-      p5.rect(0, boxSize - lineWidth, lineWidthHalft, lineWidth);
-      p5.rect(0, boxSize - lineWidthHalft, lineWidth, lineWidthHalft);
+      const drawFrame = () => {
+        //top left
+        p5.rect(0, 0, lineWidth, lineWidthHalft);
+        p5.rect(0, 0, lineWidthHalft, lineWidth);
+        // top right
+        p5.rect(boxSize - lineWidthHalft, 0, lineWidthHalft, lineWidth);
+        p5.rect(boxSize - lineWidth, 0, lineWidth, lineWidthHalft);
+        // bottom right
+        p5.rect(
+          boxSize - lineWidthHalft,
+          boxSize - lineWidth,
+          lineWidthHalft,
+          lineWidth
+        );
+        p5.rect(
+          boxSize - lineWidth,
+          boxSize - lineWidthHalft,
+          lineWidth,
+          lineWidthHalft
+        );
+        // bottom left
+        p5.rect(0, boxSize - lineWidth, lineWidthHalft, lineWidth);
+        p5.rect(0, boxSize - lineWidthHalft, lineWidth, lineWidthHalft);
+      };
+      const drawOutlineFrame = () => {
+        //top left
+        p5.beginShape();
+        p5.vertex(0, 0);
+        p5.vertex(lineWidth, 0);
+        p5.vertex(lineWidth, lineWidthHalft);
+        p5.vertex(lineWidthHalft, lineWidthHalft);
+        p5.vertex(lineWidthHalft, lineWidth);
+        p5.vertex(0, lineWidth);
+        p5.endShape(p5.CLOSE);
 
-      p5.fill(100);
+        // // top right
+        p5.beginShape();
+        p5.vertex(boxSize - lineWidth, 0);
+        p5.vertex(boxSize, 0);
+        p5.vertex(boxSize, lineWidth);
+        p5.vertex(boxSize - lineWidthHalft, lineWidth);
+        p5.vertex(boxSize - lineWidthHalft, lineWidthHalft);
+        p5.vertex(boxSize - lineWidth, lineWidthHalft);
+        p5.endShape(p5.CLOSE);
+
+        // // bottom right
+        p5.beginShape();
+        p5.vertex(boxSize - lineWidthHalft, boxSize - lineWidth);
+        p5.vertex(boxSize, boxSize - lineWidth);
+        p5.vertex(boxSize, boxSize);
+        p5.vertex(boxSize - lineWidth, boxSize);
+        p5.vertex(boxSize - lineWidth, boxSize - lineWidthHalft);
+        p5.vertex(boxSize - lineWidthHalft, boxSize - lineWidthHalft);
+        p5.endShape(p5.CLOSE);
+
+        // // bottom left
+        p5.beginShape();
+        p5.vertex(0, boxSize - lineWidth);
+        p5.vertex(lineWidthHalft, boxSize - lineWidth);
+        p5.vertex(lineWidthHalft, boxSize - lineWidth + lineWidthHalft);
+        p5.vertex(lineWidth, boxSize - lineWidth + lineWidthHalft);
+        p5.vertex(lineWidth, boxSize - lineWidth + lineWidth);
+        p5.vertex(0, boxSize - lineWidth + lineWidth);
+        p5.endShape(p5.CLOSE);
+        // p5.rect(0, boxSize - lineWidth, lineWidthHalft, lineWidth);
+        // p5.rect(0, boxSize - lineWidthHalft, lineWidth, lineWidthHalft);
+      };
+      drawOutlineFrame();
+
+      p5.fill(mintColor);
       p5.textAlign(p5.CENTER, p5.CENTER);
       // p5.textSize(width/10)
       p5.textFont(fontRegular, width / 8);
@@ -268,13 +318,13 @@ const SketchAnimation: React.FC = () => {
         p5.pop();
       }
     }
-    const aniTimePuff =
-      ((p5.millis() % animationDuration) / animationDuration + 0.5) % 1;
+
     const spuff = 0.75;
     if (aniTime > spuff) {
       const aniTimeLocal = p5.map(aniTime, spuff, 1, 0, 1);
       p5.push();
       p5.translate(boxSize * 0.7, p5.height / 2 - boxSize * 0.5);
+      p5.fill(nftColor(nftIds[1]), 100, 100);
       puff.draw(p5, aniTimeLocal);
       p5.pop();
     }

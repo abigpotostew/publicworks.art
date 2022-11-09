@@ -321,7 +321,7 @@ const drawChasingTail = (p5: p5Types, { w, col }: Opts) => {
   p5.beginShape();
   p5.strokeCap(p5.ROUND);
   p5.strokeJoin(p5.ROUND);
-  p5.strokeWeight(size / 5);
+  p5.strokeWeight(size / 2.5);
   col = col || p5.color("#6029f1");
   const circleColor = p5.color("#cf67ec");
   const circleColor2 = p5.color("#67ecb5");

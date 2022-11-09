@@ -5,5 +5,5 @@ import { Button } from "react-bootstrap";
 
 type Props = ButtonProps;
 export const ButtonPW: FC<Props> = (props: Props) => {
-  return <Button variant={"info"} {...props}></Button>;
+  return <Button variant={"primary"} {...props}></Button>;
 };
