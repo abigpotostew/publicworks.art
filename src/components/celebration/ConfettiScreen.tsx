@@ -7,9 +7,9 @@ export const ConfettiScreen = () => {
   return (
     <Confetti
       width={width}
-      height={height}
-      numberOfPieces={50}
-      recycle={false}
+      height={height * 2.5}
+      numberOfPieces={100}
+      recycle={true}
     />
   );
 };

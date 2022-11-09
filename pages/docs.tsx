@@ -12,6 +12,14 @@ import {
 import Image from "next/image";
 import hashToImagePic from "../public/img/docs/hash-to-image.svg";
 import hashToInvalidImagePic from "../public/img/docs/hash-to-image-duplicate-error.svg";
+import createimage2 from "../public/img/docs/create/2.png";
+import createimage3 from "../public/img/docs/create/3.png";
+import createimage4 from "../public/img/docs/create/4.png";
+import createimage5 from "../public/img/docs/create/5.png";
+import createimage6 from "../public/img/docs/create/6.png";
+import createimage7 from "../public/img/docs/create/7.png";
+import createimage8 from "../public/img/docs/create/8.png";
+import createimage9 from "../public/img/docs/create/9.png";
 import styles from "../styles/About.module.scss";
 const markdown = `Welcome Creator! We're happy you're here :)
 
@@ -33,13 +41,7 @@ For a short period after minting, the public works backend intercepts the mint e
 
 ### How to create a work
 
-Follow the quick start steps or read up on the full public works API below.
-
-#### Quick Start
-1. Use the [web pack template](/docs#webpack-template) to create your project or clone the [p5 demo work](https://github.com/abigpotostew/public-works-p5-demo-work).
-2. Head over to https://testnet.publicworks.art/create to test your work
-3. When everything looks good, create your work on Mainnet https://publicworks.art/create
-
+Follow the [quick start steps](#quick-start) or read up on the full public works API below.
 
 #### File Structure API
 A work is essentially a website that draws to a canvas.
@@ -145,6 +147,47 @@ Another commonly seen problem with WebGL, especially when using THREE.js, is an 
 renderer = new WebGLRenderer({preserveDrawingBuffer: true});
 \`\`\`
 
+#### Quick Start
+1. Use the [web pack template](/docs#webpack-template) to create your project or clone the [p5 demo work](https://github.com/abigpotostew/public-works-p5-demo-work).
+2. Head over to https://testnet.publicworks.art/create to test your work
+3. When everything looks good, create your work on Mainnet https://publicworks.art/create
+
+#### Creating a Work Step by Step
+1. Navigate to the [create work page](/create).
+2. Name your work. You can change this later.
+
+![Name Work](/img/docs/create/2.png "2. Name Work")
+
+3. Upload your work code zip archive by dropping it into the drop drop zone or clicking on the drop zone and opening the file in the file navigator.
+
+![Upload Code](/img/docs/create/3.png "3. Upload Code")
+
+4. Once successfully uploaded, the app will automatically load your work into the sandbox in the area above the upload dropbox.
+![Upload Verify](/img/docs/create/4.png "4. Upload Verify")
+
+5. The code sandbox is a very important step to verify if your project will work on public works at all. If it doesn't work here, it won't work when published. Try clicking on the New Hash button to test out a new mint hash. Your code should respond to each new hash in the sandbox. When everything looks good here, you're ready to publish! Click Next.
+6. To publish, you need to describe your work. These descriptions will appear in various places on and off chain. Click Save before moving on the next step.
+![Describe](/img/docs/create/5.png "5. Describe")
+
+7. The On Chain Configuration step allows you to choose important and necessary values to deploy your generative collection on chain. Collection size must be greater than 1 and less than 10000. Start time must be in the future. Price in stars must be greater than 50. Royalty address and percent are up to you. Canvas selector is the CSS selector to your canvas element. This is based on how you have structured your HTML. You can find this in chrome Dev Console in the Elements tab by right clicking your canvas element and clicking copy selector. Image Preview Resolution is the dimensions of your rendered image. The format is \`<width>:<height>\`. It is recommend to have a resolution less than 5000 by 5000. We find that 4K resolution is a good option by setting the height to 2160 and width to your choosing based on your desired aspect ratio.
+![On Chain Config](/img/docs/create/6.png "6. On Chain Config")
+8. Save your configuration and click Next.
+9. Upload your work cover image. This will appear on stargaze.zone. Click next when the displayed image looks correct.
+![Cover Image](/img/docs/create/7.png "7. Cover Image")
+10. On the Submit step, carefully verify your configuration is correct. A code sandbox also appears so you can verify test hashes one more time.
+11. Once you're ready, click on \`Instantiate On Chain\` to deploy your collection on chain. You must pay 1000 stars to do so. These 1000 stars are part of the fair burn program. On testnet, get test stars in the faucet channel in the Stargaze discord.
+12. You will see confetti and a \`Successfully instantiated!\` message when your contract is deployed. 
+![Success](/img/docs/create/8.png "8. Success")
+13. Skip to the next step if this succeeded. If the instantiate failed, then the smart contract rejected your configuration. Try to fix any configuration problems and try again. The most common issue is start time is not in the future. Go back to the Configuration step and update the start time.
+13. On the last step, \`Mint\`, you can find a link to stargaze to mint your work. Once minting begins, you can try testing out by minting directly on stargaze.
+![Test Mint](/img/docs/create/9.png "9. Test Mint")
+14. Click on View NFT after minting. Wait a few moments (up to 1 minute) for the preview pipeline to render the nft preview. The preview pipeline operates in two phases. After the first phase completes, you should see your NFT display on stargaze. But the traits will show \`Rendering in Progress\`. If nothing shows up after more than a minute, please contact skymagic on discord. After the second phase completes, your NFT is fully minted and the temporary trait \`Rendering in Progress\` will be replaced with your own NFT traits.
+\t* If your NFT never displays, or 'Rendering in Progress' trait never goes away, something failed in the preview pipeline. Contact skymagic on discord if so.
+15. Congratulations. If you've made it this far, everything is working.
+16. Follow these same steps on https://publicworks.art to deploy to Mainnet.
+
+
+
 ----
 
 Thanks for reading and we're excited to see what you create with PublicWorks.art.
@@ -174,6 +217,14 @@ export function img(props: any) {
   if (props.src === "/img/docs/hash-to-image.svg") src = hashToImagePic;
   if (props.src === "/img/docs/hash-to-image-duplicate-error.svg")
     src = hashToInvalidImagePic;
+  if (props.src === "/img/docs/create/2.png") src = createimage2;
+  if (props.src === "/img/docs/create/3.png") src = createimage3;
+  if (props.src === "/img/docs/create/4.png") src = createimage4;
+  if (props.src === "/img/docs/create/5.png") src = createimage5;
+  if (props.src === "/img/docs/create/6.png") src = createimage6;
+  if (props.src === "/img/docs/create/7.png") src = createimage7;
+  if (props.src === "/img/docs/create/8.png") src = createimage8;
+  if (props.src === "/img/docs/create/9.png") src = createimage9;
 
   const bwid = 2;
   return (

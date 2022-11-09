@@ -15,11 +15,11 @@ export const onWorkUpload = async (
     body: formData,
   });
   if (!response.ok) {
-    //todo set error status
-    return;
+    throw new Error("Upload failed: " + (await response.json())?.message);
   }
   const newCodeUrl = (await response.json()).url;
   // setCodeUrl(newCodeUrl);
   console.log("workUpload status", newCodeUrl);
   utils.works.getWorkById.invalidate();
+  return true;
 };

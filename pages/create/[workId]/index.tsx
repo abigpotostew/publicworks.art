@@ -31,6 +31,9 @@ import { useStargazeClient, useWallet } from "@stargazezone/client";
 import { NeedToLoginButton } from "src/components/login/NeedToLoginButton";
 import { signMessageAndLoginIfNeeded } from "src/wasm/keplr/client-login";
 import { onMutateLogin } from "src/trpc/onMutate";
+import { useMutation } from "@tanstack/react-query";
+import useUserContext from "src/context/user/useUserContext";
+import { getToken } from "src/util/auth-token";
 
 // export const getServerSideProps: GetServerSideProps = async (context) => {
 //   await initializeIfNeeded();
@@ -119,6 +122,10 @@ const EditWorkPage = () => {
   const workId = typeof workIdIn === "string" ? workIdIn.split("?", 1)[0] : "";
   const [hash, setHash] = useState<string>(generateTxHash());
 
+  const { user } = useUserContext();
+  const userToken = getToken();
+  const hasToken = !!userToken;
+
   const [showConfetti, setShowConfetti] = useState(false);
 
   const sgwallet = useWallet();
@@ -189,9 +196,13 @@ const EditWorkPage = () => {
     [mutation]
   );
 
-  const onUpload = async (files: File[]) => {
+  // const onUpload = async (files: File[]) => {
+  //   await onWorkUpload(workId, files, utils);
+  // };
+  const onUploadMutation = useMutation(async (files: File[]) => {
     await onWorkUpload(workId, files, utils);
-  };
+  });
+  const onUpload = onUploadMutation.mutate;
 
   const { instantiateMutation } = useInstantiate();
 
@@ -228,13 +239,24 @@ const EditWorkPage = () => {
     setFormValid(props.isValid);
     setFormTouched(props.isTouched);
   };
-  const canMoveToNext = formTouched
-    ? mutation.isSuccess && formValid
-    : formValid;
+
+  const canOperate = !user.isLoading && !!user.data && hasToken;
+
+  const canMoveToNext =
+    canOperate && formTouched ? mutation.isSuccess && formValid : formValid;
 
   const steps = stages.map((s) => {
     return createStep(s);
   });
+
+  useEffect(() => {
+    if (workId && !hasToken) {
+      toast.errorRedirect(
+        "Login required. Click here to Login.",
+        "/create/" + workId
+      );
+    }
+  }, [workId, hasToken]);
 
   return (
     <>
@@ -415,15 +437,39 @@ const EditWorkPage = () => {
                         onCreateProject={onCreateProject}
                         defaultValues={work}
                       />
-                      {!mutation.isLoading && mutation.error && (
-                        <div>{mutation.error.message}</div>
-                      )}
+                      <>
+                        {onUploadMutation.isLoading && (
+                          <div>
+                            Uploading... <SpinnerLoading />
+                          </div>
+                        )}
+                      </>
+                      <>
+                        {!onUploadMutation.isLoading &&
+                          onUploadMutation.isSuccess && (
+                            <div>Successfully uploaded code!</div>
+                          )}
+                      </>
+                      <>
+                        {" "}
+                        {!onUploadMutation.isLoading &&
+                          onUploadMutation.error && (
+                            <div>
+                              {(onUploadMutation?.error as any)?.message}
+                            </div>
+                          )}
+                      </>
+                      <>
+                        {!mutation.isLoading && mutation.error && (
+                          <div>{mutation.error.message}</div>
+                        )}
+                      </>
                       {/*{mutation.isSuccess && <div>Successfully saved</div>}*/}
 
                       <NavButtons
                         onNextClick={() => setStageNextFrom("name_art")}
                         onPrevClick={() => setStagePrevFrom("name_art")}
-                      ></NavButtons>
+                      />
                     </div>
                   </FlexBoxCenter>
                 </>
