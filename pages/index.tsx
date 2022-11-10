@@ -39,7 +39,7 @@ function GroupDivider() {
 const Home = () => {
   return (
     <div>
-      <div className={"Margin-B-12"}>
+      <div className={"Margin-T-4 Margin-B-12"}>
         <LogoHeader />
       </div>
       {/*<Container>*/}
@@ -69,12 +69,22 @@ const Home = () => {
       {/*    <Col xs={0} sm={0} md={1} lg={2} xl={3} xxl={3} />*/}
       {/*  </Row>*/}
       {/*</Container>*/}
-      <RowLogoContainer className={"Margin-B-8"}>
-        <Pill color={"green"}>Metadata Generation</Pill>
-        <Pill color={"red"}>Mint on demand</Pill>
-        <Pill color={"purple"}>Other one</Pill>
-        <Pill color={"orange"}>Orange one</Pill>
+      {/*<Container fluid>*/}
+      {/*<Container className={"align-self-center"} fluid>*/}
+      <RowLogoContainer
+      // className={"Margin-B-8"}
+      // colClassName={"d-inline-block"}
+      >
+        <div className={styles.wrappingFlex}>
+          <Pill color={"green"}>Metadata Generation</Pill>
+          <Pill color={"red"}>Mint on demand</Pill>
+          <Pill color={"purple"}>Yes-Code Solution</Pill>
+          <Pill color={"orange"}>WebGL</Pill>
+          <Pill color={"teal"}>Canvas</Pill>
+        </div>
       </RowLogoContainer>
+      {/*</Container>*/}
+      {/*</Container>*/}
       {/*<GroupDividerBottom />*/}
       <Container className={styles.group2}>
         <RowThinContainer>

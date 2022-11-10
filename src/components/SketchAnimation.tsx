@@ -243,9 +243,9 @@ const SketchAnimation: React.FC = () => {
         p5.pop();
       }
     }
-    p5.erase();
-    p5.rect(0, 0, localWidthBorder, p5.height);
-    p5.noErase();
+    // p5.erase();
+    p5.rect(-3, 0, localWidthBorder, p5.height);
+    // p5.noErase();
 
     p5.pop();
   };
@@ -344,7 +344,7 @@ const SketchAnimation: React.FC = () => {
   const draw = (p5: p5Types) => {
     // console.log('vel',vel )
     p5.push();
-    p5.background(bgColor);
+    // p5.background(bgColor);
     // p5.translate(p5.width / 2, p5.height / 2)
     // p5.noFill()
     // p5.stroke(255)

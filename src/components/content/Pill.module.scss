@@ -7,8 +7,12 @@
   border-color: $green-500;
   border-style: solid;
   border-width: 3px;
+  margin: .5rem;
   padding: 1rem;
+  //padding-left: 1.5rem;
+  //padding-right: 1.5rem;
   border-radius: calc($btn-border-radius*2);
+  font-size: 1.5rem;
 }
 
 .pillGreen{
@@ -24,4 +28,8 @@
 }
 .pillPurple{
   border-color: $purple-500;
+}
+
+.pillTeal{
+  border-color: $teal-500;
 }

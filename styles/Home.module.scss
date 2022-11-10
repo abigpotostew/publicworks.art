@@ -253,3 +253,11 @@
   background-size: 10px 2px, 10px 2px, 2px 10px, 2px 10px;
   animation: marching-ants 20000ms infinite linear;
 }
+
+
+.wrappingFlex{
+  display:flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+}

@@ -17,10 +17,14 @@ export const Pill: FC<PillProps> = ({
     colorClass = styles.pillOrange;
   } else if (color == "purple") {
     colorClass = styles.pillPurple;
+  } else if (color == "teal") {
+    colorClass = styles.pillTeal;
   } else {
     colorClass = styles.pillGreen;
   }
   return (
-    <span className={`${styles.pillcontainer} ${colorClass}`}>{children}</span>
+    <div className={`${styles.pillcontainer} ${colorClass} text-nowrap`}>
+      {children}
+    </div>
   );
 };

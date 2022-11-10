@@ -65,11 +65,11 @@ const dottedCircle = (p5: p5Types, { size, weightScale }: Opts) => {
 const orbits = (p5: p5Types, { size }: Opts) => {
   // size /= 2;
   const res = 1;
-  const t = p5.millis() / 9000;
+  const t = p5.millis() / 12000;
   const circum = (size / 2) * p5.TWO_PI;
   const ellipseRad = circum / 8;
-  const orbitellipseRad = ellipseRad / 1.1 / 2;
-  const c1 = p5.color("#317fb0");
+  const orbitellipseRad = ellipseRad / 2 / 2;
+  const c1 = p5.color("#3774e8");
   const c2 = p5.color("#eea453");
   const c3 = p5.color("#ead26d");
   p5.push();
@@ -91,19 +91,32 @@ const orbits = (p5: p5Types, { size }: Opts) => {
     p5.stroke(c1);
     p5.noFill();
     p5.ellipse(x, y, ellipseRad);
-    p5.noStroke();
+    // p5.noStroke();
+    // p5.strokeWeight(size / 6 / 7);
     const orbitsn = 10;
+    const orbitRadiusChange = ease(p5.cos(t * 15) * 0.5 + 0.5);
+    const orbitRadiusChangeOdd = ease(p5.cos(t * 15 + p5.PI) * 0.5 + 0.5);
     for (let j = 0; j < orbitsn; j++) {
+      const change = j % 2 === 0 ? orbitRadiusChange : orbitRadiusChangeOdd;
+      const rad = ellipseRad - ellipseRad * change * 0.15;
       const [ox, oy] = [
-        p5.cos((j / orbitsn + t * 1.5 + i / res) * p5.TWO_PI) * ellipseRad,
-        p5.sin((j / orbitsn + t * 1.5 + i / res) * p5.TWO_PI) * ellipseRad,
+        p5.cos((j / orbitsn + t * 1.5 + i / res) * p5.TWO_PI) * rad,
+        p5.sin((j / orbitsn + t * 1.5 + i / res) * p5.TWO_PI) * rad,
       ];
       if (j % 2 === 0) {
         p5.fill(c2);
+        p5.stroke(c2);
       } else {
         p5.fill(c3);
+        p5.stroke(c3);
       }
-      p5.ellipse(x + ox, y + oy, (j % 2 === 0 ? 1 : 0.75) * orbitellipseRad);
+      // p5.noFill();
+      p5.ellipse(
+        x + ox,
+        y + oy,
+        (j % 2 === 0 ? 1 : 1) * orbitellipseRad * 0.5 +
+          change * orbitellipseRad * 0.5
+      );
     }
   }
   p5.pop();
@@ -116,7 +129,7 @@ const waveyFlower = (p5: p5Types, { w, h }: Opts) => {
   const res = 40;
   p5.push();
   p5.noFill();
-  p5.strokeWeight(size / 20);
+  p5.strokeWeight(size / 10);
   p5.strokeJoin(p5.ROUND);
   p5.strokeCap(p5.ROUND);
   const stemCol = p5.color("#83de1c");
@@ -149,8 +162,13 @@ const waveyFlower = (p5: p5Types, { w, h }: Opts) => {
       p5.sin(2.2 * ii * t + t + (-foffset / res) * phase) * p5.TWO_PI * 0.03
     );
     p5.translate(0, flowerRad / 3);
-    p5.translate(x, -flowerRad / 1.5);
-    dottedCircle(p5, { size: flowerRad, w: flowerRad, h: 0 });
+    p5.translate(x * 0.9, -flowerRad / 1.5);
+    dottedCircle(p5, {
+      size: flowerRad * 1.15,
+      w: flowerRad,
+      h: 0,
+      weightScale: 0.1,
+    });
     p5.pop();
     // p5.ellipse(x, 0, size / 10, size / 10);
   }

@@ -39,36 +39,30 @@ export const RowThinContainer = ({
 export const RowLogoContainer = ({
   children,
   className,
+  colClassName,
 }: {
   className?: string;
   children: ReactNode;
+  colClassName?: string;
 }) => {
   return (
-    <div>
-      <Row className={className}>
+    <Container fluid className={className}>
+      <Row>
         <Col />
-        {/*  1*/}
-        {/*</Col>*/}
-        {/*xs={0} sm={0} md={2} lg={3} xl={4} xxl={4}*/}
-        {/*<Col />*/}
         <Col
-          className={"align-self-center"}
+          className={" " + colClassName || ""}
           xs={12}
-          sm={10}
-          md={8}
-          lg={7}
-          xl={6}
+          sm={12}
+          md={9}
+          lg={8}
+          xl={7}
           xxl={5}
         >
-          {/*xs={12} sm={12} md={8} lg={6} xl={3} xxl={3}*/}
           {children}
         </Col>
         <Col />
-        {/*<Col xs={0} sm={0} md={2} lg={3} xl={4} xxl={4}>*/}
-        {/*  2*/}
-        {/*</Col>*/}
       </Row>
-    </div>
+    </Container>
   );
 };
 

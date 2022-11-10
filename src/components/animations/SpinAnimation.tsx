@@ -155,8 +155,13 @@ const SpinAnimaton: React.FC<Props> = ({ animation, width, height }) => {
       )}
       {!doRender && (
         <div
-          className={"d-inline-block align-middle"}
-          style={{ margin: width, height, minWidth: width, minHeight: height }}
+          className={"d-inline align-middle"}
+          style={{
+            margin: width,
+            height,
+            minWidth: width,
+            minHeight: height * 0.95,
+          }}
         ></div>
       )}
     </div>
