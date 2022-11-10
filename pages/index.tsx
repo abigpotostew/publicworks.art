@@ -25,6 +25,7 @@ import { Context } from "src/server/context";
 import superjson from "superjson";
 import { GalleryComponent } from "src/components/gallery/GalleryComponent";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import { ButtonPW } from "src/components/button/Button";
 
 function GroupDividerBottom() {
   return (
@@ -123,28 +124,48 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
         <LogoHeader />
       </div>
       <GroupDividerBottom />
-      <RowLogoContainer className={"Margin-T-4 Margin-B-24"}>
-        <div className={styles.wrappingFlex}>
-          <Pill color={"red"}>Mint on demand</Pill>
-          <Pill color={"green"}>Auto Metadata Generation</Pill>
-          <Pill color={"purple"}>Yes-Code Solution</Pill>
-          <Pill color={"orange"}>WebGL</Pill>
-          <Pill color={"teal"}>Canvas</Pill>
-          <Pill color={"yellow"}>Community Voted Project</Pill>
-        </div>
-      </RowLogoContainer>
-      <GroupDividerBottom />
+
       <Container className={styles.group2}>
         <RowThinContainer>
           <div style={{ textAlign: "center" }}>
-            <p className={`${styles.subdescription} `}>
-              Works are generative tokens that are co-created at mint time. Like
-              Art Blocks, the minter and creator participate in the creation of
-              unique on chain art.
-            </p>
+            <h1>Everything you need to create generative art works</h1>
           </div>
         </RowThinContainer>
       </Container>
+      <RowLogoContainer className={"Margin-T-4 Margin-B-24"}>
+        <div className={styles.wrappingFlex}>
+          <Pill color={"red"}>🏃‍ Mint on demand</Pill>
+          <Pill color={"orange"}>⚙️ Metadata Generation</Pill>
+          <Pill color={"yellow"}>🛠 Any Javascript Library</Pill>
+          <Pill color={"green"}>🛠 Yes-Code Solution</Pill>
+          <Pill color={"teal"}>🌌 WebGL Support</Pill>
+          <Pill color={"blue"}>🖼 Canvas</Pill>
+          <Pill color={"purple"}>🎧 Web Audio API</Pill>
+          <Pill color={"pink"}>💫 Community Voted Project</Pill>
+        </div>
+      </RowLogoContainer>
+      <GroupDividerBottom />
+
+      {/*<Container className={styles.group2}>*/}
+      {/*  <RowThinContainer>*/}
+      {/*    <div style={{ textAlign: "center" }}>*/}
+      {/*      <p className={`${styles.subdescription} `}>*/}
+      {/*        Works are generative tokens that are co-created at mint time. Like*/}
+      {/*        Art Blocks, the minter and creator participate in the creation of*/}
+      {/*        unique on chain art.*/}
+      {/*      </p>*/}
+      {/*    </div>*/}
+      {/*  </RowThinContainer>*/}
+      {/*</Container>*/}
+      <Container className={styles.group2}>
+        <RowThinContainer>
+          <div style={{ textAlign: "center" }}>
+            <ButtonPW>Create</ButtonPW>
+            <ButtonPW variant={"secondary"}>Read the Docs</ButtonPW>
+          </div>
+        </RowThinContainer>
+      </Container>
+
       <GroupDivider />
       <Container>
         <RowMediumContainer>
