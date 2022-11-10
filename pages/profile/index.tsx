@@ -151,7 +151,7 @@ const ProfilePage = () => {
   };
   const token = getToken();
   const displayUsername =
-    username && username === address ? shortenAddress(address) : username;
+    username && username === address ? shortenAddress(address || "") : username;
   //EditProfile
   return (
     <>

@@ -1,4 +1,4 @@
-import { UseTRPCQueryResult } from "@trpc/react/shared";
+import { UseTRPCQueryResult } from "@trpc/react-query/shared";
 
 export const emptyTrpcQueryResult = <T>(): UseTRPCQueryResult<T, any> => {
   return {

@@ -1,7 +1,7 @@
 import React from "react";
 import { UserSerializable } from "src/dbtypes/users/userSerializable";
-import { UseTRPCQueryResult } from "@trpc/react/shared";
 import { emptyTrpcQueryResult } from "src/trpc/util";
+import { UseTRPCQueryResult } from "@trpc/react-query/shared";
 
 export type UserContextValue = {
   user: UseTRPCQueryResult<UserSerializable, any>;
