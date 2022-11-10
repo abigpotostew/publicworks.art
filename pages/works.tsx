@@ -16,36 +16,9 @@ import { stores } from "src/store/stores";
 import { initializeIfNeeded } from "src/typeorm/datasource";
 import superjson from "superjson";
 import { appRouter } from "src/server/routes/_app";
-import { createProxySSGHelpers } from "@trpc/react/ssg";
 import { Context } from "src/server/context";
-
-const GalleryComponent = ({ work }: { work: WorkSerializable }) => {
-  const query = trpcNextPW.works.workPreviewImg.useQuery({
-    workId: work.id,
-  });
-  console.log(query.data);
-  const w = work;
-  return (
-    <>
-      <Col key={w.sg721}>
-        <Link href={"/work/" + w.slug} passHref>
-          <Card
-            // style={{ width: "24rem" }}
-            className={`${styles.workCardContainer} `}
-          >
-            <Card.Img variant="top" src={query.isSuccess ? query.data : ""} />
-            <Card.Body>
-              <Card.Title className={stylesWork.workSmallTitle}>
-                {w.name} - {w.creator}
-              </Card.Title>
-              <Card.Text>{w.blurb}</Card.Text>
-            </Card.Body>
-          </Card>
-        </Link>
-      </Col>
-    </>
-  );
-};
+import { GalleryComponent } from "src/components/gallery/GalleryComponent";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   await initializeIfNeeded();
@@ -102,36 +75,44 @@ const WorksPage = () => {
           <RowThinContainer>
             <h1>Works</h1>
           </RowThinContainer>
-          <RowThinContainer>
-            <Row xs={1} md={2} className="g-6">
-              {query.isLoading && <SpinnerLoading />}
-              {query.isSuccess &&
-                pages?.map((page, index) => (
-                  <Fragment key={page.items[0]?.id || index}>
-                    {page.items.map((w) => (
-                      <GalleryComponent key={w.id} work={w}></GalleryComponent>
-                    ))}
-                  </Fragment>
-                ))}
-              {/*{[work].map((w, idx) => (*/}
-              {/*  <Col key={w.sg721}>*/}
-              {/*    <Link href={"/work/" + w.slug} passHref>*/}
-              {/*      <Card*/}
-              {/*        style={{ width: "32rem" }}*/}
-              {/*        className={`${styles.workCardContainer} `}*/}
-              {/*      >*/}
-              {/*        <Card.Img variant="top" src={w.previewImgThumb} />*/}
-              {/*        <Card.Body>*/}
-              {/*          <Card.Title className={stylesWork.workTitle}>*/}
-              {/*            {w.title} - {w.author}*/}
-              {/*          </Card.Title>*/}
-              {/*          <Card.Text>{w.blurb}</Card.Text>*/}
-              {/*        </Card.Body>*/}
-              {/*      </Card>*/}
-              {/*    </Link>*/}
-              {/*  </Col>*/}
-              {/*))}*/}
-            </Row>
+          {query.isLoading && <SpinnerLoading />}
+          <RowThinContainer innerClassName="p-4 ">
+            {/*<Row >*/}
+            {query.isSuccess &&
+              pages
+                ?.map((page, index) => {
+                  return page.items
+                    .map((w) => {
+                      return (
+                        <GalleryComponent
+                          key={(page.items[0]?.id || index) + w.id}
+                          work={w}
+                          className={"Margin-B-4 Margin-T-4"}
+                        ></GalleryComponent>
+                      );
+                    })
+                    .flat();
+                })
+                ?.flat()}
+            {/*{[work].map((w, idx) => (*/}
+            {/*  <Col key={w.sg721}>*/}
+            {/*    <Link href={"/work/" + w.slug} passHref>*/}
+            {/*      <Card*/}
+            {/*        style={{ width: "32rem" }}*/}
+            {/*        className={`${styles.workCardContainer} `}*/}
+            {/*      >*/}
+            {/*        <Card.Img variant="top" src={w.previewImgThumb} />*/}
+            {/*        <Card.Body>*/}
+            {/*          <Card.Title className={stylesWork.workTitle}>*/}
+            {/*            {w.title} - {w.author}*/}
+            {/*          </Card.Title>*/}
+            {/*          <Card.Text>{w.blurb}</Card.Text>*/}
+            {/*        </Card.Body>*/}
+            {/*      </Card>*/}
+            {/*    </Link>*/}
+            {/*  </Col>*/}
+            {/*))}*/}
+            {/*</Row>*/}
 
             <Container
               fluid

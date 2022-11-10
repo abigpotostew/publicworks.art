@@ -19,6 +19,8 @@ export const Pill: FC<PillProps> = ({
     colorClass = styles.pillPurple;
   } else if (color == "teal") {
     colorClass = styles.pillTeal;
+  } else if (color == "yellow") {
+    colorClass = styles.pillYellow;
   } else {
     colorClass = styles.pillGreen;
   }

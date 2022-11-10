@@ -115,6 +115,12 @@ const listWorks = baseProcedure
           return ["PUBLISHED", "UNPUBLISHED", "ALL"].includes(val);
         }),
       address: zodStarsAddress.optional(),
+      order: z
+        .string()
+        .default("asc")
+        .refine((val) => {
+          return ["desc", "asc"].includes(val);
+        }, "sort must be asc or desc"),
     })
   )
 

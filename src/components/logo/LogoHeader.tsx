@@ -3,8 +3,9 @@ import SpinAnimation from "src/components/animations/SpinAnimation";
 import styles from "../../../styles/Logo.module.scss";
 
 export const LogoHeader = () => {
-  const fontSize = 95;
-  const aniSize = fontSize * 1.2;
+  const fontSize = 120;
+  const aniSize = fontSize * 1;
+  console.log("aniSize", aniSize);
   return (
     <div>
       {/*<AutoContainer*/}

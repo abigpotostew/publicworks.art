@@ -169,12 +169,15 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
 
         <Container>
           <RowWideContainer className={`${styles.tokensGrid}`}>
+            <h2 className={"Margin-T-4"}>Mints</h2>
+
             {numMinted === 0 && <SpinnerLoading />}
             {numMinted && !work.sg721 && (
               <div>
                 <span>No NFTs minted</span>
               </div>
             )}
+
             {numMinted && !!work.sg721 && (
               <PagedGallery
                 slug={work.slug}

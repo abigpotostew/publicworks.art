@@ -41,12 +41,12 @@
   border-top: 1px solid #eaeaea;
   /*justify-content: center;*/
   /*align-items: center;*/
-  color: #ffffff;
+  color: $pw-text-color;
   /*font-family: 'Manrope', sans-serif;*/
 }
 
 .footer a {
-  color: #ffffff;
+  color: $pw-text-color;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -161,7 +161,7 @@
 .mysterywork {
   justify-content: center;
   border-radius: 10px;
-  border: #fff 10px dashed;
+  border: #000000 10px dashed;
   font-size: 3rem;
   letter-spacing: 5px;
   /*align-content: center;*/
@@ -260,4 +260,8 @@
   flex-flow: row wrap;
   align-items: center;
   justify-content: center;
+}
+
+.cardWidthHomepage{
+  //width:200px;
 }

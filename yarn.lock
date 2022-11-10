@@ -1491,40 +1491,40 @@
   dependencies:
     defer-to-connect "^2.0.1"
 
-"@tanstack/query-core@4.3.8":
-  version "4.3.8"
-  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.3.8.tgz#d5f07c1d9d4f83f16f0bed7f3b245fa0e557b037"
-  integrity sha512-AEUWtCNBIImFZ9tMt/P8V86kIhMHpfoJqAI1auGOLR8Wzeq7Ymiue789PJG0rKYcyViUicBZeHjggMqyEQVMfQ==
+"@tanstack/query-core@4.14.5":
+  version "4.14.5"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.14.5.tgz#f8c061a9dd4d7a87f9992db4ddda35c479e93c4a"
+  integrity sha512-Su1AyrPb6xnm7wXTvpN5tt+B7LViYSh9k04vvuc6+eMVH0HkE9ktZTXibRrTvV83BI1KP5MG7v/k90ne/4zQzw==
 
-"@tanstack/react-query@^4.3.9":
-  version "4.3.9"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-4.3.9.tgz#13332a1d4dd404baec24c2853883bcb3cc61ea92"
-  integrity sha512-odfDW6WiSntCsCh+HFeJtUys3UnVOjfJMhykAtGtYvcklMyyDmCv9BVBt5KlSpbk/qW3kURPFCDapO+BFUlCwg==
+"@tanstack/react-query@^4.14.5":
+  version "4.14.5"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-4.14.5.tgz#e2ff6419ee94426ec5e0eecf9bf77efbeb1a0e4b"
+  integrity sha512-CuWl/SxSB0zHhHaTja8LNhy9Vdk+vk9IkW3Oiq3lo4gPnTguHmbUzfjEA1x3RfvPeHfPMuq/pYMSbV+CX4aDQA==
   dependencies:
-    "@tanstack/query-core" "4.3.8"
+    "@tanstack/query-core" "4.14.5"
     use-sync-external-store "^1.2.0"
 
-"@trpc/client@^10.0.0-proxy-beta.17":
-  version "10.0.0-proxy-beta.17"
-  resolved "https://registry.yarnpkg.com/@trpc/client/-/client-10.0.0-proxy-beta.17.tgz#f18b1fced6001760ad219d63bf1400912f215236"
-  integrity sha512-GhC39yiYdeW44SR/XiN/dF94deTZM/m0NGSlttWILDLfnGwxKgMeOSfZSiTNRwkAoXnn7Gy+g6ysexa1tVlM1g==
+"@trpc/client@^10.0.0-rc.5":
+  version "10.0.0-rc.5"
+  resolved "https://registry.yarnpkg.com/@trpc/client/-/client-10.0.0-rc.5.tgz#df304278927fce3805e080f491af507744a14d64"
+  integrity sha512-+wVbec1UYCk4L3Z8XihkmOjeHN36HE+Ur4uKVR1DlA/9yUlxC2j/YIuhLN0mMiqGezVsMWNE/vCckVWAiRGN5w==
 
-"@trpc/next@^10.0.0-proxy-beta.17":
-  version "10.0.0-proxy-beta.17"
-  resolved "https://registry.yarnpkg.com/@trpc/next/-/next-10.0.0-proxy-beta.17.tgz#3bd8531b3e84df7d22b0458c85de980e4d98c354"
-  integrity sha512-3ix7EQWDCYuqn334oIp0E9LpsxaZCvU1UqgQtXJY8VMRG7ZdurnHWkqkr6MZn4b4akdz0MbxvVv5ESjb4f6rvg==
+"@trpc/next@^10.0.0-rc.5":
+  version "10.0.0-rc.5"
+  resolved "https://registry.yarnpkg.com/@trpc/next/-/next-10.0.0-rc.5.tgz#831b25a7523d8bdd2914a5443abf096d851a9c76"
+  integrity sha512-icP9MV8gnvS1qGipwmOGi7CU/Hj6Y2sEOaJRw1N9LgsalQB2yCR53Q2IA/S+H7jnlvyFQTCyHwmnBinjhTbA+w==
   dependencies:
     react-ssr-prepass "^1.5.0"
 
-"@trpc/react@^10.0.0-proxy-beta.17":
-  version "10.0.0-proxy-beta.17"
-  resolved "https://registry.yarnpkg.com/@trpc/react/-/react-10.0.0-proxy-beta.17.tgz#8a8c854cf7261e095742d20e45d70dba99cd71d7"
-  integrity sha512-xSLEsKL8+mBgWxW/z2oJs0qSYz/TZd/xqpKa8DcPpXTtp0Oa6iT8DychoF+FztjlBL+jULcqfzF1JRJ5z2iFJg==
+"@trpc/react-query@^10.0.0-rc.5":
+  version "10.0.0-rc.5"
+  resolved "https://registry.yarnpkg.com/@trpc/react-query/-/react-query-10.0.0-rc.5.tgz#231eb682234371cec7ae5116a1b4e1a55bc56a14"
+  integrity sha512-i18VFsaHIVdlAaLM7Hg75xRC9mAd0bYTyFC8chjIMWWmD2G+a6DbwWxxjM5fLkn05eiPBtxcGTW2Q5eCcWtlOA==
 
-"@trpc/server@^10.0.0-proxy-beta.17":
-  version "10.0.0-proxy-beta.17"
-  resolved "https://registry.yarnpkg.com/@trpc/server/-/server-10.0.0-proxy-beta.17.tgz#7e56a95d213f52e328d90b3aa6b999d499b2ba21"
-  integrity sha512-q3Cl4RC5q0kRg8KGt0sWQ11hKrLaIxK2FYGy7fQ6E+k9Yo8r2VDxn++PskZk9LTzgKRi1JtfZVJO15oXoXJHyw==
+"@trpc/server@^10.0.0-rc.5":
+  version "10.0.0-rc.5"
+  resolved "https://registry.yarnpkg.com/@trpc/server/-/server-10.0.0-rc.5.tgz#6183ffb988a9bda5580b4fe2312c78095407a0a0"
+  integrity sha512-SMj1uFL1iocYDCkLFrjyiRCAQFFA6uu7kWhIZGpWFGcZMl805CVuliWdbYcHbGU0diF/BlEAJ5BWZsfjnOkDXA==
 
 "@types/bezier-js@^4.1.0":
   version "4.1.0"
@@ -7166,10 +7166,10 @@ zod-formik-adapter@^1.1.1:
   resolved "https://registry.yarnpkg.com/zod-formik-adapter/-/zod-formik-adapter-1.1.1.tgz#6eb35aea46da84e4bb07a9b07b1070557d0b2bc3"
   integrity sha512-nN787YLM+FauP3oJGOMKGJAIYK5wwrLy3KVdlv6Ac7HrgKkFAEiDyVQ6cz+i009dE7PxQmlPUtjZLpiA0syR3Q==
 
-zod@^3.19.0:
-  version "3.19.0"
-  resolved "https://registry.npmjs.org/zod/-/zod-3.19.0.tgz"
-  integrity sha512-Yw0qvUsCNGBe5YacikdMt5gVYeUuaEFVDIHKMfElrGSaBhwR3CQK6vOzgfAJOjTdGIhEeoaj8GtT+NDZrepZbw==
+zod@^3.19.1:
+  version "3.19.1"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.19.1.tgz#112f074a97b50bfc4772d4ad1576814bd8ac4473"
+  integrity sha512-LYjZsEDhCdYET9ikFu6dVPGp2YH9DegXjdJToSzD9rO6fy4qiRYFoyEYwps88OseJlPyl2NOe2iJuhEhL7IpEA==
 
 zwitch@^2.0.0:
   version "2.0.2"

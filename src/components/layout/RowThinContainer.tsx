@@ -4,20 +4,18 @@ import { ReactNode } from "react";
 export const RowThinContainer = ({
   children,
   className,
+  innerClassName,
 }: {
   className?: string;
+  innerClassName?: string;
   children: ReactNode;
 }) => {
   return (
     <div>
       <Row className={className}>
         <Col />
-        {/*  1*/}
-        {/*</Col>*/}
-        {/*xs={0} sm={0} md={2} lg={3} xl={4} xxl={4}*/}
-        {/*<Col />*/}
         <Col
-          className={"align-self-center"}
+          className={"align-self-center " + innerClassName || ""}
           xs={12}
           sm={12}
           md={10}
@@ -25,13 +23,9 @@ export const RowThinContainer = ({
           xl={7}
           xxl={6}
         >
-          {/*xs={12} sm={12} md={8} lg={6} xl={3} xxl={3}*/}
           {children}
         </Col>
         <Col />
-        {/*<Col xs={0} sm={0} md={2} lg={3} xl={4} xxl={4}>*/}
-        {/*  2*/}
-        {/*</Col>*/}
       </Row>
     </div>
   );
@@ -53,10 +47,10 @@ export const RowLogoContainer = ({
           className={" " + colClassName || ""}
           xs={12}
           sm={12}
-          md={9}
-          lg={8}
-          xl={7}
-          xxl={5}
+          md={12}
+          lg={10}
+          xl={9}
+          xxl={6}
         >
           {children}
         </Col>

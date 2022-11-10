@@ -58,6 +58,12 @@ $dark:#212529;
 .Margin-B-12{
    margin-bottom: calc($pw-p-spacer * 2.5);
  }
+.Margin-B-16{
+   margin-bottom: calc($pw-p-spacer * 4);
+ }
+.Margin-B-24{
+   margin-bottom: calc($pw-p-spacer * 6);
+ }
 .Margin-T-0{
   margin-top: 0;
 }
