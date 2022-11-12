@@ -26,6 +26,7 @@ import superjson from "superjson";
 import { GalleryComponent } from "src/components/gallery/GalleryComponent";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { ButtonPW } from "src/components/button/Button";
+import { useRouter } from "next/router";
 
 function GroupDividerBottom() {
   return (
@@ -84,6 +85,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
 }
 
 const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const router = useRouter();
   const queryWorks = trpcNextPW.works.listWorks.useQuery(
     {
       limit: 3,
@@ -104,7 +106,7 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
     recentWorks = <>Loading...</>;
   } else {
     recentWorks = (
-      <Container fluid className={""}>
+      <Container fluid className={"card-group"}>
         {queryWorks.data.items.map((item, index) => {
           return (
             <GalleryComponent
@@ -159,9 +161,15 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
       {/*</Container>*/}
       <Container className={styles.group2}>
         <RowThinContainer>
-          <div style={{ textAlign: "center" }}>
-            <ButtonPW>Create</ButtonPW>
-            <ButtonPW variant={"secondary"}>Read the Docs</ButtonPW>
+          <div className={"fs-2"} style={{ textAlign: "center" }}>
+            <Link href={"/create"}>
+              <ButtonPW className={"me-2 fs-3"}>Create Work</ButtonPW>
+            </Link>
+            <Link href={"/docs"}>
+              <ButtonPW className={"fs-3"} variant={"secondary"}>
+                Read the Docs
+              </ButtonPW>
+            </Link>
           </div>
         </RowThinContainer>
       </Container>

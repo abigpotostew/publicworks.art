@@ -67,8 +67,10 @@ const orbits = (p5: p5Types, { size }: Opts) => {
   const res = 1;
   const t = p5.millis() / 12000;
   const circum = (size / 2) * p5.TWO_PI;
-  const ellipseRad = circum / 8;
-  const orbitellipseRad = ellipseRad / 2 / 2;
+  const ellipseRad = circum / 10;
+  const ellipseRad2 = circum / 8;
+  // const ellipseRad = circum / 10;
+  const orbitellipseRad = ellipseRad / 2 / 1.8;
   const c1 = p5.color("#3774e8");
   const c2 = p5.color("#eea453");
   const c3 = p5.color("#ead26d");
@@ -98,7 +100,7 @@ const orbits = (p5: p5Types, { size }: Opts) => {
     const orbitRadiusChangeOdd = ease(p5.cos(t * 15 + p5.PI) * 0.5 + 0.5);
     for (let j = 0; j < orbitsn; j++) {
       const change = j % 2 === 0 ? orbitRadiusChange : orbitRadiusChangeOdd;
-      const rad = ellipseRad - ellipseRad * change * 0.15;
+      const rad = ellipseRad2 - ellipseRad2 * change * 0.2;
       const [ox, oy] = [
         p5.cos((j / orbitsn + t * 1.5 + i / res) * p5.TWO_PI) * rad,
         p5.sin((j / orbitsn + t * 1.5 + i / res) * p5.TWO_PI) * rad,
