@@ -45,7 +45,7 @@ export default async function handler(
     }
 
     const form = new multiparty.Form({
-      maxFilesSize: 1000000,
+      maxFilesSize: 50_000_000,
       autoFiles: true,
     });
     let data: any;
@@ -61,7 +61,9 @@ export default async function handler(
         console.log("files type", typeof data?.files);
         console.log("files keys", Object.keys(data?.files || {}));
         console.log("files", data?.files?.toString());
-      } catch (e) {}
+      } catch (e) {
+        //ignored
+      }
       // console.log(`data: `, JSON.stringify(data));
       if (Object.keys(data.files).length !== 1) {
         console.error("too many file in multipart");
