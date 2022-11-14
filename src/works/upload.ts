@@ -86,6 +86,7 @@ export const useUploadWorkMutation = (workId: string | null | undefined) => {
     } catch (e) {
       const msg =
         "Something went wrong. Failed to save work to IPFS. Try again.";
+      console.error(msg, e);
       toast.error(msg);
       throw new Error(msg);
     }
