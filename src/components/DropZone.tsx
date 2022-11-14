@@ -1,15 +1,27 @@
 import React, { FC, ReactNode, useCallback } from "react";
-import { DropEvent, FileRejection, useDropzone } from "react-dropzone";
+import { Accept, DropEvent, FileRejection, useDropzone } from "react-dropzone";
 
 export interface DropZoneProps {
   onUpload: (files: File[]) => Promise<void>;
   children?: ReactNode;
+  accept: "zip" | "images";
 }
 
 export const DropZone: FC<DropZoneProps> = ({
   onUpload,
   children,
+  accept,
 }: DropZoneProps) => {
+  const acceptProp: Accept =
+    accept === "zip"
+      ? {
+          "application/zip": [],
+        }
+      : {
+          "image/jpeg": [],
+          "image/png": [],
+          "image/gif": [],
+        };
   const onDrop: (
     acceptedFiles: File[],
     fileRejections: FileRejection[],
@@ -20,7 +32,12 @@ export const DropZone: FC<DropZoneProps> = ({
     },
     [onUpload]
   );
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    maxFiles: 1,
+    maxSize: 50_000_000,
+    accept: acceptProp,
+  });
   // message =
   //   message || "Drag 'n' drop some files here, or click to select files";
   return (

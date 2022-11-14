@@ -66,7 +66,7 @@ export const UploadCoverImage: FC<CreateWorkProps> = (
       <h2>Collection Image</h2>
       <FlexBoxCenter fluid={false}>
         <div>
-          <DropZone onUpload={onUpload}></DropZone>
+          <DropZone accept={"images"} onUpload={onUpload}></DropZone>
           {mutation.isLoading && <SpinnerLoading></SpinnerLoading>}
           {mutation.isSuccess && "Success!"}
         </div>

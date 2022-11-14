@@ -20,8 +20,6 @@ import { Step, StepProgressBar } from "src/components/progress/StepProgressBar";
 import { TooltipInfo } from "src/components/TooltipInfo";
 import { NameWork } from "src/components/creatework/NameWork";
 import { EditProjectRequest } from "src/store";
-import { DropZone } from "src/components/DropZone";
-import { normalizeMetadataUri } from "src/wasm/metadata";
 import { ConfettiScreen } from "src/components/celebration/ConfettiScreen";
 import SpinnerLoading from "src/components/loading/Loader";
 import { DescribeWork } from "src/components/creatework/DescribeWork";
