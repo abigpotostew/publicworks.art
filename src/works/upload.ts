@@ -90,6 +90,7 @@ export const useUploadWorkMutation = (workId: string | null | undefined) => {
       toast.error(msg);
       throw new Error(msg);
     }
+    utils.works.getWorkById.invalidate({ id: workId });
   });
   return onUploadMutation;
 };

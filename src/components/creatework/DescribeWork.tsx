@@ -35,6 +35,7 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
     codeCid: props.defaultValues?.codeCid,
     externalLink: props.defaultValues?.externalLink || undefined,
     creator: props.defaultValues?.creator || "",
+    name: props.defaultValues?.name || "",
   };
 
   const formik = useFormik({
@@ -100,6 +101,30 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
             }}
             noValidate
           >
+            <Form.Group className="mt-3 mb-3" controlId="formWorkName">
+              <Form.Label>
+                Name{" "}
+                <TooltipInfo>
+                  Name is highly visible, and is included in NFT metadata.
+                </TooltipInfo>
+              </Form.Label>
+              <Form.Control
+                defaultValue={defaults.name}
+                value={formik.values.name}
+                placeholder={"Appears in every NFT"}
+                onChange={formik.handleChange}
+                name="name"
+                isValid={formik.touched.name && !formik.errors.name}
+                isInvalid={formik.touched.name && !!formik.errors.name}
+              />
+              <Form.Control.Feedback type={"valid"}>
+                Looks good!
+              </Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">
+                {formik.errors.name}
+              </Form.Control.Feedback>
+            </Form.Group>
+
             <Form.Group className="mb-3" controlId="formWorkDescription">
               <Form.Label>
                 Description{" "}

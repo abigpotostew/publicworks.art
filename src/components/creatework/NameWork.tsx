@@ -13,6 +13,7 @@ import { DropZone } from "../DropZone";
 import { ButtonPW as Button } from "../button/Button";
 import { TooltipInfo } from "src/components/TooltipInfo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import useAppIsLoading from "src/components/loading/useAppIsLoading";
 
 export interface CreateWorkProps {
   onCreateProject:
@@ -47,78 +48,78 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
     <>
       <>
         <>
-          <Form onSubmit={onSubmit}>
-            <Form.Group className="mb-3" controlId="formWorkName">
-              <Form.Label>
-                Name{" "}
-                <TooltipInfo>
-                  Your work name is highly visible, on and off chain. This can
-                  be changed later.
-                </TooltipInfo>
-              </Form.Label>
-              <Form.Control
-                type="text"
-                defaultValue={defaults.name}
-                placeholder="My Work"
-                name="project_name"
-                onChange={(e) => setProjectName(e.target.value)}
-              />
-              {/*<Form.Text className="text-muted">*/}
-              {/*  {"We'll never share your email with anyone else."}*/}
-              {/*</Form.Text>*/}
-            </Form.Group>
+          {/*<Form onSubmit={onSubmit}>*/}
+          {/*<Form.Group className="mb-3" controlId="formWorkName">*/}
+          {/*  <Form.Label>*/}
+          {/*    Name{" "}*/}
+          {/*    <TooltipInfo>*/}
+          {/*      Your work name is highly visible, on and off chain. This can*/}
+          {/*      be changed later.*/}
+          {/*    </TooltipInfo>*/}
+          {/*  </Form.Label>*/}
+          {/*  <Form.Control*/}
+          {/*    type="text"*/}
+          {/*    defaultValue={defaults.name}*/}
+          {/*    placeholder="My Work"*/}
+          {/*    name="project_name"*/}
+          {/*    onChange={(e) => setProjectName(e.target.value)}*/}
+          {/*  />*/}
+          {/*  /!*<Form.Text className="text-muted">*!/*/}
+          {/*  /!*  {"We'll never share your email with anyone else."}*!/*/}
+          {/*  /!*</Form.Text>*!/*/}
+          {/*</Form.Group>*/}
 
-            {/*divider*/}
+          {/*divider*/}
 
-            {props.onUpload && (
-              <RowWideContainer>
-                <div>
-                  {!defaults?.codeCid && (
-                    <>
-                      <div style={{ minHeight: 500 }}></div>
-                    </>
-                  )}
-                  {defaults?.codeCid && (
-                    <>
-                      <LiveMedia
-                        ipfsUrl={{ cid: defaults.codeCid, hash }}
-                        minHeight={500}
-                        style={{}}
-                      ></LiveMedia>
-                      <a onClick={onClickRefreshHash}>
-                        <FlexBox
-                          style={{
-                            justifyContent: "flex-start",
-                            flexDirection: "row",
-                            alignItems: "center",
-                          }}
-                        >
-                          <div>New Hash</div>
-                          <BsArrowRepeat style={{ marginLeft: ".5rem" }} />
-                        </FlexBox>
-                      </a>
-                    </>
-                  )}
-                  <h3>Upload your Work Zip</h3>
-                  <DropZone
-                    accept={"zip"}
-                    onUpload={async (files) =>
-                      props?.onUpload && props.onUpload(files)
-                    }
-                  >
-                    <FontAwesomeIcon icon={"upload"} width={16} /> Drag and drop
-                    your project zip file here, or click to upload
-                  </DropZone>
-                </div>
-              </RowWideContainer>
-            )}
+          {props.onUpload && (
+            <RowWideContainer>
+              <div>
+                {!defaults?.codeCid && (
+                  <>
+                    <div style={{ minHeight: 500 }}></div>
+                  </>
+                )}
+                {defaults?.codeCid && (
+                  <>
+                    <LiveMedia
+                      ipfsUrl={{ cid: defaults.codeCid, hash }}
+                      minHeight={500}
+                      style={{}}
+                    ></LiveMedia>
+                    <a onClick={onClickRefreshHash}>
+                      <FlexBox
+                        style={{
+                          justifyContent: "flex-start",
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        <div>New Hash</div>
+                        <BsArrowRepeat style={{ marginLeft: ".5rem" }} />
+                      </FlexBox>
+                    </a>
+                  </>
+                )}
+                <h3>Upload your Work Zip</h3>
+                <DropZone
+                  accept={"zip"}
+                  onUpload={async (files) =>
+                    props?.onUpload && props.onUpload(files)
+                  }
+                >
+                  <FontAwesomeIcon icon={"upload"} width={16} /> Drag and drop
+                  your project zip file here, or click to upload
+                </DropZone>
+              </div>
+            </RowWideContainer>
+          )}
 
-            {/*divider*/}
+          {/*divider*/}
 
-            <Button variant="primary" type="submit">
-              Save
-            </Button>
-          </Form>
+          {/*<Button variant="primary" type="submit">*/}
+          {/*  Save*/}
+          {/*</Button>*/}
+          {/*</Form>*/}
         </>
       </>
     </>
