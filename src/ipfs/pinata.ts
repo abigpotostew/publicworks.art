@@ -95,7 +95,7 @@ export const getMetadataWorkId = async (searchCid: string) => {
     const row = body.rows.find(
       (r: any) => r.date_unpinned === null && r.metadata?.keyvalues?.workId
     );
-    return row.metadata?.keyvalues?.workId || null;
+    return row?.metadata?.keyvalues?.workId || null;
   }
   return null;
 };
