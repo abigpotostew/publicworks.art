@@ -60,7 +60,9 @@ An example work may contain the following files on a file system:
 
 This work file structure is bundled together into a zip file with \`index.html\` at the root and submitted to public works on the [create page](/create).
 
-As long as your 'website' draws to a canvas, you can use any kind of file. Keep in mind, works cannot fetch data from external endpoints. All data and files must be bundled into the website file structure. Outbound calls are blocked during preview generation.
+As long as your 'website' draws to a canvas, you can use any kind of file. Keep in mind, works cannot fetch data from external endpoints. All data and files must be bundled into the website file structure. Outbound calls are blocked during preview generation. 
+
+All files and assets must be referenced by your code using relative URLs. So in the above example, when referencing \`/img/img1.png\` use the url relative to \`index.html\`-- \`img/img1.png\`.
 
 #### Webpack Template
 
@@ -187,6 +189,8 @@ renderer = new WebGLRenderer({preserveDrawingBuffer: true});
 16. Follow these same steps on https://publicworks.art to deploy to Mainnet.
 
 
+### Fees
+Public works takes
 
 ----
 
