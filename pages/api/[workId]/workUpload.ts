@@ -56,30 +56,42 @@ export default async function handler(
           resolve({ fields, files });
         });
       });
-      console.log(`data: `, JSON.stringify(data));
+      try {
+        console.log(`data: `, data.toString());
+        console.log("files type", typeof data?.files);
+        console.log("files keys", Object.keys(data?.files || {}));
+        console.log("files", data?.files?.toString());
+      } catch (e) {}
+      // console.log(`data: `, JSON.stringify(data));
       if (Object.keys(data.files).length !== 1) {
+        console.error("too many file in multipart");
         res.status(400).json({ name: "too many 'file'" });
         return;
       }
       const file = data.files["file"];
       if (!file) {
+        console.error("missing file in multipart");
         res.status(400).json({ name: "missing 'file'" });
         return;
       }
       if (file.length !== 1) {
+        console.error("multiple file entries in multipart");
         res.status(400).json({ name: "multiple 'file' entries" });
         return;
       }
       const fileObj = file[0];
 
       if (fileObj.headers["content-type"] !== "application/zip") {
+        console.error("not zip file type");
         res.status(400).json({ name: "not application/zip" });
         return;
       }
+
       /// delete the prior work from ipfs
       if (work.codeCid) {
         const existinWorkId = await getMetadataWorkId(work.codeCid);
         if (existinWorkId === work.id) {
+          console.log("deleting cid ", work.codeCid);
           //only delete it if the current user owns it.
           await deleteCid(work.codeCid);
         }
@@ -89,6 +101,7 @@ export default async function handler(
       const tmpPath = fileObj.path;
       const cid = await pinZipToPinata(tmpPath, { workId: work.id });
       if (!cid) {
+        console.error("missing cid");
         res.status(400).json({ message: "cid missing" });
         return;
       }
@@ -98,6 +111,7 @@ export default async function handler(
         id: work.id,
       });
       if (!updateRes.ok) {
+        console.error("failed to upload, error:", updateRes.error);
         return res.status(500).json({ message: "failed to upload" });
       }
 
