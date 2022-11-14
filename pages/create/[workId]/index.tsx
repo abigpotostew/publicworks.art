@@ -10,7 +10,11 @@ import { useCosmosWallet } from "../../../src/components/provider/CosmosWalletPr
 import { FlexBox, FlexBoxCenter } from "src/components/layout/FlexBoxCenter";
 import { useInstantiate } from "src/hooks/useInstantiate";
 import { trpcNextPW } from "src/server/utils/trpc";
-import { onWorkUpload } from "src/works/upload";
+import {
+  onWorkUpload,
+  onWorkUploadNew,
+  useUploadWorkMutation,
+} from "src/works/upload";
 import { LiveMedia } from "src/components/media/LiveMedia";
 import { Step, StepProgressBar } from "src/components/progress/StepProgressBar";
 import { TooltipInfo } from "src/components/TooltipInfo";
@@ -196,12 +200,28 @@ const EditWorkPage = () => {
     [mutation]
   );
 
-  // const onUpload = async (files: File[]) => {
+  // const onUploadMutation = useMutation(async (files: File[]) => {
   //   await onWorkUpload(workId, files, utils);
-  // };
-  const onUploadMutation = useMutation(async (files: File[]) => {
-    await onWorkUpload(workId, files, utils);
-  });
+  // });
+  const onUploadMutation = useUploadWorkMutation(workId);
+  // const onUploadMutation = useMutation(async (files: File[]) => {
+  //   const uploadTmp = await onWorkUploadFileMutation.mutateAsync({
+  //     workId: workId,
+  //   });
+  //
+  //   if (!uploadTmp.ok) {
+  //     throw new Error(
+  //       "Something went wrong while uploading the code work, try again."
+  //     );
+  //   }
+  //   await onWorkUploadNew(
+  //     workId,
+  //     files,
+  //     utils,
+  //     uploadTmp.url,
+  //     uploadTmp.method
+  //   );
+  // });
   const onUpload = onUploadMutation.mutate;
 
   const { instantiateMutation } = useInstantiate();

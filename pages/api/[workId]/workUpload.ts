@@ -108,7 +108,7 @@ export default async function handler(
         return;
       }
 
-      const updateRes = await stores().project.updateProject(ctx?.user, {
+      const updateRes = await stores().project.updateProject({
         codeCid: cid,
         id: work.id,
       });

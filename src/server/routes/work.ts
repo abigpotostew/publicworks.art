@@ -13,6 +13,9 @@ import {
 } from "../../ipfs/pinata";
 import { dataUrlToBuffer } from "../../base64/dataurl";
 import { zodStarsAddress } from "src/wasm/address";
+import cuid from "cuid";
+import { createPresignedUrl } from "src/upload/presignedUrl";
+import { confirmUpload } from "src/upload/confirm-upload";
 
 const createWork = authorizedProcedure
   .input(CreateProjectRequestZ)
@@ -41,7 +44,7 @@ const editWork = authorizedProcedure
       throw new TRPCError({ code: "NOT_FOUND" });
     }
 
-    const project = await stores().project.updateProject(user, input);
+    const project = await stores().project.updateProject(input);
     if (!project.ok) {
       throw new TRPCError({ code: "BAD_REQUEST" });
     }
@@ -66,7 +69,7 @@ const editWorkContracts = authorizedProcedure
       throw new TRPCError({ code: "NOT_FOUND" });
     }
 
-    const project = await stores().project.updateProject(user, input);
+    const project = await stores().project.updateProject(input);
     if (!project.ok) {
       throw new TRPCError({ code: "BAD_REQUEST" });
     }
@@ -215,7 +218,7 @@ const uploadPreviewImg = authorizedProcedure
     const coverImageCid = await uploadFileToPinata(buffer, contentType, {
       workId: work.id,
     });
-    const response = await stores().project.updateProject(ctx.user, {
+    const response = await stores().project.updateProject({
       id: work.id,
       coverImageCid,
     });
@@ -224,6 +227,44 @@ const uploadPreviewImg = authorizedProcedure
     }
 
     return { ok: true };
+  });
+
+const uploadWorkGenerateUrl = authorizedProcedure
+  .input(
+    z.object({
+      workId: z.string(),
+    })
+  )
+
+  .mutation(async ({ input, ctx }) => {
+    const work = await stores().project.getProject(input.workId);
+    if (!work || work.owner.id !== ctx.user.id) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    const { url, filename } = await createPresignedUrl(work);
+    const obj = await stores().project.saveUploadId(work, filename);
+
+    return { ok: true, url, method: "PUT" };
+  });
+
+const confirmWorkUpload = authorizedProcedure
+  .input(
+    z.object({
+      workId: z.string(),
+    })
+  )
+
+  .mutation(async ({ input, ctx }) => {
+    const work = await stores().project.getProject(input.workId);
+    if (!work || work.owner.id !== ctx.user.id) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    //it throws
+    const confirmed = await confirmUpload(work);
+
+    return;
   });
 
 export const workRouter = t.router({
@@ -238,4 +279,6 @@ export const workRouter = t.router({
   uploadPreviewImg,
   listAddressWorks,
   workTokenCount: workTokenCount,
+  uploadWorkGenerateUrl: uploadWorkGenerateUrl,
+  confirmWorkUpload: confirmWorkUpload,
 });

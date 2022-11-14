@@ -2,9 +2,10 @@ import { Err, Ok, Result } from "../util/result";
 import { User } from "./user.types";
 import { CreateProjectRequest, EditProjectRequest } from "./project.types";
 import { dataSource } from "../typeorm/datasource";
-import { TokenEntity, UserEntity, WorkEntity } from "../model";
+import { TokenEntity, UserEntity, WorkEntity, WorkUploadFile } from "../model";
 import { IsNull, Not } from "typeorm";
 import { FindOptionsWhere } from "typeorm/find-options/FindOptionsWhere";
+import cuid from "cuid";
 
 export class ProjectRepo {
   async getProjectPreviewImage(id: string): Promise<TokenEntity | null> {
@@ -156,7 +157,6 @@ export class ProjectRepo {
   }
 
   async updateProject(
-    user: User,
     request: Partial<EditProjectRequest>
   ): Promise<Result<WorkEntity>> {
     if (!request.id) {
@@ -198,6 +198,28 @@ export class ProjectRepo {
       throw new Error("work not found");
     }
     return Ok(work);
+  }
+  async saveUploadId(work: WorkEntity, filename: string) {
+    //WorkUploadFile
+    const item = new WorkUploadFile();
+    item.id = cuid();
+    item.work = work;
+    item.filename = filename;
+    return await dataSource().getRepository(WorkUploadFile).save(item);
+  }
+  async getLastFileUpload(work: WorkEntity) {
+    return dataSource()
+      .getRepository(WorkUploadFile)
+      .findOne({
+        where: {
+          work: {
+            id: work.id,
+          },
+        },
+        order: {
+          createdDate: "desc",
+        },
+      });
   }
 }
 

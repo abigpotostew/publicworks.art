@@ -69,6 +69,9 @@ export class WorkEntity extends AuditedEntity {
   @ManyToOne(() => UserEntity, (r) => r.ownedWorks)
   @JoinColumn({ name: "owner_id" })
   owner: UserEntity;
+
+  @OneToMany(() => WorkUploadFile, (r) => r.work)
+  workUploadFiles: Relation<WorkUploadFile>[] | null;
 }
 
 @Entity({ name: "work_tokens" })
@@ -91,6 +94,19 @@ export class TokenEntity extends AuditedEntity {
   metadata_uri: string | null;
 
   @ManyToOne(() => WorkEntity, (r) => r.tokens)
+  @JoinColumn({ name: "work_id" })
+  work: WorkEntity;
+}
+
+@Entity({ name: "work_upload_files" })
+export class WorkUploadFile extends AuditedEntity {
+  @PrimaryGeneratedColumn()
+  id: string;
+
+  @Column("varchar", { name: "filename", length: 256 })
+  filename: string;
+
+  @ManyToOne(() => WorkEntity, (r) => r.workUploadFiles)
   @JoinColumn({ name: "work_id" })
   work: WorkEntity;
 }

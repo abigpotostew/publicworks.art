@@ -4,6 +4,7 @@ import {
   WorkEntity,
   TokenEntity,
   UserEntity,
+  WorkUploadFile,
 } from "../model";
 
 let MysqlDataSource: DataSource | undefined = undefined;
@@ -41,7 +42,13 @@ export const initializeDatasource = () => {
     ssl: {
       ca: process.env.SSL_CERT,
     },
-    entities: [WorkEntity, UserEntity, TokenEntity, BlockheightEntity],
+    entities: [
+      WorkEntity,
+      UserEntity,
+      TokenEntity,
+      WorkUploadFile,
+      BlockheightEntity,
+    ],
     logging: process.env.TYPEORM_LOGGING ? "all" : undefined,
     debug: process.env.TYPEORM_DEBUG === "true",
     acquireTimeout: 3 * 60 * 60 * 1000,
