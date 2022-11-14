@@ -447,7 +447,7 @@ const EditWorkPage = () => {
               {work && (
                 // <Container fluid={false}>
                 <>
-                  <h2>Work Name & Code Upload</h2>
+                  <h2>Code Sandbox</h2>
                   <FlexBoxCenter fluid={false}>
                     <div>
                       <NameWork
