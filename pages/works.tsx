@@ -31,19 +31,22 @@ export async function getStaticProps(context: GetStaticPropsContext) {
   });
   // const id = context.params?.id as string;
   // prefetch `post.byId`
-  await ssg.works.listWorks.prefetch({
-    limit: 100,
-    cursor: undefined,
-  });
-  const works = await ssg.works.listWorks.fetch({
-    limit: 100,
-    cursor: undefined,
-  });
-  await Promise.all(
-    works.items.map((w) => {
-      return ssg.works.workPreviewImg.prefetch({ workId: w.id });
-    })
-  );
+  const prefetch = async () => {
+    await ssg.works.listWorks.prefetch({
+      limit: 100,
+      cursor: undefined,
+    });
+    const works = await ssg.works.listWorks.fetch({
+      limit: 100,
+      cursor: undefined,
+    });
+    await Promise.all(
+      works.items.map((w) => {
+        return ssg.works.workPreviewImg.prefetch({ workId: w.id });
+      })
+    );
+  };
+  await prefetch();
   return {
     props: {
       trpcState: ssg.dehydrate(),

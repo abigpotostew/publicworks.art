@@ -75,13 +75,13 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
 
   const metadata = useNftMetadata({ sg721: work.sg721, tokenId: "1" });
 
-  console.log("numMinted", numMinted, numMintedError, numMintedLoading);
+  // console.log("numMinted", numMinted, numMintedError, numMintedLoading);
 
-  const tmp = trpcNextPW.works.tmp.useQuery(
-    { slug: "pizza" },
-    { refetchInterval: 2000 }
-  );
-  console.log("tmp", tmp.data);
+  // const tmp = trpcNextPW.works.tmp.useQuery(
+  //   { slug: "pizza" },
+  //   { refetchInterval: 2000 }
+  // );
+  // console.log("tmp", tmp.data);
 
   const loading = false;
   const errorMetadata = false;
