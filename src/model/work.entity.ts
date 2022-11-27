@@ -63,6 +63,8 @@ export class WorkEntity extends AuditedEntity {
   royaltyPercent: number | null;
   @Column("text", { name: "royalty_address", nullable: true })
   royaltyAddress: string | null;
+  @Column("boolean", { name: "hidden" })
+  hidden: boolean;
 
   @OneToMany(() => TokenEntity, (r) => r.work)
   tokens: Relation<TokenEntity>[] | null;

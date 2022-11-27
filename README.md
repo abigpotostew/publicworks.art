@@ -15,6 +15,10 @@ todo:
 
 - Add additional description to the edit flow
 - add a button to open to fullscreen!
+- user hidden visibility
+- delete project
+- bring your own ipfs cid
+- consolidate create flow
 
 design inspiration:
 - https://nouns.build/
