@@ -26,7 +26,7 @@
     "@react-hook/size": "^2.1.2",
     "@stargazefi/api": "^0.4.1",
     "@stargazezone/types": "^0.9.0",
-    "@tanstack/react-query": "^4.14.5",
+    "@tanstack/react-query": "^4.18.0",
     "@trpc/client": "^10.4.0",
     "@trpc/next": "^10.4.0",
     "@trpc/react-query": "^10.4.0",
@@ -97,5 +97,8 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "^2.5.1",
     "typescript": "4.7.4"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   }
 }

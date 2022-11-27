@@ -1,55 +1,51 @@
-import { Fragment, ReactElement } from "react";
-import { RowWideContainer } from "../src/components/layout/RowWideContainer";
+import { ReactElement } from "react";
 import MainLayout from "../src/layout/MainLayout";
-import { Card, Col, Container, Row } from "react-bootstrap";
-import styles from "../styles/Works.module.scss";
+import { Container } from "react-bootstrap";
 import stylesSpacing from "../styles/Spacing.module.scss";
-import stylesWork from "../styles/Work.module.scss";
-import Link from "next/link";
 import { trpcNextPW } from "../src/server/utils/trpc";
-import { WorkSerializable } from "../src/dbtypes/works/workSerializable";
 import SpinnerLoading from "../src/components/loading/Loader";
 import { ButtonPW } from "src/components/button/Button";
 import { RowThinContainer } from "src/components/layout/RowThinContainer";
-import { GetStaticPaths, GetStaticPropsContext } from "next";
-import { stores } from "src/store/stores";
+import { GetStaticPropsContext } from "next";
 import { initializeIfNeeded } from "src/typeorm/datasource";
 import superjson from "superjson";
 import { appRouter } from "src/server/routes/_app";
 import { Context } from "src/server/context";
 import { GalleryComponent } from "src/components/gallery/GalleryComponent";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import { useQuery } from "@tanstack/react-query";
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   await initializeIfNeeded();
 
-  console.log("in getStaticProps");
-  const ssg = await createProxySSGHelpers({
-    router: appRouter,
-    ctx: {} as Context,
-    transformer: superjson, // optional - adds superjson serialization
-  });
-  // const id = context.params?.id as string;
-  // prefetch `post.byId`
-  const prefetch = async () => {
-    await ssg.works.listWorks.prefetch({
-      limit: 100,
-      cursor: undefined,
-    });
-    const works = await ssg.works.listWorks.fetch({
-      limit: 100,
-      cursor: undefined,
-    });
-    await Promise.all(
-      works.items.map((w) => {
-        return ssg.works.workPreviewImg.prefetch({ workId: w.id });
-      })
-    );
-  };
-  await prefetch();
+  // console.log("in getStaticProps");
+  // const ssg = await createProxySSGHelpers({
+  //   router: appRouter,
+  //   ctx: {} as Context,
+  //   transformer: superjson, // optional - adds superjson serialization
+  // });
+  // // const id = context.params?.id as string;
+  // // prefetch `post.byId`
+  // const prefetch = async () => {
+  //   await ssg.works.listWorks.prefetch({
+  //     limit: 100,
+  //     cursor: undefined,
+  //   });
+  //   const works = await ssg.works.listWorks.fetch({
+  //     limit: 100,
+  //     cursor: undefined,
+  //   });
+  //   await Promise.all(
+  //     works.items.map((w) => {
+  //       return ssg.works.workPreviewImg.prefetch({ workId: w.id });
+  //     })
+  //   );
+  // };
+  // await prefetch();
   return {
     props: {
-      trpcState: ssg.dehydrate(),
+      // trpcState: ssg.dehydrate(),
     },
     revalidate: 160,
   };
@@ -70,7 +66,18 @@ const WorksPage = () => {
     }
   );
 
+  const tmpQuery = useQuery(["once"], async () => {
+    //
+    // const res = await fetch("https://google.com");
+    console.log("pizza", "before");
+    await sleep(1000);
+    console.log("pizza", "after");
+    return "pizza";
+  });
+  console.log("tmpQuery.data", tmpQuery.data, tmpQuery.status);
+
   const pages = query.data?.pages;
+  console.log("query.data", query.isLoading, query.status, query.error);
   return (
     <Container>
       <>

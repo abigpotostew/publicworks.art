@@ -193,16 +193,6 @@ const workTokenCount = baseProcedure
     console.log("hello here in token count");
     return stores().project.getTokenCount(input.slug);
   });
-const tmp = baseProcedure
-  .input(
-    z.object({
-      slug: z.string(),
-    })
-  )
-  .query(async ({ input, ctx }) => {
-    console.log("hello here in tmp");
-    return input.slug;
-  });
 
 const uploadPreviewImg = authorizedProcedure
   .input(
@@ -290,7 +280,6 @@ export const workRouter = t.router({
   uploadPreviewImg,
   listAddressWorks,
   workTokenCount: workTokenCount,
-  tmp: tmp,
   uploadWorkGenerateUrl: uploadWorkGenerateUrl,
   confirmWorkUpload: confirmWorkUpload,
 });

@@ -15,6 +15,7 @@ export const useNumMinted = (
     { slug: slug || "" },
     { enabled: !!slug, refetchInterval: refreshInterval }
   );
+  console.log("hello fetching status", numMinted.fetchStatus, numMinted.status);
 
   return numMinted;
 };
