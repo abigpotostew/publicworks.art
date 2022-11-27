@@ -55,7 +55,6 @@ const CreatePage = () => {
             <h1>Create Work</h1>
 
             {user.isLoading && <SpinnerLoading />}
-            {user.}
             <NeedToLoginButton url={"/create"} />
             {user.isSuccess && <NameWork onCreateProject={onCreateProject} />}
 
