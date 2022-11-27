@@ -48,29 +48,6 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
     <>
       <>
         <>
-          {/*<Form onSubmit={onSubmit}>*/}
-          {/*<Form.Group className="mb-3" controlId="formWorkName">*/}
-          {/*  <Form.Label>*/}
-          {/*    Name{" "}*/}
-          {/*    <TooltipInfo>*/}
-          {/*      Your work name is highly visible, on and off chain. This can*/}
-          {/*      be changed later.*/}
-          {/*    </TooltipInfo>*/}
-          {/*  </Form.Label>*/}
-          {/*  <Form.Control*/}
-          {/*    type="text"*/}
-          {/*    defaultValue={defaults.name}*/}
-          {/*    placeholder="My Work"*/}
-          {/*    name="project_name"*/}
-          {/*    onChange={(e) => setProjectName(e.target.value)}*/}
-          {/*  />*/}
-          {/*  /!*<Form.Text className="text-muted">*!/*/}
-          {/*  /!*  {"We'll never share your email with anyone else."}*!/*/}
-          {/*  /!*</Form.Text>*!/*/}
-          {/*</Form.Group>*/}
-
-          {/*divider*/}
-
           {props.onUpload && (
             <RowWideContainer>
               <div>

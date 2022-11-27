@@ -16,6 +16,7 @@ export const DropZone: FC<DropZoneProps> = ({
     accept === "zip"
       ? {
           "application/zip": [],
+          "application/x-zip-compressed": [],
         }
       : {
           "image/jpeg": [],

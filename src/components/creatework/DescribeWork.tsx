@@ -36,6 +36,7 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
     externalLink: props.defaultValues?.externalLink || undefined,
     creator: props.defaultValues?.creator || "",
     name: props.defaultValues?.name || "",
+    // additionalDescription: props.defaultValues? || "",
   };
 
   const formik = useFormik({

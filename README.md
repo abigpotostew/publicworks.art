@@ -13,6 +13,8 @@ todo:
 - add dutch auction support
 - documentation
 
+- Add additional description to the edit flow
+- add a button to open to fullscreen!
 
 design inspiration:
 - https://nouns.build/
