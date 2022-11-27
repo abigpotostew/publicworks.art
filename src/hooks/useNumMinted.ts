@@ -13,7 +13,7 @@ export const useNumMinted = (
 
   const numMinted = trpcNextPW.works.workTokenCount.useQuery(
     { slug: slug || "" },
-    { enabled: !!slug }
+    { enabled: !!slug, refetchInterval: refreshInterval }
   );
 
   return numMinted;

@@ -33,7 +33,7 @@ export const initializeDatasource = () => {
   }
 
   const entities = "src/model/index{.ts, .js}";
-  console.log("ENTITIES: ", entities);
+  //console.log("ENTITIES: ", entities);
 
   const ds = new DataSource({
     type: "mysql",
@@ -58,6 +58,6 @@ export const initializeDatasource = () => {
   });
   return ds.initialize().then(() => {
     MysqlDataSource = ds;
-    console.log("Data Source has been initialized!");
+    //console.log("Data Source has been initialized!");
   });
 };

@@ -26,7 +26,7 @@ export function Sandbox() {
     [filesRecord]
   );
 
-  console.log({ attributes, traits });
+  //console.log({ attributes, traits });
 
   const processFile = async (file: File) => {
     try {

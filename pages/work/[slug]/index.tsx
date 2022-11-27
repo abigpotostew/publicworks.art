@@ -19,6 +19,7 @@ import { initializeIfNeeded } from "src/typeorm/datasource";
 import { serializeWork } from "src/dbtypes/works/serialize-work";
 import config from "src/wasm/config";
 import { WorkSerializable } from "src/dbtypes/works/workSerializable";
+import { trpcNextPW } from "src/server/utils/trpc";
 
 export async function getStaticPaths() {
   await initializeIfNeeded();
@@ -71,7 +72,16 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
     error: numMintedError,
     isLoading: numMintedLoading,
   } = useNumMinted(work?.slug);
+
   const metadata = useNftMetadata({ sg721: work.sg721, tokenId: "1" });
+
+  console.log("numMinted", numMinted, numMintedError, numMintedLoading);
+
+  const tmp = trpcNextPW.works.tmp.useQuery(
+    { slug: "pizza" },
+    { refetchInterval: 2000 }
+  );
+  console.log("tmp", tmp.data);
 
   const loading = false;
   const errorMetadata = false;

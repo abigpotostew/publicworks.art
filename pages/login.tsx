@@ -18,7 +18,7 @@ const AuthPage = () => {
   const router = useRouter();
   const { query } = router;
   const { user } = useUserContext();
-  console.log({ user });
+  //console.log({ user });
   const sgwallet = useWallet();
   const sgclient = useStargazeClient();
   const toast = useToast();

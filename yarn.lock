@@ -1555,27 +1555,27 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-2.0.0.tgz#f544a148d3ab35801c1f633a7441fd87c2e484bf"
   integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
 
-"@trpc/client@^10.0.0-rc.5":
-  version "10.0.0-rc.5"
-  resolved "https://registry.yarnpkg.com/@trpc/client/-/client-10.0.0-rc.5.tgz#df304278927fce3805e080f491af507744a14d64"
-  integrity sha512-+wVbec1UYCk4L3Z8XihkmOjeHN36HE+Ur4uKVR1DlA/9yUlxC2j/YIuhLN0mMiqGezVsMWNE/vCckVWAiRGN5w==
+"@trpc/client@^10.4.0":
+  version "10.4.0"
+  resolved "https://registry.yarnpkg.com/@trpc/client/-/client-10.4.0.tgz#b429fdf68922bf6214d15b452e7922996efc5b50"
+  integrity sha512-f8kREiVv2l7WgT2NrqDiyPPO6xz9o4LG2zrH/Q3aetx1GApZEBCjdBY3b9fb9/5ZhrbjjSzUmkUviBBF5FZoSw==
 
-"@trpc/next@^10.0.0-rc.5":
-  version "10.0.0-rc.5"
-  resolved "https://registry.yarnpkg.com/@trpc/next/-/next-10.0.0-rc.5.tgz#831b25a7523d8bdd2914a5443abf096d851a9c76"
-  integrity sha512-icP9MV8gnvS1qGipwmOGi7CU/Hj6Y2sEOaJRw1N9LgsalQB2yCR53Q2IA/S+H7jnlvyFQTCyHwmnBinjhTbA+w==
+"@trpc/next@^10.4.0":
+  version "10.4.0"
+  resolved "https://registry.yarnpkg.com/@trpc/next/-/next-10.4.0.tgz#fa41ca002903aef7e57fd6383307e5a5f4c4c1b7"
+  integrity sha512-d1kG/OLpKLGrjsvj6IiZ5vRiU0tr/yNU8uWamb2t4oELttzk+DbvrSfyTaoG7czkC91buICVxSOL4slLqSwMFA==
   dependencies:
     react-ssr-prepass "^1.5.0"
 
-"@trpc/react-query@^10.0.0-rc.5":
-  version "10.0.0-rc.5"
-  resolved "https://registry.yarnpkg.com/@trpc/react-query/-/react-query-10.0.0-rc.5.tgz#231eb682234371cec7ae5116a1b4e1a55bc56a14"
-  integrity sha512-i18VFsaHIVdlAaLM7Hg75xRC9mAd0bYTyFC8chjIMWWmD2G+a6DbwWxxjM5fLkn05eiPBtxcGTW2Q5eCcWtlOA==
+"@trpc/react-query@^10.4.0":
+  version "10.4.0"
+  resolved "https://registry.yarnpkg.com/@trpc/react-query/-/react-query-10.4.0.tgz#2041f4a4a0daad463f3360495caea58ebf220756"
+  integrity sha512-YoJG7oaGNaxtR1DZwhKQRkWWGJ1NSVSAOCxNkQJ7FNIoStcAZ55dkNKlGt8FUvuTImsU0FRsSYvb+414V7kW8w==
 
-"@trpc/server@^10.0.0-rc.5":
-  version "10.0.0-rc.5"
-  resolved "https://registry.yarnpkg.com/@trpc/server/-/server-10.0.0-rc.5.tgz#6183ffb988a9bda5580b4fe2312c78095407a0a0"
-  integrity sha512-SMj1uFL1iocYDCkLFrjyiRCAQFFA6uu7kWhIZGpWFGcZMl805CVuliWdbYcHbGU0diF/BlEAJ5BWZsfjnOkDXA==
+"@trpc/server@^10.4.0":
+  version "10.4.0"
+  resolved "https://registry.yarnpkg.com/@trpc/server/-/server-10.4.0.tgz#0c3f12cfc3e4f303d3446eba1d195e2efaeeced4"
+  integrity sha512-QtNSyDuA+gKpRwXBgemf8BlIRdE4xfLJBSg6tKFDvMYc0kbaiwrI7bPlldZMLwhAoJFnt0TmcaAiGCO/ymI+pg==
 
 "@types/bezier-js@^4.1.0":
   version "4.1.0"

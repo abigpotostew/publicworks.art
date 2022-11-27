@@ -31,7 +31,7 @@ const SpinAnimaton: React.FC<Props> = ({ animation, width, height }) => {
   const ref = useRef(null);
   const [sketchKey, setSketchKey] = useState(0);
   const [widthContainer, heightContainer] = useSize(ref);
-  console.log([width, height], [widthContainer, heightContainer]);
+  //console.log([width, height], [widthContainer, heightContainer]);
   // useEffect(() => {
   //   setSketchKey((p) => p + 1);
   // }, [widthContainer, heightContainer]);

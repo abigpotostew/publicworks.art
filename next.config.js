@@ -19,42 +19,43 @@ const nextConfig = {
   reactStrictMode: false,
   experimental: {},
   productionBrowserSourceMaps: true,
-  async headers() {
-    return [
-      {
-        source: "/:path*",
-        headers: [
-          {
-            key: "Content-Security-Policy",
-            value: `frame-ancestors 'self'; frame-src ${process.env.NEXT_PUBLIC_IPFS_GATEWAY_SAFE} ${articlesAllowedDomains} 'self';`,
-          },
-          ...baseSecurityHeaders,
-        ],
-      },
-      {
-        source: "/sandbox/worker.js",
-        headers: [
-          {
-            key: "service-worker-allowed",
-            value: "/",
-          },
-        ],
-      },
-      {
-        source: "/sandbox/preview.html",
-        headers: [
-          {
-            key: "Content-Security-Policy",
-            value: "",
-          },
-          {
-            key: "Cross-Origin-Embedder-Policy",
-            value: "require-corp",
-          },
-        ],
-      },
-    ];
-  },
+  // async headers() {
+  //   return [
+  //     {
+  //       source: "/:path*",
+  //       headers: [
+  //         {
+  //           key: "Content-Security-Policy",
+  //           //todo this mightbe the problem!
+  //           value: `frame-ancestors 'self'; frame-src ${process.env.NEXT_PUBLIC_IPFS_GATEWAY_SAFE} ${articlesAllowedDomains} 'self';`,
+  //         },
+  //         ...baseSecurityHeaders,
+  //       ],
+  //     },
+  //     {
+  //       source: "/sandbox/worker.js",
+  //       headers: [
+  //         {
+  //           key: "service-worker-allowed",
+  //           value: "/",
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       source: "/sandbox/preview.html",
+  //       headers: [
+  //         {
+  //           key: "Content-Security-Policy",
+  //           value: "",
+  //         },
+  //         {
+  //           key: "Cross-Origin-Embedder-Policy",
+  //           value: "require-corp",
+  //         },
+  //       ],
+  //     },
+  //   ];
+  // },
 };
 
 module.exports = nextConfig;
