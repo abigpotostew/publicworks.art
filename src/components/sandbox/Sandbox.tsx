@@ -163,8 +163,8 @@ export function Sandbox() {
             <div>
               <h5>Features</h5>
               {/*<Spacing size="small" />*/}
-              <RawProperties rawFeatures={attributes} />
-              <RawProperties rawFeatures={traits} />
+              <RawProperties properties={attributes} />
+              <RawProperties properties={traits} />
             </div>
           </div>
         ) : (

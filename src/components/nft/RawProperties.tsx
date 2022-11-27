@@ -1,5 +1,7 @@
 import { RawTokenProperties } from "src/types/Sandbox";
-import { FC } from "react";
+import { FC, Fragment } from "react";
+import { Pill } from "src/components/content/Pill";
+import { Row } from "react-bootstrap";
 interface Props {
   properties: RawTokenProperties;
 }
@@ -11,9 +13,12 @@ export const RawProperties: FC<RawTokenProperties> = (
   return (
     <div>
       {keys.map((k, index) => (
-        <span key={index}>
-          {k}: {props.properties[k]}
-        </span>
+        <Fragment key={index}>
+          <Pill color={"red"}>
+            <Row>{k}</Row>
+            <Row>{props.properties[k]}</Row>
+          </Pill>
+        </Fragment>
       ))}
     </div>
   );

@@ -15,8 +15,6 @@ import { useToast } from "src/hooks/useToast";
 
 const CreatePage = () => {
   const { user } = useUserContext();
-  const { wallet } = useWallet();
-  // useUserRequired("/create");
   const utils = trpcNextPW.useContext();
   const router = useRouter();
   const toast = useToast();
@@ -57,6 +55,7 @@ const CreatePage = () => {
             <h1>Create Work</h1>
 
             {user.isLoading && <SpinnerLoading />}
+            {user.}
             <NeedToLoginButton url={"/create"} />
             {user.isSuccess && <NameWork onCreateProject={onCreateProject} />}
 
