@@ -11,15 +11,14 @@ export const RawProperties: FC<RawTokenProperties> = (
   const keys = props.properties ? Object.keys(props.properties) : [];
   console.log("properties", props.properties);
   return (
-    <div>
+    <ul>
       {keys.map((k, index) => (
-        <Fragment key={index}>
-          <Pill color={"red"}>
-            <Row>{k}</Row>
-            <Row>{props.properties[k]}</Row>
-          </Pill>
-        </Fragment>
+        <li key={index}>
+          <span>
+            {k}: {props.properties[k]}{" "}
+          </span>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 };

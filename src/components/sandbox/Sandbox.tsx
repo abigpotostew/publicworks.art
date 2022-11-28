@@ -161,10 +161,22 @@ export function Sandbox() {
             {/*<Spacing size="2x-large" />*/}
 
             <div>
-              <h5>Features</h5>
+              <h5>Attributes</h5>
               {/*<Spacing size="small" />*/}
-              <RawProperties properties={attributes} />
-              <RawProperties properties={traits} />
+              {/*<RawProperties properties={attributes} />*/}
+              {!attributes || Object.keys(attributes).length === 0 ? (
+                <ul>
+                  No attributes. (Attributes are optional but recommended)
+                </ul>
+              ) : (
+                <RawProperties properties={attributes} />
+              )}
+              <h5>Traits</h5>
+              {!traits || Object.keys(traits).length === 0 ? (
+                <ul>No traits. (Traits are optional)</ul>
+              ) : (
+                <RawProperties properties={traits} />
+              )}
             </div>
           </div>
         ) : (
@@ -203,6 +215,14 @@ export function Sandbox() {
           </div>
         </div>
 
+        {url && (
+          <Button
+            variant={"secondary"}
+            onClick={() => setHash(generateTxHash())}
+          >
+            test new hash
+          </Button>
+        )}
         {url && (
           <Button
             // @ts-ignore
