@@ -25,7 +25,7 @@ export const confirmUpload = async (work: WorkEntity) => {
   const tmpPath = tmpobj.name;
   console.log("Tmp File Created for confirm: ", tmpPath);
 
-  //download it, chekc file size within limits
+  //download it, check file size within limits
   await getBucket()
     .file(upload.filename)
     .download({ destination: tmpobj.name });

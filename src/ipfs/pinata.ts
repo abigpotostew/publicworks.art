@@ -2,6 +2,58 @@ import * as fs from "fs";
 import * as unzipper from "unzipper";
 import FormData from "form-data";
 import got from "got";
+import AdmZip from "adm-zip";
+
+const readZipAdm = async (
+  zipPath: string,
+  insertBuffer: (filename: string, buffer: any) => void
+) => {
+  const zip = new AdmZip(zipPath);
+  const zipEntries = zip.getEntries(); // an array of ZipEntry records
+  zipEntries.forEach(function (zipEntry) {
+    if (zipEntry.isDirectory) {
+      return;
+    }
+    insertBuffer(zipEntry.entryName, zipEntry.getData());
+  });
+  console.log("done reading readZipAdm", zipPath);
+};
+const readZip = async (
+  zipPath: string,
+  insertBuffer: (filename: string, buffer: any) => void
+) => {
+  await fs
+    .createReadStream(zipPath)
+    // .pipe(unzipper.Parse({ forceStream: true }));
+    .pipe(unzipper.Parse())
+    .on("entry", async function (entry) {
+      const fileName = entry.path;
+      const type = entry.type; // 'Directory' or 'File'
+      if (type !== "File") {
+        entry.autodrain();
+        return;
+      }
+      const buff = await entry.buffer();
+
+      insertBuffer(fileName, buff);
+      // data.append("file", buff, {
+      //   filepath,
+      // });
+    })
+    .promise();
+  // for await (const entry of zip) {
+  //   const fileName = entry.path;
+  //   const type = entry.type; // 'Directory' or 'File'
+  //   if (type !== "File") {
+  //     continue;
+  //   }
+  //   const buff = await entry.buffer();
+  //   const filepath = "root/" + fileName;
+  //   data.append("file", buff, {
+  //     filepath,
+  //   });
+  // }
+};
 
 export const pinZipToPinata = async (
   zipPath: string,
@@ -9,10 +61,7 @@ export const pinZipToPinata = async (
 ) => {
   const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
   try {
-    const zip = fs
-      .createReadStream(zipPath)
-      .pipe(unzipper.Parse({ forceStream: true }));
-
+    console.log("stat", zipPath, fs.statSync(zipPath));
     const data = new FormData();
     data.append("pinataOptions", '{"cidVersion": 1}');
     data.append(
@@ -22,19 +71,34 @@ export const pinZipToPinata = async (
         keyvalues: { workId: metadata.workId },
       })
     );
-
-    for await (const entry of zip) {
-      const fileName = entry.path;
-      const type = entry.type; // 'Directory' or 'File'
-      if (type !== "File") {
-        continue;
-      }
-      const buff = await entry.buffer();
-      const filepath = "root/" + fileName;
+    // readZip(zipPath, (filepath, buff) => {
+    //   data.append("file", buff, {
+    //     filepath,
+    //   });
+    // });
+    await readZipAdm(zipPath, (filepath, buff) => {
       data.append("file", buff, {
-        filepath,
+        filepath: "root/" + filepath,
       });
-    }
+    });
+    // await fs
+    //   .createReadStream(zipPath)
+    //   // .pipe(unzipper.Parse({ forceStream: true }));
+    //   .pipe(unzipper.Parse())
+    //   .on("entry", async function (entry) {
+    //     const fileName = entry.path;
+    //     const type = entry.type; // 'Directory' or 'File'
+    //     if (type !== "File") {
+    //       entry.autodrain();
+    //       return;
+    //     }
+    //     const buff = await entry.buffer();
+    //     const filepath = "root/" + fileName;
+    //     data.append("file", buff, {
+    //       filepath,
+    //     });
+    //   })
+    //   .promise();
 
     const response = await got(url, {
       method: "POST",
