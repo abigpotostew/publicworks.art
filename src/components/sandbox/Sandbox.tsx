@@ -39,6 +39,7 @@ export function Sandbox() {
       setFilesRecord(record);
     } catch (err) {
       // todo: process error
+      setError(err?.toString());
       console.error(err);
     }
   };
@@ -91,6 +92,14 @@ export function Sandbox() {
       }
     }
   };
+  const restart = () => {
+    setError(null);
+    setFile(null);
+    setTraits(null);
+    setAttributes(null);
+    setFilesRecord(null);
+    setUrl(null);
+  };
 
   return (
     <section>
@@ -99,7 +108,12 @@ export function Sandbox() {
         <div>
           {filesRecord ? (
             <div>
-              <div>
+              <a href={"#"} onClick={() => restart()}>
+                <div>
+                  <FontAwesomeIcon icon={"backward"} width={18} /> Restart
+                </div>
+              </a>
+              <div className={"mt-3"}>
                 <h5>Files</h5>
                 <span>
                   <i aria-hidden className="fas fa-file-archive" /> {file?.name}
@@ -154,6 +168,7 @@ export function Sandbox() {
               <DropZone
                 accept={"zip"}
                 onUpload={async (files: File[]) => {
+                  setError(null);
                   setFile(files && files.length > 0 ? files[0] : null);
                 }}
               >
@@ -168,7 +183,7 @@ export function Sandbox() {
               </DropZone>
               <Button
                 color="secondary"
-                disabled={!file}
+                disabled={!file || !!error}
                 onClick={() => uploadFile()}
               >
                 start tests
@@ -192,14 +207,18 @@ export function Sandbox() {
 
         {/*//sandbox preview*/}
         <div className={"ms-auto w-100 h-100 " + styles.border2px}>
-          <SandboxPreview
-            hash={hash}
-            ref={artworkIframeRef}
-            record={filesRecord || undefined}
-            textWaiting="Waiting for content to be reachable"
-            onUrlUpdate={setUrl}
-            onLoaded={iframeLoaded}
-          />
+          {file ? (
+            <SandboxPreview
+              hash={hash}
+              ref={artworkIframeRef}
+              record={filesRecord || undefined}
+              textWaiting="Waiting for content to be reachable"
+              onUrlUpdate={setUrl}
+              onLoaded={iframeLoaded}
+            />
+          ) : (
+            <div className={"w-100 mb-2 " + styles.height30rem}></div>
+          )}
 
           {url && (
             <Button

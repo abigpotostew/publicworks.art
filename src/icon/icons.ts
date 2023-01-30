@@ -8,6 +8,7 @@ import {
   faPlus,
   faMinus,
   faFileImport,
+  faBackward,
 } from "@fortawesome/free-solid-svg-icons";
 
 /**
@@ -15,4 +16,11 @@ import {
  * `<FontAwesomeIcon icon={"minus"} width={18} />`
  */
 
-library.add(faArrowRightFromBracket, faUpload, faPlus, faMinus, faFileImport);
+library.add(
+  faArrowRightFromBracket,
+  faUpload,
+  faPlus,
+  faMinus,
+  faFileImport,
+  faBackward
+);
