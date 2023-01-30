@@ -1,6 +1,7 @@
 import "@fortawesome/free-solid-svg-icons";
 import "@fortawesome/free-regular-svg-icons";
 //https://github.com/FortAwesome/Font-Awesome/issues/19348
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { library, config } = require("@fortawesome/fontawesome-svg-core");
 import {
   faArrowRightFromBracket,

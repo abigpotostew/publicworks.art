@@ -39,7 +39,7 @@ export function Sandbox() {
       setFilesRecord(record);
     } catch (err) {
       // todo: process error
-      setError(err?.toString());
+      setError((err as any)?.toString());
       console.error(err);
     }
   };
