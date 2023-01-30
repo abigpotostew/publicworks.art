@@ -12,7 +12,7 @@ import {
   uploadFileToPinata,
 } from "../../ipfs/pinata";
 import { dataUrlToBuffer } from "../../base64/dataurl";
-import { zodStarsAddress } from "src/wasm/address";
+import { zodStarsAddress, zodStarsContractAddress } from "src/wasm/address";
 import cuid from "cuid";
 import { createPresignedUrl } from "src/upload/presignedUrl";
 import { confirmUpload } from "src/upload/confirm-upload";
@@ -105,6 +105,7 @@ const getWorkBySlug = baseProcedure
     }
     return serializeWork(project);
   });
+
 const listWorks = baseProcedure
   .input(
     z.object({

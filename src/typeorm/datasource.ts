@@ -35,13 +35,17 @@ export const initializeDatasource = () => {
   const entities = "src/model/index{.ts, .js}";
   //console.log("ENTITIES: ", entities);
 
+  const isLocalMysql =
+    process.env.DATABASE_URL === "mysql://127.0.0.1:3309/publicworks";
   const ds = new DataSource({
     type: "mysql",
-    port: 3306,
+    port: isLocalMysql ? 3309 : 3306,
     url: process.env.DATABASE_URL,
-    ssl: {
-      ca: process.env.SSL_CERT,
-    },
+    ssl: isLocalMysql
+      ? false
+      : {
+          ca: process.env.SSL_CERT,
+        },
     entities: [
       WorkEntity,
       UserEntity,

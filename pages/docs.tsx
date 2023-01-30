@@ -190,7 +190,7 @@ renderer = new WebGLRenderer({preserveDrawingBuffer: true});
 
 
 ### Fees
-Public works takes
+Public works takes 15% of mint fees. That's on top of a fair burn network fee of 10% which gets half is burned and the other half goes to the community pool. In total, 25% of your mint proceeds are taken as fees. We're open to feedback about modifying the fee structure. Please reach out and let us know your thoughts.
 
 ----
 

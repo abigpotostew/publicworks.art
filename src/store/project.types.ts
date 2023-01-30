@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { isISODate } from "../util/isISODate";
 import { cidRegex } from "../ipfs/cid";
-import { zodStarsAddress } from "src/wasm/address";
+import { zodStarsAddress, zodStarsContractAddress } from "src/wasm/address";
 
 export interface Token {
   hash: string;
@@ -85,7 +85,7 @@ export const editProjectZod = z.object({
   license: z.string().optional().nullable(),
   pixelRatio: z.number().optional(),
   priceStars: z.number().optional(),
-  sg721: z.string().optional().nullable(),
-  minter: z.string().optional().nullable(),
+  sg721: zodStarsContractAddress.optional().nullable(),
+  minter: zodStarsContractAddress.optional().nullable(),
 });
 export type EditProjectRequest = z.infer<typeof editProjectZod>;
