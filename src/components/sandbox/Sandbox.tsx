@@ -17,21 +17,43 @@ import {
   FlexBoxCenterStretch,
 } from "../layout/FlexBoxCenter";
 import { TooltipInfo } from "../TooltipInfo";
+import SpinnerLoading from "../loading/Loader";
 
 export function Sandbox() {
   const artworkIframeRef = useRef<ArtworkIframeRef>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [hash, setHash] = useState<string>(generateTxHash());
+  const [hash, setHashState] = useState<string>(generateTxHash());
   const [filesRecord, setFilesRecord] = useState<SandboxFiles | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [url, setUrl] = useState<string | null>(null);
   const [attributes, setAttributes] = useState<RawTokenProperties | null>(null);
+  const [previewReady, setPreviewReady] = useState<boolean>(false);
   const [traits, setTraits] = useState<RawTokenProperties | null>(null);
-
+  const [imgUrl, setImgUrl] = useState<string | null>(null);
+  const hasAttributes = !!attributes && Object.keys(attributes).length > 0;
+  const hasTraits = !!traits && Object.keys(traits).length > 0;
   const fileList = useMemo<string[] | null>(
     () => (filesRecord ? Object.keys(filesRecord) : null),
     [filesRecord]
   );
+
+  const restart = () => {
+    setError(null);
+    setFile(null);
+    setFilesRecord(null);
+    setUrl(null);
+    setTraits(null);
+    setAttributes(null);
+    setPreviewReady(false);
+    setImgUrl(null);
+  };
+  const setHash = (hash: string) => {
+    setImgUrl(null);
+    setTraits(null);
+    setAttributes(null);
+    setPreviewReady(false);
+    setHashState(hash);
+  };
 
   const processFile = async (file: File) => {
     try {
@@ -58,9 +80,7 @@ export function Sandbox() {
   };
 
   const iframeLoaded = (depth = false) => {
-    console.log("hello iframeLoaded");
     if (artworkIframeRef.current) {
-      console.log("in here hello iframeLoaded");
       const iframe = artworkIframeRef.current.getHtmlIframe();
       if (iframe) {
         const fetchAttributes = () => {
@@ -83,22 +103,41 @@ export function Sandbox() {
           console.log("set traits", traits);
           return [!!traits, !!attributes];
         };
-        const [tra, attr] = fetchAttributes();
-        console.log("tra", tra, "attr", attr);
-        if (!attr && !depth) {
-          console.log("attributes not found, reloading");
+        const fetchPreviewReady = () => {
+          // @ts-ignore
+          const pr = !!iframe.contentWindow?.previewReady;
+          setPreviewReady(pr);
+          return pr;
+        };
+        if (!fetchPreviewReady()) {
+          console.log("preview ready yet, reloading");
           setTimeout(() => iframeLoaded(true), 500);
+          return;
+        } else {
+          const [tra, attr] = fetchAttributes();
+          console.log("traits", tra, "attributes", attr);
+
+          if (!attr && !tra) {
+            console.log("no attributes, FAILED!");
+            setError(
+              "No attributes found. Please add attributes to your artwork before marking preview ready with `setPreviewReady()`"
+            );
+          }
+
+          const captureImg = (selector: string) => {
+            const el = iframe?.contentDocument?.querySelector(selector);
+            // const el = iframe?.querySelector(selector);
+            if (!el || !("toDataURL" in el)) {
+              return null;
+            }
+            // @ts-ignore
+            return el.toDataURL("image/png");
+          };
+          const img = captureImg("canvas");
+          setImgUrl(img);
         }
       }
     }
-  };
-  const restart = () => {
-    setError(null);
-    setFile(null);
-    setTraits(null);
-    setAttributes(null);
-    setFilesRecord(null);
-    setUrl(null);
   };
 
   return (
@@ -142,19 +181,43 @@ export function Sandbox() {
               </div>
 
               <div>
-                <h5>Attributes</h5>
-                {!attributes || Object.keys(attributes).length === 0 ? (
+                <h5>
+                  Preview Ready{" "}
+                  {previewReady ? (
+                    <FontAwesomeIcon icon={"check"} width={18} />
+                  ) : (
+                    <SpinnerLoading />
+                  )}
+                </h5>
+                {previewReady && <p>Your sketch has marked Preview Ready</p>}
+                {!previewReady && <p>Waiting for Preview Ready to be set.</p>}
+                <h5>
+                  Attributes{" "}
+                  {hasAttributes ? (
+                    <FontAwesomeIcon icon={"check"} width={18} />
+                  ) : previewReady ? (
+                    <FontAwesomeIcon icon={"minus"} width={18} />
+                  ) : (
+                    <SpinnerLoading />
+                  )}
+                </h5>
+                {!hasAttributes ? (
                   <ul>
                     No attributes. (Attributes are optional but recommended)
                   </ul>
                 ) : (
                   <RawProperties properties={attributes} />
                 )}
-                <FlexBox>
-                  {" "}
-                  <h5 className={"me-1"}>Traits</h5>
-                  <TooltipInfo>Traits are optional</TooltipInfo>
-                </FlexBox>
+                <h5 className={"me-1"}>
+                  Traits{" "}
+                  {hasTraits ? (
+                    <FontAwesomeIcon icon={"check"} width={18} />
+                  ) : previewReady ? (
+                    <FontAwesomeIcon icon={"minus"} width={18} />
+                  ) : (
+                    <SpinnerLoading />
+                  )}
+                </h5>
 
                 {!traits || Object.keys(traits).length === 0 ? (
                   <ul>No traits. (Traits are optional)</ul>
@@ -206,37 +269,42 @@ export function Sandbox() {
         </div>
 
         {/*//sandbox preview*/}
-        <div className={"ms-auto w-100 h-100 " + styles.border2px}>
-          {file ? (
-            <SandboxPreview
-              hash={hash}
-              ref={artworkIframeRef}
-              record={filesRecord || undefined}
-              textWaiting="Waiting for content to be reachable"
-              onUrlUpdate={setUrl}
-              onLoaded={iframeLoaded}
-            />
-          ) : (
-            <div className={"w-100 mb-2 " + styles.height30rem}></div>
-          )}
+        <div>
+          <div className={"ms-auto w-100  " + styles.border2px}>
+            {file ? (
+              <SandboxPreview
+                hash={hash}
+                ref={artworkIframeRef}
+                record={filesRecord || undefined}
+                textWaiting="Waiting for content to be reachable"
+                onUrlUpdate={setUrl}
+                onLoaded={iframeLoaded}
+              />
+            ) : (
+              <div className={"w-100 mb-2 " + styles.height30rem}></div>
+            )}
 
-          {url && (
-            <Button
-              variant={"secondary"}
-              onClick={() => setHash(generateTxHash())}
-            >
-              test new hash
-            </Button>
-          )}
-          {url && (
-            <Button
-              // @ts-ignore
-              href={url}
-              target="_blank"
-            >
-              open live
-            </Button>
-          )}
+            {url && (
+              <Button
+                variant={"secondary"}
+                onClick={() => setHash(generateTxHash())}
+              >
+                test new hash
+              </Button>
+            )}
+            {url && (
+              <Button
+                // @ts-ignore
+                href={url}
+                target="_blank"
+              >
+                open live
+              </Button>
+            )}
+          </div>
+          <div className={styles.border2px}>
+            {imgUrl && <img src={imgUrl} className={"w-100 "} />}
+          </div>
         </div>
       </FlexBoxCenterStretch>
     </section>
