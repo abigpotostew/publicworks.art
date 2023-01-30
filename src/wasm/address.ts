@@ -10,25 +10,20 @@ const compatiblePrefixes = ["stars"];
 export const zodStarsAddress = z
   .string()
   .length(44)
-  .refine((val) => {
-    try {
-      toStars(val);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  });
+  .refine((val) => isStarAddress(val));
 export const zodStarsContractAddress = z
   .string()
   .length(56)
-  .refine((val) => {
-    try {
-      toStars(val);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  });
+  .refine((val) => isStarAddress(val));
+
+export const isStarAddress = (addr: string) => {
+  try {
+    toStars(addr);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
 
 export const toStars = (addr: string) => {
   try {

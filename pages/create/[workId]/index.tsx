@@ -36,6 +36,7 @@ import { onMutateLogin } from "src/trpc/onMutate";
 import { useMutation } from "@tanstack/react-query";
 import useUserContext from "src/context/user/useUserContext";
 import { getToken } from "src/util/auth-token";
+import { WorkOnChain } from "../../../src/components/creatework/WorkOnChain";
 
 // export const getServerSideProps: GetServerSideProps = async (context) => {
 //   await initializeIfNeeded();
@@ -72,6 +73,7 @@ const stages = [
   "submit",
   "view",
 ];
+
 const stageMd = {
   name_art: {
     label: "Code",
@@ -325,14 +327,16 @@ const EditWorkPage = () => {
           {stage === "view" && work && (
             // <Container fluid={false}>
             <>
-              <a
-                target={"_blank"}
-                href={`https://testnet.publicawesome.dev/launchpad/${work.minter}`}
-              >
-                Mint
-              </a>
-              <div>
-                {<Button onClick={() => setStagePrevFrom("view")}>Back</Button>}
+              <WorkOnChain minter={work.minter} slug={work.slug} />
+              <div className={"Margin-T-1"}>
+                {
+                  <Button
+                    variant={"secondary"}
+                    onClick={() => setStagePrevFrom("view")}
+                  >
+                    Back
+                  </Button>
+                }
               </div>
             </>
             // </Container>
