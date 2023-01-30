@@ -7,6 +7,7 @@ import {
 } from "react";
 import useAsyncEffect from "use-async-effect";
 import { SandboxFiles } from "../../types/Sandbox";
+import styles from "./Sandbox.module.scss";
 
 interface Props {
   record?: SandboxFiles;
@@ -14,6 +15,7 @@ interface Props {
   hash?: string;
   onLoaded?: () => void;
   onUrlUpdate?: (url: string) => void;
+  className?: string;
 }
 
 export interface ArtworkIframeRef {
@@ -22,7 +24,7 @@ export interface ArtworkIframeRef {
 }
 
 export const SandboxPreview = forwardRef<ArtworkIframeRef, Props>(
-  ({ record, hash, onUrlUpdate, onLoaded, textWaiting }, ref) => {
+  ({ record, hash, onUrlUpdate, onLoaded, textWaiting, className }, ref) => {
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const workerReg = useRef<ServiceWorkerRegistration | null>(null);
     const [id, setId] = useState<string>("0");
@@ -103,6 +105,7 @@ export const SandboxPreview = forwardRef<ArtworkIframeRef, Props>(
           ref={iframeRef}
           sandbox="allow-scripts allow-same-origin"
           onLoad={onLoaded}
+          className={"w-100 mb-2 " + styles.height30rem}
         />
         {/* {loading &&(
         <LoaderBlock height="100%">{textWaiting}</LoaderBlock>

@@ -22,6 +22,26 @@ export const FlexBoxCenter = ({
   );
 };
 
+export const FlexBoxCenterStretch = ({
+  children,
+  className,
+  style,
+  fluid = true,
+}: {
+  className?: string;
+  children: ReactNode;
+  style?: CSSProperties | undefined;
+  fluid?: boolean;
+}) => {
+  return (
+    <Container fluid={!!fluid} className={className}>
+      <div style={style} className={`${styles.flexWrapCenterStretch}`}>
+        {children}
+      </div>
+    </Container>
+  );
+};
+
 export const FlexBox = ({
   children,
   className,
@@ -32,7 +52,7 @@ export const FlexBox = ({
   style?: CSSProperties | undefined;
 }) => {
   return (
-    <div className={className} style={{ ...style, display: "flex" }}>
+    <div className={className + " d-inline-flex"} style={{ ...style }}>
       {children}
     </div>
   );

@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import { RawTokenProperties, SandboxFiles } from "../../types/Sandbox";
 import { generateTxHash } from "src/generateHash";
 import { processZipSandbox } from "src/util/sandbox";
@@ -10,6 +10,13 @@ import {
 import { Button } from "react-bootstrap";
 import { RawProperties } from "src/components/nft/RawProperties";
 import styles from "./Sandbox.module.scss";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  FlexBox,
+  FlexBoxCenter,
+  FlexBoxCenterStretch,
+} from "../layout/FlexBoxCenter";
+import { TooltipInfo } from "../TooltipInfo";
 
 export function Sandbox() {
   const artworkIframeRef = useRef<ArtworkIframeRef>(null);
@@ -25,8 +32,6 @@ export function Sandbox() {
     () => (filesRecord ? Object.keys(filesRecord) : null),
     [filesRecord]
   );
-
-  //console.log({ attributes, traits });
 
   const processFile = async (file: File) => {
     try {
@@ -89,150 +94,132 @@ export function Sandbox() {
 
   return (
     <section>
-      <div>
-        {error && (
-          <>
+      {/*<FlexBoxCenter></FlexBoxCenter>*/}
+      <FlexBoxCenterStretch>
+        <div>
+          {filesRecord ? (
             <div>
-              <i aria-hidden className="fas fa-exclamation-triangle" />
-              <span>
-                <strong>An error occurred when uploading your project</strong>
-                <p>{error}</p>
-              </span>
-            </div>
-            {/*<Spacing size="regular" />*/}
-          </>
-        )}
+              <div>
+                <h5>Files</h5>
+                <span>
+                  <i aria-hidden className="fas fa-file-archive" /> {file?.name}
+                </span>
+              </div>
+              <div className={styles.filesListContainer + " overflow-scroll"}>
+                <div className={"overflow-scroll mh-100"}>
+                  {fileList?.map((f, index) => (
+                    <div key={index}>{f}</div>
+                  ))}
+                </div>
+              </div>
 
-        {filesRecord ? (
-          <div>
-            <div>
-              <h5>Files</h5>
-              <span>
-                <i aria-hidden className="fas fa-file-archive" /> {file?.name}
-              </span>
-            </div>
-            {/*<Spacing size="3x-small" />*/}
-            <div className={styles.filesListContainer + " overflow-scroll"}>
-              <div className={"overflow-scroll mh-100"}>
-                {fileList?.map((f, index) => (
-                  <div key={index}>{f}</div>
-                ))}
+              <div className={"mt-2"}>
+                <h5>Testing</h5>
+                <p>Your work must pass these conditions:</p>
+                <ul>
+                  <li>
+                    the same hash will <strong>always</strong> generate the same
+                    output
+                  </li>
+                  <li>
+                    different hashes generate <strong>different</strong> outputs
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <h5>Attributes</h5>
+                {!attributes || Object.keys(attributes).length === 0 ? (
+                  <ul>
+                    No attributes. (Attributes are optional but recommended)
+                  </ul>
+                ) : (
+                  <RawProperties properties={attributes} />
+                )}
+                <FlexBox>
+                  {" "}
+                  <h5 className={"me-1"}>Traits</h5>
+                  <TooltipInfo>Traits are optional</TooltipInfo>
+                </FlexBox>
+
+                {!traits || Object.keys(traits).length === 0 ? (
+                  <ul>No traits. (Traits are optional)</ul>
+                ) : (
+                  <RawProperties properties={traits} />
+                )}
               </div>
             </div>
-            {/*<FileList files={fileList} />*/}
-            {/*<Spacing size="2x-small" />*/}
-            {/*<ButtonFile*/}
-            {/*  state={"default"}*/}
-            {/*  accepted={["application/zip", "application/x-zip-compressed"]}*/}
-            {/*  onFile={updateFile}*/}
-            {/*  size="small"*/}
-            {/*  style={{*/}
-            {/*    alignSelf: "flex-start",*/}
-            {/*  }}*/}
-            {/*>*/}
-            {/*  update .zip*/}
-            {/*</ButtonFile>*/}
-
-            {/*<Spacing size="2x-large" />*/}
-
+          ) : (
             <div>
-              <h5>Testing</h5>
-              <p>You need to verify that:</p>
-              <ul>
-                <li>
-                  a same hash will <strong>always</strong> generate the same
-                  output
-                </li>
-                <li>
-                  different hashes generate <strong>different</strong> outputs
-                </li>
-              </ul>
-
-              {/*<HashTest*/}
-              {/*  autoGenerate={false}*/}
-              {/*  value={hash}*/}
-              {/*  onHashUpdate={(hash) => setHash(hash)}*/}
-              {/*  onRetry={() => {*/}
-              {/*    artworkIframeRef.current?.reloadIframe();*/}
-              {/*  }}*/}
-              {/*/>*/}
-            </div>
-
-            {/*<Spacing size="2x-large" />*/}
-
-            <div>
-              <h5>Attributes</h5>
-              {/*<Spacing size="small" />*/}
-              {/*<RawProperties properties={attributes} />*/}
-              {!attributes || Object.keys(attributes).length === 0 ? (
-                <ul>
-                  No attributes. (Attributes are optional but recommended)
-                </ul>
-              ) : (
-                <RawProperties properties={attributes} />
-              )}
-              <h5>Traits</h5>
-              {!traits || Object.keys(traits).length === 0 ? (
-                <ul>No traits. (Traits are optional)</ul>
-              ) : (
-                <RawProperties properties={traits} />
+              <DropZone
+                accept={"zip"}
+                onUpload={async (files: File[]) => {
+                  setFile(files && files.length > 0 ? files[0] : null);
+                }}
+              >
+                <>
+                  <FontAwesomeIcon
+                    icon={"file-import"}
+                    width={24}
+                    className={"Margin-R-1"}
+                  />
+                  <>drop your ZIP file here, or click to select it</>
+                </>
+              </DropZone>
+              <Button
+                color="secondary"
+                disabled={!file}
+                onClick={() => uploadFile()}
+              >
+                start tests
+              </Button>
+              {error && (
+                <>
+                  <div>
+                    <i aria-hidden className="fas fa-exclamation-triangle" />
+                    <span>
+                      <strong>
+                        An error occurred when uploading your project
+                      </strong>
+                      <p>{error}</p>
+                    </span>
+                  </div>
+                </>
               )}
             </div>
-          </div>
-        ) : (
-          <div>
-            <DropZone
-              // textDefault="Drag 'n' drop your ZIP file here"
-              accept={"zip"}
-              onUpload={async (files: File[]) => {
-                setFile(files && files.length > 0 ? files[0] : null);
-              }}
-            />
-            <Button
-              color="secondary"
-              disabled={!file}
-              onClick={() => uploadFile()}
-            >
-              start tests
-            </Button>
-          </div>
-        )}
-      </div>
-
-      <div>
-        <div>
-          <div>
-            <div>
-              <SandboxPreview
-                hash={hash}
-                ref={artworkIframeRef}
-                record={filesRecord || undefined}
-                textWaiting="Waiting for content to be reachable"
-                onUrlUpdate={setUrl}
-                onLoaded={iframeLoaded}
-              />
-            </div>
-          </div>
+          )}
         </div>
 
-        {url && (
-          <Button
-            variant={"secondary"}
-            onClick={() => setHash(generateTxHash())}
-          >
-            test new hash
-          </Button>
-        )}
-        {url && (
-          <Button
-            // @ts-ignore
-            href={url}
-            target="_blank"
-          >
-            open live
-          </Button>
-        )}
-      </div>
+        {/*//sandbox preview*/}
+        <div className={"ms-auto w-100 h-100 " + styles.border2px}>
+          <SandboxPreview
+            hash={hash}
+            ref={artworkIframeRef}
+            record={filesRecord || undefined}
+            textWaiting="Waiting for content to be reachable"
+            onUrlUpdate={setUrl}
+            onLoaded={iframeLoaded}
+          />
+
+          {url && (
+            <Button
+              variant={"secondary"}
+              onClick={() => setHash(generateTxHash())}
+            >
+              test new hash
+            </Button>
+          )}
+          {url && (
+            <Button
+              // @ts-ignore
+              href={url}
+              target="_blank"
+            >
+              open live
+            </Button>
+          )}
+        </div>
+      </FlexBoxCenterStretch>
     </section>
   );
 }

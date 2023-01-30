@@ -3,16 +3,17 @@ import MainLayout from "../src/layout/MainLayout";
 import { Container } from "react-bootstrap";
 import { RowThinContainer } from "src/components/layout/RowThinContainer";
 import { Sandbox } from "src/components/sandbox/Sandbox";
+import { RowWideContainer } from "../src/components/layout/RowWideContainer";
 
 const SandboxPage = () => {
   return (
     <Container>
-      <RowThinContainer>
+      <RowWideContainer>
         <h1>Sandbox</h1>
-      </RowThinContainer>
-      <RowThinContainer>
+      </RowWideContainer>
+      <RowWideContainer>
         <Sandbox />
-      </RowThinContainer>
+      </RowWideContainer>
     </Container>
   );
 };

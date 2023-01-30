@@ -1,11 +1,13 @@
 import "@fortawesome/free-solid-svg-icons";
 import "@fortawesome/free-regular-svg-icons";
-import { library } from "@fortawesome/fontawesome-svg-core";
+//https://github.com/FortAwesome/Font-Awesome/issues/19348
+const { library, config } = require("@fortawesome/fontawesome-svg-core");
 import {
   faArrowRightFromBracket,
   faUpload,
   faPlus,
   faMinus,
+  faFileImport,
 } from "@fortawesome/free-solid-svg-icons";
 
 /**
@@ -13,4 +15,4 @@ import {
  * `<FontAwesomeIcon icon={"minus"} width={18} />`
  */
 
-library.add(faArrowRightFromBracket, faUpload, faPlus, faMinus);
+library.add(faArrowRightFromBracket, faUpload, faPlus, faMinus, faFileImport);

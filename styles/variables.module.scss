@@ -88,6 +88,7 @@ $dark:#212529;
 .Margin-T-24{
   margin-top: calc($pw-p-spacer * 6);
 }
+
 .Margin-L-0{
   margin-left: 0;
 }
@@ -111,6 +112,30 @@ $dark:#212529;
 }
 .Margin-L-24{
   margin-left: calc($pw-p-spacer * 6);
+}
+.Margin-R-0{
+  margin-right: 0;
+}
+.Margin-R-1{
+  margin-right: calc($pw-p-spacer * 0.5);
+}
+.Margin-R-2{
+  margin-right: calc($pw-p-spacer * 1.0);
+}
+.Margin-R-4{
+  margin-right: calc($pw-p-spacer * 1.5);
+}
+.Margin-R-8{
+  margin-right: calc($pw-p-spacer * 2);
+}
+.Margin-R-12{
+  margin-right: calc($pw-p-spacer * 2.5);
+}
+.Margin-R-16{
+  margin-right: calc($pw-p-spacer * 4);
+}
+.Margin-R-24{
+  margin-right: calc($pw-p-spacer * 6);
 }
 
 
