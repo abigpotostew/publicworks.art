@@ -66,8 +66,13 @@ export const UploadCoverImage: FC<CreateWorkProps> = (
       <h2>Collection Image</h2>
       <FlexBoxCenter fluid={false}>
         <div>
-          <DropZone accept={"images"} onUpload={onUpload}>
-            Drag 'n' drop your image here, or click to select a file
+          <DropZone
+            accept={"images"}
+            onUpload={onUpload}
+            maxFiles={1}
+            maxSize={15_000_000}
+          >
+            Drag 'n' drop your image here, or click to select a file. 15mb max.
           </DropZone>
           {mutation.isLoading && <SpinnerLoading></SpinnerLoading>}
           {mutation.isSuccess && "Success!"}

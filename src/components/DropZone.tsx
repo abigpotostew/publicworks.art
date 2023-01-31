@@ -5,12 +5,16 @@ export interface DropZoneProps {
   onUpload: (files: File[]) => Promise<void>;
   children?: ReactNode;
   accept: "zip" | "images";
+  maxSize?: number;
+  maxFiles?: number;
 }
 
 export const DropZone: FC<DropZoneProps> = ({
   onUpload,
   children,
   accept,
+  maxFiles,
+  maxSize,
 }: DropZoneProps) => {
   const acceptProp: Accept =
     accept === "zip"
@@ -35,8 +39,8 @@ export const DropZone: FC<DropZoneProps> = ({
   );
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    maxFiles: 1,
-    maxSize: 50_000_000,
+    maxFiles: maxFiles || 1,
+    maxSize: maxSize || 50_000_000,
     accept: acceptProp,
   });
   // message =
