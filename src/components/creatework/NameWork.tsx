@@ -100,7 +100,7 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                       </a>
                     </>
                   )}
-                  <h3>Upload your Work Zip</h3>
+                  <h3 className={"mt-3"}>Upload your Work Zip</h3>
                   <DropZone
                     accept={"zip"}
                     onUpload={async (files) =>

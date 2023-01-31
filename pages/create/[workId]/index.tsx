@@ -107,16 +107,29 @@ const NavButtons: FC<INavButtons> = ({
 }) => {
   // @ts-ignore
   return (
-    <Container fluid={true}>
-      <FlexBox style={{ justifyContent: "flex-end" }}>
-        {onPrevClick && <Button onClick={onPrevClick}>Prev</Button>}
-        {onNextClick && (
-          <Button disabled={nextDisabled} onClick={onNextClick}>
-            Next
-          </Button>
-        )}
-      </FlexBox>
-    </Container>
+    // <Container fluid={true}>
+    <FlexBox>
+      {onPrevClick && (
+        <Button
+          variant={"outline-secondary"}
+          className={"me-2 mt-2"}
+          onClick={onPrevClick}
+        >
+          Prev
+        </Button>
+      )}
+      {onNextClick && (
+        <Button
+          variant={"outline-primary"}
+          className={"mt-2"}
+          disabled={nextDisabled}
+          onClick={onNextClick}
+        >
+          Next
+        </Button>
+      )}
+    </FlexBox>
+    // </Container>
   );
 };
 
@@ -469,7 +482,9 @@ const EditWorkPage = () => {
                       <>
                         {!onUploadMutation.isLoading &&
                           onUploadMutation.isSuccess && (
-                            <div>Successfully uploaded code!</div>
+                            <div className={"mt-2"}>
+                              Successfully uploaded code!
+                            </div>
                           )}
                       </>
                       <>
