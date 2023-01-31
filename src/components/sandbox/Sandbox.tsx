@@ -7,7 +7,7 @@ import {
   ArtworkIframeRef,
   SandboxPreview,
 } from "src/components/sandbox/SandboxPreview";
-import { Button } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { RawProperties } from "src/components/nft/RawProperties";
 import styles from "./Sandbox.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,6 +18,7 @@ import {
 } from "../layout/FlexBoxCenter";
 import { TooltipInfo } from "../TooltipInfo";
 import SpinnerLoading from "../loading/Loader";
+import { cs } from "date-fns/locale";
 
 export function Sandbox() {
   const artworkIframeRef = useRef<ArtworkIframeRef>(null);
@@ -30,6 +31,7 @@ export function Sandbox() {
   const [previewReady, setPreviewReady] = useState<boolean>(false);
   const [traits, setTraits] = useState<RawTokenProperties | null>(null);
   const [imgUrl, setImgUrl] = useState<string | null>(null);
+  const [cssSelector, setCssSelector] = useState<string>("");
   const hasAttributes = !!attributes && Object.keys(attributes).length > 0;
   const hasTraits = !!traits && Object.keys(traits).length > 0;
   const fileList = useMemo<string[] | null>(
@@ -46,6 +48,7 @@ export function Sandbox() {
     setAttributes(null);
     setPreviewReady(false);
     setImgUrl(null);
+    setCssSelector("");
   };
   const setHash = (hash: string) => {
     setImgUrl(null);
@@ -133,8 +136,10 @@ export function Sandbox() {
             // @ts-ignore
             return el.toDataURL("image/png");
           };
-          const img = captureImg("canvas");
-          setImgUrl(img);
+          if (cssSelector) {
+            const img = captureImg(cssSelector);
+            setImgUrl(img);
+          }
         }
       }
     }
@@ -152,6 +157,12 @@ export function Sandbox() {
                   <FontAwesomeIcon icon={"backward"} width={18} /> Restart
                 </div>
               </a>
+
+              <div className={"mt-3"}>
+                <h5>CSS Selector</h5>
+                <span>{cssSelector ? cssSelector : "not specified"}</span>
+              </div>
+
               <div className={"mt-3"}>
                 <h5>Files</h5>
                 <span>
@@ -241,10 +252,39 @@ export function Sandbox() {
                     width={24}
                     className={"Margin-R-1"}
                   />
-                  <>drop your ZIP file here, or click to select it</>
+                  <>
+                    {!file && (
+                      <>drop your ZIP file here, or click to select it</>
+                    )}
+                    {file && (
+                      <>
+                        Selected {file.name}. To change, drop another file here
+                        or click to select it.
+                      </>
+                    )}
+                  </>
                 </>
               </DropZone>
+
+              <Form.Group controlId="cssSelector">
+                <Form.Label>
+                  CSS Selector{" "}
+                  <TooltipInfo>
+                    Optional canvas CSS selector targeting your sketch canvas.
+                  </TooltipInfo>
+                </Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={1}
+                  value={cssSelector}
+                  placeholder={""}
+                  onChange={(e) => setCssSelector(e.target.value)}
+                  name="cssSelector"
+                />
+              </Form.Group>
+
               <Button
+                className={"mt-3"}
                 color="secondary"
                 disabled={!file || !!error}
                 onClick={() => uploadFile()}
@@ -271,6 +311,7 @@ export function Sandbox() {
         {/*//sandbox preview*/}
         <div>
           <div className={"ms-auto w-100  " + styles.border2px}>
+            <h5>Live Preview</h5>
             {file ? (
               <SandboxPreview
                 hash={hash}
@@ -303,6 +344,7 @@ export function Sandbox() {
             )}
           </div>
           <div className={styles.border2px}>
+            <h5>Image Preview</h5>
             {imgUrl && <img src={imgUrl} className={"w-100 "} />}
           </div>
         </div>
