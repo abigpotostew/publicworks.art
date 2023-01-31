@@ -15,7 +15,11 @@ import { dataUrlToBuffer } from "../../base64/dataurl";
 import { zodStarsAddress, zodStarsContractAddress } from "src/wasm/address";
 import cuid from "cuid";
 import { createPresignedUrl } from "src/upload/presignedUrl";
-import { confirmUpload } from "src/upload/confirm-upload";
+import {
+  confirmCoverImageUpload,
+  confirmUpload,
+} from "src/upload/confirm-upload";
+import mime from "mime-types";
 
 const createWork = authorizedProcedure
   .input(CreateProjectRequestZ)
@@ -204,22 +208,28 @@ const uploadPreviewImg = authorizedProcedure
   )
 
   .mutation(async ({ input, ctx }) => {
+    console.log("hello here start");
     const work = await stores().project.getProject(input.workId);
+    console.log("got work");
     if (!work || work.owner.id !== ctx.user.id) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
     const { buffer, contentType } = dataUrlToBuffer(input.coverImageDataUrl);
     console.log("contentType", contentType);
     if (work.coverImageCid) {
+      console.log("deleting old image cid");
       const existinWorkId = await getMetadataWorkId(work.coverImageCid);
       if (existinWorkId === work.id) {
         //only delete it if the current user owns it.
         await deleteCid(work.coverImageCid);
+        console.log("deleted old image cid");
       }
     }
+    console.log("uploading");
     const coverImageCid = await uploadFileToPinata(buffer, contentType, {
       workId: work.id,
     });
+    console.log("finished uploading");
     const response = await stores().project.updateProject({
       id: work.id,
       coverImageCid,
@@ -235,6 +245,7 @@ const uploadWorkGenerateUrl = authorizedProcedure
   .input(
     z.object({
       workId: z.string(),
+      contentType: z.string().optional().nullish(),
     })
   )
 
@@ -244,16 +255,17 @@ const uploadWorkGenerateUrl = authorizedProcedure
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
 
-    const { url, filename } = await createPresignedUrl(work);
+    const { url, filename } = await createPresignedUrl(work, "application/zip");
     const obj = await stores().project.saveUploadId(work, filename);
 
-    return { ok: true, url, method: "PUT" };
+    return { ok: true, url, method: "PUT", uploadId: obj.id };
   });
 
 const confirmWorkUpload = authorizedProcedure
   .input(
     z.object({
       workId: z.string(),
+      uploadId: z.string().cuid(),
     })
   )
 
@@ -264,7 +276,59 @@ const confirmWorkUpload = authorizedProcedure
     }
 
     //it throws
-    const confirmed = await confirmUpload(work);
+    const confirmed = await confirmUpload(input.uploadId, work);
+
+    return;
+  });
+const uploadWorkCoverImageGenerateUrl = authorizedProcedure
+  .input(
+    z.object({
+      workId: z.string(),
+      contentType: z.string(),
+      contentSize: z.number().min(1).max(20_000_000),
+    })
+  )
+
+  .mutation(async ({ input, ctx }) => {
+    const work = await stores().project.getProject(input.workId);
+    if (!work || work.owner.id !== ctx.user.id) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    const lookup = mime.contentType(input.contentType);
+    if (!lookup) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Invalid content type",
+      });
+    }
+
+    const { url, filename } = await createPresignedUrl(
+      work,
+      input.contentType || undefined,
+      "cover-image",
+      input.contentSize
+    );
+    const obj = await stores().project.saveUploadId(work, filename);
+
+    return { ok: true, url, method: "PUT", uploadId: obj.id };
+  });
+const confirmWorkCoverImageUpload = authorizedProcedure
+  .input(
+    z.object({
+      workId: z.string(),
+      uploadId: z.string().cuid(),
+    })
+  )
+
+  .mutation(async ({ input, ctx }) => {
+    const work = await stores().project.getProject(input.workId);
+    if (!work || work.owner.id !== ctx.user.id) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    //it throws
+    const confirmed = await confirmCoverImageUpload(input.uploadId, work);
 
     return;
   });
@@ -278,9 +342,11 @@ export const workRouter = t.router({
   getWorkBySlug,
   listWorks: listWorks,
   workPreviewImg,
-  uploadPreviewImg,
+  uploadPreviewImg: uploadPreviewImg,
   listAddressWorks,
   workTokenCount: workTokenCount,
   uploadWorkGenerateUrl: uploadWorkGenerateUrl,
+  uploadWorkCoverImageGenerateUrl: uploadWorkCoverImageGenerateUrl,
   confirmWorkUpload: confirmWorkUpload,
+  confirmWorkCoverImageUpload: confirmWorkCoverImageUpload,
 });

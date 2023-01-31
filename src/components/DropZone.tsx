@@ -16,6 +16,7 @@ export const DropZone: FC<DropZoneProps> = ({
   maxFiles,
   maxSize,
 }: DropZoneProps) => {
+  const [error, setError] = React.useState<string | null>(null);
   const acceptProp: Accept =
     accept === "zip"
       ? {
@@ -26,6 +27,7 @@ export const DropZone: FC<DropZoneProps> = ({
           "image/jpeg": [],
           "image/png": [],
           "image/gif": [],
+          "image/svg+xml": [],
         };
   const onDrop: (
     acceptedFiles: File[],
@@ -33,12 +35,21 @@ export const DropZone: FC<DropZoneProps> = ({
     event: DropEvent
   ) => void = useCallback(
     async (acceptedFiles) => {
+      setError(null);
       await onUpload(acceptedFiles);
     },
     [onUpload]
   );
+  const onDropRejected = (
+    fileRejections: FileRejection[],
+    event: DropEvent
+  ) => {
+    console.log("rejected", fileRejections);
+    setError(fileRejections.map((e) => e.errors[0].message).join(", "));
+  };
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
+    onDropRejected,
     maxFiles: maxFiles || 1,
     maxSize: maxSize || 50_000_000,
     accept: acceptProp,
@@ -56,6 +67,7 @@ export const DropZone: FC<DropZoneProps> = ({
             "Drag 'n' drop some files here, or click to select files"}
         </p>
       )}
+      {error && <p>{error}</p>}
     </div>
   );
 };

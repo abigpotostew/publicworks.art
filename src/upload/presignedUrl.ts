@@ -15,9 +15,14 @@ export const getBucket = () => {
   const bucketName = `${creds.project_id}-upload-storage`;
   return storage.bucket(bucketName);
 };
-export const createPresignedUrl = async (work: WorkEntity) => {
+export const createPresignedUrl = async (
+  work: WorkEntity,
+  contentType = "application/zip",
+  directory = "",
+  contentSize?: number
+) => {
   const id = cuid();
-  const filename = `${work.id}/${id}.zip`;
+  const filename = `${work.id}${directory ? "/" + directory : ""}/${id}`;
 
   // Get a v4 signed URL for reading the file
   const [url] = await getBucket()
@@ -26,7 +31,12 @@ export const createPresignedUrl = async (work: WorkEntity) => {
       version: "v4",
       action: "write",
       expires: Date.now() + 60 * 60 * 1000, // 15 minutes
-      contentType: "application/zip",
+      contentType,
+      extensionHeaders: contentSize
+        ? {
+            "content-length": contentSize, // desired length in bytes
+          }
+        : undefined,
     });
 
   //save this in the DB

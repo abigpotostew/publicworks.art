@@ -221,6 +221,19 @@ export class ProjectRepo {
         },
       });
   }
+
+  async getFileUploadById(id: string, work: WorkEntity) {
+    return dataSource()
+      .getRepository(WorkUploadFile)
+      .findOne({
+        where: {
+          id,
+          work: {
+            id: work.id,
+          },
+        },
+      });
+  }
 }
 
 export function convertToSlug(str: string) {

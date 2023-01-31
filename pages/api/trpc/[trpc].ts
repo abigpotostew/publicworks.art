@@ -34,4 +34,14 @@ export default trpcNext.createNextApiHandler({
   // responseMeta() {
   //   // ...
   // },
+
+  maxBodySize: 20_000_000,
 });
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "20mb", // Set desired value here
+    },
+  },
+};

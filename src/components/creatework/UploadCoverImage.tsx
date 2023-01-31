@@ -8,6 +8,9 @@ import { trpcNextPW } from "../../server/utils/trpc";
 import SpinnerLoading from "../loading/Loader";
 import { normalizeIpfsUri } from "../../wasm/metadata";
 import { Container } from "react-bootstrap";
+import { useMutation } from "@tanstack/react-query";
+import { useToast } from "../../hooks/useToast";
+import { onWorkUploadNew } from "../../works/upload";
 
 export interface CreateWorkProps {
   onCreateProject:
@@ -26,13 +29,14 @@ export const UploadCoverImage: FC<CreateWorkProps> = (
   };
 
   const utils = trpcNextPW.useContext();
-  const mutation = trpcNextPW.works.uploadPreviewImg.useMutation({
-    onSuccess() {
-      utils.works.getWorkById.invalidate();
-    },
-  });
 
-  const onUpload = async (files: File[]) => {
+  const presignedUrlMutation =
+    trpcNextPW.works.uploadWorkCoverImageGenerateUrl.useMutation();
+
+  const confirmWorkUploadFileMutation =
+    trpcNextPW.works.confirmWorkCoverImageUpload.useMutation();
+  const toast = useToast();
+  const onUploadMutation = useMutation(async (files: File[]) => {
     //onUpload
     const mime = files[0].type;
     const acceptedMime = [
@@ -44,15 +48,47 @@ export const UploadCoverImage: FC<CreateWorkProps> = (
     if (!acceptedMime.includes(mime)) {
       throw new Error("Unsupported mime: " + mime);
     }
-    const fileEncoded = await getDataUrl(files[0]);
+    const contentSize = files[0].size;
     const id = props?.defaultValues?.id;
     if (!id) {
       throw new Error("missing id");
     }
-    mutation.mutate({
+    console.log("presignedUrlMutation", {
       workId: id,
-      coverImageDataUrl: fileEncoded,
+      contentType: mime,
+      contentSize,
     });
+    const uploadTmp = await presignedUrlMutation.mutateAsync({
+      workId: id,
+      contentType: mime,
+      contentSize,
+    });
+    if (!uploadTmp.ok) {
+      const msg =
+        "Something went wrong while uploading the cover image, try again.";
+      toast.error(msg);
+      throw new Error(msg);
+    }
+    console.log("uploading", id, files, utils, uploadTmp.url, uploadTmp.method);
+    await onWorkUploadNew(id, files, utils, uploadTmp.url, uploadTmp.method);
+    try {
+      console.log("pizza finished confirmWorkUploadFileMutation");
+      await confirmWorkUploadFileMutation.mutateAsync({
+        workId: id,
+        uploadId: uploadTmp.uploadId,
+      });
+    } catch (e) {
+      const msg =
+        "Something went wrong. Failed to save cover image to IPFS. Try again.";
+      console.error(msg, e);
+      toast.error(msg);
+      throw new Error(msg);
+    }
+    utils.works.getWorkById.invalidate({ id });
+  });
+
+  const onUpload = async (files: File[]) => {
+    await onUploadMutation.mutateAsync(files);
   };
   // useEffect(() => {
   //   return () => {
@@ -74,8 +110,8 @@ export const UploadCoverImage: FC<CreateWorkProps> = (
           >
             Drag 'n' drop your image here, or click to select a file. 15mb max.
           </DropZone>
-          {mutation.isLoading && <SpinnerLoading></SpinnerLoading>}
-          {mutation.isSuccess && "Success!"}
+          {onUploadMutation.isLoading && <SpinnerLoading></SpinnerLoading>}
+          {onUploadMutation.isSuccess && "Success!"}
         </div>
         {defaults.coverImageCid && (
           <div>

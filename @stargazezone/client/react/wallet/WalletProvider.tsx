@@ -5,6 +5,7 @@ import { WalletInfo } from "../../core/wallet/types";
 import useStargazeClient from "../client/useStargazeClient";
 import WalletContext from "./WalletContext";
 import { useToast } from "src/hooks/useToast";
+import { deleteToken } from "../../../../src/util/auth-token";
 
 function NoKeplrModal({
   noKeplr,
@@ -61,6 +62,7 @@ function NoKeplrModal({
 function clearLocalStorage() {
   localStorage.removeItem("address");
   localStorage.removeItem("walletName");
+  deleteToken();
 }
 
 function checkLocalStorage() {
