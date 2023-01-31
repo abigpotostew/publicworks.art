@@ -66,7 +66,9 @@ export const UploadCoverImage: FC<CreateWorkProps> = (
       <h2>Collection Image</h2>
       <FlexBoxCenter fluid={false}>
         <div>
-          <DropZone accept={"images"} onUpload={onUpload}></DropZone>
+          <DropZone accept={"images"} onUpload={onUpload}>
+            Drag 'n' drop your image here, or click to select a file
+          </DropZone>
           {mutation.isLoading && <SpinnerLoading></SpinnerLoading>}
           {mutation.isSuccess && "Success!"}
         </div>
