@@ -174,6 +174,7 @@ export class ProjectRepo {
       royaltyAddress: request.royaltyAddress,
       startDate: request.startDate ? new Date(request.startDate) : undefined,
       codeCid: request.codeCid,
+      externalLink: request.externalLink,
 
       selector: request.selector,
       resolution: request.resolution,

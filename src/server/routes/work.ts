@@ -338,7 +338,7 @@ export const workRouter = t.router({
   createWork: createWork,
   editWork,
   editWorkContracts,
-  getWorkById,
+  getWorkById: getWorkById,
   getWorkBySlug,
   listWorks: listWorks,
   workPreviewImg,
