@@ -246,31 +246,25 @@ export function Sandbox() {
                   setFile(files && files.length > 0 ? files[0] : null);
                 }}
               >
-                <>
+                <span>
                   <FontAwesomeIcon
                     icon={"file-import"}
                     width={24}
                     className={"Margin-R-1"}
                   />
-                  <>
-                    {!file && (
-                      <>drop your ZIP file here, or click to select it</>
-                    )}
-                    {file && (
-                      <>
-                        Selected {file.name}. To change, drop another file here
-                        or click to select it.
-                      </>
-                    )}
-                  </>
-                </>
+                  <>drop your ZIP file here, or click to select</>
+                </span>
+                <div className={"mt-2 overflow-hidden"}>
+                  File: {file ? file.name : ""}
+                </div>
               </DropZone>
 
-              <Form.Group controlId="cssSelector">
+              <Form.Group className={"mt-3"} controlId="cssSelector">
                 <Form.Label>
-                  CSS Selector{" "}
+                  CSS Selector
                   <TooltipInfo>
                     Optional canvas CSS selector targeting your sketch canvas.
+                    Used to test the image preview.
                   </TooltipInfo>
                 </Form.Label>
                 <Form.Control
@@ -289,7 +283,7 @@ export function Sandbox() {
                 disabled={!file || !!error}
                 onClick={() => uploadFile()}
               >
-                start tests
+                Start test
               </Button>
               {error && (
                 <>
@@ -345,6 +339,11 @@ export function Sandbox() {
           </div>
           <div className={styles.border2px}>
             <h5>Image Preview</h5>
+            {file && !cssSelector && (
+              <div>
+                No CSS selector specified. Image preview will not be captured.
+              </div>
+            )}
             {imgUrl && <img src={imgUrl} className={"w-100 "} />}
           </div>
         </div>

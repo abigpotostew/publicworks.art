@@ -62,10 +62,10 @@ export const DropZone: FC<DropZoneProps> = ({
       {isDragActive ? (
         <p>Drop the files here...</p>
       ) : (
-        <p>
+        <div>
           {children ||
             "Drag 'n' drop some files here, or click to select files"}
-        </p>
+        </div>
       )}
       {error && <p>{error}</p>}
     </div>
