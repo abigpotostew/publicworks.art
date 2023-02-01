@@ -1,4 +1,4 @@
-import { FC, FormEventHandler, useCallback, useState } from "react";
+import { FC, FormEventHandler, useCallback, useEffect, useState } from "react";
 import { Container, Form, Row } from "react-bootstrap";
 import { RowThinContainer } from "../layout/RowThinContainer";
 import { EditProjectRequest } from "../../store";
@@ -14,6 +14,13 @@ import { ButtonPW as Button } from "../button/Button";
 import { TooltipInfo } from "src/components/tooltip/TooltipInfo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useAppIsLoading from "src/components/loading/useAppIsLoading";
+import { useFormik } from "formik";
+import { parseISO } from "date-fns";
+import { toFormikValidationSchema } from "zod-formik-adapter";
+import { z } from "zod";
+const schema = z.object({
+  name: z.string().min(3),
+});
 
 export interface CreateWorkProps {
   onCreateProject:
@@ -40,6 +47,18 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
     props.onCreateProject(req);
   };
 
+  const formik = useFormik({
+    initialValues: defaults,
+    onSubmit: async (values) => {
+      const req = {
+        ...values,
+      };
+      await props.onCreateProject(req);
+    },
+    validationSchema: toFormikValidationSchema(schema),
+    // validateOnMount: true,
+  });
+
   const onClickRefreshHash = useCallback(() => {
     setHash(generateTxHash());
   }, []);
@@ -48,7 +67,12 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
     <>
       <>
         <>
-          <Form onSubmit={onSubmit}>
+          <Form
+            onSubmit={(...a) => {
+              return formik.handleSubmit(...a);
+            }}
+            noValidate
+          >
             <Form.Group className="mb-3" controlId="formWorkName">
               <Form.Label>
                 Name{" "}
@@ -59,10 +83,12 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               </Form.Label>
               <Form.Control
                 type="text"
-                defaultValue={defaults.name}
+                value={formik.values.name}
+                onChange={formik.handleChange}
                 placeholder="My Work"
-                name="project_name"
-                onChange={(e) => setProjectName(e.target.value)}
+                name="name"
+                isValid={formik.touched.name && !formik.errors.name}
+                isInvalid={formik.touched.name && !!formik.errors.name}
               />
               {/*<Form.Text className="text-muted">*/}
               {/*  {"We'll never share your email with anyone else."}*/}
