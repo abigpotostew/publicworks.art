@@ -11,7 +11,7 @@ import { BsArrowRepeat } from "react-icons/bs";
 import { FlexBox } from "../layout/FlexBoxCenter";
 import { DropZone } from "../DropZone";
 import { ButtonPW as Button } from "../button/Button";
-import { TooltipInfo } from "src/components/TooltipInfo";
+import { TooltipInfo } from "src/components/tooltip/TooltipInfo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useAppIsLoading from "src/components/loading/useAppIsLoading";
 

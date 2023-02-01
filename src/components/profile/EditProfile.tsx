@@ -10,7 +10,7 @@ import {
 } from "src/store";
 import { WorkSerializable } from "src/dbtypes/works/workSerializable";
 import { RowWideContainer } from "../layout/RowWideContainer";
-import { TooltipInfo } from "../TooltipInfo";
+import { TooltipInfo } from "../tooltip/TooltipInfo";
 import { useFormik } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";

@@ -17,7 +17,7 @@ import {
 } from "src/works/upload";
 import { LiveMedia } from "src/components/media/LiveMedia";
 import { Step, StepProgressBar } from "src/components/progress/StepProgressBar";
-import { TooltipInfo } from "src/components/TooltipInfo";
+import { TooltipInfo } from "src/components/tooltip/TooltipInfo";
 import { NameWork } from "src/components/creatework/NameWork";
 import { EditProjectRequest } from "src/store";
 import { ConfettiScreen } from "src/components/celebration/ConfettiScreen";

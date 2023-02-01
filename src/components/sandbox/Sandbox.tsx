@@ -16,7 +16,7 @@ import {
   FlexBoxCenter,
   FlexBoxCenterStretch,
 } from "../layout/FlexBoxCenter";
-import { TooltipInfo } from "../TooltipInfo";
+import { TooltipInfo } from "../tooltip/TooltipInfo";
 import SpinnerLoading from "../loading/Loader";
 import { cs } from "date-fns/locale";
 

@@ -3,7 +3,7 @@ import { Form } from "react-bootstrap";
 import { LiveMedia } from "../media/LiveMedia";
 import { BsArrowRepeat } from "react-icons/bs";
 import { FlexBox } from "../layout/FlexBoxCenter";
-import { TooltipInfo } from "../TooltipInfo";
+import { TooltipInfo } from "../tooltip/TooltipInfo";
 import { ButtonPW as Button } from "../button/Button";
 import { generateTxHash } from "src/generateHash";
 import { normalizeMetadataUri } from "src/wasm/metadata";
@@ -118,9 +118,7 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                 isValid={formik.touched.name && !formik.errors.name}
                 isInvalid={formik.touched.name && !!formik.errors.name}
               />
-              <Form.Control.Feedback type={"valid"}>
-                Looks good!
-              </Form.Control.Feedback>
+
               <Form.Control.Feedback type="invalid">
                 {formik.errors.name}
               </Form.Control.Feedback>
@@ -148,9 +146,7 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                   formik.touched.description && !!formik.errors.description
                 }
               />
-              <Form.Control.Feedback type={"valid"}>
-                Looks good!
-              </Form.Control.Feedback>
+
               <Form.Control.Feedback type="invalid">
                 {formik.errors.description}
               </Form.Control.Feedback>
@@ -176,9 +172,7 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                 isInvalid={formik.touched.blurb && !!formik.errors.blurb}
                 name="blurb"
               />
-              <Form.Control.Feedback type={"valid"}>
-                Looks good!
-              </Form.Control.Feedback>
+
               <Form.Control.Feedback type="invalid">
                 {formik.errors.description}
               </Form.Control.Feedback>
@@ -204,9 +198,7 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                 }
                 name="externalLink"
               />
-              <Form.Control.Feedback type={"valid"}>
-                Looks good!
-              </Form.Control.Feedback>
+
               <Form.Control.Feedback type="invalid">
                 {formik.errors.externalLink}
               </Form.Control.Feedback>
@@ -228,9 +220,7 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                 isInvalid={formik.touched.creator && !!formik.errors.creator}
                 value={formik.values.creator}
               />
-              <Form.Control.Feedback type={"valid"}>
-                Looks good!
-              </Form.Control.Feedback>
+
               <Form.Control.Feedback type="invalid">
                 {formik.errors.creator}
               </Form.Control.Feedback>

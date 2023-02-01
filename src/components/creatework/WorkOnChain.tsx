@@ -7,7 +7,7 @@ import useStargazeClient from "../../../@stargazezone/client/react/client/useSta
 import SpinnerLoading from "../loading/Loader";
 import { ButtonPW as Button, ButtonPW } from "../button/Button";
 import { Form } from "react-bootstrap";
-import { TooltipInfo } from "../TooltipInfo";
+import { TooltipInfo } from "../tooltip/TooltipInfo";
 import { z } from "zod";
 import { isStarAddress } from "../../wasm/address";
 import { useFormik } from "formik";

@@ -5,13 +5,14 @@ import { Container, Form } from "react-bootstrap";
 import { EditProjectRequest } from "src/store";
 import { WorkSerializable } from "src/dbtypes/works/workSerializable";
 import { RowWideContainer } from "../layout/RowWideContainer";
-import { TooltipInfo } from "../TooltipInfo";
+import { TooltipInfo } from "../tooltip/TooltipInfo";
 import { useFormik } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
 import { isISODate } from "src/util/isISODate";
 import { ButtonPW as Button } from "../button/Button";
 import { useWallet } from "@stargazezone/client";
+import { isStarAddress, toStars } from "../../wasm/address";
 
 // const formatInTimeZone = (date: Date, fmt: string, tz: string) =>
 //   format(utcToZonedTime(date, tz), fmt, { timeZone: tz });
@@ -50,7 +51,10 @@ export const schema = z.object({
     .refine((v) => new Date(v) > new Date(), "Must be in the future")
     .transform((v) => parseISO(v).toISOString())
     .optional(),
-  royaltyAddress: z.string().optional(),
+  royaltyAddress: z
+    .string()
+    .optional()
+    .refine((v) => !v || isStarAddress(v), 'Not a valid "stars" address'),
   royaltyPercent: z.number().min(0).max(100).optional(),
   resolution: z
     .string()
@@ -185,9 +189,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               isInvalid={formik.touched.maxTokens && !!formik.errors.maxTokens}
               name="maxTokens"
             />
-            <Form.Control.Feedback type={"valid"}>
-              Looks good!
-            </Form.Control.Feedback>
+
             <Form.Control.Feedback type="invalid">
               {formik.errors.maxTokens}
             </Form.Control.Feedback>
@@ -213,9 +215,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
             <Form.Label>
               {`${formatInUTC(parseISO(formik.values.startDate))} UTC`}
             </Form.Label>
-            <Form.Control.Feedback type={"valid"}>
-              Looks good!
-            </Form.Control.Feedback>
+
             <Form.Control.Feedback type="invalid">
               {formik.errors.startDate}
             </Form.Control.Feedback>
@@ -234,9 +234,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                 formik.touched.priceStars && !!formik.errors.priceStars
               }
             />
-            <Form.Control.Feedback type={"valid"}>
-              Looks good!
-            </Form.Control.Feedback>
+
             <Form.Control.Feedback type="invalid">
               {formik.errors.priceStars}
             </Form.Control.Feedback>
@@ -261,9 +259,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                 formik.touched.royaltyAddress && !!formik.errors.royaltyAddress
               }
             />
-            <Form.Control.Feedback type={"valid"}>
-              Looks good!
-            </Form.Control.Feedback>
+
             <Form.Control.Feedback type="invalid">
               {formik.errors.royaltyAddress}
             </Form.Control.Feedback>
@@ -288,9 +284,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                 formik.touched.royaltyPercent && !!formik.errors.royaltyPercent
               }
             />
-            <Form.Control.Feedback type={"valid"}>
-              Looks good!
-            </Form.Control.Feedback>
+
             <Form.Control.Feedback type="invalid">
               {formik.errors.royaltyPercent}
             </Form.Control.Feedback>
@@ -312,9 +306,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               isValid={formik.touched.selector && !formik.errors.selector}
               isInvalid={formik.touched.selector && !!formik.errors.selector}
             />
-            <Form.Control.Feedback type={"valid"}>
-              Looks good!
-            </Form.Control.Feedback>
+
             <Form.Control.Feedback type="invalid">
               {formik.errors.selector}
             </Form.Control.Feedback>
@@ -340,9 +332,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                 formik.touched.resolution && !!formik.errors.resolution
               }
             />
-            <Form.Control.Feedback type={"valid"}>
-              Looks good!
-            </Form.Control.Feedback>
+
             <Form.Control.Feedback type="invalid">
               {formik.errors.resolution}
             </Form.Control.Feedback>
