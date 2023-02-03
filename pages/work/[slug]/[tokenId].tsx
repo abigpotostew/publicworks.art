@@ -14,6 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { trpcNextPW } from "src/server/utils/trpc";
 import SpinnerLoading from "src/components/loading/Loader";
+import { Attributes } from "../../../src/components/metadata/Attributes";
 
 // export const getServerSideProps: GetServerSideProps = async (context) => {
 //   const slug = context.params?.slug;
@@ -213,6 +214,20 @@ const WorkTokenPage = () => {
                   ""
                 )}
               </div>
+            </div>
+            <div className={"mt-4"}>
+              <h4>Attributes</h4>
+              {tokenMetadata.data?.attributes && (
+                <Attributes
+                  attributes={tokenMetadata.data.attributes}
+                ></Attributes>
+              )}
+            </div>
+            <div className={"mt-2"}>
+              <h4>Traits</h4>
+              {tokenMetadata.data?.traits && (
+                <Attributes attributes={tokenMetadata.data.traits}></Attributes>
+              )}
             </div>
           </RowThinContainer>
         </Container>

@@ -3,13 +3,17 @@ import config from "../wasm/config";
 import { useEffect, useMemo, useState } from "react";
 import { fetchTokenUriInfo, normalizeMetadataUri } from "../wasm/metadata";
 
+export interface Attribute {
+  value: string | number | boolean | null;
+  trait_type: string;
+}
 export interface NftMetadata {
   tokenId: string | undefined;
   animation_url: string | undefined;
   description: string;
   image: string;
-  attributes: any[] | undefined;
-  traits: any[] | undefined;
+  attributes: Attribute[] | undefined;
+  traits: Attribute[] | undefined;
   name: string | undefined;
   creator: string | undefined;
   resolution: string | undefined;
