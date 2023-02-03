@@ -3,6 +3,7 @@ import { Toast } from "react-bootstrap";
 import { ToastContent } from "react-toastify/dist/types";
 import { UseToastTypes } from "src/hooks/useToast.types";
 import { useRouter } from "next/router";
+import chainInfo from "../stargaze/chainInfo";
 
 const createToastWithMessage = (msg: string): ToastContent => {
   return ({ closeToast }) => {
@@ -31,6 +32,39 @@ export const useToast = (): UseToastTypes => {
         pauseOnHover: true,
         draggable: false,
         progress: undefined,
+      });
+    },
+    txHash: (msg: string, txHash: string) => {
+      toast.success(msg, {
+        theme: "dark",
+        position: "top-right",
+        autoClose: 15000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        onClick: () => {
+          window.open(
+            chainInfo.explorerUrlToTx.replace("{txHash}", txHash),
+            "_blank"
+          );
+        },
+      });
+    },
+    mint: (msg: string, slug: string, tokenId: string) => {
+      toast.success(msg, {
+        theme: "dark",
+        position: "top-right",
+        autoClose: 30000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        onClick: () => {
+          window.open(`/work/${slug}/${tokenId}`, "_blank");
+        },
       });
     },
     error: (msg: string) => {

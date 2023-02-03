@@ -57,7 +57,6 @@ export const WorkOnChain = ({ minter, slug }: Props) => {
         client.client?.cosmwasmClient,
         {}
       );
-      console.log("minterResponse", minterResponse);
       return minterResponse;
     },
     { enabled: !!minter }
@@ -77,7 +76,7 @@ export const WorkOnChain = ({ minter, slug }: Props) => {
   });
   const { mutation: airdropMutationOnChain } = useMintAirdrop();
   const airdropMutation = useMutation(async (addressList: string) => {
-    if (!minter) {
+    if (!minter || !slug) {
       throw new Error("missing minter address");
     }
     const addresses = addressList
@@ -85,7 +84,11 @@ export const WorkOnChain = ({ minter, slug }: Props) => {
       .map((a) => a.trim())
       .filter((a) => isStarAddress(a));
     console.log("airdropping to addresses", addresses);
-    await airdropMutationOnChain.mutateAsync({ recipients: addresses, minter });
+    await airdropMutationOnChain.mutateAsync({
+      recipients: addresses,
+      minter,
+      slug: slug,
+    });
   });
   mutateAidrop = airdropMutation.mutate;
 

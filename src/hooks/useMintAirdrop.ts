@@ -64,16 +64,24 @@ async function executeMintAirdrop(
     account,
     msgs,
     "auto",
-    "batch mint"
+    "airdrop"
   );
   const resultJson = JSON.parse(result.rawLog || "{}");
   if (!Array.isArray(resultJson)) {
     console.error("resultJson", resultJson);
     throw new Error("resultJson is not an array");
   }
-  const wasm = resultJson[0].events.find((e: any) => e.type === "wasm");
-  console.log("result.rawLog", result.rawLog);
+  console.log("resultJson", resultJson);
+  const wasm = resultJson[0]?.events?.find((e: any) => e.type === "wasm");
+  if (!wasm || !Array.isArray(wasm.attributes)) {
+    throw new Error("wasm not found in resultJson or is not an array");
+  }
+  const tokenId = wasm.attributes.find((m: any) => m.key === "token_id")
+    ?.value as string | undefined;
+  console.log("result.rawLog", wasm);
   console.log("result.data", result.data);
+  console.log("result.tokenId", tokenId);
+  return { tokenId: tokenId || "", transactionHash: result.transactionHash };
 }
 
 export const useMintAirdrop = () => {
@@ -86,9 +94,11 @@ export const useMintAirdrop = () => {
     async ({
       recipients,
       minter,
+      slug,
     }: {
       recipients: string[];
       minter: string;
+      slug: string;
     }): Promise<void> => {
       if (!sgwallet.wallet) return;
 
@@ -101,13 +111,17 @@ export const useMintAirdrop = () => {
       }
       // let res: { sg721: string; minter: string } | undefined = undefined;
       try {
-        await executeMintAirdrop(
+        const { tokenId, transactionHash } = await executeMintAirdrop(
           signingClient,
           sgwallet.wallet.address,
           recipients,
           minter
         );
-        toast.success("Successfully minted!");
+        toast.txHash(
+          "Transaction successful. Click for Explorer",
+          transactionHash
+        );
+        toast.mint("Minted token " + tokenId, slug, tokenId);
       } catch (e) {
         //
         toast.error("Failed to airdrop on chain: " + (e as any)?.message);

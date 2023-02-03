@@ -1,7 +1,6 @@
-import { ChainInfo } from "@keplr-wallet/types/build/chain-info";
-import { ChainInfos } from "src/stargaze/config";
+import { ChainInfos, ChainInfoWithExplorer } from "src/stargaze/config";
 
-let chainInfo: ChainInfo;
+let chainInfo: ChainInfoWithExplorer;
 switch (process?.env?.NEXT_PUBLIC_TESTNET) {
   case "true":
     chainInfo = ChainInfos[3];
