@@ -2,12 +2,12 @@ import type { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Collection } from "@stargazezone/client";
 import { MarketplaceQueryClient } from "@stargazezone/contracts/marketplace";
 import { Sg721QueryClient } from "@stargazezone/contracts/sg721";
+import { Attribute } from "src/hooks/useNftMetadata";
 import {
   fetchTokenUriInfo,
   normalizeIpfsAnimationUri,
   normalizeIpfsUri,
 } from "src/wasm/metadata";
-import { Attribute } from "@stargazefi/api/lib/generated/cosmos/base/abci/v1beta1/abci";
 
 export interface MediaType {
   tokenId: string;

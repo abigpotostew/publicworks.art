@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
-import { Attribute, NftMetadata } from "src/hooks/useNftMetadata";
-import { ListGroup, Table } from "react-bootstrap";
+import { Attribute } from "src/hooks/useNftMetadata";
+import { Table } from "react-bootstrap";
 import styles from "./Attributes.module.scss";
 type Props = {
   attributes: Attribute[];
