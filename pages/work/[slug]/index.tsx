@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import MainLayout from "../../../src/layout/MainLayout";
 import styles from "../../../styles/Work.module.scss";
 import { Button, Container } from "react-bootstrap";
@@ -20,6 +20,7 @@ import { serializeWork } from "src/dbtypes/works/serialize-work";
 import config from "src/wasm/config";
 import { WorkSerializable } from "src/dbtypes/works/workSerializable";
 import { trpcNextPW } from "src/server/utils/trpc";
+import { useRouter } from "next/router";
 
 export async function getStaticPaths() {
   await initializeIfNeeded();
@@ -66,6 +67,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 //InferGetStaticPropsType<typeof getStaticProps>
 const WorkPage = ({ work }: { work: WorkSerializable }) => {
+  const router = useRouter();
   // fetch num tokens
   const {
     data: numMinted,
@@ -73,7 +75,19 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
     isLoading: numMintedLoading,
   } = useNumMinted(work?.slug);
 
-  const metadata = useNftMetadata({ sg721: work.sg721, tokenId: "1" });
+  const [previewTokenId, setPreviewTokenId] = useState("1");
+  useEffect(() => {
+    if (!numMinted) {
+      return;
+    }
+
+    setPreviewTokenId((Math.floor(Math.random() * numMinted) + 1).toString());
+  }, [numMinted]);
+
+  const metadata = useNftMetadata({
+    sg721: work.sg721,
+    tokenId: previewTokenId,
+  });
 
   // console.log("numMinted", numMinted, numMintedError, numMintedLoading);
 
@@ -109,6 +123,15 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
               ) : (
                 <div>missing animation_url</div>
               )}
+            </div>
+            <div className={"mt-2 text-end"}>
+              <a
+                onClick={() => {
+                  router.push(`/work/${work.slug}/${previewTokenId}`);
+                }}
+              >
+                Showing #{previewTokenId}
+              </a>
             </div>
           </RowSquareContainer>
         </Container>
