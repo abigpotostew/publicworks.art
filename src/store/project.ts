@@ -16,7 +16,7 @@ export class ProjectRepo {
           work: {
             id,
           },
-          image_url: Not(IsNull()),
+          imageUrl: Not(IsNull()),
         },
         order: {
           token_id: "asc", //todo find a better order using mint block height??
@@ -66,12 +66,14 @@ export class ProjectRepo {
     limit,
     offset,
     publishedState = "PUBLISHED",
+    direction = "DESC",
   }: {
     address: string;
     limit: number;
     offset?: number | undefined;
     // "PUBLISHED" | "UNPUBLISHED" | "ALL"
     publishedState: string | null;
+    direction: "ASC" | "DESC";
   }): Promise<{ items: WorkEntity[]; nextOffset: number | undefined }> {
     offset = offset || 0;
     const where: FindOptionsWhere<WorkEntity>[] | FindOptionsWhere<WorkEntity> =
@@ -87,6 +89,9 @@ export class ProjectRepo {
         where: { ...where, owner: { address: address } },
         take: limit + 1,
         skip: offset,
+        order: {
+          createdDate: direction,
+        },
       });
     let nextOffset: typeof offset | undefined = undefined;
     if (items.length > limit) {
@@ -126,6 +131,28 @@ export class ProjectRepo {
       .leftJoin("tokens.work", "work")
       .where("work.slug = :slug", { slug })
       .getCount();
+  }
+
+  async lastMintedToken(slug: string): Promise<TokenEntity | null> {
+    return dataSource()
+      .getRepository(TokenEntity)
+      .findOne({
+        where: {
+          work: {
+            slug,
+          },
+        },
+        order: {
+          createdDate: "DESC",
+        },
+      });
+    // return dataSource()
+    //   .getRepository(TokenEntity)
+    //   .createQueryBuilder("tokens")
+    //   .leftJoin("tokens.work", "work")
+    //   .where("work.slug = :slug", { slug })
+    //   .orderBy("tokens.createdDate", "DESC")
+    //   .take(1);
   }
 
   async createProject(
@@ -169,6 +196,7 @@ export class ProjectRepo {
       blurb: request.blurb,
       maxTokens: request.maxTokens,
       description: request.description,
+      additionalDescription: request.additionalDescription,
       creator: request.creator,
       royaltyPercent: request.royaltyPercent,
       royaltyAddress: request.royaltyAddress,

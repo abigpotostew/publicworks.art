@@ -4,6 +4,7 @@ import { ChainInfo } from "@keplr-wallet/types";
 export interface ChainInfoWithExplorer extends ChainInfo {
   // Formed as "https://explorer.com/{txHash}"
   explorerUrlToTx: string;
+  nameCollectionContract: string;
 }
 
 export const ChainInfos: ChainInfoWithExplorer[] = [
@@ -12,6 +13,7 @@ export const ChainInfos: ChainInfoWithExplorer[] = [
     rest: "http://localhost:1317",
     chainId: "testing",
     chainName: "Wasmd Localhost",
+    nameCollectionContract: "",
     stakeCurrency: {
       coinDenom: "STAKE",
       coinMinimalDenom: "ustake",
@@ -50,6 +52,8 @@ export const ChainInfos: ChainInfoWithExplorer[] = [
     rest: "https://rest.stargaze-apis.com/",
     chainId: "stargaze-1",
     chainName: "Stargaze",
+    nameCollectionContract:
+      "stars1fx74nkqkw2748av8j7ew7r3xt9cgjqduwn8m0ur5lhe49uhlsasszc5fhr",
     stakeCurrency: {
       coinDenom: "STARS",
       coinMinimalDenom: "ustars",
@@ -88,6 +92,7 @@ export const ChainInfos: ChainInfoWithExplorer[] = [
     rest: "https://rest.devnet.publicawesome.dev/",
     chainId: "stargaze-devnet-1",
     chainName: "Stargaze Devnet",
+    nameCollectionContract: "",
     stakeCurrency: {
       coinDenom: "STARS",
       coinMinimalDenom: "ustars",
@@ -126,6 +131,8 @@ export const ChainInfos: ChainInfoWithExplorer[] = [
     rest: "https://rest.elgafar-1.stargaze-apis.com/",
     chainId: "elgafar-1",
     chainName: "Stargaze Testnet",
+    nameCollectionContract:
+      "stars1rgn9tuxnl3ju9td3mfxdl2vm4t8xuaztcdakgtyx23c4ffm97cus25fvjs",
     stakeCurrency: {
       coinDenom: "STARS",
       coinMinimalDenom: "ustars",
@@ -164,6 +171,7 @@ export const ChainInfos: ChainInfoWithExplorer[] = [
     rest: "https://lcd-osmosis.keplr.app",
     chainId: "osmosis-1",
     chainName: "Osmosis",
+    nameCollectionContract: "",
     stakeCurrency: {
       coinDenom: "OSMO",
       coinMinimalDenom: "uosmo",
@@ -210,6 +218,7 @@ export const ChainInfos: ChainInfoWithExplorer[] = [
     rest: "https://lcd-cosmoshub.keplr.app",
     chainId: "cosmoshub-4",
     chainName: "Cosmos Hub",
+    nameCollectionContract: "",
     stakeCurrency: {
       coinDenom: "ATOM",
       coinMinimalDenom: "uatom",

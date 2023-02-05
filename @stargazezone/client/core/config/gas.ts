@@ -1,3 +1,3 @@
-import { GasPrice } from '@cosmjs/stargate';
+import { GasPrice } from "@cosmjs/stargate";
 
-export const gasPrice = GasPrice.fromString('0ustars');
+export const gasPrice = GasPrice.fromString("0ustars");

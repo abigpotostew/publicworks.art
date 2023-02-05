@@ -1,10 +1,31 @@
 import * as jwt from "jsonwebtoken";
 import { NextApiRequest, NextApiResponse } from "next";
 import Cookies from "cookies";
+import { getToken } from "../util/auth-token";
 
 export interface Token {
   account: string;
 }
+
+export const getAccountFromToken = () => {
+  const token = getToken();
+  if (!token) {
+    return null;
+  }
+  try {
+    const payload = jwt.decode(token);
+    if (!payload || typeof payload === "string") {
+      return null;
+    }
+    const account = payload["account"];
+    if (typeof account !== "string") {
+      return null;
+    }
+    return account;
+  } catch (e) {
+    return null;
+  }
+};
 
 export const issue = (account: string) => {
   const secret = process.env.JWT_SECRET;

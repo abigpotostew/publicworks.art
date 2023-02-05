@@ -12,8 +12,33 @@
   padding-left: 1.5rem;
   padding-right: 1.5rem;
   border-radius: calc($btn-border-radius*2);
+}
+
+
+.pillcontainer_small{
+  //background-color:$success;
+  border-color: $green-500;
+  border-style: solid;
+  border-width: 1px;
+  padding-top: 0rem;
+  padding-bottom: 0rem;
+  padding-left: .4rem;
+  padding-right: .4rem;
+  border-radius: calc($btn-border-radius*0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.textlarge{
   font-size: 1.5rem;
 }
+
+.textsmall{
+  font-size: .8rem;
+}
+
 
 .pillGreen{
   border-color: $green-500;

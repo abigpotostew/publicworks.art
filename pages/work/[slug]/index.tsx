@@ -170,14 +170,19 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
               >
                 {work.description}
               </div>
-              <hr />
-              <div>
-                <p>Additional Description:</p>
-                <p>
-                  {work.slug === "helio" &&
-                    `Helio has 9 traits derived from over 23 internal parameters including 20 color palettes of varying rarity that ultimately produce unique animations.`}
-                </p>
-              </div>
+              {work.additionalDescription && (
+                <>
+                  <hr />
+                  <div>
+                    <p>Additional Description:</p>
+                    <p
+                      className={`${styles.workDescription} ${styles.displayLinebreak}`}
+                    >
+                      {work.additionalDescription}
+                    </p>
+                  </div>
+                </>
+              )}
               <hr />
               <div
                 className={`${styles.workAuthorLink} ${styles.sectionBreak}`}

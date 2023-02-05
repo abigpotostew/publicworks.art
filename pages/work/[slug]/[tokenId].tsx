@@ -77,6 +77,8 @@ const WorkTokenPage = () => {
   );
   const { data: work } = workQuery;
 
+  // workQuery?.data?.externalLink
+
   const tokenMetadata = useQuery(
     ["gettokenmetadata", slug, tokenId, work?.sg721],
     async () => {

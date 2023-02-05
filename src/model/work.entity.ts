@@ -39,6 +39,10 @@ export class WorkEntity extends AuditedEntity {
 
   @Column("text", { name: "description", default: "" })
   description: string;
+
+  @Column("text", { name: "description_additional" })
+  additionalDescription: string | null;
+
   @Column("text", { name: "blurb", default: "" })
   blurb: string;
 
@@ -91,9 +95,9 @@ export class TokenEntity extends AuditedEntity {
   status: number;
 
   @Column("text", { name: "image_url", nullable: true })
-  image_url: string | null;
+  imageUrl: string | null;
   @Column("text", { name: "metadata_uri", nullable: true })
-  metadata_uri: string | null;
+  metadataUri: string | null;
 
   @ManyToOne(() => WorkEntity, (r) => r.tokens)
   @JoinColumn({ name: "work_id" })

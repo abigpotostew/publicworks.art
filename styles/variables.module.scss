@@ -12,6 +12,7 @@ $spacer:1.5rem;
 $border-width:3px;
 $btn-border-radius:1.35rem;
 $line-height-base:1.5;
+$font-size-base:1rem;
 
 $pw-p-content-line-height: calc($spacer + 10%) ;
 $pw-p-spacer: 1.25rem;
@@ -20,6 +21,7 @@ $pw-bg-color: #ffffff;
 //$pw-bg-color: #212529;
 $pw-text-color: #000000;
 
+// bootstrap colors
 $primary: #212529;
 //$primary:#0d6efd;
 $secondary:#6c757d;
@@ -29,6 +31,9 @@ $info:#0dcaf0;
 $warning:#ffc107;
 $light:#f8f9fa;
 $dark:#212529;
+
+//other custom colors
+$title-primary: #03366b;
 
 // Form styles
 $form-feedback-valid-color: #5b806e;
@@ -171,3 +176,8 @@ $font-family-base:"Roboto+Flex";
 
 }
 
+
+
+.fs-7 {
+  font-size: $font-size-base * 0.9;
+}

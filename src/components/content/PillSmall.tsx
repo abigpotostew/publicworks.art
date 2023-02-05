@@ -5,15 +5,17 @@ import { Colors, PillGeneric } from "./PillGeneric";
 interface PillProps {
   children: ReactNode;
   color?: Colors;
+  className?: string;
 }
 
-export const Pill: FC<PillProps> = ({
+export const PillSmall: FC<PillProps> = ({
   children,
   color = "green",
+  className = "",
 }: PillProps) => {
   return (
     <PillGeneric
-      className={`${styles.textlarge} ${styles.pillcontainer}`}
+      className={`${className} ${styles.textsmall} ${styles.pillcontainer_small}`}
       color={color}
     >
       {children}

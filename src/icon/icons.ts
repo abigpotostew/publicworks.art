@@ -11,6 +11,7 @@ import {
   faFileImport,
   faBackward,
   faCheck,
+  faCertificate,
 } from "@fortawesome/free-solid-svg-icons";
 
 /**
@@ -25,5 +26,6 @@ library.add(
   faMinus,
   faFileImport,
   faBackward,
+  faCertificate,
   faCheck
 );

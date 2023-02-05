@@ -12,8 +12,8 @@
     "cuid": "node -e 'console.log(require(\"cuid\")())'"
   },
   "dependencies": {
-    "@cosmjs/amino": "^0.29.3",
-    "@cosmjs/cosmwasm-stargate": "^0.28.1",
+    "@cosmjs/amino": "^0.29.5",
+    "@cosmjs/cosmwasm-stargate": "^0.29.5",
     "@fortawesome/fontawesome-free": "^6.2.0",
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@fortawesome/free-regular-svg-icons": "^6.2.0",

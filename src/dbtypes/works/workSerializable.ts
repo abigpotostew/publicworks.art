@@ -11,6 +11,7 @@ export const workZod = z.object({
   minter: z.string().nullable(),
 
   description: z.string(),
+  additionalDescription: z.string().optional().nullable(),
   blurb: z.string(),
   startDate: z
     .date()
@@ -24,7 +25,7 @@ export const workZod = z.object({
     .nullable(),
 
   selector: z.string().nullable(),
-  license: z.string().nullable(),
+  license: z.string().max(1000).nullable(),
 
   pixelRatio: z.number().nullable(),
   maxTokens: z.number(),
@@ -36,6 +37,21 @@ export const workZod = z.object({
 
   createdDate: z.date().transform((d) => d.toISOString()),
   updatedDate: z.date().transform((d) => d.toISOString()),
+
+  hidden: z.boolean(),
 });
 
 export type WorkSerializable = z.infer<typeof workZod>;
+
+export const tokenZod = z.object({
+  id: z.string(),
+  hash: z.string(),
+  token_id: z.string(),
+  status: z.number(),
+  imageUrl: z.string().nullable(),
+  metadataUri: z.string().nullable(),
+  createdDate: z.date().transform((d) => d.toISOString()),
+  updatedDate: z.date().transform((d) => d.toISOString()),
+});
+
+export type TokenSerializable = z.infer<typeof tokenZod>;

@@ -1,14 +1,14 @@
-import { ChainInfo } from '@keplr-wallet/types';
+import { ChainInfo } from "@keplr-wallet/types";
 
 // Model classes
-import Minters from './minters';
-import Wallet from './wallet';
-import Collections from './collections';
+import Minters from "./minters";
+import Wallet from "./wallet";
+import Collections from "./collections";
 
 // dynamically import these heavy lib-using functions
-const getCosmWasmClientImport = import('./cosmwasm/getCosmWasmClient');
+const getCosmWasmClientImport = import("./cosmwasm/getCosmWasmClient");
 const getSigningCosmWasmClientImport = import(
-  './cosmwasm/getSigningCosmWasmClient'
+  "./cosmwasm/getSigningCosmWasmClient"
 );
 
 // import types -- gets erased at runtime
@@ -16,12 +16,16 @@ const getSigningCosmWasmClientImport = import(
 import type {
   SigningCosmWasmClient,
   CosmWasmClient,
-} from '@cosmjs/cosmwasm-stargate';
+} from "@cosmjs/cosmwasm-stargate";
 import {
   MarketplaceClient,
   MarketplaceQueryClient,
-} from '@stargazezone/contracts/marketplace';
-import NFTS from './nfts';
+} from "@stargazezone/contracts/marketplace";
+import NFTS from "./nfts";
+import {
+  Sg721NameClient,
+  Sg721NameQueryClient,
+} from "../../contracts/names/Sg721Name.client";
 
 export class StargazeClient {
   // Cosmwasm Clients
@@ -29,12 +33,15 @@ export class StargazeClient {
   public signingCosmwasmClient: SigningCosmWasmClient | null = null;
   public marketplaceClient: MarketplaceQueryClient | null = null;
   public signingMarketplaceClient: MarketplaceClient | null = null;
+  public signingSg721NameClient: Sg721NameClient | null = null;
 
   // Config values
   public marketContract: string;
   public chainInfo: ChainInfo;
   public minterCodeId: number;
   public sg721CodeId: number;
+  public nameCollectionContract: string;
+  public sg721NameClient: Sg721NameQueryClient;
 
   // Class instances
   private _minters: Minters | null = null;
@@ -48,16 +55,19 @@ export class StargazeClient {
     minterCodeId,
     marketContract,
     sg721CodeId,
+    nameCollectionContract,
   }: {
     chainInfo: ChainInfo;
     minterCodeId: number;
     marketContract: string;
     sg721CodeId: number;
+    nameCollectionContract: string;
   }) {
     this.chainInfo = chainInfo;
     this.minterCodeId = minterCodeId;
     this.marketContract = marketContract;
     this.sg721CodeId = sg721CodeId;
+    this.nameCollectionContract = nameCollectionContract;
   }
 
   public async connect() {
@@ -70,6 +80,7 @@ export class StargazeClient {
     this._cosmwasmClient = await getCosmWasmClient(this.chainInfo.rpc);
 
     await this.createMarketplaceClient();
+    await this.createSg721NameClient();
   }
 
   public get cosmwasmClient(): CosmWasmClient {
@@ -79,7 +90,7 @@ export class StargazeClient {
   public get collections(): Collections {
     if (!this.cosmwasmClient) {
       throw new Error(
-        'Client not connected. Make sure to run connect() on your stargaze client instance.'
+        "Client not connected. Make sure to run connect() on your stargaze client instance."
       );
     }
 
@@ -95,7 +106,7 @@ export class StargazeClient {
   public get nfts(): NFTS {
     if (!this.cosmwasmClient) {
       throw new Error(
-        'Client not connected. Make sure to run connect() on your stargaze client instance.'
+        "Client not connected. Make sure to run connect() on your stargaze client instance."
       );
     }
 
@@ -111,7 +122,7 @@ export class StargazeClient {
   public get minters(): Minters {
     if (!this.cosmwasmClient) {
       throw new Error(
-        'Client not connected. Make sure to run connect() on your stargaze client instance.'
+        "Client not connected. Make sure to run connect() on your stargaze client instance."
       );
     }
 
@@ -153,7 +164,7 @@ export class StargazeClient {
       await this.connectSigningClient();
 
       if (!this.cosmwasmClient) {
-        throw new Error('Error loading cosmwasm client.');
+        throw new Error("Error loading cosmwasm client.");
       }
 
       if (!this.signingCosmwasmClient) {
@@ -180,7 +191,7 @@ export class StargazeClient {
   public get wallet(): Wallet {
     if (!this.cosmwasmClient) {
       throw new Error(
-        'Client not connected. Make sure to run connect() on your stargaze client instance.'
+        "Client not connected. Make sure to run connect() on your stargaze client instance."
       );
     }
 
@@ -196,5 +207,21 @@ export class StargazeClient {
     });
 
     return this._wallet;
+  }
+  private async createSg721NameClient() {
+    if (this._wallet?.address && this.signingCosmwasmClient) {
+      this.signingSg721NameClient = new Sg721NameClient(
+        this.signingCosmwasmClient,
+        this._wallet.address,
+        this.nameCollectionContract
+      );
+    } else if (this.cosmwasmClient) {
+      this.sg721NameClient = new Sg721NameQueryClient(
+        this.cosmwasmClient,
+        this.nameCollectionContract
+      );
+    }
+
+    return this.signingSg721NameClient ?? this.sg721NameClient;
   }
 }

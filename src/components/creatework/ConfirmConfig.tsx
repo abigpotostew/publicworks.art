@@ -23,6 +23,7 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
     name: "Name",
     description: "Description",
     blurb: "Blurb",
+    additionalDescription: "Additional Description",
     externalLink: "External Link",
     maxTokens: "Collection Size",
     priceStars: "Price $STARS",
@@ -42,6 +43,7 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
     startDate: "Start Date",
     createdDate: null,
     updatedDate: null,
+    hidden: null,
   };
   const [hash, setHash] = useState<string>(generateTxHash());
   const onClickRefreshHash = useCallback(() => {

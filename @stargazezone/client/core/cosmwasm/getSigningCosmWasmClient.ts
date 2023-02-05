@@ -85,7 +85,9 @@ export default async function getSigningCosmWasmClient(
     chainInfo.rpc,
     offlineSigner,
     {
+      // @ts-ignore
       gasPrice,
+      // @ts-ignore
       aminoTypes: customAminoTypes,
     }
   );

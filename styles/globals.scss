@@ -1,3 +1,6 @@
+
+@import '/styles/variables.module';
+
 /*html,*/
 html,
 body {
@@ -36,3 +39,7 @@ input {
   font-family: "Roboto+Flex", sans-serif;
 }
 
+a {
+    //color: $pw-text-color;
+    text-decoration: none;
+}

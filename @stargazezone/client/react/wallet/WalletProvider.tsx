@@ -5,7 +5,8 @@ import { WalletInfo } from "../../core/wallet/types";
 import useStargazeClient from "../client/useStargazeClient";
 import WalletContext from "./WalletContext";
 import { useToast } from "src/hooks/useToast";
-import { deleteToken } from "../../../../src/util/auth-token";
+import { deleteToken, getToken } from "../../../../src/util/auth-token";
+import { getAccountFromToken } from "../../../../src/auth/jwt";
 
 function NoKeplrModal({
   noKeplr,
@@ -100,6 +101,10 @@ export default function WalletProvider({ children }: { children: ReactNode }) {
   }, [client]);
 
   function updateWallet({ address, name, balance }: WalletInfo) {
+    const account = getAccountFromToken();
+    if (account && account !== address) {
+      deleteToken();
+    }
     setLocalStorage({
       address: address,
       name: name,

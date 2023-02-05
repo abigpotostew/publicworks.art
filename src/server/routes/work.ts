@@ -4,7 +4,10 @@ import { stores } from "../../store/stores";
 import { authorizedProcedure, baseProcedure, t } from "../trpc";
 import { CreateProjectRequestZ, editProjectZod } from "../../store";
 import { TRPCError } from "@trpc/server";
-import { serializeWork } from "../../dbtypes/works/serialize-work";
+import {
+  serializeWork,
+  serializeWorkToken,
+} from "../../dbtypes/works/serialize-work";
 import { normalizeMetadataUri } from "../../wasm/metadata";
 import {
   deleteCid,
@@ -155,11 +158,11 @@ const listAddressWorks = baseProcedure
         .refine((val) => {
           return ["PUBLISHED", "UNPUBLISHED", "ALL"].includes(val);
         }),
+      direction: z.enum(["ASC", "DESC"]).default("DESC"),
     })
   )
 
   .query(async ({ input, ctx }) => {
-    // console.log("input", input);
     const { items, nextOffset: nextCursor } =
       await stores().project.getAccountProjects({
         ...input,
@@ -183,10 +186,10 @@ const workPreviewImg = baseProcedure
     }
     const preview = await stores().project.getProjectPreviewImage(input.workId);
 
-    if (!preview || !preview.image_url) {
+    if (!preview || !preview.imageUrl) {
       throw new TRPCError({ code: "NOT_FOUND" });
     }
-    return normalizeMetadataUri(preview.image_url);
+    return normalizeMetadataUri(preview.imageUrl);
   });
 const workTokenCount = baseProcedure
   .input(
@@ -195,8 +198,21 @@ const workTokenCount = baseProcedure
     })
   )
   .query(async ({ input, ctx }) => {
-    console.log("hello here in token count");
     return stores().project.getTokenCount(input.slug);
+  });
+
+const lastMintedToken = baseProcedure
+  .input(
+    z.object({
+      slug: z.string(),
+    })
+  )
+  .query(async ({ input, ctx }) => {
+    const token = await stores().project.lastMintedToken(input.slug);
+    if (!token) {
+      return null;
+    }
+    return serializeWorkToken(token);
   });
 
 const uploadPreviewImg = authorizedProcedure
@@ -345,6 +361,7 @@ export const workRouter = t.router({
   uploadPreviewImg: uploadPreviewImg,
   listAddressWorks,
   workTokenCount: workTokenCount,
+  lastMintedToken: lastMintedToken,
   uploadWorkGenerateUrl: uploadWorkGenerateUrl,
   uploadWorkCoverImageGenerateUrl: uploadWorkCoverImageGenerateUrl,
   confirmWorkUpload: confirmWorkUpload,

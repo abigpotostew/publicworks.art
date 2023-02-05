@@ -68,14 +68,21 @@ export const schema = z.object({
       return splits.length == 2 && !found;
     }, "Resolution must be less than 10000 and greater than 50"),
   selector: z.string(),
-  license: z.string().optional().nullable(),
+  license: z.string().max(1000).optional().nullable(),
   pixelRatio: z.number().min(0).max(10),
   priceStars: z.number().min(50),
 });
 
-const formatInUTC = (date: Date) => {
-  const out = formatInTimeZone(date, "UTC", "LLLL d, yyyy kk:mm"); // 2014-10-25 06:46:20-04:00
-  return out;
+const formatInUTC = (date: Date | null | undefined) => {
+  if (!date) {
+    return "-";
+  }
+  try {
+    const out = formatInTimeZone(date, "UTC", "LLLL d, yyyy kk:mm"); // 2014-10-25 06:46:20-04:00
+    return out;
+  } catch (e) {
+    return "-";
+  }
 };
 export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   // auth context here
@@ -92,7 +99,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
     resolution: props.defaultValues?.resolution || "1080:1080",
     pixelRatio: props.defaultValues?.pixelRatio || 1,
     selector: props.defaultValues?.selector || undefined,
-    license: props.defaultValues?.license || "",
+    license: props.defaultValues?.license || undefined,
     priceStars: props.defaultValues?.priceStars || 50,
     startDate:
       (props.defaultValues?.startDate &&
@@ -119,50 +126,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
     props.formValid({ isTouched: formik.dirty, isValid: formik.isValid });
   }, [formik.isValid, formik.dirty]);
 
-  // const [startDate, setStartDate] = useState<Date>(defaultDate());
-  // const [royaltyAddress, setRoyaltyAddress] = useState<string>(
-  //   defaults.royaltyAddress
-  // );
-  // const [royaltyPercent, setRoyaltyPercent] = useState<number>(
-  //   defaults.royaltyPercent
-  // );
-  // const [resolution, setResolution] = useState<string>(defaults.resolution);
-  // const [pixelRatio, setPixelRatio] = useState<number>(defaults.pixelRatio);
-  // const [selector, setSelector] = useState<string | undefined>(
-  //   defaults.selector
-  // );
-  // const [license, setLicense] = useState<string | undefined>(defaults.license);
-  // const [priceStars, setPriceStars] = useState<number>(defaults.priceStars);
-
-  // const onDateChange: ChangeEventHandler<HTMLInputElement> = (
-  //   e: React.ChangeEvent<HTMLInputElement>
-  // ) => {
-  //   const parsed = parseISO(e.target.value); // , 'yyyy-LL-dd', new Date()
-  //   // console.log("actual date", e.target.value, "parsed date", parsed);
-  //   const date = parsed;
-  //   // date = setYear(date, parsed.getFullYear());
-  //   // date = setMonth(date, parsed.getMonth());
-  //   // date = setDay(date, parsed.getDate());
-  //   setStartDate(date);
-  // };
-
-  // const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
-  //   e.preventDefault();
-  //   // create project in api
-  //   // create contract
-  //   const req = {
-  //     startDate: startDate.toISOString(),
-  //     royaltyAddress,
-  //     royaltyPercent,
-  //     selector,
-  //     resolution,
-  //     priceStars,
-  //     pixelRatio,
-  //     license,
-  //   };
-  //   console.log("hello heres the request", req);
-  //   props.onCreateProject(req);
-  // };
+  //todo add license field
 
   return (
     <>
@@ -337,6 +301,33 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               {formik.errors.resolution}
             </Form.Control.Feedback>
           </Form.Group>
+
+          <Form.Group className="mb-3" controlId="formLicense">
+            <Form.Label>
+              <span>
+                NFT License{" "}
+                <TooltipInfo>
+                  Optional NFT License. This is used to display the license on
+                  the NFT and in the NFT metadata.
+                </TooltipInfo>
+              </span>
+            </Form.Label>
+
+            <Form.Control
+              name="license"
+              placeholder={"NFT License"}
+              type="text"
+              value={formik.values.license}
+              onChange={formik.handleChange}
+              isValid={formik.touched.license && !formik.errors.license}
+              isInvalid={formik.touched.license && !!formik.errors.license}
+            />
+
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.license}
+            </Form.Control.Feedback>
+          </Form.Group>
+
           {/*<Form.Group className="mb-3" controlId="formPixelRatio">*/}
           {/*  <Form.Label>*/}
           {/*    Image Preview Pixel Ratio{" "}*/}

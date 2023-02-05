@@ -66,16 +66,10 @@ const MyApp: FC<AppPropsWithLayout> = ({
   pageProps,
 }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout || ((page) => page);
-  // const {
-  //   queryClient: queryContractClient,
-  //   queryConnectedClient,
-  //   connectKeplrMutation,
-  // } = useQueryContract();
   return (
     <SSRProvider>
       <StargazeProvider client={stargazeClient}>
         <UserProvider>
-          {/*<QueryClientProvider client={queryClient}>*/}
           <SWRConfig
             value={{
               fetcher,
@@ -85,12 +79,10 @@ const MyApp: FC<AppPropsWithLayout> = ({
             <ToastContainer />
             {getLayout(<Component {...pageProps} />)}
           </SWRConfig>
-          {/*</CosmosWalletProviderContext.Provider>*/}
-          {/*</QueryClientProvider>*/}
         </UserProvider>
       </StargazeProvider>
     </SSRProvider>
-  ) as ReactElement<any, any>;
+  ) as ReactElement;
 };
 
 export default trpcNextPW.withTRPC(MyApp);

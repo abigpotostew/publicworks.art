@@ -1,13 +1,13 @@
 import { trpcNextPW } from "src/server/utils/trpc";
 
-export const useNumMinted = (
+export const useLastMintedToken = (
   slug: string | null | undefined,
   refreshInterval: number | undefined = 10000
 ) => {
-  const numMinted = trpcNextPW.works.workTokenCount.useQuery(
+  const token = trpcNextPW.works.lastMintedToken.useQuery(
     { slug: slug || "" },
     { enabled: !!slug, refetchInterval: refreshInterval }
   );
 
-  return numMinted;
+  return token;
 };
