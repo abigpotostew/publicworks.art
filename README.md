@@ -23,3 +23,5 @@ todo:
 design inspiration:
 - https://nouns.build/
 - a home for generative art in the cosmos
+
+

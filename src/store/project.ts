@@ -184,12 +184,9 @@ export class ProjectRepo {
   }
 
   async updateProject(
+    id: string,
     request: Partial<EditProjectRequest>
   ): Promise<Result<WorkEntity>> {
-    if (!request.id) {
-      return Err(new Error("missing project_id"));
-    }
-
     let toUpdate: Partial<WorkEntity> = new WorkEntity();
     toUpdate = {
       name: request.name,
@@ -216,13 +213,14 @@ export class ProjectRepo {
       minter: request.minter,
     };
 
-    const res = await dataSource().getRepository(WorkEntity).update(
+    await dataSource().getRepository(WorkEntity).update(
       {
         id: request.id,
       },
       toUpdate
     );
-    const work = await this.getProject(request.id);
+
+    const work = await this.getProject(id);
     if (!work) {
       throw new Error("work not found");
     }

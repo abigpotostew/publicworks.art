@@ -10,11 +10,7 @@ import { useCosmosWallet } from "../../../src/components/provider/CosmosWalletPr
 import { FlexBox, FlexBoxCenter } from "src/components/layout/FlexBoxCenter";
 import { useInstantiate } from "src/hooks/useInstantiate";
 import { trpcNextPW } from "src/server/utils/trpc";
-import {
-  onWorkUpload,
-  onWorkUploadNew,
-  useUploadWorkMutation,
-} from "src/works/upload";
+import { useUploadWorkMutation } from "src/works/upload";
 import { LiveMedia } from "src/components/media/LiveMedia";
 import { Step, StepProgressBar } from "src/components/progress/StepProgressBar";
 import { TooltipInfo } from "src/components/tooltip/TooltipInfo";

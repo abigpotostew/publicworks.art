@@ -61,7 +61,6 @@ export const pinZipToPinata = async (
 ) => {
   const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
   try {
-    console.log("stat", zipPath, fs.statSync(zipPath));
     const data = new FormData();
     data.append("pinataOptions", '{"cidVersion": 1}');
     data.append(
@@ -107,8 +106,6 @@ export const pinZipToPinata = async (
         Authorization: "Bearer " + process.env.PINATA_API_SECRET_JWT,
       },
       body: data,
-    }).on("uploadProgress", (progress) => {
-      console.log(progress);
     });
 
     const body = JSON.parse(response.body);

@@ -22,7 +22,10 @@ export const createPresignedUrl = async (
   contentSize?: number
 ) => {
   const id = cuid();
-  const filename = `${work.id}${directory ? "/" + directory : ""}/${id}`;
+  const extension = contentType.split("/")[1];
+  const filename = `${work.id}${
+    directory ? "/" + directory : ""
+  }/${id}.${extension}`;
 
   // Get a v4 signed URL for reading the file
   const [url] = await getBucket()

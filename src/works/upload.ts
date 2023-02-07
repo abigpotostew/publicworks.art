@@ -2,30 +2,6 @@ import { AppRouterUtilContext, trpcNextPW } from "../server/utils/trpc";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "src/hooks/useToast";
 
-export const onWorkUpload = async (
-  workId: string,
-  files: File[],
-  utils: AppRouterUtilContext
-) => {
-  if (files.length !== 1) {
-    throw new Error("required single file");
-  }
-  const formData = new FormData();
-  formData.append("file", files[0]);
-  const response = await fetch(`/api/${workId}/workUpload`, {
-    method: "POST",
-    body: formData,
-  });
-  if (!response.ok) {
-    throw new Error("Upload failed: " + (await response.json())?.message);
-  }
-  const newCodeUrl = (await response.json()).url;
-  // setCodeUrl(newCodeUrl);
-  console.log("workUpload status", newCodeUrl);
-  utils.works.getWorkById.invalidate();
-  return true;
-};
-
 export const onWorkUploadNew = async (
   workId: string,
   files: File[],
@@ -64,8 +40,10 @@ export const useUploadWorkMutation = (workId: string | null | undefined) => {
       toast.error(msg);
       throw new Error(msg);
     }
+    const contentSize = files[0].size;
     const uploadTmp = await onWorkUploadFileMutation.mutateAsync({
       workId: workId,
+      contentSize,
     });
 
     if (!uploadTmp.ok) {

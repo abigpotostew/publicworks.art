@@ -51,7 +51,7 @@ const editWork = authorizedProcedure
       throw new TRPCError({ code: "NOT_FOUND" });
     }
 
-    const project = await stores().project.updateProject(input);
+    const project = await stores().project.updateProject(input.id, input);
     if (!project.ok) {
       throw new TRPCError({ code: "BAD_REQUEST" });
     }
@@ -76,7 +76,7 @@ const editWorkContracts = authorizedProcedure
       throw new TRPCError({ code: "NOT_FOUND" });
     }
 
-    const project = await stores().project.updateProject(input);
+    const project = await stores().project.updateProject(input.id, input);
     if (!project.ok) {
       throw new TRPCError({ code: "BAD_REQUEST" });
     }
@@ -246,8 +246,7 @@ const uploadPreviewImg = authorizedProcedure
       workId: work.id,
     });
     console.log("finished uploading");
-    const response = await stores().project.updateProject({
-      id: work.id,
+    const response = await stores().project.updateProject(work.id, {
       coverImageCid,
     });
     if (!response.ok) {
@@ -262,6 +261,7 @@ const uploadWorkGenerateUrl = authorizedProcedure
     z.object({
       workId: z.string(),
       contentType: z.string().optional().nullish(),
+      contentSize: z.number().min(1).max(20_000_000),
     })
   )
 
@@ -271,7 +271,12 @@ const uploadWorkGenerateUrl = authorizedProcedure
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
 
-    const { url, filename } = await createPresignedUrl(work, "application/zip");
+    const { url, filename } = await createPresignedUrl(
+      work,
+      "application/zip",
+      "code",
+      input.contentSize
+    );
     const obj = await stores().project.saveUploadId(work, filename);
 
     return { ok: true, url, method: "PUT", uploadId: obj.id };
