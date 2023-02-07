@@ -2,6 +2,7 @@ import useSWR from "swr";
 import config from "../wasm/config";
 import { useEffect, useMemo, useState } from "react";
 import { fetchTokenUriInfo, normalizeMetadataUri } from "../wasm/metadata";
+import { useQuery } from "@tanstack/react-query";
 
 export interface Attribute {
   value: string | number | boolean | null;
@@ -38,10 +39,29 @@ export const useNftMetadata = ({
     [tokenId]
   );
 
-  const { data, error } = useSWR(
-    sg721
-      ? `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${sg721}/smart/${msgBase64}`
-      : null
+  const { data, error } = useQuery(
+    [
+      sg721
+        ? `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${sg721}/smart/${msgBase64}`
+        : null,
+    ],
+    async () => {
+      if (!sg721) {
+        return null;
+      }
+      const res = await fetch(
+        `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${sg721}/smart/${msgBase64}`
+      );
+      if (!res.ok) {
+        throw new Error(
+          "failed to get collection size" +
+            res.status +
+            ", " +
+            (await res.text().toString())
+        );
+      }
+      return res.json();
+    }
   );
 
   useEffect(() => {
