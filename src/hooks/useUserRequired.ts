@@ -29,11 +29,11 @@ export const useUserRequired = (redirect: string) => {
         });
       }
     },
-    [router, user.isLoading, address]
+    [redirect, timer, router, user.isLoading, address]
   );
   useEffect(() => {
     if (address) redirectTimer(false);
-  }, [router, user.isLoading, user?.data?.id, address]);
+  }, [redirectTimer, router, user.isLoading, user?.data?.id, address]);
 
   useEffect(() => {
     const timer = setTimeout(() => redirectTimer(true), 1000);
@@ -41,5 +41,5 @@ export const useUserRequired = (redirect: string) => {
     return () => {
       clearTimeout(timer);
     };
-  }, []);
+  }, [redirectTimer]);
 };

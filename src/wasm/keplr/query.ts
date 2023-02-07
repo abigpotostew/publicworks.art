@@ -3,12 +3,11 @@ import {
   CosmWasmClient,
   SigningCosmWasmClient,
 } from "@cosmjs/cosmwasm-stargate";
-import { OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
+import { OfflineDirectSigner } from "@cosmjs/proto-signing";
 import { keplrClient } from "./keplr-client";
 import { OfflineAminoSigner } from "@cosmjs/amino";
 import { Secp256k1, Secp256k1Signature, sha256 } from "@cosmjs/crypto";
-import { fromBase64, fromHex } from "@cosmjs/encoding";
-import { toUtf8 } from "@cosmjs/encoding";
+import { fromBase64, toUtf8 } from "@cosmjs/encoding";
 import { AccountData } from "cosmwasm";
 
 export class QueryContract {
@@ -79,8 +78,7 @@ export class QueryContract {
 
   async getAccounts() {
     if (this.keplerOfflineClient) {
-      const accounts = this.keplerOfflineClient.getAccounts();
-      return accounts;
+      return this.keplerOfflineClient.getAccounts();
     } else {
       throw new Error("Kepler Offline Client not initialized");
     }
@@ -259,6 +257,7 @@ export class ConnectedQueryContract {
     this.keplrClient = signer;
     this.keplerOfflineClient = offlineSigner;
   }
+
   disconnect() {
     return this.keplrClient.disconnect();
   }
@@ -335,6 +334,7 @@ export interface StdFee {
   readonly amount: readonly Coin[];
   readonly gas: string;
 }
+
 export interface Coin {
   readonly denom: string;
   readonly amount: string;
@@ -343,6 +343,7 @@ export interface Coin {
 export function serializeSignDoc(signDoc: StdSignDoc): Uint8Array {
   return toUtf8(sortedJsonStringify(signDoc));
 }
+
 export interface StdSignDoc {
   readonly chain_id: string;
   readonly account_number: string;

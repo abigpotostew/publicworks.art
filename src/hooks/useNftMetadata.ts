@@ -83,7 +83,7 @@ export const useNftMetadata = ({
       }
       setLoading(false);
     })();
-  }, [data, error]);
+  }, [data, error, errorFetch]);
 
   return { metadata, loading, error: errorFetch };
 };

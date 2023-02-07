@@ -33,7 +33,7 @@ export const usePagination = ({
       pages.push(i + 1);
     }
     return pages;
-  }, [totalPages]);
+  }, [pageSizeN, totalPages]);
 
   const lastPage = pages.length > 0 ? pages[pages.length - 1] : 1;
 
@@ -50,30 +50,36 @@ export const usePagination = ({
     return { ellipsisStart, ellipsisEnd, pagesToRender };
   }, [page, lastPage]);
 
-  const changePage = (page: number) => {
-    const newPage = Math.max(pages[0], Math.min(page, pages[pages.length - 1]));
-    router.push(
-      {
-        pathname: `${pageUrl}`,
-        query: { page: newPage.toString() },
-        // search: { page: page.toString() },
-      },
-      {
-        pathname: `${pageUrl}`,
-        query: { page: newPage.toString() },
-      },
-      { scroll: false }
-    );
-    setPage(newPage);
-  };
+  const changePage = useCallback(
+    (page: number) => {
+      const newPage = Math.max(
+        pages[0],
+        Math.min(page, pages[pages.length - 1])
+      );
+      router.push(
+        {
+          pathname: `${pageUrl}`,
+          query: { page: newPage.toString() },
+          // search: { page: page.toString() },
+        },
+        {
+          pathname: `${pageUrl}`,
+          query: { page: newPage.toString() },
+        },
+        { scroll: false }
+      );
+      setPage(newPage);
+    },
+    [pages, router, pageUrl]
+  );
 
   const nextPage = useCallback(() => {
     changePage(page + 1);
-  }, [page]);
+  }, [changePage, page]);
 
   const prevPage = useCallback(() => {
     changePage(page - 1);
-  }, [page]);
+  }, [changePage, page]);
 
   return {
     totalPages,
