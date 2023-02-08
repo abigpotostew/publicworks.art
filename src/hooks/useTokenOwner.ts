@@ -1,4 +1,3 @@
-import useSWR from "swr";
 import config from "../wasm/config";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
