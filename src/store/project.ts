@@ -213,12 +213,13 @@ export class ProjectRepo {
       minter: request.minter,
     };
 
-    await dataSource().getRepository(WorkEntity).update(
+    const result = await dataSource().getRepository(WorkEntity).update(
       {
-        id: request.id,
+        id,
       },
       toUpdate
     );
+    console.log("result", result);
 
     const work = await this.getProject(id);
     if (!work) {

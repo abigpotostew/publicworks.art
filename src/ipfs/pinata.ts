@@ -3,6 +3,7 @@ import * as unzipper from "unzipper";
 import FormData from "form-data";
 import got from "got";
 import AdmZip from "adm-zip";
+import cuid from "cuid";
 
 const readZipAdm = async (
   zipPath: string,
@@ -57,7 +58,7 @@ const readZip = async (
 
 export const pinZipToPinata = async (
   zipPath: string,
-  metadata: { workId: string }
+  metadata: { workId: string; testnet?: boolean }
 ) => {
   const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
   try {
@@ -67,7 +68,10 @@ export const pinZipToPinata = async (
       "pinataMetadata",
       JSON.stringify({
         name: `work-${metadata.workId}-${Math.round(Date.now() / 1000)}`,
-        keyvalues: { workId: metadata.workId },
+        keyvalues: {
+          workId: metadata.workId,
+          testnet: (!!metadata.testnet).toString(),
+        },
       })
     );
     // readZip(zipPath, (filepath, buff) => {
@@ -80,24 +84,16 @@ export const pinZipToPinata = async (
         filepath: "root/" + filepath,
       });
     });
-    // await fs
-    //   .createReadStream(zipPath)
-    //   // .pipe(unzipper.Parse({ forceStream: true }));
-    //   .pipe(unzipper.Parse())
-    //   .on("entry", async function (entry) {
-    //     const fileName = entry.path;
-    //     const type = entry.type; // 'Directory' or 'File'
-    //     if (type !== "File") {
-    //       entry.autodrain();
-    //       return;
-    //     }
-    //     const buff = await entry.buffer();
-    //     const filepath = "root/" + fileName;
-    //     data.append("file", buff, {
-    //       filepath,
-    //     });
-    //   })
-    //   .promise();
+
+    const hashbuster = cuid();
+    console.log("hashbuster", hashbuster);
+    data.append(
+      "file",
+      Buffer.from(`${hashbuster}\nwork id: ${metadata.workId}\n`),
+      {
+        filepath: "root/publicworks.txt",
+      }
+    );
 
     const response = await got(url, {
       method: "POST",
@@ -112,8 +108,11 @@ export const pinZipToPinata = async (
     const cid = body.IpfsHash as string;
     console.log("cid:", cid);
     return cid;
-  } catch (error) {
-    console.log(error);
+  } catch (e) {
+    const error = e as any;
+    if (error && "name" in error && error.name === "HTTPError") {
+      console.log("failure uploading to pinata", error.response.body);
+    }
     throw error;
   }
 };

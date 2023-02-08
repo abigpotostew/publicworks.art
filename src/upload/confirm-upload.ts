@@ -45,7 +45,10 @@ export const confirmUpload = async (uploadId: string, work: WorkEntity) => {
   const oldcid = work.codeCid;
 
   //upload it to ifps pinZipToPinata
-  const cid = await pinZipToPinata(tmpPath, { workId: work.id });
+  const cid = await pinZipToPinata(tmpPath, {
+    workId: work.id,
+    testnet: process.env.NEXT_PUBLIC_TESTNET === "true",
+  });
   if (!cid) {
     console.error("missing cid");
     throw new TRPCError({
