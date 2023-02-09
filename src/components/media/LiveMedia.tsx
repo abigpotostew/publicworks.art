@@ -57,7 +57,7 @@ export const LiveMedia: FC<LiveMediaParams> = (params: LiveMediaParams) => {
       {(appLoading.appIsLoading || appLoading.appIsLoading) && (
         <div>
           <SpinnerLoading />
-          {appLoading.isLoadingSlow && <span>App is still loading...</span>}
+          {appLoading.isLoadingSlow && <span>Still loading...</span>}
         </div>
       )}
 
