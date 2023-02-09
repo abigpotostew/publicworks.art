@@ -108,7 +108,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   };
   const formik = useFormik({
     initialValues: defaults,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       console.log("values", values);
       // alert(JSON.stringify(values, null, 2));
 
@@ -146,6 +146,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               </TooltipInfo>
             </Form.Label>
             <Form.Control
+              onWheel={() => false}
               type={"number"}
               value={formik.values.maxTokens}
               onChange={formik.handleChange}
@@ -190,6 +191,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
             </Form.Label>
             <Form.Control
               type="number"
+              onWheel={() => false}
               value={formik.values.priceStars}
               name="priceStars"
               onChange={formik.handleChange}

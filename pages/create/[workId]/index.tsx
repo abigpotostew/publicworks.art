@@ -191,6 +191,9 @@ const EditWorkPage = () => {
     onSuccess() {
       toast.success("Saved!");
       utils.works.getWorkById.invalidate();
+      console.log("invalidated the work!");
+      getWorkQuery.refetch();
+      console.log("fetched the work!");
     },
   });
 
@@ -204,7 +207,8 @@ const EditWorkPage = () => {
     async (req: Partial<EditProjectRequest>) => {
       console.log("workId", workId);
       console.log("edit request", { ...req, id: workId });
-      mutation.mutate({ ...req, id: workId });
+      await mutation.mutateAsync({ ...req, id: workId });
+      console.log("finished on create project mutation");
     },
     [mutation]
   );
@@ -404,6 +408,7 @@ const EditWorkPage = () => {
                   <FlexBoxCenter fluid={false}>
                     <div>
                       <NftDetails2
+                        key={work.updatedDate}
                         onCreateProject={onCreateProject}
                         defaultValues={work}
                         formValid={setFormState}
