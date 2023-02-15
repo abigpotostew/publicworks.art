@@ -170,7 +170,7 @@ async function instantiateNew(
     sg721_code_id: config.sg721CodeId,
     sg721_instantiate_msg: {
       name: work.name,
-      symbol: "TODO",
+      symbol: "PW" + work.id,
       minter: account,
       finalizer: config.finalizer,
       code_uri: "ipfs://" + work.codeCid,
