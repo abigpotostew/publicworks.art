@@ -18,7 +18,7 @@ export const NeedToLoginButton: FC<Props> = ({ url }) => {
     <>
       {!wallet || user.isError || !token ? (
         <div>
-          Authenticate to claim your profile{" "}
+          Login to continue{" "}
           <Link href={"/login?redirect=" + url} passHref={true}>
             <ButtonPW
               onClick={() => {

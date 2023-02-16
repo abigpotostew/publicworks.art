@@ -29,7 +29,11 @@ export const GalleryComponent = ({
       // style={{ width: "24rem" }}
       className={`${styles.workCardContainer} `}
     >
-      <Card.Img variant="top" src={query.isSuccess ? query.data : ""} />
+      <Card.Img
+        className={styles.workCardImage}
+        variant="top"
+        src={query.isSuccess ? query.data : ""}
+      />
       <Card.Body>
         <Card.Title className={stylesWork.workSmallTitle}>{w.name}</Card.Title>
         <Card.Text>{w.blurb}</Card.Text>

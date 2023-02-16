@@ -121,7 +121,7 @@ const WorkTokenPage = () => {
         return null;
       }
     },
-    { enabled: !!work }
+    { enabled: !!work && !!slug && !!tokenId && !!work?.sg721 }
   );
 
   const errorMetadata = tokenMetadata.isError;

@@ -21,7 +21,7 @@ export const useCollectionSize = (minter: string, refreshInterval?: number) => {
       const json = await res.json();
       return (json?.data?.num_tokens as number | null) || 0;
     },
-    { refetchInterval: refreshInterval }
+    { refetchInterval: refreshInterval, enabled: !!minter }
   );
 
   return {

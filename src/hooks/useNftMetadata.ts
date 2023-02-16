@@ -61,7 +61,8 @@ export const useNftMetadata = ({
         );
       }
       return res.json();
-    }
+    },
+    { enabled: !!sg721 }
   );
 
   useEffect(() => {

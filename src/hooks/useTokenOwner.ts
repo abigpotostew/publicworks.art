@@ -53,7 +53,7 @@ export const useTokenOwner = ({
       }
       return res.json();
     },
-    { refetchInterval: 1000 * 60 * 3 }
+    { refetchInterval: 1000 * 60 * 3, enabled: !!sg721 }
   );
 
   return {

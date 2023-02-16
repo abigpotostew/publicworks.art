@@ -14,7 +14,7 @@ export const UserProfile: FC<Props> = ({ user }: Props) => {
   const sgwallet = useWallet();
   const useName = useProfileInfo({ address: sgwallet.wallet?.address });
   //name: 'twitter', value: 'stewbracken', verified: null
-  const twitterRecord = useName.textRecords?.find((r) => r.name === "twitter");
+  const twitterRecord = useName?.textRecords?.find((r) => r.name === "twitter");
   return (
     <>
       <Row>

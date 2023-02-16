@@ -1,14 +1,5 @@
-import {
-  FC,
-  Fragment,
-  ReactElement,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
-import { Container, Row, Toast } from "react-bootstrap";
-import { useRouter } from "next/router";
-import * as jwt from "jsonwebtoken";
+import { FC, ReactElement, useCallback, useState } from "react";
+import { Container, Toast } from "react-bootstrap";
 import MainLayout from "../../src/layout/MainLayout";
 import SpinnerLoading from "../../src/components/loading/Loader";
 import { trpcNextPW } from "../../src/server/utils/trpc";
@@ -28,14 +19,9 @@ import useUserContext from "src/context/user/useUserContext";
 import { useStargazeClient, useWallet } from "@stargazezone/client";
 import { UserSerializable } from "src/dbtypes/users/userSerializable";
 import { shortenAddress } from "src/wasm/address";
-import { useUserRequired } from "src/hooks/useUserRequired";
 import { NeedToLoginButton } from "src/components/login/NeedToLoginButton";
-import {
-  signMessageAndLogin,
-  signMessageAndLoginIfNeeded,
-} from "src/wasm/keplr/client-login";
 import { onMutateLogin } from "src/trpc/onMutate";
-import { useNameInfo, useProfileInfo } from "../../src/hooks/sg-names";
+import { useProfileInfo } from "../../src/hooks/sg-names";
 import { WorkRow } from "../../src/components/profile/WorkRow";
 import { Hr } from "../../src/components/content/horizontalrule/HR";
 
@@ -43,38 +29,29 @@ interface Props {
   work: WorkSerializable;
 }
 
-export const WorkLineItem: FC<Props> = ({ work }: Props) => {
-  return (
-    <div>
-      <span>
-        {work.name} {" | "}
-        <Link href={`/work/${work.slug}`} passHref={true}>
-          View
-        </Link>
-        {" | "}
-        <Link href={`/create/${work.id}`} passHref={true}>
-          Edit
-        </Link>
-      </span>
-    </div>
-  );
-};
-
 interface UserWorksProps {
   user: UserSerializable;
 }
 
 export const UserWorks: FC<UserWorksProps> = (props: UserWorksProps) => {
   const [pageNumber, setPageNumber] = useState(0);
-  console.log("pageNumber", pageNumber);
-
+  const utils = trpcNextPW.useContext();
   const limit = 5;
-  const userWorksPage = trpcNextPW.works.listAddressWorks.useQuery({
+  const [page, setPage] = useState<WorkSerializable[]>([]);
+
+  const queryInput = {
     publishedState: "ALL",
     limit,
     address: props.user.address,
     direction: "DESC",
     cursor: pageNumber * limit,
+  };
+  const userWorksPage = trpcNextPW.works.listAddressWorks.useQuery(queryInput, {
+    onSettled: (data, error) => {
+      if (data) {
+        setPage(data.items);
+      }
+    },
   });
 
   const hasMore = userWorksPage.data?.nextCursor ? true : false;
@@ -90,29 +67,22 @@ export const UserWorks: FC<UserWorksProps> = (props: UserWorksProps) => {
     }
   }, [hasPrevious]);
 
-  const hasItems = !!userWorksPage.data?.items?.length;
-  const pageItems: WorkSerializable[] =
-    hasItems && userWorksPage.data?.items ? userWorksPage.data.items : [];
+  const hasItems = !!page?.length;
+  const pageItems: WorkSerializable[] = hasItems && page ? page : [];
+  const onRowChanged = useCallback(() => {
+    userWorksPage.refetch();
+    utils.works.listAddressWorks.invalidate(queryInput);
+  }, [utils, userWorksPage, queryInput]);
   return (
     <div>
       <h2 className={"mt-2"}>Works</h2>
       {userWorksPage.isLoading && <SpinnerLoading />}
       {userWorksPage.isSuccess &&
         hasItems &&
-        // pageItems?.map((page, index) => (
-        //   <Fragment key={page.items[0]?.id || index}>
-        //     {page.items.map((w) => (
-        //       <span key={w.id}>
-        //         <Hr className={"text-muted"} />
-        //         <WorkRow work={w}></WorkRow>
-        //       </span>
-        //     ))}
-        //   </Fragment>
-        // ))}
         pageItems.map((w) => (
           <span key={w.id}>
             <Hr className={"text-muted"} />
-            <WorkRow work={w}></WorkRow>
+            <WorkRow work={w} onChange={() => onRowChanged()}></WorkRow>
           </span>
         ))}
       {/*))}*/}
@@ -199,46 +169,16 @@ const ProfilePage = () => {
                   <span className={"text-reset"}>{displayUsername || ""}</span>
                 )}
               </h1>
-
-              {/*{!editMode && (*/}
-              {/*  <ButtonPW*/}
-              {/*    variant={"outline-primary"}*/}
-              {/*    className={"ms-2"}*/}
-              {/*    onClick={() => setEditMode(true)}*/}
-              {/*  >*/}
-              {/*    Edit*/}
-              {/*  </ButtonPW>*/}
-              {/*)}*/}
             </FlexBox>
 
-            {/*{!sgwallet.loading && !user.isLoading && (*/}
             <NeedToLoginButton url={"/profile"} />
-            {/*)}*/}
 
-            {/*{user.isLoading && (*/}
-            {/*  <div>*/}
-            {/*    <SpinnerLoading />*/}
-            {/*  </div>*/}
-            {/*)}*/}
             {!editMode && user.isSuccess && <UserProfile user={user.data} />}
             {editMode && (
               <EditProfile defaultValues={user.data} onSubmit={onSubmitEdit} />
             )}
             {editMode && editUserMutation.isLoading && <SpinnerLoading />}
-            {/*{authLoaded && <NameWork onCreateProject={onCreateProject} />}*/}
-            {/*{mutation.isLoading && <SpinnerLoading />}*/}
-            {/*{mutation.error && <p>{mutation.error.message}</p>}*/}
             {!editMode && user.data && <UserWorks user={user.data} />}
-            {/*{!sgwallet.loading && !user.isLoading && !user?.data?.id && (*/}
-            {/*  <p>*/}
-            {/*    Claim your profile by logging in.*/}
-            {/*    <Link*/}
-            {/*      href={`/login?redirect=${encodeURIComponent("/profile")}`}*/}
-            {/*    >*/}
-            {/*      <ButtonPW>Login</ButtonPW>*/}
-            {/*    </Link>*/}
-            {/*  </p>*/}
-            {/*)}*/}
           </RowThinContainer>
         </Container>
       </div>

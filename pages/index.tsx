@@ -1,21 +1,16 @@
 import styles from "../styles/Home.module.scss";
-import stylesWorks from "../styles/Work.module.scss";
-import { FC, Fragment, ReactElement, ReactNode } from "react";
+import { ReactElement } from "react";
 import MainLayout from "../src/layout/MainLayout";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import SketchAnimation from "../src/components/SketchAnimation";
-import kaleidoPix from "../public/img/homepage/kaleido-pix.png";
 import Link from "next/link";
 import {
   RowLogoContainer,
   RowThinContainer,
 } from "../src/components/layout/RowThinContainer";
 import { FlexBoxCenter } from "../src/components/layout/FlexBoxCenter";
-import Image from "react-bootstrap/Image";
-import { AutoContainer } from "src/components/layout/AutoContainer";
 import { Pill } from "src/components/content/Pill";
 import { LogoHeader } from "src/components/logo/LogoHeader";
-import { RowWideContainer } from "src/components/layout/RowWideContainer";
 import { RowMediumContainer } from "src/components/layout/RowMediumContainer";
 import { trpcNextPW } from "src/server/utils/trpc";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
@@ -63,11 +58,13 @@ export async function getStaticProps(context: GetStaticPropsContext) {
     limit: 3,
     order: "desc",
     cursor: undefined,
+    includeHidden: false,
   });
   const works = await ssg.works.listWorks.fetch({
     limit: 3,
     order: "desc",
     cursor: undefined,
+    includeHidden: false,
   });
   await Promise.all(
     works.items.map((w) => {
@@ -91,12 +88,17 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
       limit: 3,
       order: "desc",
       cursor: undefined,
+      includeHidden: false,
     },
     {
       retry: false,
       refetchOnWindowFocus: false,
       staleTime: Infinity,
       refetchInterval: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchIntervalInBackground: false,
+      keepPreviousData: true,
     }
   );
 
