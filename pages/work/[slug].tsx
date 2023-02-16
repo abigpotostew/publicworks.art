@@ -1,26 +1,25 @@
 import { ReactElement, useEffect, useState } from "react";
-import MainLayout from "../../../src/layout/MainLayout";
-import styles from "../../../styles/Work.module.scss";
+import MainLayout from "../../src/layout/MainLayout";
+import styles from "../../styles/Work.module.scss";
 import { Button, Container } from "react-bootstrap";
-import { LiveMedia } from "../../../src/components/media/LiveMedia";
-import { RowThinContainer } from "../../../src/components/layout/RowThinContainer";
-import { RowSquareContainer } from "../../../src/components/layout/RowSquareContainer";
-import { NumMinted } from "../../../src/components/work/NumMinted";
-import { useNftMetadata } from "../../../src/hooks/useNftMetadata";
-import SpinnerLoading from "../../../src/components/loading/Loader";
-import { GetStaticProps, InferGetStaticPropsType } from "next";
-import { RowWideContainer } from "../../../src/components/layout/RowWideContainer";
-import { useNumMinted } from "../../../src/hooks/useNumMinted";
-import { PagedGallery } from "../../../src/components/media/PagedGallery";
-import { work } from "../../../src/helio";
+import { LiveMedia } from "../../src/components/media/LiveMedia";
+import { RowThinContainer } from "../../src/components/layout/RowThinContainer";
+import { RowSquareContainer } from "../../src/components/layout/RowSquareContainer";
+import { NumMinted } from "../../src/components/work/NumMinted";
+import { useNftMetadata } from "../../src/hooks/useNftMetadata";
+import SpinnerLoading from "../../src/components/loading/Loader";
+import { GetStaticProps } from "next";
+import { RowWideContainer } from "../../src/components/layout/RowWideContainer";
+import { useNumMinted } from "../../src/hooks/useNumMinted";
+import { PagedGallery } from "../../src/components/media/PagedGallery";
 import Head from "next/head";
 import { stores } from "src/store/stores";
 import { initializeIfNeeded } from "src/typeorm/datasource";
 import { serializeWork } from "src/dbtypes/works/serialize-work";
 import config from "src/wasm/config";
 import { WorkSerializable } from "src/dbtypes/works/workSerializable";
-import { trpcNextPW } from "src/server/utils/trpc";
 import { useRouter } from "next/router";
+import { FieldControl } from "../../src/components/control/FieldControl";
 
 export async function getStaticPaths() {
   await initializeIfNeeded();
@@ -28,6 +27,7 @@ export async function getStaticPaths() {
     limit: 500,
     offset: 0,
     publishedState: "PUBLISHED",
+    includeHidden: true,
   });
   // const static = [work];
   return {
@@ -200,6 +200,11 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
                   </>
                 )}
               </div>
+              <div className={`${styles.sectionBreak}`}></div>
+
+              <FieldControl name={"Contract"}>{work.sg721}</FieldControl>
+              <FieldControl name={"Minter"}>{work.minter}</FieldControl>
+
               <div className={`${styles.sectionBreak}`}></div>
             </div>
           </RowThinContainer>

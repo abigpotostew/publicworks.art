@@ -88,5 +88,6 @@ export const editProjectZod = z.object({
   priceStars: z.number().optional(),
   sg721: zodStarsContractAddress.optional().nullable(),
   minter: zodStarsContractAddress.optional().nullable(),
+  hidden: z.boolean().optional(),
 });
 export type EditProjectRequest = z.infer<typeof editProjectZod>;

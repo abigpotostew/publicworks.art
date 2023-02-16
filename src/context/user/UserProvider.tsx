@@ -3,6 +3,8 @@ import { FC, ReactNode } from "react";
 import { trpcNextPW } from "src/server/utils/trpc";
 import { useWallet } from "@stargazezone/client";
 import UserContext from "./UserContext";
+import { getToken } from "../../util/auth-token";
+import { useQuery } from "@tanstack/react-query";
 
 interface Props {
   children: ReactNode;
@@ -10,11 +12,20 @@ interface Props {
 
 export const UserProvider: FC<Props> = ({ children }: Props) => {
   const sgwallet = useWallet();
+  const address = sgwallet.wallet?.address;
+  const tokenD = useQuery(
+    ["gettoken", address],
+    async () => {
+      if (!address) return "";
+      return getToken() || "";
+    },
+    { enabled: !!address }
+  );
   const userCtx = trpcNextPW.users.getUser.useQuery(
     {
-      address: sgwallet.wallet?.address,
+      address: address,
     },
-    { enabled: !!sgwallet.wallet?.address, retry: false }
+    { enabled: !!tokenD.data && !!sgwallet.wallet?.address, retry: false }
   );
   return (
     <UserContext.Provider

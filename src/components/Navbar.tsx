@@ -11,12 +11,16 @@ import { useWallet, WalletInfo } from "@stargazezone/client";
 import { FC } from "react";
 import { WalletContextValue } from "@stargazezone/client/react/wallet/WalletContext";
 import useUserContext from "src/context/user/useUserContext";
+import { useNameInfo, useProfileInfo } from "../hooks/sg-names";
 
 export const NavBar: FC = () => {
   const sgwallet = useWallet();
   const { user } = useUserContext();
   const address = sgwallet?.wallet?.address;
-  const username = user.data?.name;
+  const nameInfo = useProfileInfo({ address });
+  const username = nameInfo.walletName
+    ? nameInfo.walletName + ".stars"
+    : undefined;
 
   return (
     <Navbar bg="white" variant="light" expand="sm">

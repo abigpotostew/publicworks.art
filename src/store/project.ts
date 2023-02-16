@@ -29,15 +29,20 @@ export class ProjectRepo {
     limit,
     offset,
     publishedState = "PUBLISHED",
+    includeHidden,
   }: {
     limit: number;
     offset?: number | undefined;
     // "PUBLISHED" | "UNPUBLISHED" | "ALL"
     publishedState: string | null;
+    includeHidden: boolean;
   }): Promise<{ items: WorkEntity[]; nextOffset: number | undefined }> {
     offset = offset || 0;
     const where: FindOptionsWhere<WorkEntity>[] | FindOptionsWhere<WorkEntity> =
       {};
+    if (!includeHidden) {
+      where.hidden = false;
+    }
     if (publishedState === "PUBLISHED") {
       where.sg721 = Not(IsNull());
     } else if (publishedState === "UNPUBLISHED") {
@@ -200,6 +205,7 @@ export class ProjectRepo {
       startDate: request.startDate ? new Date(request.startDate) : undefined,
       codeCid: request.codeCid,
       externalLink: request.externalLink,
+      hidden: request.hidden,
 
       selector: request.selector,
       resolution: request.resolution,
@@ -219,7 +225,6 @@ export class ProjectRepo {
       },
       toUpdate
     );
-    console.log("result", result);
 
     const work = await this.getProject(id);
     if (!work) {

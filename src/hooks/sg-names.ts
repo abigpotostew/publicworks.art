@@ -9,23 +9,56 @@ const base64Encode = (obj: any) => {
 export function useWalletName(address: string) {
   const key = ["walletName", address];
   const fetcher = async () => {
-    const encoded = base64Encode({ name: { address } });
-    const { data } = await fetch(
-      `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${chainInfo.nameCollectionContract}/smart/${encoded}`
-    ).then((response) => response.json());
-    return data && typeof data === "string" ? data : undefined;
+    if (!address) {
+      console.log("no address");
+      return "";
+    }
+    try {
+      const encoded = base64Encode({ name: { address } });
+      console.log(
+        "fetching wallet name",
+        `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${chainInfo.nameCollectionContract}/smart/${encoded}`
+      );
+      const response = await fetch(
+        `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${chainInfo.nameCollectionContract}/smart/${encoded}`
+      );
+      if (!response.ok) {
+        return "";
+      }
+      const { data } = await response.json();
+      return data && typeof data === "string" ? data : "";
+    } catch (e) {
+      console.error("failed to fetch wallet name", e);
+      return "";
+    }
   };
-  return useReactQuery(key, fetcher);
+  return useReactQuery(key, fetcher, {
+    retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
 }
 
 export function useNameInfo(name: string) {
   const key = ["nftNameInfo", name];
   const fetcher = async () => {
+    console.log("fetching name info", name);
+    if (!name) {
+      return null;
+    }
     const encoded = base64Encode({ nft_info: { token_id: name } });
-    const response = await fetch(
-      `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${chainInfo.nameCollectionContract}/smart/${encoded}`
-    ).then((response) => response.json());
-    return response.data as NftInfoResponseForMetadata;
+    try {
+      const response = await fetch(
+        `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${chainInfo.nameCollectionContract}/smart/${encoded}`
+      );
+      if (!response.ok) {
+        return "";
+      }
+      return (await response.json())?.data as NftInfoResponseForMetadata | "";
+    } catch (e) {
+      console.error(e);
+      return "";
+    }
   };
 
   return useReactQuery(key, fetcher);
@@ -44,35 +77,20 @@ export function useNameInfo(name: string) {
 //   return useReactQuery(key, fetcher);
 // }
 
-export function useProfileInfo({
-  address,
-  name,
-}: {
-  address?: string;
-  name?: string;
-}) {
-  const { data: nameOfWallet } = useWalletName(address ?? "");
-  const { data, isLoading } = useNameInfo(name ?? nameOfWallet ?? "");
-  // const { data: nameOwner } = useNameOwner(name ?? nameOfWallet ?? "");
+export function useProfileInfo({ address }: { address?: string }) {
+  const { data: nameOfWallet, isLoading } = useWalletName(address ?? "");
+  const nameInfo = useNameInfo(nameOfWallet ?? "");
 
-  // const owner = address ?? data?.token_uri ?? "";
-  // const collectionAddr = data?.extension.image_nft?.collection ?? "";
-  // const tokenId = data?.extension.image_nft?.token_id ?? "";
-
-  // const { data: profileToken } = useQuery(TokenMediaDocument, {
-  //   variables: {
-  //     collectionAddr,
-  //     tokenId,
-  //     size: ImageSize.Xs,
-  //   },
-  //   skip: !owner,
-  // });
+  const textRecords =
+    typeof nameInfo.data === "object"
+      ? nameInfo.data?.extension?.records
+      : undefined;
 
   return {
     // profileMedia: profileToken?.token?.media,
     walletName: nameOfWallet,
     // nameOwner: nameOwner?.owner,
-    textRecords: data?.extension.records,
+    textRecords,
     isLoading,
   };
 }

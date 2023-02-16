@@ -95,6 +95,7 @@ const getWorkById = baseProcedure
     if (!project) {
       throw new TRPCError({ code: "NOT_FOUND" });
     }
+
     return serializeWork(project);
   });
 const getWorkBySlug = baseProcedure
@@ -132,6 +133,7 @@ const listWorks = baseProcedure
         .refine((val) => {
           return ["desc", "asc"].includes(val);
         }, "sort must be asc or desc"),
+      includeHidden: z.boolean(),
     })
   )
 
@@ -158,14 +160,19 @@ const listAddressWorks = baseProcedure
         .refine((val) => {
           return ["PUBLISHED", "UNPUBLISHED", "ALL"].includes(val);
         }),
-      direction: z.enum(["ASC", "DESC"]).default("DESC"),
+      direction: z.string().default("DESC"),
     })
   )
 
   .query(async ({ input, ctx }) => {
+    let direction: "DESC" | "ASC" = "DESC";
+    if (input.direction === "ASC") {
+      direction = "ASC";
+    }
     const { items, nextOffset: nextCursor } =
       await stores().project.getAccountProjects({
         ...input,
+        direction,
         offset: input.cursor || undefined,
       });
 

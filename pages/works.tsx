@@ -57,6 +57,7 @@ const WorksPage = () => {
   const query = trpcNextPW.works.listWorks.useInfiniteQuery(
     {
       limit: 100,
+      includeHidden: false,
     },
     {
       getNextPageParam: (lastPage) => {
