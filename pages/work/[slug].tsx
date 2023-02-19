@@ -205,12 +205,12 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
 
               <FieldControl name={"Contract"}>
                 {work.sg721 ? (
-                  <StarsAddressName address={work.sg721} noShorten={false} />
+                  <StarsAddressName address={work.sg721} noShorten={true} />
                 ) : null}
               </FieldControl>
               <FieldControl name={"Minter"}>
                 {work.minter ? (
-                  <StarsAddressName address={work.minter} noShorten={false} />
+                  <StarsAddressName address={work.minter} noShorten={true} />
                 ) : null}
               </FieldControl>
 

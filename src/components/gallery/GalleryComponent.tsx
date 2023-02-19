@@ -1,7 +1,6 @@
 import { WorkSerializable } from "src/dbtypes/works/workSerializable";
 import { trpcNextPW } from "src/server/utils/trpc";
-import { Card, Col } from "react-bootstrap";
-import Link from "next/link";
+import { Card } from "react-bootstrap";
 import styles from "../../../styles/Works.module.scss";
 import stylesWork from "../../../styles/Work.module.scss";
 import { useRouter } from "next/router";
