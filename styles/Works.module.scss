@@ -1,12 +1,13 @@
 
-
+@import '/styles/variables.module';
 
 .workCardContainer {
   background-color: rgba(0, 245, 245, 0);
   cursor: pointer;
 
-  width: 24rem;
+  //width: 24rem;
   min-height: 24rem;
+  margin-bottom: $spacer;
 }
 
 .workCardImage{

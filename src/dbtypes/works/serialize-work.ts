@@ -7,7 +7,7 @@ import {
 import { TokenEntity, WorkEntity } from "../../model";
 
 export const serializeWork = (entity: WorkEntity): WorkSerializable => {
-  return workZod.parse(entity);
+  return workZod.parse({ ...entity, ownerAddress: entity.owner?.address });
 };
 
 export const serializeWorkToken = (entity: TokenEntity): TokenSerializable => {

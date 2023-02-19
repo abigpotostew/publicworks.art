@@ -81,9 +81,9 @@ https://github.com/abigpotostew/public-works-p5-demo-work
 
 ### Javascript API
 #### Lifecyle & Environment
-A work moves throw a couple major states you need to handle:
+A work moves threw a couple major states you need to handle:
 1. On the publicworks.art preview pipeline: \`isPWPreview()\` will return \`true\`. In this case, your work must render the preview image and then call \`setPreviewReady()\`. Interaction  is discouraged in the preview pipeline. Public Works will capture an image by using the \`CSS selector\` to locate your canvas and \`toDataURL()\` to extract the image data. We currently only support this capture style at this time.
-2. When displayed on publicworks.art \`isPW()\` will return true. But \`isPWPreview()\` will return \`false\`. You may want to enable interaction or animations here since an end user is looking at your work.
+2. When displayed on publicworks.art \`isPW()\` will return true. But \`isPWPreview()\` will return \`false\`. You may want to enable interaction or animations here since an end user is looking at your work. Keep in mind, \`isPW()\` returns false when viewed on external sites such as stargaze.zone.
 
 ### Concepts
 #### Reproducible Works
@@ -94,7 +94,7 @@ Your work must produce the same image when given the same hash seed.
 A property of PRNGs is they will always produce the same sequence of numbers given the same seed. You can create a reproducible work by only sourcing randomness from the public works prng returned from \`createPrng()\`.
 
 Some more tips:
-* Never use \`Math.random()\`
+* Never use \`Math.random()\`. Instead use the provided \`createPrng()\` or your own random function based on the hash.
 * Never use the system time. If you need to use time in your sketch, use the difference of the sketch start time to current time.
 * Avoid deriving a random number in your loop invariant:
 
@@ -155,8 +155,9 @@ renderer = new WebGLRenderer({preserveDrawingBuffer: true});
 3. When everything looks good, create your work on Mainnet https://publicworks.art/create
 
 #### Creating a Work Step by Step
-1. Navigate to the [create work page](/create).
-2. Name your work. You can change this later.
+1. Navigate to the [test page](test) and verify your work zip generates tokens with test hashes.
+2. Navigate to the [create work page](/create).
+3. Name your work. You can change this later.
 
 ![Name Work](/img/docs/create/2.png "2. Name Work")
 
@@ -195,7 +196,6 @@ Public works takes 15% of mint fees. That's on top of a fair burn network fee of
 ----
 
 Thanks for reading and we're excited to see what you create with PublicWorks.art.
-
 `;
 // Markdown.tsx
 const generateSlug = (str: string) => {

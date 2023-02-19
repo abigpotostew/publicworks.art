@@ -5,6 +5,10 @@ import Link from "next/link";
 import styles from "../../../styles/Works.module.scss";
 import stylesWork from "../../../styles/Work.module.scss";
 import { useRouter } from "next/router";
+import { isStarAddress, shortenAddress } from "../../wasm/address";
+import { StarsAddressName } from "../name/StarsAddressName";
+import { useNumMinted } from "../../hooks/useNumMinted";
+import { useCollectionSize } from "../../hooks/useCollectionSize";
 
 export const GalleryComponent = ({
   work,
@@ -19,6 +23,13 @@ export const GalleryComponent = ({
   console.log(query.data);
   const w = work;
   const router = useRouter();
+  const numMinted = useNumMinted(work.slug);
+  const collectionSize = useCollectionSize(work.minter);
+
+  let creatorName = w.creator;
+  if (isStarAddress(creatorName)) {
+    creatorName = shortenAddress(creatorName);
+  }
   const onClick = () => {
     router.push("/work/" + w.slug);
   };
@@ -27,7 +38,7 @@ export const GalleryComponent = ({
     <Card
       onClick={onClick}
       // style={{ width: "24rem" }}
-      className={`${styles.workCardContainer} `}
+      className={`${styles.workCardContainer} ${className}`}
     >
       <Card.Img
         className={styles.workCardImage}
@@ -38,7 +49,22 @@ export const GalleryComponent = ({
         <Card.Title className={stylesWork.workSmallTitle}>{w.name}</Card.Title>
         <Card.Text>{w.blurb}</Card.Text>
       </Card.Body>
-      <Card.Footer>By {w.creator}</Card.Footer>
+      <Card.Footer className={"bg-white"}>
+        <div className={"d-flex justify-content-between"}>
+          <div>
+            By <StarsAddressName address={work.ownerAddress || work.creator} />
+          </div>
+          <div>
+            {numMinted.isLoading || collectionSize.isLoading ? (
+              "..."
+            ) : (
+              <>
+                {numMinted.data} of {collectionSize.collectionSize}
+              </>
+            )}
+          </div>
+        </div>
+      </Card.Footer>
     </Card>
     // </Col>
   );

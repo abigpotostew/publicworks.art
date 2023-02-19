@@ -39,6 +39,7 @@ export const workZod = z.object({
   updatedDate: z.date().transform((d) => d.toISOString()),
 
   hidden: z.boolean().optional(),
+  ownerAddress: z.string().optional(),
 });
 
 export type WorkSerializable = z.infer<typeof workZod>;

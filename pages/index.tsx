@@ -108,16 +108,16 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
     recentWorks = <>Loading...</>;
   } else {
     recentWorks = (
-      <Container fluid className={"card-group"}>
-        {queryWorks.data.items.map((item, index) => {
-          return (
-            <GalleryComponent
-              key={item.id}
-              work={item}
-              className={styles.cardWidthHomepage + " p-3 "}
-            ></GalleryComponent>
-          );
-        })}
+      <Container fluid className={" gap-2"}>
+        <Row>
+          {queryWorks.data.items.map((item, index) => {
+            return (
+              <Col key={item.id} className={"col-12 col-sm-12 col-md-4"}>
+                <GalleryComponent work={item} className={""}></GalleryComponent>
+              </Col>
+            );
+          })}
+        </Row>
       </Container>
     );
   }

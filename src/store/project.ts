@@ -54,6 +54,7 @@ export class ProjectRepo {
         where,
         take: limit + 1,
         skip: offset,
+        relations: ["owner"],
       });
     let nextOffset: typeof offset | undefined = undefined;
     if (items.length > limit) {

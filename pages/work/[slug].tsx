@@ -20,6 +20,7 @@ import config from "src/wasm/config";
 import { WorkSerializable } from "src/dbtypes/works/workSerializable";
 import { useRouter } from "next/router";
 import { FieldControl } from "../../src/components/control/FieldControl";
+import { StarsAddressName } from "../../src/components/name/StarsAddressName";
 
 export async function getStaticPaths() {
   await initializeIfNeeded();
@@ -136,14 +137,14 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
           </RowSquareContainer>
         </Container>
         <Container>
-          <RowThinContainer
-            className={`${styles.paddingTop} ${styles.workHeader}`}
-          >
-            <div className={styles.paddingTop}>
+          <RowThinContainer className={`mt-1 ${styles.workHeader}`}>
+            <div className={"mt-1"}>
               <div>
-                <span className={styles.workTitle}>{work.name}</span>
-                <span className={styles.workAuthor}>
-                  {" - " + work.creator}
+                <span className={styles.workTitle}>{work.name + " "}</span>
+                <span className={`${styles.workAuthor} ms-2 me-1`}>
+                  <StarsAddressName
+                    address={work.ownerAddress || work.creator}
+                  />
                 </span>
                 {work.sg721 && work.minter ? (
                   <NumMinted slug={work.slug} minter={work.minter} />
@@ -152,9 +153,7 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
                 )}
               </div>
 
-              {config.testnet ? <div>** Showing Testnet Mints **</div> : <></>}
-
-              <p className={`${styles.sectionBreak}`}>
+              <p className={`mt-2`}>
                 <a
                   className={"btn"}
                   href={`${config.launchpadUrl}/` + work.minter}
@@ -166,15 +165,17 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
               </p>
 
               <div
-                className={`${styles.workDescription} ${styles.displayLinebreak} ${styles.sectionBreak}`}
+                className={`${styles.workDescription} ${styles.displayLinebreak} `}
               >
                 {work.description}
               </div>
               {work.additionalDescription && (
                 <>
-                  <hr />
+                  {/*<hr />*/}
+                  {/*<div className={`${styles.sectionBreak}`}></div>*/}
+
                   <div>
-                    <p>Additional Description:</p>
+                    <h5 className={"mt-4"}>Additional Description</h5>
                     <p
                       className={`${styles.workDescription} ${styles.displayLinebreak}`}
                     >
@@ -183,27 +184,35 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
                   </div>
                 </>
               )}
-              <hr />
-              <div
-                className={`${styles.workAuthorLink} ${styles.sectionBreak}`}
-              >
+              {/*<div className={`${styles.sectionBreak}`}></div>*/}
+              <h5 className={"mt-4"}>Metadata</h5>
+              <div className={`${styles.workAuthorLink}}`}>
                 {work.externalLink && (
                   <>
-                    {"External Link: "}
-                    <a
-                      href={work.externalLink}
-                      rel="noreferrer"
-                      target={"_blank"}
-                    >
-                      {work.externalLink}
-                    </a>
+                    <FieldControl name={"External Link"}>
+                      {" "}
+                      <a
+                        href={work.externalLink}
+                        rel="noreferrer"
+                        target={"_blank"}
+                      >
+                        {work.externalLink}
+                      </a>
+                    </FieldControl>
                   </>
                 )}
               </div>
-              <div className={`${styles.sectionBreak}`}></div>
 
-              <FieldControl name={"Contract"}>{work.sg721}</FieldControl>
-              <FieldControl name={"Minter"}>{work.minter}</FieldControl>
+              <FieldControl name={"Contract"}>
+                {work.sg721 ? (
+                  <StarsAddressName address={work.sg721} noShorten={false} />
+                ) : null}
+              </FieldControl>
+              <FieldControl name={"Minter"}>
+                {work.minter ? (
+                  <StarsAddressName address={work.minter} noShorten={false} />
+                ) : null}
+              </FieldControl>
 
               <div className={`${styles.sectionBreak}`}></div>
             </div>
@@ -213,6 +222,11 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
         <Container>
           <RowWideContainer className={`${styles.tokensGrid}`}>
             <h2 className={"Margin-T-4"}>Mints</h2>
+            {config.testnet ? (
+              <div className={"mt-2"}>** Showing Testnet Mints **</div>
+            ) : (
+              <></>
+            )}
 
             {numMinted === 0 && <SpinnerLoading />}
             {numMinted && !work.sg721 && (
