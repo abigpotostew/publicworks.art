@@ -23,6 +23,7 @@ import {
   confirmUpload,
 } from "src/upload/confirm-upload";
 import mime from "mime-types";
+import chainInfo from "../../stargaze/chainInfo";
 
 const createWork = authorizedProcedure
   .input(CreateProjectRequestZ)
@@ -75,8 +76,33 @@ const editWorkContracts = authorizedProcedure
     if (!work || work.owner.id !== user.id) {
       throw new TRPCError({ code: "NOT_FOUND" });
     }
+    //fetch version on chain
+    const fetchCodeId = async (address: string) => {
+      try {
+        const url = `${chainInfo.rest}/cosmwasm/wasm/v1/contract/${address}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        return parseInt(data.contract_info.code_id);
+      } catch (e) {
+        return 0;
+      }
+    };
+    const [sg721CodeId, minterCodeId] = await Promise.all([
+      fetchCodeId(input.sg721),
+      fetchCodeId(input.minter),
+    ]);
+    if (!sg721CodeId || !minterCodeId) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "could not fetch code id on chain",
+      });
+    }
 
-    const project = await stores().project.updateProject(input.id, input);
+    const project = await stores().project.updateProject(input.id, {
+      ...input,
+      sg721CodeId,
+      minterCodeId,
+    });
     if (!project.ok) {
       throw new TRPCError({ code: "BAD_REQUEST" });
     }

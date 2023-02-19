@@ -217,6 +217,8 @@ export class ProjectRepo {
 
       sg721: request.sg721,
       minter: request.minter,
+      sg721CodeId: request.sg721CodeId,
+      minterCodeId: request.minterCodeId,
     };
 
     const result = await dataSource().getRepository(WorkEntity).update(
