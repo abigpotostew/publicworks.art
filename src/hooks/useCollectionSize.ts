@@ -1,12 +1,18 @@
 import config from "../wasm/config";
 import { useQuery } from "@tanstack/react-query";
 
-export const useCollectionSize = (minter: string, refreshInterval?: number) => {
+export const useCollectionSize = (
+  minter: string | undefined | null,
+  refreshInterval?: number
+) => {
   const query = useQuery(
     [
       `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${minter}/smart/eyJjb25maWciOnt9fQ==`,
     ],
     async () => {
+      if (!minter) {
+        return 0;
+      }
       const res = await fetch(
         `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${minter}/smart/eyJjb25maWciOnt9fQ==`
       );

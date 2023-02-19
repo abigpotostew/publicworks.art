@@ -44,6 +44,7 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
     createdDate: null,
     updatedDate: null,
     hidden: null,
+    ownerAddress: null,
   };
   const [hash, setHash] = useState<string>(generateTxHash());
   const onClickRefreshHash = useCallback(() => {
