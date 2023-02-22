@@ -43,10 +43,11 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
 
   const formik = useFormik({
     initialValues: defaults,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       // console.log("values", values);
       // alert(JSON.stringify(values, null, 2));
       await props.onCreateProject(values);
+      await resetForm();
     },
     validationSchema: toFormikValidationSchema(schema),
     // validateOnMount: true,

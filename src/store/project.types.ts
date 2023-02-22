@@ -64,7 +64,7 @@ export const editProjectZod = z.object({
   name: z.string().min(3).max(50).optional(),
   creator: z.string().optional(),
   blurb: z.string().min(2).max(515).optional(),
-  maxTokens: z.number().min(1).max(10_000).optional().default(1),
+  maxTokens: z.number().min(1).max(10_000).optional(),
   description: z.string().min(2).max(2048).optional(),
   additionalDescription: z.string().min(0).max(8000).optional().nullable(),
   externalLink: z.string().max(2048).optional(),
@@ -74,7 +74,7 @@ export const editProjectZod = z.object({
     .optional(),
   royaltyAddress: zodStarsAddress.optional(),
   royaltyPercent: z.number().min(0).max(100).optional(),
-  codeCid: z.string().regex(cidRegex).optional(),
+  // codeCid: z.string().regex(cidRegex).optional(),
 
   coverImageCid: z.string().regex(cidRegex).optional().nullable(),
 
@@ -89,7 +89,15 @@ export const editProjectZod = z.object({
   sg721: zodStarsContractAddress.optional().nullable(),
   minter: zodStarsContractAddress.optional().nullable(),
   hidden: z.boolean().optional(),
+  // sg721CodeId: z.number().optional(),
+  // minterCodeId: z.number().optional(),
+});
+
+export type EditProjectRequest = z.infer<typeof editProjectZod>;
+
+export const fullEditProjectZod = editProjectZod.extend({
+  codeCid: z.string().regex(cidRegex).optional(),
   sg721CodeId: z.number().optional(),
   minterCodeId: z.number().optional(),
 });
-export type EditProjectRequest = z.infer<typeof editProjectZod>;
+export type FullEditProjectRequest = z.infer<typeof fullEditProjectZod>;

@@ -85,15 +85,15 @@ export const pinZipToPinata = async (
       });
     });
 
-    const hashbuster = cuid();
-    console.log("hashbuster", hashbuster);
-    data.append(
-      "file",
-      Buffer.from(`${hashbuster}\nwork id: ${metadata.workId}\n`),
-      {
-        filepath: "root/publicworks.txt",
-      }
-    );
+    // const hashbuster = cuid();
+    // console.log("hashbuster", hashbuster);
+    // data.append(
+    //   "file",
+    //   Buffer.from(`${hashbuster}\nwork id: ${metadata.workId}\n`),
+    //   {
+    //     filepath: "root/publicworks.txt",
+    //   }
+    // );
 
     const response = await got(url, {
       method: "POST",

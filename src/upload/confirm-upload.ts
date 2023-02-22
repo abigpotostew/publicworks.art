@@ -61,17 +61,17 @@ export const confirmUpload = async (uploadId: string, work: WorkEntity) => {
     codeCid: cid,
   });
 
-  if (updateRes.ok) {
-    /// delete the prior work from ipfs
-    if (oldcid && oldcid !== cid) {
-      const existinWorkId = await getMetadataWorkId(oldcid);
-      if (existinWorkId === work.id) {
-        console.log(work.id, "deleting cid ", oldcid, "upload id", uploadId);
-        //only delete it if the current user owns it.
-        await deleteCid(oldcid);
-      }
-    }
-  }
+  // if (updateRes.ok) {
+  //   /// delete the prior work from ipfs
+  //   if (oldcid && oldcid !== cid) {
+  //     const existinWorkId = await getMetadataWorkId(oldcid);
+  //     if (existinWorkId === work.id) {
+  //       console.log(work.id, "deleting cid ", oldcid, "upload id", uploadId);
+  //       //only delete it if the current user owns it.
+  //       await deleteCid(oldcid);
+  //     }
+  //   }
+  // }
   console.log("uploaded new code cid to work", cid, work.id);
 
   return true;
@@ -111,18 +111,18 @@ export const confirmCoverImageUpload = async (
     coverImageCid: newCid,
   });
 
-  if (updateRes.ok) {
-    /// delete the prior image from ipfs
-    if (oldCid && oldCid !== newCid) {
-      console.log("deleting old image cid", oldCid);
-      const existinWorkId = await getMetadataWorkId(oldCid);
-      if (existinWorkId === work.id) {
-        //only delete it if the current user owns it.
-        await deleteCid(oldCid);
-        console.log("deleted old image cid", oldCid);
-      }
-    }
-  }
+  // if (updateRes.ok) {
+  //   /// delete the prior image from ipfs
+  //   if (oldCid && oldCid !== newCid) {
+  //     console.log("deleting old image cid", oldCid);
+  //     const existinWorkId = await getMetadataWorkId(oldCid);
+  //     if (existinWorkId === work.id) {
+  //       //only delete it if the current user owns it.
+  //       await deleteCid(oldCid);
+  //       console.log("deleted old image cid", oldCid);
+  //     }
+  //   }
+  // }
 
   return true;
 };

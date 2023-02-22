@@ -87,6 +87,7 @@ const formatInUTC = (date: Date | null | undefined) => {
 export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   // auth context here
   const sgwallet = useWallet();
+  console.log("NftDetails2 work maxTokens", props.defaultValues?.maxTokens);
   const defaults = {
     maxTokens: props.defaultValues?.maxTokens || 0,
     royaltyAddress:
@@ -118,6 +119,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
           ? parseISO(values.startDate).toISOString()
           : undefined,
       });
+      await resetForm();
     },
     validationSchema: toFormikValidationSchema(schema),
     // validateOnMount: true,

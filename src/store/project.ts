@@ -1,6 +1,10 @@
 import { Err, Ok, Result } from "../util/result";
 import { User } from "./user.types";
-import { CreateProjectRequest, EditProjectRequest } from "./project.types";
+import {
+  CreateProjectRequest,
+  EditProjectRequest,
+  FullEditProjectRequest,
+} from "./project.types";
 import { dataSource } from "../typeorm/datasource";
 import { TokenEntity, UserEntity, WorkEntity, WorkUploadFile } from "../model";
 import { IsNull, Not } from "typeorm";
@@ -191,7 +195,7 @@ export class ProjectRepo {
 
   async updateProject(
     id: string,
-    request: Partial<EditProjectRequest>
+    request: Partial<FullEditProjectRequest>
   ): Promise<Result<WorkEntity>> {
     let toUpdate: Partial<WorkEntity> = new WorkEntity();
     toUpdate = {
