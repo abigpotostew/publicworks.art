@@ -16,7 +16,7 @@ const Status = () => {
   const updatedAt = indexerStatus.data?.lastSweptBlock?.timestamp;
   const msDiff = Date.now() - (new Date(updatedAt || 0).getTime() || 0);
   const secondsDiff = Math.round(msDiff / 1000);
-  const secondsLabel = `${secondsDiff} second${secondsDiff > 0 ? "s" : ""} ago`;
+  const secondsLabel = ""; //`${secondsDiff} second${secondsDiff > 0 ? "s" : ""} ago`;
   return (
     <div>
       <Container className={styles.group2}>

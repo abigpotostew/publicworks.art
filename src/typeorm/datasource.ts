@@ -38,7 +38,7 @@ export const initializeDatasource = () => {
   const isLocalMysql =
     process.env.DATABASE_URL === "mysql://127.0.0.1:3309/publicworks";
   const ds = new DataSource({
-    timezone: "Z",
+    // timezone: "Z",
     type: "mysql",
     port: isLocalMysql ? 3309 : 3306,
     url: process.env.DATABASE_URL,
