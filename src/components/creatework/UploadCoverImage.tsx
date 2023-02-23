@@ -83,8 +83,9 @@ export const UploadCoverImage: FC<CreateWorkProps> = (
       console.error(msg, e);
       toast.error(msg);
       throw new Error(msg);
+    } finally {
+      utils.works.getWorkById.invalidate({ id });
     }
-    utils.works.getWorkById.invalidate({ id });
   });
 
   const onUpload = async (files: File[]) => {

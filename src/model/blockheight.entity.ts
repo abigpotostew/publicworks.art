@@ -1,7 +1,8 @@
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from "typeorm";
+import { AuditedEntity } from "./audited-entity";
 
 @Entity({ name: "blockheights" })
-export class BlockheightEntity {
+export class BlockheightEntity extends AuditedEntity {
   @PrimaryColumn()
   id: string;
   @Column("bigint", { name: "height", default: "0" })

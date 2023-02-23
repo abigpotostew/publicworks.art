@@ -42,7 +42,6 @@ export function useWalletName(address: string) {
 export function useNameInfo(name: string) {
   const key = ["nftNameInfo", name];
   const fetcher = async () => {
-    console.log("fetching name info", name);
     if (!name) {
       return null;
     }

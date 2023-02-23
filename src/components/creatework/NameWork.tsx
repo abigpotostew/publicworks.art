@@ -99,7 +99,19 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
             {/*divider*/}
 
             {props.onUpload && (
-              <RowWideContainer>
+              <RowWideContainer className={"mb-3"}>
+                <div className={"mt-3 mb-3"}>
+                  <h3>Upload your Work Zip</h3>
+                  <DropZone
+                    accept={"zip"}
+                    onUpload={async (files) =>
+                      props?.onUpload && props.onUpload(files)
+                    }
+                  >
+                    <FontAwesomeIcon icon={"upload"} width={16} /> Drag and drop
+                    your project zip file here, or click to upload
+                  </DropZone>
+                </div>
                 <div>
                   {!defaults?.codeCid && (
                     <>
@@ -127,16 +139,6 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                       </a>
                     </>
                   )}
-                  <h3 className={"mt-3"}>Upload your Work Zip</h3>
-                  <DropZone
-                    accept={"zip"}
-                    onUpload={async (files) =>
-                      props?.onUpload && props.onUpload(files)
-                    }
-                  >
-                    <FontAwesomeIcon icon={"upload"} width={16} /> Drag and drop
-                    your project zip file here, or click to upload
-                  </DropZone>
                 </div>
               </RowWideContainer>
             )}
