@@ -8,6 +8,7 @@ import { Container } from "react-bootstrap";
 import { useUserSession } from "src/hooks/useUserSession";
 import { StargazeProvider, useWallet } from "@stargazezone/client";
 import stargazeClient from "src/stargaze/stargaze";
+import { Modal } from "src/components/modal/Modal";
 
 interface ILayout {
   description?: string;
@@ -71,6 +72,7 @@ const MainLayout: FC<ILayout> = ({
       {/*<header>*/}
       {/*</header>*/}
 
+      <Modal />
       <div className={styles.container}>
         <main className={styles.main}>{children}</main>
         <Footer />

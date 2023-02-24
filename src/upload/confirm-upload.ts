@@ -1,4 +1,4 @@
-import { WorkEntity } from "src/model";
+import { WorkEntity } from "src/store/model";
 import { getBucket } from "src/upload/presignedUrl";
 import { stores } from "src/store/stores";
 import tmp from "tmp";

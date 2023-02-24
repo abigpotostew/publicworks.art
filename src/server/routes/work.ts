@@ -386,6 +386,21 @@ const confirmWorkCoverImageUpload = authorizedProcedure
 
     return;
   });
+const deleteWork = authorizedProcedure
+  .input(
+    z.object({
+      workId: z.string(),
+    })
+  )
+
+  .mutation(async ({ input, ctx }) => {
+    const work = await stores().project.getProject(input.workId);
+    if (!work || work.owner.id !== ctx.user.id) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    return stores().project.deleteWork(work);
+  });
 
 export const workRouter = t.router({
   // Public
@@ -404,4 +419,5 @@ export const workRouter = t.router({
   uploadWorkCoverImageGenerateUrl: uploadWorkCoverImageGenerateUrl,
   confirmWorkUpload: confirmWorkUpload,
   confirmWorkCoverImageUpload: confirmWorkCoverImageUpload,
+  deleteWork: deleteWork,
 });

@@ -112,9 +112,9 @@ export default function WalletProvider({ children }: { children: ReactNode }) {
     setWallet({ address, name, balance });
   }
 
-  const login = useCallback(async () => {
+  const login = useCallback(async (): Promise<WalletInfo | null> => {
     if (!client) {
-      return;
+      return null;
     }
 
     await client.connect();
@@ -126,7 +126,7 @@ export default function WalletProvider({ children }: { children: ReactNode }) {
 
     if (!w?.wallet) {
       setNoKeplr(true);
-      return;
+      return null;
     }
 
     updateWallet(w.wallet);

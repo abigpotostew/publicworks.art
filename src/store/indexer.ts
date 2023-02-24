@@ -1,5 +1,5 @@
 import { dataSource } from "../typeorm/datasource";
-import { BlockheightEntity } from "../model";
+import { BlockheightEntity } from "./model";
 
 export class IndexerRepo {
   async getLastSweptHeight(): Promise<BlockheightEntity> {

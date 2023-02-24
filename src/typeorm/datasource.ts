@@ -5,7 +5,7 @@ import {
   TokenEntity,
   UserEntity,
   WorkUploadFile,
-} from "../model";
+} from "../store/model";
 
 let MysqlDataSource: DataSource | undefined = undefined;
 export const dataSource = () => {

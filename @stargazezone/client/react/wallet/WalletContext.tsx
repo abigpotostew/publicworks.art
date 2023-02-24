@@ -3,7 +3,7 @@ import { WalletInfo } from "@stargazezone/client";
 
 export type WalletContextValue = {
   wallet?: WalletInfo;
-  login: () => void;
+  login: () => Promise<WalletInfo | null>;
   logout: () => void;
   refreshBalance: () => void;
   loading: boolean | undefined;
@@ -11,7 +11,7 @@ export type WalletContextValue = {
 
 const WalletContext = React.createContext<WalletContextValue>({
   wallet: undefined,
-  login: () => {},
+  login: () => Promise.resolve(null),
   logout: () => {},
   refreshBalance: () => {},
   loading: undefined,

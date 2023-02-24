@@ -7,12 +7,10 @@ import { getCookie } from "src/util/cookie";
 import { RowThinContainer } from "src/components/layout/RowThinContainer";
 import { useStargazeClient, useWallet } from "@stargazezone/client";
 import useUserContext from "src/context/user/useUserContext";
-import { useMutation } from "@tanstack/react-query";
 import { useToast } from "src/hooks/useToast";
-import { signMessageAndLogin } from "src/wasm/keplr/client-login";
 import { trpcNextPW } from "src/server/utils/trpc";
 import { getToken } from "src/util/auth-token";
-import chainInfo from "src/stargaze/chainInfo";
+import { useClientLoginMutation } from "../src/hooks/useClientLoginMutation";
 
 const AuthPage = () => {
   const router = useRouter();
@@ -24,32 +22,7 @@ const AuthPage = () => {
   const toast = useToast();
   const [message, setMessage] = useState<string | null>(null);
   const utils = trpcNextPW.useContext();
-  const claimUserAccountMutation = useMutation(async () => {
-    await sgwallet.login();
-    if (!sgwallet.wallet?.address || !sgclient.client) {
-      console.log("shortcircuit");
-      return;
-    }
-    const otp = Math.floor(Math.random() * 100_000).toString();
-    const ok = await signMessageAndLogin(otp, sgclient.client);
-
-    if (!ok) {
-      //show an error
-      // setMessage("Unauthorized");
-      toast.error("Unauthorized");
-    } else {
-      toast.success("Logged in!");
-      // if (typeof query.redirect === "string") {
-      //   await router.push({
-      //     pathname: query.redirect,
-      //   });
-      // }
-    }
-
-    console.log("loginPw end");
-
-    console.log("after pw login");
-  });
+  const claimUserAccountMutation = useClientLoginMutation();
 
   const onLogin = async () => {
     try {

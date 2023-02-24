@@ -25,7 +25,15 @@ export const UserProvider: FC<Props> = ({ children }: Props) => {
     {
       address: address,
     },
-    { enabled: !!tokenD.data && !!sgwallet.wallet?.address, retry: false }
+    {
+      enabled: !!tokenD.data && !!sgwallet.wallet?.address,
+      onSuccess: () => {
+        console.log("userCtx.onSuccess", userCtx.data);
+      },
+      onSettled: () => {
+        console.log("userCtx.onSettled", userCtx.data);
+      },
+    }
   );
   return (
     <UserContext.Provider

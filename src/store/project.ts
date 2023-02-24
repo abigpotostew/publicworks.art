@@ -6,7 +6,7 @@ import {
   FullEditProjectRequest,
 } from "./project.types";
 import { dataSource } from "../typeorm/datasource";
-import { TokenEntity, UserEntity, WorkEntity, WorkUploadFile } from "../model";
+import { TokenEntity, UserEntity, WorkEntity, WorkUploadFile } from "./model";
 import { IsNull, Not } from "typeorm";
 import { FindOptionsWhere } from "typeorm/find-options/FindOptionsWhere";
 import cuid from "cuid";
@@ -239,6 +239,14 @@ export class ProjectRepo {
     }
     return Ok(work);
   }
+
+  async deleteWork({ id }: { id: string }): Promise<boolean> {
+    const result = await dataSource().getRepository(WorkEntity).delete({
+      id,
+    });
+    return !!result.affected;
+  }
+
   async saveUploadId(work: WorkEntity, filename: string) {
     //WorkUploadFile
     const item = new WorkUploadFile();

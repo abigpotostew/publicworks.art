@@ -11,8 +11,6 @@ import { ButtonPW } from "src/components/button/Button";
 import { ToastContent } from "react-toastify/dist/types";
 import { UserProfile } from "src/components/profile/UserProfile";
 import { FlexBox } from "src/components/layout/FlexBoxCenter";
-
-// import "react-toastify/dist/ReactToastify.css";
 import { WorkSerializable } from "src/dbtypes/works/workSerializable";
 import Link from "next/link";
 import useUserContext from "src/context/user/useUserContext";

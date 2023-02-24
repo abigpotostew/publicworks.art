@@ -3,6 +3,7 @@ import { createTRPCNext } from "@trpc/next";
 import { NextPageContext } from "next";
 import superjson from "superjson";
 import { appRouter, AppRouter } from "../routes/_app";
+import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
 // ℹ️ Type-only import:
 // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-8.html#type-only-imports-and-export
 
@@ -83,7 +84,14 @@ export interface SSRContext extends NextPageContext {
 //    */
 //   ssr: false,
 // });
-
+const queryCache = new QueryCache();
+export const queryClient = new QueryClient({
+  queryCache,
+});
+// queryCache.subscribe((event) => {
+//   if (event.query.queryHash.includes("getUser"))
+//     console.log("cache", event.type, event.query);
+// });
 export const trpcNextPW = createTRPCNext<AppRouter, SSRContext>({
   config({ ctx }) {
     return {
@@ -100,6 +108,7 @@ export const trpcNextPW = createTRPCNext<AppRouter, SSRContext>({
       /**
        * @link https://tanstack.com/query/v4/docs/reference/QueryClient
        **/
+      queryClient,
       // queryClientConfig: { defaultOptions: { queries: { staleTime: 60 } } },
     };
   },

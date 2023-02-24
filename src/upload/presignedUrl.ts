@@ -1,5 +1,5 @@
 import cuid from "cuid";
-import { WorkEntity } from "src/model";
+import { WorkEntity } from "src/store/model";
 import { Storage } from "@google-cloud/storage";
 
 export const getBucket = () => {

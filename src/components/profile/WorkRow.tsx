@@ -9,17 +9,47 @@ import { PillSmall } from "../content/PillSmall";
 import styles from "./UserProfile.module.scss";
 import { useNumMinted } from "../../hooks/useNumMinted";
 import SpinnerLoading from "../loading/Loader";
-import { Col, Container, Form, Row } from "react-bootstrap";
+import {
+  ButtonGroup,
+  Col,
+  Container,
+  Dropdown,
+  Form,
+  Row,
+  SplitButton,
+} from "react-bootstrap";
 import { useLastMintedToken } from "../../hooks/useLastMintedToken";
 import { relativeTimeFromDates } from "../../util/date-fmt/format";
-import { ButtonPW } from "../button/Button";
+import { ButtonPW, ButtonPWFRef } from "../button/Button";
 import { trpcNextPW } from "../../server/utils/trpc";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidateWork } from "../../hooks/work/useInvalidateWork";
 import useUserContext from "../../context/user/useUserContext";
+import ModalStore from "../../modal/ModalStore";
 interface Props {
   work: WorkSerializable;
   onChange: () => void;
+}
+
+function EditButtonDropdown({ work }: { work: WorkSerializable }) {
+  return (
+    <Dropdown as={ButtonGroup}>
+      <Link href={`/create/${work.id}`} passHref={true} legacyBehavior>
+        <ButtonPWFRef variant={"outline-secondary"}>Edit</ButtonPWFRef>
+      </Link>
+      <Dropdown.Toggle split variant="outline-secondary" />
+      <Dropdown.Menu>
+        <Dropdown.Item
+          disabled={!!work.sg721}
+          onClick={() => ModalStore.open("DeleteWorkModal", { work })}
+        >
+          Delete
+        </Dropdown.Item>
+        {/*<Dropdown.Item href="#/action-2">Another action</Dropdown.Item>*/}
+        {/*<Dropdown.Item href="#/action-3">Something else</Dropdown.Item>*/}
+      </Dropdown.Menu>
+    </Dropdown>
+  );
 }
 
 export const WorkRow: FC<Props> = ({ work, onChange }: Props) => {
@@ -30,7 +60,7 @@ export const WorkRow: FC<Props> = ({ work, onChange }: Props) => {
   const published = !!work.sg721;
   const status = published ? "Published" : "Draft";
   const hidden = work.hidden ? "Hidden" : "visible";
-  const invalidate = useInvalidateWork();
+  const { invalidateWork: invalidate } = useInvalidateWork();
 
   const utils = trpcNextPW.useContext();
 
@@ -113,10 +143,9 @@ export const WorkRow: FC<Props> = ({ work, onChange }: Props) => {
           />
         </>
       </div>
+
       <div>
-        <Link href={`/create/${work.id}`} passHref={true}>
-          <ButtonPW variant={"outline-secondary"}>Edit</ButtonPW>
-        </Link>
+        <EditButtonDropdown work={work} />
       </div>
     </div>
   );

@@ -3,7 +3,7 @@ import * as trpc from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
 import { NextApiRequest } from "next";
 import { User } from "../store";
-import { UserEntity } from "../model";
+import { UserEntity } from "../store/model";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface CreateContextOptions {

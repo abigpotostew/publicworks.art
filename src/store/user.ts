@@ -1,5 +1,5 @@
 import { dataSource } from "../typeorm/datasource";
-import { UserEntity } from "../model";
+import { UserEntity } from "./model";
 import cuid from "cuid";
 import { EditUserRequest } from "src/store/user.types";
 

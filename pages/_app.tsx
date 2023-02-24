@@ -8,7 +8,7 @@ import type { AppProps, NextWebVitalsMetric } from "next/app";
 
 import { SSRProvider } from "react-bootstrap";
 import { event, GoogleAnalytics } from "nextjs-google-analytics";
-import { trpcNextPW } from "../src/server/utils/trpc";
+import { queryClient, trpcNextPW } from "../src/server/utils/trpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "../src/icon/icons";
 import { ToastContainer } from "react-toastify";
@@ -34,8 +34,6 @@ export function reportWebVitals(metric: NextWebVitalsMetric) {
     nonInteraction: true, // avoids affecting bounce rate.
   });
 }
-
-const queryClient = new QueryClient();
 
 const MyApp: FC<AppPropsWithLayout> = ({
   Component,
