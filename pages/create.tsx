@@ -1,5 +1,5 @@
 import { ReactElement, useCallback, useEffect } from "react";
-import { Container } from "react-bootstrap";
+import { Alert, Container } from "react-bootstrap";
 import { useRouter } from "next/router";
 import MainLayout from "../src/layout/MainLayout";
 import SpinnerLoading from "../src/components/loading/Loader";
@@ -12,7 +12,8 @@ import { useStargazeClient } from "@stargazezone/client";
 import { NeedToLoginButton } from "src/components/login/NeedToLoginButton";
 import { onMutateLogin } from "src/trpc/onMutate";
 import { useToast } from "src/hooks/useToast";
-
+import config from "../src/wasm/config";
+import Link from "next/link";
 const CreatePage = () => {
   const { user } = useUserContext();
   const utils = trpcNextPW.useContext();
@@ -47,15 +48,24 @@ const CreatePage = () => {
     [mutation]
   );
 
+  const testnetComponent = config.testnet ? null : (
+    <Alert variant={"warning"}>
+      Test your collection on{" "}
+      <Link href={"https://testnet.publicworks.art/create"}>
+        testnet.publicworks.art
+      </Link>{" "}
+      before publishing here on mainnet.
+    </Alert>
+  );
   return (
     <>
       <div>
         <Container>
           <RowThinContainer>
             <h1>Create Work</h1>
-
             {(user.isFetching || user.isLoading) && <SpinnerLoading />}
             <NeedToLoginButton url={"/create"} />
+            {testnetComponent}
             {user.isSuccess && <NameWork onCreateProject={onCreateProject} />}
 
             {mutation.isLoading && <SpinnerLoading />}
