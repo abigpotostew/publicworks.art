@@ -140,7 +140,11 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
                   router.push(`/work/${work.slug}/${previewTokenId}`);
                 }}
               >
-                Showing #{previewTokenId}
+                {metadata.data ? (
+                  <>Showing #{previewTokenId}</>
+                ) : (
+                  <>Showing cover image</>
+                )}
               </a>
             </div>
           </RowSquareContainer>
