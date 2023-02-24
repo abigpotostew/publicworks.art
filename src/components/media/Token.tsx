@@ -12,16 +12,16 @@ export const Token = ({
   tokenId: string;
   slug: string;
 }) => {
-  const { metadata, loading } = useNftMetadata({ tokenId, sg721 });
+  const metadata = useNftMetadata({ tokenId, sg721 });
 
-  const imageUrl = metadata?.image
-    ? metadata.image +
+  const imageUrl = metadata?.data?.image
+    ? metadata?.data?.image +
       "?img-width=500&img-height=500&img-quality=80&fit=contain"
     : "/img/rendering-in-progress.png";
   return (
     <Card className={styles.workCardContainer}>
       <Link href={`/work/${slug}/${tokenId}`}>
-        {loading ? (
+        {metadata.isLoading ? (
           <Card.Img variant="top" src={""} />
         ) : (
           <Card.Img variant="top" src={imageUrl} />
@@ -38,12 +38,16 @@ export const Token = ({
             Details
           </Link>{" "}
           |{" "}
-          <a href={metadata?.image} className={"Token-link"} download={"true"}>
+          <a
+            href={metadata?.data?.image}
+            className={"Token-link"}
+            download={"true"}
+          >
             Image
           </a>{" "}
           |{" "}
           <a
-            href={metadata?.animation_url}
+            href={metadata?.data?.animation_url}
             target={"_blank"}
             className={"Token-link"}
             rel="noreferrer"

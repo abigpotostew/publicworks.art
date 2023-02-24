@@ -21,6 +21,7 @@ import { WorkSerializable } from "src/dbtypes/works/workSerializable";
 import { useRouter } from "next/router";
 import { FieldControl } from "../../src/components/control/FieldControl";
 import { StarsAddressName } from "../../src/components/name/StarsAddressName";
+import { normalizeIpfsUri } from "../../src/wasm/metadata";
 
 export async function getStaticPaths() {
   await initializeIfNeeded();
@@ -88,7 +89,9 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
   const metadata = useNftMetadata({
     sg721: work.sg721,
     tokenId: previewTokenId,
+    refresh: false,
   });
+  console.log("metadata", metadata);
 
   // console.log("numMinted", numMinted, numMintedError, numMintedLoading);
 
@@ -98,8 +101,8 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
   // );
   // console.log("tmp", tmp.data);
 
-  const loading = false;
-  const errorMetadata = false;
+  // const loading = false;
+  // const errorMetadata = false;
   return (
     <>
       <Head>
@@ -112,17 +115,23 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
               className={`${styles.align_center} align-self-center`}
               style={{ minHeight: 500 }}
             >
-              {loading || metadata.loading ? (
+              {metadata.isLoading ? (
                 <SpinnerLoading />
-              ) : errorMetadata ? (
-                <div>Something went wrong</div>
-              ) : metadata?.metadata?.animation_url ? (
+              ) : metadata.isError ? (
+                <img
+                  style={{ maxWidth: 500 }}
+                  src={normalizeIpfsUri("ipfs://" + work.coverImageCid)}
+                />
+              ) : metadata?.data?.animation_url ? (
                 <LiveMedia
-                  ipfsUrl={metadata?.metadata?.animation_url}
+                  ipfsUrl={metadata?.data?.animation_url}
                   minHeight={500}
                 />
               ) : (
-                <div>missing animation_url</div>
+                <img
+                  style={{ maxWidth: 500 }}
+                  src={normalizeIpfsUri("ipfs://" + work.coverImageCid)}
+                />
               )}
             </div>
             <div className={"mt-2 text-end"}>

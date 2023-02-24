@@ -23,9 +23,11 @@ export interface NftMetadata {
 export const useNftMetadata = ({
   sg721,
   tokenId,
+  refresh,
 }: {
   sg721: string | undefined | null;
   tokenId: string;
+  refresh?: boolean;
 }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [errorFetch, setErrorFetch] = useState<any | null>(null);
@@ -39,7 +41,7 @@ export const useNftMetadata = ({
     [tokenId]
   );
 
-  const { data, error } = useQuery(
+  const query = useQuery(
     [
       sg721
         ? `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${sg721}/smart/${msgBase64}`
@@ -60,31 +62,47 @@ export const useNftMetadata = ({
             (await res.text().toString())
         );
       }
-      return res.json();
-    },
-    { enabled: !!sg721 }
-  );
-
-  useEffect(() => {
-    if (error) {
-      setErrorFetch(errorFetch);
-      return;
-    }
-
-    if (!data || error) return;
-    const url = data.data.token_uri;
-
-    (async () => {
+      const data = await res.json();
       try {
+        const url = data.data.token_uri;
+        if (typeof url !== "string") {
+          return null;
+        }
         const res = await fetchTokenUriInfo(normalizeMetadataUri(url));
-        setMetadata(res);
+        return res;
       } catch (e) {
         console.log("metadata error", e);
         setErrorFetch(e);
       }
-      setLoading(false);
-    })();
-  }, [data, error, errorFetch]);
+    },
+    {
+      enabled: !!sg721,
+      refetchOnMount: !!refresh,
+      refetchOnWindowFocus: !!refresh,
+      refetchOnReconnect: !!refresh,
+    }
+  );
 
-  return { metadata, loading, error: errorFetch };
+  // useEffect(() => {
+  //   if (error) {
+  //     setErrorFetch(errorFetch);
+  //     return;
+  //   }
+  //
+  //   if (!data || error) return;
+  //   const url = data.data.token_uri;
+  //   console.log("metadata url", url);
+  //   (async () => {
+  //     try {
+  //       const res = await fetchTokenUriInfo(normalizeMetadataUri(url));
+  //       setMetadata(res);
+  //     } catch (e) {
+  //       console.log("metadata error", e);
+  //       setErrorFetch(e);
+  //     }
+  //     setLoading(false);
+  //   })();
+  // }, [data, error, errorFetch]);
+
+  return query;
 };
