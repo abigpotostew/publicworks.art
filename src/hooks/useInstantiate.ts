@@ -164,8 +164,10 @@ async function instantiateNew(
   if (!work.coverImageCid) {
     throw new Error("missing cover image");
   }
+  //todo this is broken
+  const subdomain = config.testnet ? "testnetmetadata" : "metadata";
   const tempMsg: InstantiateMsg = {
-    base_token_uri: `https://testnetmetadata.publicworks.art/${work.id}`,
+    base_token_uri: `https://${subdomain}.publicworks.art/${work.id}`,
     num_tokens: work.maxTokens,
     sg721_code_id: config.sg721CodeId,
     sg721_instantiate_msg: {
