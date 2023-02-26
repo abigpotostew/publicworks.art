@@ -22,6 +22,7 @@ import { onMutateLogin } from "src/trpc/onMutate";
 import { useProfileInfo } from "../../src/hooks/sg-names";
 import { WorkRow } from "../../src/components/profile/WorkRow";
 import { Hr } from "../../src/components/content/horizontalrule/HR";
+import { useRouter } from "next/router";
 
 interface Props {
   work: WorkSerializable;
@@ -32,7 +33,22 @@ interface UserWorksProps {
 }
 
 export const UserWorks: FC<UserWorksProps> = (props: UserWorksProps) => {
-  const [pageNumber, setPageNumber] = useState(0);
+  const router = useRouter();
+  const pageNumber = parseInt(router.query?.pageNumber?.toString() || "0") || 0;
+  const setPageNumber = useCallback(
+    async (pageNumber: number) => {
+      console.log("setPageNumber", pageNumber);
+      await router.push(`/profile?pageNumber=${pageNumber}`);
+    },
+    [pageNumber]
+  );
+  const nextPage = useCallback(async () => {
+    await setPageNumber(pageNumber + 1);
+  }, [pageNumber]);
+  const prevPage = useCallback(async () => {
+    await setPageNumber(pageNumber - 1);
+  }, [pageNumber]);
+  // const [pageNumber, setPageNumber] = useState(0);
   const utils = trpcNextPW.useContext();
   const limit = 5;
   const [page, setPage] = useState<WorkSerializable[]>([]);
@@ -54,16 +70,17 @@ export const UserWorks: FC<UserWorksProps> = (props: UserWorksProps) => {
 
   const hasMore = userWorksPage.data?.nextCursor ? true : false;
   const hasPrevious = pageNumber > 0;
-  const nextPage = useCallback(() => {
-    if (hasMore) {
-      setPageNumber((prev) => prev + 1);
-    }
-  }, [hasMore]);
-  const prevPage = useCallback(() => {
-    if (hasPrevious) {
-      setPageNumber((prev) => prev - 1);
-    }
-  }, [hasPrevious]);
+  // const nextPage = useCallback(() => {
+  //   if (hasMore) {
+  //     nextPage();
+  //   }
+  // }, [hasMore]);
+  // const prevPage = useCallback(() => {
+  //   if (hasPrevious) {
+  //     prevPage();
+  //     setPageNumber((prev) => prev - 1);
+  //   }
+  // }, [hasPrevious]);
 
   const hasItems = !!page?.length;
   const pageItems: WorkSerializable[] = hasItems && page ? page : [];

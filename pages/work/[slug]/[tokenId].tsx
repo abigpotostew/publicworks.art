@@ -15,6 +15,12 @@ import { useRouter } from "next/router";
 import { trpcNextPW } from "src/server/utils/trpc";
 import SpinnerLoading from "src/components/loading/Loader";
 import { Attributes } from "../../../src/components/metadata/Attributes";
+import { GetStaticProps, InferGetStaticPropsType } from "next";
+import { initializeIfNeeded } from "../../../src/typeorm/datasource";
+import { stores } from "../../../src/store/stores";
+import { serializeWork } from "../../../src/dbtypes/works/serialize-work";
+import { StarsAddressName } from "../../../src/components/name/StarsAddressName";
+import { FieldControl } from "../../../src/components/control/FieldControl";
 
 // export const getServerSideProps: GetServerSideProps = async (context) => {
 //   const slug = context.params?.slug;
@@ -66,16 +72,74 @@ import { Attributes } from "../../../src/components/metadata/Attributes";
 //   };
 // };
 
-const WorkTokenPage = () => {
+export async function getStaticPaths() {
+  await initializeIfNeeded();
+  const out: { params: { slug: string; tokenId: string } }[] = [];
+  let nextOffset: number | undefined = undefined;
+  do {
+    const { items: tokens, nextOffset: next } =
+      await stores().project.getTokens({
+        limit: 500,
+        offset: 0,
+        publishedState: "PUBLISHED",
+        includeHidden: true,
+      });
+    nextOffset = next;
+    out.push(
+      ...tokens.map((s) => {
+        return { params: { slug: s.work.slug, tokenId: s.token_id } };
+      })
+    );
+  } while (nextOffset);
+  // const static = [work];
+  return {
+    paths: out,
+    fallback: "blocking",
+  };
+}
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  await initializeIfNeeded();
+  const slug = context.params?.slug;
+  const tokenId = context.params?.tokenId;
+  if (typeof slug !== "string" || typeof tokenId !== "string") {
+    return {
+      notFound: true,
+    };
+  }
+  const work = await stores().project.getProjectBySlug(slug);
+  if (!work) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      slug,
+      work: serializeWork(work),
+      tokenId,
+    },
+    revalidate: 10, // In seconds
+    // fallback: "blocking",
+  };
+};
+
+const WorkTokenPage = ({
+  work,
+  slug,
+  tokenId,
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   const router = useRouter();
-  const { slug, tokenId } = router.query;
+  // const { slug, tokenId } = router.query;
   const [notFound, setNotFound] = useState(false);
 
   const workQuery = trpcNextPW.works.getWorkBySlug.useQuery(
     { slug: slug?.toString() || "" },
     { enabled: !!slug }
   );
-  const { data: work } = workQuery;
+  const { data } = workQuery;
+  work = data || work;
 
   // workQuery?.data?.externalLink
 
@@ -193,7 +257,8 @@ const WorkTokenPage = () => {
               <div
                 className={`${styles.workAuthorLink} ${styles.displayLinebreak} ${styles.sectionBreak}`}
               >
-                {"Owned by: " + owner}
+                {"Owned by: "}
+                <StarsAddressName address={owner} />
               </div>
 
               <div
@@ -217,6 +282,35 @@ const WorkTokenPage = () => {
                 )}
               </div>
             </div>
+            <div>
+              <h5 className={"mt-4"}>Metadata</h5>
+              <FieldControl name={"Contract"}>
+                {work.sg721 ? (
+                  <StarsAddressName address={work.sg721} noShorten={false} />
+                ) : null}
+              </FieldControl>
+              <FieldControl name={"Minter"}>
+                {work.minter ? (
+                  <StarsAddressName address={work.minter} noShorten={false} />
+                ) : null}
+              </FieldControl>
+              <a
+                href={tokenMetadata?.data?.image}
+                className={"Token-link"}
+                download={"true"}
+              >
+                Image
+              </a>{" "}
+              |{" "}
+              <a
+                href={tokenMetadata?.data?.animation_url}
+                target={"_blank"}
+                className={"Token-link"}
+                rel="noreferrer"
+              >
+                Live
+              </a>
+            </div>
             <div className={"mt-4"}>
               <h4>Attributes</h4>
               {tokenMetadata.data?.attributes && (
@@ -239,7 +333,14 @@ const WorkTokenPage = () => {
 };
 
 WorkTokenPage.getLayout = function getLayout(page: ReactElement) {
-  return <MainLayout>{page}</MainLayout>;
+  // const name = page.props.work.name;
+  // const creator = page.props.work.creator;
+  // const router = useRouter();
+  // const { pid } = router.query;
+  console.log({ page });
+  // page.props.tokenId;
+  // page.props.work
+  return <MainLayout metaTitle={``}>{page}</MainLayout>;
 };
 
 export default WorkTokenPage;

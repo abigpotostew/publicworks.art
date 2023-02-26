@@ -164,9 +164,14 @@ const listWorks = baseProcedure
   )
 
   .query(async ({ input, ctx }) => {
+    let order: "asc" | "desc" = "asc";
+    if (input.order === "desc") {
+      order = "desc";
+    }
     const { items, nextOffset: nextCursor } =
       await stores().project.getProjects({
         ...input,
+        order,
         offset: input.cursor || undefined,
       });
 

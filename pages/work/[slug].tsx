@@ -105,9 +105,6 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
   // const errorMetadata = false;
   return (
     <>
-      <Head>
-        <title key={"title"}>{`${work.name} - publicworks.art`}</title>
-      </Head>
       <div>
         <Container>
           <RowSquareContainer>
@@ -152,13 +149,13 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
         <Container>
           <RowThinContainer className={`mt-1 ${styles.workHeader}`}>
             <div className={"mt-1"}>
-              <div>
-                <span className={styles.workTitle}>{work.name + " "}</span>
-                <span className={`${styles.workAuthor} ms-2 me-1`}>
+              <div className={"d-flex"}>
+                <h2 className={"fw-bold"}>{work.name + " "}</h2>
+                <h2 className={` ms-2 me-1`}>
                   <StarsAddressName
                     address={work.ownerAddress || work.creator}
                   />
-                </span>
+                </h2>
                 {work.sg721 && work.minter ? (
                   <NumMinted slug={work.slug} minter={work.minter} />
                 ) : (
@@ -218,12 +215,12 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
 
               <FieldControl name={"Contract"}>
                 {work.sg721 ? (
-                  <StarsAddressName address={work.sg721} noShorten={true} />
+                  <StarsAddressName address={work.sg721} noShorten={false} />
                 ) : null}
               </FieldControl>
               <FieldControl name={"Minter"}>
                 {work.minter ? (
-                  <StarsAddressName address={work.minter} noShorten={true} />
+                  <StarsAddressName address={work.minter} noShorten={false} />
                 ) : null}
               </FieldControl>
 
@@ -263,7 +260,9 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
 };
 
 WorkPage.getLayout = function getLayout(page: ReactElement) {
-  return <MainLayout metaTitle={"publicworks.art"}>{page}</MainLayout>;
+  const name = page.props.work.name;
+  const creator = page.props.work.creator;
+  return <MainLayout metaTitle={`${name} by ${creator}`}>{page}</MainLayout>;
 };
 
 export default WorkPage;

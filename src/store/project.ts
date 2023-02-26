@@ -34,13 +34,16 @@ export class ProjectRepo {
     offset,
     publishedState = "PUBLISHED",
     includeHidden,
+    order,
   }: {
     limit: number;
     offset?: number | undefined;
     // "PUBLISHED" | "UNPUBLISHED" | "ALL"
     publishedState: string | null;
     includeHidden: boolean;
+    order?: "desc" | "asc";
   }): Promise<{ items: WorkEntity[]; nextOffset: number | undefined }> {
+    order = order || "desc";
     offset = offset || 0;
     const where: FindOptionsWhere<WorkEntity>[] | FindOptionsWhere<WorkEntity> =
       {};
@@ -59,6 +62,50 @@ export class ProjectRepo {
         take: limit + 1,
         skip: offset,
         relations: ["owner"],
+        order: {
+          createdDate: order,
+        },
+      });
+    let nextOffset: typeof offset | undefined = undefined;
+    if (items.length > limit) {
+      items.pop();
+      nextOffset = offset + limit;
+    }
+    return {
+      items,
+      nextOffset,
+    };
+  }
+
+  async getTokens({
+    limit,
+    offset,
+    publishedState = "PUBLISHED",
+    includeHidden,
+  }: {
+    limit: number;
+    offset?: number | undefined;
+    // "PUBLISHED" | "UNPUBLISHED" | "ALL"
+    publishedState: string | null;
+    includeHidden: boolean;
+  }): Promise<{ items: TokenEntity[]; nextOffset: number | undefined }> {
+    offset = offset || 0;
+    const where:
+      | FindOptionsWhere<TokenEntity>[]
+      | FindOptionsWhere<TokenEntity> = {};
+
+    if (publishedState === "PUBLISHED") {
+      where.work = { sg721: Not(IsNull()) };
+    } else if (publishedState === "UNPUBLISHED") {
+      where.work = { sg721: IsNull() };
+    }
+    const items = await dataSource()
+      .getRepository(TokenEntity)
+      .find({
+        where,
+        take: limit + 1,
+        skip: offset,
+        relations: ["work", "work.owner"],
       });
     let nextOffset: typeof offset | undefined = undefined;
     if (items.length > limit) {

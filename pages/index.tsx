@@ -82,7 +82,6 @@ export async function getStaticProps(context: GetStaticPropsContext) {
 }
 
 const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const router = useRouter();
   const queryWorks = trpcNextPW.works.listWorks.useQuery(
     {
       limit: 3,

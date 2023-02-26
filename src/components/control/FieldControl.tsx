@@ -9,7 +9,7 @@ type Props = {
 export const FieldControl = ({ children, name }: Props) => {
   return (
     <div className={`control-group`}>
-      <label className={`control-label ${styles.label} mb-2`}>{name}</label>
+      <label className={`control-label ${styles.label} mb-1`}>{name}</label>
       <ul>
         <div className="controls readonly">
           <>{children}</>

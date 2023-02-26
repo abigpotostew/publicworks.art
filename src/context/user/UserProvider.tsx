@@ -27,12 +27,12 @@ export const UserProvider: FC<Props> = ({ children }: Props) => {
     },
     {
       enabled: !!tokenD.data && !!sgwallet.wallet?.address,
-      onSuccess: () => {
-        console.log("userCtx.onSuccess", userCtx.data);
-      },
-      onSettled: () => {
-        console.log("userCtx.onSettled", userCtx.data);
-      },
+      // onSuccess: () => {
+      //   console.log("userCtx.onSuccess", userCtx.data);
+      // },
+      // onSettled: () => {
+      //   console.log("userCtx.onSettled", userCtx.data);
+      // },
     }
   );
   return (

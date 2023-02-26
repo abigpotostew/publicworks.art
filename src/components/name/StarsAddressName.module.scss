@@ -1,0 +1,13 @@
+@import '/styles/variables.module';
+
+.hoverIcon:hover{
+    color: $primary;
+}
+
+.hoverIcon{
+  color: $secondary;
+}
+
+//.copyContent:hover{
+//  border: $secondary 1px solid;
+//}?

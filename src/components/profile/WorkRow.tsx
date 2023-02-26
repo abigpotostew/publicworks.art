@@ -20,7 +20,7 @@ import {
 } from "react-bootstrap";
 import { useLastMintedToken } from "../../hooks/useLastMintedToken";
 import { relativeTimeFromDates } from "../../util/date-fmt/format";
-import { ButtonPW, ButtonPWFRef } from "../button/Button";
+import { ButtonPW } from "../button/Button";
 import { trpcNextPW } from "../../server/utils/trpc";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidateWork } from "../../hooks/work/useInvalidateWork";
@@ -35,7 +35,7 @@ function EditButtonDropdown({ work }: { work: WorkSerializable }) {
   return (
     <Dropdown as={ButtonGroup}>
       <Link href={`/create/${work.id}`} passHref={true} legacyBehavior>
-        <ButtonPWFRef variant={"outline-secondary"}>Edit</ButtonPWFRef>
+        <ButtonPW variant={"outline-secondary"}>Edit</ButtonPW>
       </Link>
       <Dropdown.Toggle split variant="outline-secondary" />
       <Dropdown.Menu>

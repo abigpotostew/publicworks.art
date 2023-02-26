@@ -49,9 +49,10 @@ export const GalleryComponent = ({
         <Card.Text>{w.blurb}</Card.Text>
       </Card.Body>
       <Card.Footer className={"bg-white"}>
-        <div className={"d-flex justify-content-between"}>
-          <div>
-            By <StarsAddressName address={work.ownerAddress || work.creator} />
+        <div className={""}>
+          <div className={"d-flex align-items-center"}>
+            <span>By</span>
+            <StarsAddressName address={work.ownerAddress || work.creator} />
           </div>
           <div>
             {numMinted.isLoading || collectionSize.loading ? (

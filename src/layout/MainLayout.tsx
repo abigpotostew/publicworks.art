@@ -29,7 +29,7 @@ const MainLayout: FC<ILayout> = ({
         <title key={"title"}>
           {!metaTitle ? "publicworks.art" : `${metaTitle} - publicworks.art`}
         </title>
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
         {metaTitle && <meta property="og:title" content={metaTitle} />}
         {metaTitle && <meta property="twitter:title" content={metaTitle} />}
         {description && (

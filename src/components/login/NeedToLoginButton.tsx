@@ -18,7 +18,7 @@ export const NeedToLoginButton: FC<Props> = ({ url }) => {
   const { wallet } = useWallet();
   const token = getToken();
   // console.log("data", wallet, user.data, token);
-  console.log("user.data", user.data);
+  // console.log("user.data", user.data);
   return (
     <>
       {!wallet || !user.data || !token ? (
