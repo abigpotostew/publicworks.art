@@ -91,7 +91,7 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
     tokenId: previewTokenId,
     refresh: false,
   });
-  console.log("metadata", metadata);
+  // console.log("metadata", metadata);
 
   // console.log("numMinted", numMinted, numMintedError, numMintedLoading);
 
