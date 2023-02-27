@@ -23,6 +23,7 @@
     "@google-cloud/storage": "^6.7.0",
     "@keplr-wallet/cosmos": "^0.12.0-alpha.0",
     "@keplr-wallet/stores": "^0.12.0-alpha.0",
+    "@publicworks/db-typeorm": "*",
     "@react-hook/size": "^2.1.2",
     "@stargazefi/api": "^0.4.1",
     "@stargazezone/types": "^0.9.0",
@@ -68,6 +69,7 @@
     "react-use": "^17.4.0",
     "remark-gfm": "^3.0.1",
     "sass": "^1.55.0",
+    "sharp": "^0.31.3",
     "superjson": "^1.10.0",
     "tmp": "^0.2.1",
     "typeorm": "^0.3.10",
@@ -76,8 +78,7 @@
     "use-async-effect": "^2.2.7",
     "valtio": "^1.10.2",
     "zod": "^3.20.2",
-    "zod-formik-adapter": "^1.1.1",
-    "@publicworks/db-typeorm": "*"
+    "zod-formik-adapter": "^1.1.1"
   },
   "devDependencies": {
     "@keplr-wallet/types": "^0.12.0-alpha.0",
