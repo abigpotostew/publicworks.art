@@ -337,7 +337,7 @@ WorkTokenPage.getLayout = function getLayout(page: ReactElement) {
   // const creator = page.props.work.creator;
   // const router = useRouter();
   // const { pid } = router.query;
-  console.log({ page });
+  // console.log({ page });
   // page.props.tokenId;
   // page.props.work
   return <MainLayout metaTitle={``}>{page}</MainLayout>;
