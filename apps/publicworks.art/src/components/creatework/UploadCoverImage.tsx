@@ -1,9 +1,8 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { EditProjectRequest } from "../../store";
-import { WorkSerializable } from "../../dbtypes/works/workSerializable";
+import { WorkSerializable } from "../../../../../packages/db-typeorm/src/serializable/works/workSerializable";
 import { FlexBoxCenter } from "../layout/FlexBoxCenter";
 import { DropZone } from "../DropZone";
-import { getDataUrl } from "../../base64/file";
 import { trpcNextPW } from "../../server/utils/trpc";
 import SpinnerLoading from "../loading/Loader";
 import { normalizeIpfsUri } from "../../wasm/metadata";

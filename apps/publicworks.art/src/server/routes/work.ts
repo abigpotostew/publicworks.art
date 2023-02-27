@@ -7,7 +7,7 @@ import { TRPCError } from "@trpc/server";
 import {
   serializeWork,
   serializeWorkToken,
-} from "../../dbtypes/works/serialize-work";
+} from "../../../../../packages/db-typeorm/src/serializable/works/serialize-work";
 import { normalizeMetadataUri } from "../../wasm/metadata";
 import {
   deleteCid,

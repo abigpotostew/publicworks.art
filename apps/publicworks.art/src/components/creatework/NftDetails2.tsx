@@ -1,10 +1,9 @@
 import { parseISO } from "date-fns";
 import { format, formatInTimeZone } from "date-fns-tz";
 import { FC, useEffect } from "react";
-import { Container, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { EditProjectRequest } from "src/store";
-import { WorkSerializable } from "src/dbtypes/works/workSerializable";
-import { RowWideContainer } from "../layout/RowWideContainer";
+import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { TooltipInfo } from "../tooltip/TooltipInfo";
 import { useFormik } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
@@ -12,7 +11,7 @@ import { z } from "zod";
 import { isISODate } from "src/util/isISODate";
 import { ButtonPW as Button } from "../button/Button";
 import { useWallet } from "@stargazezone/client";
-import { isStarAddress, toStars } from "../../wasm/address";
+import { isStarAddress } from "../../wasm/address";
 
 // const formatInTimeZone = (date: Date, fmt: string, tz: string) =>
 //   format(utcToZonedTime(date, tz), fmt, { timeZone: tz });

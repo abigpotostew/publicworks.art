@@ -1,8 +1,8 @@
 // @flow
 import { FC } from "react";
-import { UserSerializable } from "src/dbtypes/users/userSerializable";
+import { UserSerializable } from "../../../../../packages/db-typeorm/src/serializable/users/userSerializable";
 import { Col, Form, Row } from "react-bootstrap";
-import { WorkSerializable } from "src/dbtypes/works/workSerializable";
+import { WorkSerializable } from "../../../../../packages/db-typeorm/src/serializable/works/workSerializable";
 import { useStargazeClient, useWallet } from "../../../@stargazezone/client";
 import { useProfileInfo } from "../../hooks/sg-names";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

@@ -1,4 +1,4 @@
-import { WorkSerializable } from "src/dbtypes/works/workSerializable";
+import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { trpcNextPW } from "src/server/utils/trpc";
 import { Card } from "react-bootstrap";
 import styles from "../../../styles/Works.module.scss";

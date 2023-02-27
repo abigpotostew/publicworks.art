@@ -1,5 +1,5 @@
 import { FC, useCallback, useState } from "react";
-import { WorkSerializable } from "../../dbtypes/works/workSerializable";
+import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { Col, Container, Form, Row } from "react-bootstrap";
 import styles from "./ConfirmConfig.module.css";
 import { FlexBox } from "../layout/FlexBoxCenter";

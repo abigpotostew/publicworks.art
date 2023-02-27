@@ -1,4 +1,3 @@
-import { Column, PrimaryGeneratedColumn } from "typeorm";
 import { z } from "zod";
 
 export const workZod = z.object({
@@ -39,7 +38,7 @@ export const workZod = z.object({
   updatedDate: z.date().transform((d) => d.toISOString()),
 
   hidden: z.boolean().optional(),
-  ownerAddress: z.string().optional(),
+  ownerAddress: z.string().optional()
 });
 
 export type WorkSerializable = z.infer<typeof workZod>;
@@ -52,7 +51,7 @@ export const tokenZod = z.object({
   imageUrl: z.string().nullable(),
   metadataUri: z.string().nullable(),
   createdDate: z.date().transform((d) => d.toISOString()),
-  updatedDate: z.date().transform((d) => d.toISOString()),
+  updatedDate: z.date().transform((d) => d.toISOString())
 });
 
 export type TokenSerializable = z.infer<typeof tokenZod>;

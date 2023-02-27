@@ -1,5 +1,5 @@
 import { proxy } from "valtio";
-import { WorkSerializable } from "../dbtypes/works/workSerializable";
+import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 
 /**
  * Types

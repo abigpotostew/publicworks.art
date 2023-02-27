@@ -1,5 +1,5 @@
 import React from "react";
-import { UserSerializable } from "src/dbtypes/users/userSerializable";
+import { UserSerializable } from "@publicworks/db-typeorm/serializable";
 import { emptyTrpcQueryResult } from "src/trpc/util";
 import { UseTRPCQueryResult } from "@trpc/react-query/shared";
 

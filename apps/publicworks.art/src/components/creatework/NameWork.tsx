@@ -1,23 +1,20 @@
-import { FC, FormEventHandler, useCallback, useEffect, useState } from "react";
-import { Container, Form, Row } from "react-bootstrap";
-import { RowThinContainer } from "../layout/RowThinContainer";
+import { FC, FormEventHandler, useCallback, useState } from "react";
+import { Form } from "react-bootstrap";
 import { EditProjectRequest } from "../../store";
-import { WorkSerializable } from "../../dbtypes/works/workSerializable";
+import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { RowWideContainer } from "../layout/RowWideContainer";
 import { LiveMedia } from "../media/LiveMedia";
 import { generateTxHash } from "../../generateHash";
-import { normalizeMetadataUri } from "../../wasm/metadata";
 import { BsArrowRepeat } from "react-icons/bs";
 import { FlexBox } from "../layout/FlexBoxCenter";
 import { DropZone } from "../DropZone";
 import { ButtonPW as Button } from "../button/Button";
 import { TooltipInfo } from "src/components/tooltip/TooltipInfo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useAppIsLoading from "src/components/loading/useAppIsLoading";
 import { useFormik } from "formik";
-import { parseISO } from "date-fns";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
+
 const schema = z.object({
   name: z.string().min(3),
 });

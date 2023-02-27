@@ -18,7 +18,7 @@ import { Attributes } from "../../../src/components/metadata/Attributes";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { initializeIfNeeded } from "../../../src/typeorm/datasource";
 import { stores } from "../../../src/store/stores";
-import { serializeWork } from "../../../src/dbtypes/works/serialize-work";
+import { serializeWork } from "@publicworks/db-typeorm/serializable";
 import { StarsAddressName } from "../../../src/components/name/StarsAddressName";
 import { FieldControl } from "../../../src/components/control/FieldControl";
 

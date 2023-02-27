@@ -1,6 +1,6 @@
 // @flow
 import * as React from "react";
-import { WorkSerializable } from "../../dbtypes/works/workSerializable";
+import { WorkSerializable } from "../../../../../packages/db-typeorm/src/serializable/works/workSerializable";
 import { FC } from "react";
 import Link from "next/link";
 import { FlexBox } from "../layout/FlexBoxCenter";

@@ -1,5 +1,5 @@
 import config from "../wasm/config";
-import { WorkSerializable } from "../dbtypes/works/workSerializable";
+import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Timestamp } from "@stargazezone/types/contracts/sg721/shared-types";
@@ -8,8 +8,6 @@ import { Coin } from "@stargazezone/types/contracts/minter/shared-types";
 import { coins } from "cosmwasm";
 import { trpcNextPW } from "../server/utils/trpc";
 import { useMutation } from "@tanstack/react-query";
-import { useCosmosWallet } from "../components/provider/CosmosWalletProvider";
-import { ConnectedQueryContract } from "../wasm/keplr/query";
 import { toStars } from "src/wasm/address";
 import { useWallet } from "@stargazezone/client";
 import useStargazeClient from "@stargazezone/client/react/client/useStargazeClient";

@@ -7,7 +7,7 @@ import { TooltipInfo } from "../tooltip/TooltipInfo";
 import { ButtonPW as Button } from "../button/Button";
 import { generateTxHash } from "src/generateHash";
 import { normalizeMetadataUri } from "src/wasm/metadata";
-import { WorkSerializable } from "src/dbtypes/works/workSerializable";
+import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { EditProjectRequest } from "src/store";
 import { useFormik } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
