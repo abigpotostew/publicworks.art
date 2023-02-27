@@ -10,8 +10,9 @@ import { Button } from "react-bootstrap";
 type Props = {
   address: string;
   noShorten?: boolean;
+  className?: string;
 };
-export const StarsAddressName = ({ address, noShorten }: Props) => {
+export const StarsAddressName = ({ address, noShorten, className }: Props) => {
   const nameInfo = useProfileInfo({ address: address });
   let name: string;
   const starsname = nameInfo.walletName ? nameInfo.walletName + ".stars" : null;
@@ -26,7 +27,7 @@ export const StarsAddressName = ({ address, noShorten }: Props) => {
     <span>
       <>
         <CopyToClipboard text={starsname || address}>
-          <div className={"d-flex gap-1 m-1"}>
+          <div className={"d-flex gap-1 m-1 " + (className || "")}>
             <Button variant={"sm"}>
               <>{name}</>{" "}
               <FontAwesomeIcon
