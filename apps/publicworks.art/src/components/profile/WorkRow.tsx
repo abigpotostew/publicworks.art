@@ -85,9 +85,6 @@ export const WorkRow: FC<Props> = ({ work, onChange }: Props) => {
   const onHide = (hidden: boolean) => {
     setHiddenMutation.mutate(hidden);
   };
-  if (work.id === "35") {
-    console.log("work row hidden is", work.id, work.hidden);
-  }
 
   return (
     <div

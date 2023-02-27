@@ -61,7 +61,7 @@ const editWork = authorizedProcedure
 const editWorkContracts = authorizedProcedure
   .input(
     z.object({
-      id: z.string(),
+      id: z.number(),
       sg721: z.string(),
       minter: z.string(),
     })
@@ -111,7 +111,7 @@ const editWorkContracts = authorizedProcedure
 const getWorkById = baseProcedure
   .input(
     z.object({
-      id: z.string(),
+      id: z.number(),
     })
   )
 

@@ -12,7 +12,7 @@ import { FindOptionsWhere } from "typeorm/find-options/FindOptionsWhere";
 import cuid from "cuid";
 
 export class ProjectRepo {
-  async getProjectPreviewImage(id: string): Promise<TokenEntity | null> {
+  async getProjectPreviewImage(id: number): Promise<TokenEntity | null> {
     const res = await dataSource()
       .getRepository(TokenEntity)
       .findOne({
@@ -241,7 +241,7 @@ export class ProjectRepo {
   }
 
   async updateProject(
-    id: string,
+    id: number,
     request: Partial<FullEditProjectRequest>
   ): Promise<Result<WorkEntity>> {
     let toUpdate: Partial<WorkEntity> = new WorkEntity();
@@ -287,7 +287,7 @@ export class ProjectRepo {
     return Ok(work);
   }
 
-  async deleteWork({ id }: { id: string }): Promise<boolean> {
+  async deleteWork({ id }: { id: number }): Promise<boolean> {
     const result = await dataSource().getRepository(WorkEntity).delete({
       id,
     });

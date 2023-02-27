@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useToast } from "src/hooks/useToast";
 
 export const onWorkUploadNew = async (
-  workId: string,
+  workId: number,
   files: File[],
   utils: AppRouterUtilContext,
   uploadPresignedUrl: string,
@@ -27,7 +27,7 @@ export const onWorkUploadNew = async (
   return true;
 };
 
-export const useUploadWorkMutation = (workId: string | null | undefined) => {
+export const useUploadWorkMutation = (workId: number | null | undefined) => {
   const utils = trpcNextPW.useContext();
   const toast = useToast();
   const onWorkUploadFileMutation =

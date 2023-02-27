@@ -60,7 +60,7 @@ export const CreateProjectRequestZ = z.object({
 export type CreateProjectRequest = z.infer<typeof CreateProjectRequestZ>;
 
 export const editProjectZod = z.object({
-  id: z.string(),
+  id: z.number(),
   name: z.string().min(3).max(50).optional(),
   creator: z.string().optional(),
   blurb: z.string().min(2).max(515).optional(),

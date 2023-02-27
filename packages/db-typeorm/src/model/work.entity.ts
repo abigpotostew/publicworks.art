@@ -9,7 +9,7 @@ import {
   Relation,
   UpdateDateColumn,
 } from "typeorm";
-import { AuditedEntity } from "@publicworks/db-typeorm/audited-entity";
+import { AuditedEntity } from "./audited-entity";
 import { UserEntity } from "./user.entity";
 
 @Entity({ name: "works" })

@@ -132,7 +132,8 @@ const NavButtons: FC<INavButtons> = ({
 const EditWorkPage = () => {
   const router = useRouter();
   const { workId: workIdIn } = router.query;
-  const workId = typeof workIdIn === "string" ? workIdIn.split("?", 1)[0] : "";
+  const workId =
+    typeof workIdIn === "string" ? parseInt(workIdIn.split("?", 1)[0]) : 0;
   const [hash, setHash] = useState<string>(generateTxHash());
 
   const { user } = useUserContext();
@@ -177,7 +178,7 @@ const EditWorkPage = () => {
     {
       id: workId,
     },
-    { enabled: workId !== "" } //workId is temporarily empty string while router loads
+    { enabled: !!workId } //workId is temporarily empty string while router loads
   );
   const work =
     !getWorkQuery.isLoading && !getWorkQuery.error && getWorkQuery.data

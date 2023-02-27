@@ -58,7 +58,7 @@ const readZip = async (
 
 export const pinZipToPinata = async (
   zipPath: string,
-  metadata: { workId: string; testnet?: boolean }
+  metadata: { workId: number; testnet?: boolean }
 ) => {
   const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
   try {
@@ -163,7 +163,7 @@ export const getMetadataWorkId = async (searchCid: string) => {
 export const uploadFileToPinata = async (
   buffer: Buffer,
   contentType: string,
-  metadata: { workId: string }
+  metadata: { workId: number }
 ) => {
   //
 

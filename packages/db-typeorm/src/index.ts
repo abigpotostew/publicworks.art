@@ -1,1 +1,1 @@
-export * from './audited-entity'
+export * from './model'
