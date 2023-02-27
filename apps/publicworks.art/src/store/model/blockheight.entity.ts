@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
-import { AuditedEntity } from "./audited-entity";
+import { AuditedEntity } from "@publicworks/db-typeorm/audited-entity";
 
 @Entity({ name: "blockheights" })
 export class BlockheightEntity extends AuditedEntity {

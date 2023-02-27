@@ -2,7 +2,7 @@ import { Column, PrimaryGeneratedColumn } from "typeorm";
 import { z } from "zod";
 
 export const workZod = z.object({
-  id: z.string(),
+  id: z.number(),
   codeCid: z.string(),
   name: z.string(),
   creator: z.string(),

@@ -1,3 +1,4 @@
+
 // the main common security headers
 const baseSecurityHeaders = [
   {
@@ -56,6 +57,7 @@ const nextConfig = {
       },
     ];
   },
+  transpilePackages: ["@publicworks.art/db-typeorm"],
 };
 
 module.exports = nextConfig;

@@ -9,13 +9,13 @@ import {
   Relation,
   UpdateDateColumn,
 } from "typeorm";
-import { AuditedEntity } from "./audited-entity";
+import { AuditedEntity } from "@publicworks/db-typeorm/audited-entity";
 import { UserEntity } from "./user.entity";
 
 @Entity({ name: "works" })
 export class WorkEntity extends AuditedEntity {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column("text", { name: "code_cid" })
   codeCid: string;

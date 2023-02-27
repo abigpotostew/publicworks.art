@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
-import { AuditedEntity } from "./audited-entity";
+import { AuditedEntity } from "@publicworks/db-typeorm/audited-entity";
 import { WorkEntity } from "./work.entity";
 
 @Entity({ name: "users" })

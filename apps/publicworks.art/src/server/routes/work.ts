@@ -213,7 +213,7 @@ const listAddressWorks = baseProcedure
 const workPreviewImg = baseProcedure
   .input(
     z.object({
-      workId: z.string(),
+      workId: z.number(),
     })
   )
 
@@ -256,7 +256,7 @@ const lastMintedToken = baseProcedure
 const uploadPreviewImg = authorizedProcedure
   .input(
     z.object({
-      workId: z.string(),
+      workId: z.number(),
       coverImageDataUrl: z.string(),
     })
   )
@@ -297,7 +297,7 @@ const uploadPreviewImg = authorizedProcedure
 const uploadWorkGenerateUrl = authorizedProcedure
   .input(
     z.object({
-      workId: z.string(),
+      workId: z.number(),
       contentType: z.string().optional().nullish(),
       contentSize: z.number().min(1).max(20_000_000),
     })
@@ -323,7 +323,7 @@ const uploadWorkGenerateUrl = authorizedProcedure
 const confirmWorkUpload = authorizedProcedure
   .input(
     z.object({
-      workId: z.string(),
+      workId: z.number(),
       uploadId: z.string().cuid(),
     })
   )
@@ -342,7 +342,7 @@ const confirmWorkUpload = authorizedProcedure
 const uploadWorkCoverImageGenerateUrl = authorizedProcedure
   .input(
     z.object({
-      workId: z.string(),
+      workId: z.number(),
       contentType: z.string(),
       contentSize: z.number().min(1).max(20_000_000),
     })
@@ -375,7 +375,7 @@ const uploadWorkCoverImageGenerateUrl = authorizedProcedure
 const confirmWorkCoverImageUpload = authorizedProcedure
   .input(
     z.object({
-      workId: z.string(),
+      workId: z.number(),
       uploadId: z.string().cuid(),
     })
   )
@@ -394,7 +394,7 @@ const confirmWorkCoverImageUpload = authorizedProcedure
 const deleteWork = authorizedProcedure
   .input(
     z.object({
-      workId: z.string(),
+      workId: z.number(),
     })
   )
 

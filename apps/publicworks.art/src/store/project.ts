@@ -160,7 +160,7 @@ export class ProjectRepo {
       nextOffset,
     };
   }
-  async getProject(id: string): Promise<WorkEntity | null> {
+  async getProject(id: number): Promise<WorkEntity | null> {
     return dataSource()
       .getRepository(WorkEntity)
       .findOne({
