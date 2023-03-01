@@ -84,11 +84,12 @@ export function imgMd(props: any) {
         <Col xs={bwid} sm={bwid} md={bwid} lg={bwid} xl={bwid} xxl={bwid} />
         <Col>
           <Image
-            className={"figure-img img-fluid rounded "}
+            className={"figure-img img-fluid rounded"}
             alt={props.alt}
             title={props.title}
             src={src}
           />
+          <figcaption className="figure-caption">{props.title}</figcaption>
         </Col>
         <Col xs={bwid} sm={bwid} md={bwid} lg={bwid} xl={bwid} xxl={bwid} />
       </Row>

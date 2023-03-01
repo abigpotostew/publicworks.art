@@ -50,7 +50,7 @@ const BlogPage = ({ blog }: InferGetStaticPropsType<typeof getStaticProps>) => {
     <Container>
       <RowThinContainer>
         <h1>{blog.title}</h1>
-        <div className={"d-flex justify-content-between"}>
+        <div className={"d-flex justify-content-between align-items-baseline"}>
           <span>
             Interview by{" "}
             <StarsAddressName
@@ -61,7 +61,7 @@ const BlogPage = ({ blog }: InferGetStaticPropsType<typeof getStaticProps>) => {
           <p>{timestamp}</p>
         </div>
       </RowThinContainer>
-      <RowThinContainer>
+      <RowThinContainer className={"mt-2"}>
         <Markdown markdown={blog.content} />
       </RowThinContainer>
     </Container>
