@@ -10,7 +10,6 @@ import { StarsAddressName } from "../../src/components/name/StarsAddressName";
 import { blogs } from "../../src/blog/blogs";
 
 export async function getStaticPaths() {
-  await initializeIfNeeded();
   const out: { params: { blogSlug: string } }[] = blogs.map((b) => {
     return { params: { blogSlug: b.slug } };
   });
@@ -22,7 +21,6 @@ export async function getStaticPaths() {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  await initializeIfNeeded();
   const slug = context.params?.blogSlug;
   if (typeof slug !== "string") {
     return {
@@ -46,6 +44,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 const BlogPage = ({ blog }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const timestamp = format(new Date(blog.createdAt), "MMMM dd, yyyy");
+  console.log("timestamp", timestamp, blog.createdAt);
 
   return (
     <Container>
@@ -71,7 +70,7 @@ const BlogPage = ({ blog }: InferGetStaticPropsType<typeof getStaticProps>) => {
 
 BlogPage.getLayout = function getLayout(page: ReactElement) {
   return (
-    <MainLayout metaTitle={"Blog - " + page.props.blog.title}>
+    <MainLayout metaTitle={"Blog - " + page.props.blog.title} noImage={true}>
       {page}
     </MainLayout>
   );

@@ -9,6 +9,11 @@ import createimage7 from "../../../public/img/docs/create/7.png";
 import createimage8 from "../../../public/img/docs/create/8.png";
 import createimage9 from "../../../public/img/docs/create/9.png";
 import bafybeienmv7bkwf56riaft74igcv4hogis2alk7uznhpfznw66f2jhqtza from "../../../public/blog-assets/repetition-by-math-bird/bafybeienmv7bkwf56riaft74igcv4hogis2alk7uznhpfznw66f2jhqtza.png";
+import bafybeihfy52llgg3jejvzx7y4ppxs3lrfhk4hbmp6vgwasmfhvuzziepdm from "../../../public/blog-assets/plottable-golden-train-by-greweb/bafybeihfy52llgg3jejvzx7y4ppxs3lrfhk4hbmp6vgwasmfhvuzziepdm.png";
+import grewebProfilePic from "../../../public/blog-assets/plottable-golden-train-by-greweb/profile.jpg";
+import greweb367 from "../../../public/blog-assets/plottable-golden-train-by-greweb/367.jpg";
+import grewebEgo797 from "../../../public/blog-assets/plottable-golden-train-by-greweb/797-ego.jpg";
+import grewebTrain709 from "../../../public/blog-assets/plottable-golden-train-by-greweb/709.jpg";
 import { Col, Container, Row } from "react-bootstrap";
 import Image from "next/image";
 import styles from "../../../styles/About.module.scss";
@@ -57,6 +62,19 @@ export function imgMd(props: any) {
     "/blog-assets/repetition-by-math-bird/bafybeienmv7bkwf56riaft74igcv4hogis2alk7uznhpfznw66f2jhqtza.png"
   )
     src = bafybeienmv7bkwf56riaft74igcv4hogis2alk7uznhpfznw66f2jhqtza;
+  if (
+    props.src ===
+    "/blog-assets/plottable-golden-train-by-greweb/bafybeihfy52llgg3jejvzx7y4ppxs3lrfhk4hbmp6vgwasmfhvuzziepdm.png"
+  )
+    src = bafybeihfy52llgg3jejvzx7y4ppxs3lrfhk4hbmp6vgwasmfhvuzziepdm;
+  if (props.src === "/blog-assets/plottable-golden-train-by-greweb/profile.jpg")
+    src = grewebProfilePic;
+  if (props.src === "/blog-assets/plottable-golden-train-by-greweb/367.jpg")
+    src = greweb367;
+  if (props.src === "/blog-assets/plottable-golden-train-by-greweb/797-ego.jpg")
+    src = grewebEgo797;
+  if (props.src === "/blog-assets/plottable-golden-train-by-greweb/709.jpg")
+    src = grewebTrain709;
 
   const bwid = 2;
   return (
