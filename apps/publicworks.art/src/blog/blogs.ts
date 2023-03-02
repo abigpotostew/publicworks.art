@@ -59,8 +59,10 @@ Edition of 99 at 99 $STARS each.
     title: "Plottable Golden Train by greweb.stars",
     author: "skymagic.stars",
     authorAddress: "stars1euu359d2cwe46j8a8fqkmcrhzjq6j642htt7rn",
-    blurb: `In this blog post, greweb talks about analog generative art his inspiration for his artworks.`,
-    image: "/blog-assets/plottable-golden-train-by-greweb/797-ego-sm.jpg",
+    blurb: `In this blog post, greweb talks about analog generative art and his inspirations.`,
+    // image: "/blog-assets/plottable-golden-train-by-greweb/797-ego-sm.jpg",
+    image:
+      "/blog-assets/plottable-golden-train-by-greweb/bafybeihfy52llgg3jejvzx7y4ppxs3lrfhk4hbmp6vgwasmfhvuzziepdm-sm.jpg",
 
     content: `I had an insightful discussion with [greweb](https://twitter.com/greweb) about generative art and his work, Plottable Golden Train, releasing on https://publicworks.art / stargaze blockchain on March 3, 2023. Enjoy!
     
