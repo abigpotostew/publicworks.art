@@ -2,8 +2,8 @@ import React, { ReactElement } from "react";
 import MainLayout from "../src/layout/MainLayout";
 import { Container } from "react-bootstrap";
 import { RowThinContainer } from "src/components/layout/RowThinContainer";
-import { blogs } from "src/blog/blogs";
-import Link from "next/link";
+import { getEnabledBlogs } from "src/blog/blogs";
+import { BlogCard } from "../src/components/blog/BlogCard";
 
 //prefetch blogs
 
@@ -13,13 +13,9 @@ const BlogPage = () => {
       <RowThinContainer>
         <h1>Blog</h1>
       </RowThinContainer>
-      <RowThinContainer>
-        {blogs.map((blog) => {
-          return (
-            <Link key={blog.slug} href={`/blog/${blog.slug}`}>
-              <div key={blog.slug}>{blog.title}</div>
-            </Link>
-          );
+      <RowThinContainer className={"mt-3"}>
+        {getEnabledBlogs().map((blog) => {
+          return <BlogCard key={blog.slug} blog={blog} />;
         })}
       </RowThinContainer>
     </Container>

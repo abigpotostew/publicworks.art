@@ -8,12 +8,9 @@ import { ButtonPW } from "src/components/button/Button";
 import { RowThinContainer } from "src/components/layout/RowThinContainer";
 import { GetStaticPropsContext } from "next";
 import { initializeIfNeeded } from "src/typeorm/datasource";
-import superjson from "superjson";
-import { appRouter } from "src/server/routes/_app";
-import { Context } from "src/server/context";
 import { GalleryComponent } from "src/components/gallery/GalleryComponent";
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { useQuery } from "@tanstack/react-query";
+
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export async function getStaticProps(context: GetStaticPropsContext) {

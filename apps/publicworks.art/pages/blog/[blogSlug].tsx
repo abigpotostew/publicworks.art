@@ -1,16 +1,15 @@
 import React, { ReactElement } from "react";
 import MainLayout from "../../src/layout/MainLayout";
-import { initializeIfNeeded } from "../../src/typeorm/datasource";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { Markdown } from "../../src/components/markdown/Markdown";
 import { RowThinContainer } from "../../src/components/layout/RowThinContainer";
 import { Container } from "react-bootstrap";
 import { format } from "date-fns";
 import { StarsAddressName } from "../../src/components/name/StarsAddressName";
-import { blogs } from "../../src/blog/blogs";
+import { getEnabledBlogs } from "../../src/blog/blogs";
 
 export async function getStaticPaths() {
-  const out: { params: { blogSlug: string } }[] = blogs.map((b) => {
+  const out: { params: { blogSlug: string } }[] = getEnabledBlogs().map((b) => {
     return { params: { blogSlug: b.slug } };
   });
 
@@ -27,7 +26,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       notFound: true,
     };
   }
-  const blog = blogs.find((b) => b.slug === slug);
+  const blog = getEnabledBlogs().find((b) => b.slug === slug);
   if (!blog) {
     return {
       notFound: true,
@@ -44,7 +43,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 const BlogPage = ({ blog }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const timestamp = format(new Date(blog.createdAt), "MMMM dd, yyyy");
-  console.log("timestamp", timestamp, blog.createdAt);
 
   return (
     <Container>

@@ -1,3 +1,5 @@
+import grewebImage from "../../public/blog-assets/plottable-golden-train-by-greweb/bafybeihfy52llgg3jejvzx7y4ppxs3lrfhk4hbmp6vgwasmfhvuzziepdm.png";
+import { StaticImageData } from "next/image";
 export interface Blog {
   slug: string;
   title: string;
@@ -7,14 +9,18 @@ export interface Blog {
   authorAddress: string;
   creator: string;
   creatorAddress: string;
+  enabled: boolean;
+  blurb: string;
+  image?: string;
 }
 
-export const blogs: Blog[] = [
+const blogs: Blog[] = [
   {
     slug: "repetition-by-math-bird",
     title: "Repetition by mathbird.stars",
     author: "skymagic",
     authorAddress: "stars1euu359d2cwe46j8a8fqkmcrhzjq6j642htt7rn",
+    blurb: `In this blog post, Math Bird talks about generative art, repetition, and the future of generative art.`,
     content: `![Repetition #35](/blog-assets/repetition-by-math-bird/bafybeienmv7bkwf56riaft74igcv4hogis2alk7uznhpfznw66f2jhqtza.png "Repetition #35")
 
 Q: In your own words, what is generative art?
@@ -44,14 +50,19 @@ Edition of 99 at 99 $STARS each.
     creator: "Math Bird",
     creatorAddress: "stars17008jvthx25xc7wurll7f45z3n852pv7u889mj",
     createdAt: "2023-02-26T00:00:00.000Z",
+    enabled: false,
   },
 
   {
     slug: "plottable-golden-train-by-greweb",
+    enabled: true,
     title: "Plottable Golden Train by greweb.stars",
     author: "skymagic.stars",
     authorAddress: "stars1euu359d2cwe46j8a8fqkmcrhzjq6j642htt7rn",
-    content: `I had an insightful discussion with [greweb](https://twitter.com/greweb) about generative art and his work, Plottable Golden Train, releasing on https://publicworks.art / stargaze blockchain on March 3, 2023.
+    blurb: `In this blog post, greweb talks about analog generative art his inspiration for his artworks.`,
+    image: "/blog-assets/plottable-golden-train-by-greweb/797-ego-sm.jpg",
+
+    content: `I had an insightful discussion with [greweb](https://twitter.com/greweb) about generative art and his work, Plottable Golden Train, releasing on https://publicworks.art / stargaze blockchain on March 3, 2023. Enjoy!
     
 ![greweb](/blog-assets/plottable-golden-train-by-greweb/profile.jpg "greweb")
 
@@ -109,3 +120,7 @@ Edition of 400. 500 $STARS each.
     createdAt: "2023-03-01T20:00:00.000Z",
   },
 ];
+
+export const getEnabledBlogs = () => {
+  return blogs.filter((blog) => blog.enabled);
+};
