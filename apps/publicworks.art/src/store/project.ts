@@ -118,6 +118,24 @@ export class ProjectRepo {
     };
   }
 
+  async getToken({
+    workId,
+    tokenId,
+  }: {
+    workId: number;
+    tokenId: string;
+  }): Promise<TokenEntity | null> {
+    const item = await dataSource()
+      .getRepository(TokenEntity)
+      .findOne({
+        where: {
+          work: { id: workId },
+          token_id: tokenId,
+        },
+      });
+    return item;
+  }
+
   async getAccountProjects({
     address,
     limit,

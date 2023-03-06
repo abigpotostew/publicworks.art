@@ -6,7 +6,7 @@ import { LiveMedia } from "../../../src/components/media/LiveMedia";
 import { RowThinContainer } from "../../../src/components/layout/RowThinContainer";
 import { RowSquareContainer } from "../../../src/components/layout/RowSquareContainer";
 import { NftMetadata } from "../../../src/hooks/useNftMetadata";
-import { getTokenMetadata } from "../../../src/wasm/metadata";
+import { getTokenMetadata, normalizeIpfsUri } from "../../../src/wasm/metadata";
 import Link from "next/link";
 import Head from "next/head";
 import { useTokenOwner } from "../../../src/hooks/useTokenOwner";
@@ -18,7 +18,10 @@ import { Attributes } from "../../../src/components/metadata/Attributes";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { initializeIfNeeded } from "../../../src/typeorm/datasource";
 import { stores } from "../../../src/store/stores";
-import { serializeWork } from "@publicworks/db-typeorm/serializable";
+import {
+  serializeWork,
+  serializeWorkToken,
+} from "@publicworks/db-typeorm/serializable";
 import { StarsAddressName } from "../../../src/components/name/StarsAddressName";
 import { FieldControl } from "../../../src/components/control/FieldControl";
 
@@ -114,9 +117,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
     };
   }
 
+  const token = await stores().project.getToken({ workId: work.id, tokenId });
+
   return {
     props: {
       slug,
+      token: token ? serializeWorkToken(token) : null,
       work: serializeWork(work),
       tokenId,
     },
@@ -339,8 +345,23 @@ WorkTokenPage.getLayout = function getLayout(page: ReactElement) {
   // const { pid } = router.query;
   // console.log({ page });
   // page.props.tokenId;
-  // page.props.work
-  return <MainLayout metaTitle={``}>{page}</MainLayout>;
+  let img = "";
+  if (page.props.token?.imageUrl) {
+    img = normalizeIpfsUri(page.props.token.imageUrl);
+  }
+  let title = "";
+  if (page.props.work) {
+    title = page.props.work.name;
+  }
+
+  return (
+    <MainLayout
+      metaTitle={title}
+      image={`/api/ogimage/work${img ? "?img=" + img : ""}`}
+    >
+      {page}
+    </MainLayout>
+  );
 };
 
 export default WorkTokenPage;
