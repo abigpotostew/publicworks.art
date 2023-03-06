@@ -206,11 +206,6 @@ const WorkTokenPage = ({
     notFound;
   return (
     <>
-      <Head>
-        <title
-          key={"title"}
-        >{`${workQuery?.data?.name} #${tokenId} - publicworks.art`}</title>
-      </Head>
       <div>
         <Container>
           {work ? (
