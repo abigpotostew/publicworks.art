@@ -16,6 +16,7 @@ import { stores } from "src/store/stores";
 import { initializeIfNeeded } from "src/typeorm/datasource";
 import {
   serializeWork,
+  serializeWorkToken,
   WorkSerializable,
 } from "@publicworks/db-typeorm/serializable";
 import config from "src/wasm/config";
@@ -60,9 +61,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
       notFound: true,
     };
   }
+  const token = await stores().project.getToken({
+    workId: work.id,
+    tokenId: "1",
+  });
   return {
     props: {
       work: serializeWork(work),
+      token: token ? serializeWorkToken(token) : null,
     },
     revalidate: 10, // In seconds
     // fallback: "blocking",
@@ -263,8 +269,11 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
 WorkPage.getLayout = function getLayout(page: ReactElement) {
   const name = page.props.work.name;
   const creator = page.props.work.creator;
+
   let img = "";
-  if (page.props.work?.imageUrl) {
+  if (page.props.token?.imageUrl) {
+    img = normalizeIpfsUri(page.props.token.imageUrl);
+  } else if (page.props.work?.imageUrl) {
     img = normalizeIpfsUri("ipfs://" + page.props.work.imageUrl);
   }
 
