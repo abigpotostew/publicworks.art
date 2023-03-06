@@ -350,15 +350,20 @@ WorkTokenPage.getLayout = function getLayout(page: ReactElement) {
     img = normalizeIpfsUri(page.props.token.imageUrl);
   }
   let title = "";
-  if (page.props.work) {
+  if (page.props.work?.name) {
     title = page.props.work.name;
   }
+  if (page.props.tokenId) {
+    title = `${title} #${page.props.tokenId}`;
+  }
+  const imgUrl = img
+    ? `${
+        process.env.NEXT_PUBLIC_HOST
+      }/api/ogimage/work?img=${encodeURIComponent(img)}`
+    : "";
 
   return (
-    <MainLayout
-      metaTitle={title}
-      image={`/api/ogimage/work${img ? "?img=" + img : ""}`}
-    >
+    <MainLayout metaTitle={title} image={imgUrl}>
       {page}
     </MainLayout>
   );

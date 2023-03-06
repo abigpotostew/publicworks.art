@@ -12,12 +12,13 @@ import { GetStaticProps } from "next";
 import { RowWideContainer } from "../../src/components/layout/RowWideContainer";
 import { useNumMinted } from "../../src/hooks/useNumMinted";
 import { PagedGallery } from "../../src/components/media/PagedGallery";
-import Head from "next/head";
 import { stores } from "src/store/stores";
 import { initializeIfNeeded } from "src/typeorm/datasource";
-import { serializeWork } from "@publicworks/db-typeorm/serializable";
+import {
+  serializeWork,
+  WorkSerializable,
+} from "@publicworks/db-typeorm/serializable";
 import config from "src/wasm/config";
-import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { useRouter } from "next/router";
 import { FieldControl } from "../../src/components/control/FieldControl";
 import { StarsAddressName } from "../../src/components/name/StarsAddressName";
@@ -262,7 +263,19 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
 WorkPage.getLayout = function getLayout(page: ReactElement) {
   const name = page.props.work.name;
   const creator = page.props.work.creator;
-  return <MainLayout metaTitle={`${name} by ${creator}`}>{page}</MainLayout>;
+  let img = "";
+  if (page.props.work?.imageUrl) {
+    img = normalizeIpfsUri("ipfs://" + page.props.work.imageUrl);
+  }
+
+  const imgUrl = img
+    ? `${process.env.NEXT_PUBLIC_HOST}/api/ogimage/work?img=${img}`
+    : "";
+  return (
+    <MainLayout metaTitle={`${name} by ${creator}`} image={imgUrl}>
+      {page}
+    </MainLayout>
+  );
 };
 
 export default WorkPage;
