@@ -9,10 +9,12 @@ import { StarsAddressName } from "../../src/components/name/StarsAddressName";
 import { getEnabledBlogs } from "../../src/blog/blogs";
 
 export async function getStaticPaths() {
+  console.log("getStaticPaths, blog");
   const out: { params: { blogSlug: string } }[] = getEnabledBlogs().map((b) => {
     return { params: { blogSlug: b.slug } };
   });
 
+  console.log("getStaticPaths, blog, done");
   return {
     paths: out,
     fallback: "blocking",

@@ -26,6 +26,7 @@ import { StarsAddressName } from "../../src/components/name/StarsAddressName";
 import { normalizeIpfsUri } from "../../src/wasm/metadata";
 
 export async function getStaticPaths() {
+  console.log("getStaticPaths, works");
   await initializeIfNeeded();
   const { items: works } = await stores().project.getProjects({
     limit: 500,
@@ -34,6 +35,7 @@ export async function getStaticPaths() {
     includeHidden: true,
   });
   // const static = [work];
+  console.log("getStaticPaths, works, done");
   return {
     paths: works.map((s) => {
       return { params: { slug: s.slug } };
@@ -267,6 +269,7 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
 };
 
 WorkPage.getLayout = function getLayout(page: ReactElement) {
+  // console.log("page work", page.props.slug);
   const name = page.props.work.name;
   const creator = page.props.work.creator;
 
@@ -280,6 +283,13 @@ WorkPage.getLayout = function getLayout(page: ReactElement) {
   const imgUrl = img
     ? `${process.env.NEXT_PUBLIC_HOST}/api/ogimage/work?img=${img}`
     : "";
+  // console.log(
+  //   "work",
+  //   page.props.work?.slug,
+  //   page.props.token?.token_id,
+  //   "imgUrl",
+  //   imgUrl
+  // );
   return (
     <MainLayout metaTitle={`${name} by ${creator}`} image={imgUrl}>
       {page}

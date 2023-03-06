@@ -211,7 +211,7 @@ const EditWorkPage = () => {
       await mutation.mutateAsync({ ...req, id: workId });
       console.log("finished on create project mutation");
     },
-    [mutation]
+    [mutation, workId]
   );
 
   // const onUploadMutation = useMutation(async (files: File[]) => {
@@ -251,7 +251,7 @@ const EditWorkPage = () => {
     console.log("instantiate and showing confettie");
     toast.success("Successfully instantiated!");
     setShowConfetti(true);
-  }, [work]);
+  }, [work, instantiateMutation, toast]);
 
   const createStep = (stageEnum: string): Step => {
     const completed = stages.indexOf(stage) >= stages.indexOf(stageEnum);
@@ -290,7 +290,7 @@ const EditWorkPage = () => {
         "/create/" + workId
       );
     }
-  }, [workId, hasToken]);
+  }, [workId, hasToken, toast]);
 
   return (
     <>

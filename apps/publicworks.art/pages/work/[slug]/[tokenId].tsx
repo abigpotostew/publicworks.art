@@ -24,77 +24,34 @@ import {
 } from "@publicworks/db-typeorm/serializable";
 import { StarsAddressName } from "../../../src/components/name/StarsAddressName";
 import { FieldControl } from "../../../src/components/control/FieldControl";
-
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//   const slug = context.params?.slug;
-//   const tokenId = context.params?.tokenId;
-//   if (
-//     !tokenId ||
-//     Array.isArray(tokenId) ||
-//     !Number.isFinite(parseInt(tokenId))
-//   ) {
-//     return {
-//       notFound: true,
-//     };
-//   }
-//
-//   let metadata: NftMetadata | null = null;
-//   const fetchMd = async () => {
-//     try {
-//       metadata = await getTokenMetadata(
-//         work.sg721,
-//         tokenId,
-//         process.env.NEXT_PUBLIC_IPFS_GATEWAY
-//       );
-//     } catch (e) {
-//       console.warn(`error fetching attempt 2 ${slug} ${tokenId}`, e);
-//     }
-//   };
-//   const [, owner] = await Promise.all([
-//     fetchMd(),
-//     getTokenOwner(work.sg721, tokenId),
-//   ]);
-//
-//   if (!metadata) {
-//     return {
-//       notFound: true,
-//     };
-//   }
-//   context.res.setHeader(
-//     "Cache-Control",
-//     "public, s-maxage=300, stale-while-revalidate=400"
-//   );
-//
-//   return {
-//     props: {
-//       work,
-//       metadata,
-//       tokenId,
-//       tokenOwner: owner,
-//     },
-//   };
-// };
+import { TokenEntity } from "@publicworks/db-typeorm/model/work.entity";
 
 export async function getStaticPaths() {
+  console.log("getStaticPaths, token");
   await initializeIfNeeded();
   const out: { params: { slug: string; tokenId: string } }[] = [];
   let nextOffset: number | undefined = undefined;
+  const next: number | undefined = undefined;
+  let tokens: TokenEntity[] = [];
   do {
-    const { items: tokens, nextOffset: next } =
+    const res: { items: TokenEntity[]; nextOffset: number | undefined } =
       await stores().project.getTokens({
         limit: 500,
-        offset: 0,
+        offset: nextOffset ? nextOffset : 0,
         publishedState: "PUBLISHED",
         includeHidden: true,
       });
-    nextOffset = next;
+    nextOffset = res.nextOffset;
+    tokens = res.items;
     out.push(
       ...tokens.map((s) => {
         return { params: { slug: s.work.slug, tokenId: s.token_id } };
       })
     );
+    console.log("getStaticPaths, token, nextOffset", nextOffset);
   } while (nextOffset);
   // const static = [work];
+  console.log("getStaticPaths, token, done");
   return {
     paths: out,
     fallback: "blocking",
@@ -334,6 +291,7 @@ const WorkTokenPage = ({
 };
 
 WorkTokenPage.getLayout = function getLayout(page: ReactElement) {
+  // console.log("page token", page.props.slug);
   // const name = page.props.work.name;
   // const creator = page.props.work.creator;
   // const router = useRouter();
@@ -356,12 +314,21 @@ WorkTokenPage.getLayout = function getLayout(page: ReactElement) {
         process.env.NEXT_PUBLIC_HOST
       }/api/ogimage/work?img=${encodeURIComponent(img)}`
     : "";
-
+  // console.log(
+  //   "token",
+  //   page.props.work?.slug,
+  //   page.props.token?.token_id,
+  //   "imgUrl",
+  //   imgUrl
+  // );
   return (
     <MainLayout metaTitle={title} image={imgUrl}>
       {page}
     </MainLayout>
   );
+};
+export const config = {
+  staticPageGenerationTimeout: 120,
 };
 
 export default WorkTokenPage;
