@@ -2,6 +2,7 @@ import { z } from "zod";
 import { isISODate } from "../util/isISODate";
 import { cidRegex } from "../ipfs/cid";
 import { zodStarsAddress, zodStarsContractAddress } from "src/wasm/address";
+import { parseISO } from "date-fns";
 
 export interface Token {
   hash: string;
@@ -91,6 +92,15 @@ export const editProjectZod = z.object({
   hidden: z.boolean().optional(),
   // sg721CodeId: z.number().optional(),
   // minterCodeId: z.number().optional(),
+  isDutchAuction: z.boolean().optional(),
+  dutchAuctionEndPrice: z.number().min(50).optional(),
+  dutchAuctionEndDate: z
+    .string()
+    .refine(isISODate, { message: "Not a valid ISO string date " })
+    .refine((v) => new Date(v) > new Date(), "Must be in the future")
+    .optional(),
+  dutchAuctionDeclinePeriodSeconds: z.number().min(1).max(1000).default(300),
+  dutchAuctionDecayRate: z.number().min(0).max(1).default(0.85),
 });
 
 export type EditProjectRequest = z.infer<typeof editProjectZod>;

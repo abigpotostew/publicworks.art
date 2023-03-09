@@ -18,13 +18,6 @@ export interface MintMsg {
   };
 }
 
-const client:
-  | {
-      signer: SigningCosmWasmClient;
-      offlineSigner: OfflineSigner | OfflineDirectSigner;
-    }
-  | undefined = undefined;
-
 const AIRDROP_FEE = {
   amount: (15 * 1000000).toString(),
   denom: "ustars",

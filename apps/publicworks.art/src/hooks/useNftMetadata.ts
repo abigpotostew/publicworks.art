@@ -56,7 +56,7 @@ export const useNftMetadata = ({
       );
       if (!res.ok) {
         throw new Error(
-          "failed to get collection size" +
+          "failed to get nft metadata" +
             res.status +
             ", " +
             (await res.text().toString())

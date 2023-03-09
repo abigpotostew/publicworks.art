@@ -17,6 +17,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMintAirdrop } from "../../hooks/useMintAirdrop";
 import { may } from "@cosmjs/tendermint-rpc/build/tendermint34/encodings";
 import { FlexBox } from "../layout/FlexBoxCenter";
+import { useMinterPrice } from "../../hooks/useMinterPrice";
+import { useSetDutchAuction } from "../../hooks/useUpdateDutchAuction";
+import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 
 export const schema = z.object({
   addresses: z
@@ -41,8 +44,9 @@ export const schema = z.object({
 type Props = {
   minter?: string | null;
   slug?: string | null;
+  work?: WorkSerializable | null;
 };
-export const WorkOnChain = ({ minter, slug }: Props) => {
+export const WorkOnChain = ({ minter, slug, work }: Props) => {
   const [airdropVisible, setAirdropVisible] = useState<boolean>(false);
 
   const client = useStargazeClient();
@@ -91,6 +95,9 @@ export const WorkOnChain = ({ minter, slug }: Props) => {
     });
   });
   mutateAidrop = airdropMutation.mutate;
+
+  const minterPrice = useMinterPrice({ minter });
+  const setDutchAuction = useSetDutchAuction();
 
   if (!minter) {
     return (
@@ -182,6 +189,35 @@ export const WorkOnChain = ({ minter, slug }: Props) => {
           View on PublicWorks.art
         </ButtonPW>
       </FlexBox>
+      <div>
+        {work && (
+          <ButtonPW
+            onClick={() =>
+              setDutchAuction.mutate({
+                work,
+                config: {
+                  startTimeMs: /*new Date(work?.startDate || 0)*/ new Date(
+                    "2023-03-07T23:39:00"
+                  ).getTime(),
+                  endTimeMs: new Date(
+                    /*new Date(work?.startDate || 0)*/ new Date(
+                      "2023-03-07T23:39:00"
+                    ).getTime() +
+                      60 * 60 * 1000
+                  ).getTime(),
+                  unit_price: 100,
+                  restingUnitPrice: 10,
+                  declinePeriodSeconds: 60,
+                  declineDecay: 0.85,
+                },
+              })
+            }
+          >
+            Update Dutch Auction
+          </ButtonPW>
+        )}
+      </div>
+      <div>MinterPrice: {JSON.stringify(minterPrice.data, undefined, 2)}</div>
     </div>
   );
 };

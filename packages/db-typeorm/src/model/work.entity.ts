@@ -74,6 +74,22 @@ export class WorkEntity extends AuditedEntity {
   @Column("int", { name: "minter_code_id", nullable: true })
   minterCodeId: number;
 
+  @Column('boolean', { name: 'is_dutch_auction', nullable: false, default: false })
+  isDutchAuction: boolean;
+
+  @Column('timestamp', { name: 'dutch_auction_end_date', nullable: true })
+  dutchAuctionEndDate: Date | null;
+
+  @Column('double', { name: 'dutch_auction_end_price', nullable: true })
+  dutchAuctionEndPrice: number | null;
+
+  @Column('double', { name: 'dutch_auction_decline_period_seconds', nullable: true })
+  dutchAuctionDeclinePeriodSeconds: number | null;
+
+  @Column('double', { name: 'dutch_auction_decay_rate', nullable: true })
+  dutchAuctionDecayRate: number | null;
+
+
   @OneToMany(() => TokenEntity, (r) => r.work)
   tokens: Relation<TokenEntity>[] | null;
   @ManyToOne(() => UserEntity, (r) => r.ownedWorks)

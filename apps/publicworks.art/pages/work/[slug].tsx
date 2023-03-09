@@ -24,6 +24,7 @@ import { useRouter } from "next/router";
 import { FieldControl } from "../../src/components/control/FieldControl";
 import { StarsAddressName } from "../../src/components/name/StarsAddressName";
 import { normalizeIpfsUri } from "../../src/wasm/metadata";
+import { MintPrice } from "../../src/components/mint-price/MintPrice";
 
 export async function getStaticPaths() {
   console.log("getStaticPaths, works");
@@ -172,7 +173,7 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
                 )}
               </div>
 
-              <p className={`mt-2`}>
+              <div className={`mt-2`}>
                 <a
                   className={"btn"}
                   href={`${config.launchpadUrl}/` + work.minter}
@@ -181,7 +182,11 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
                 >
                   <Button>Mint on stargaze.zone</Button>
                 </a>
-              </p>
+              </div>
+
+              <div className={`mt-2`}>
+                <MintPrice minter={work.minter} />
+              </div>
 
               <div
                 className={`${styles.workDescription} ${styles.displayLinebreak} `}

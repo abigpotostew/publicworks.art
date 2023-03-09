@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isISODate } from "@publicworks/publicworks.art/src/util/isISODate";
 
 export const workZod = z.object({
   id: z.number(),
@@ -38,7 +39,15 @@ export const workZod = z.object({
   updatedDate: z.date().transform((d) => d.toISOString()),
 
   hidden: z.boolean().optional(),
-  ownerAddress: z.string().optional()
+  ownerAddress: z.string().optional(),
+
+  isDutchAuction: z.boolean().default(false),
+  dutchAuctionEndPrice: z.number().min(50).nullish(),
+  dutchAuctionEndDate: z
+    .date()
+      .transform((d) => d?.toISOString() || null).nullish(),
+  dutchAuctionDeclinePeriodSeconds: z.number().min(1).max(1000).default(300).nullish(),
+  dutchAuctionDecayRate: z.number().min(0).max(1).default(0.85).nullish(),
 });
 
 export type WorkSerializable = z.infer<typeof workZod>;

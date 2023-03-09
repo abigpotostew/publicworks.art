@@ -12,6 +12,7 @@ import { toStars } from "src/wasm/address";
 import { useWallet } from "@stargazezone/client";
 import useStargazeClient from "@stargazezone/client/react/client/useStargazeClient";
 import { useToast } from "src/hooks/useToast";
+import { createCoin, createTimestamp } from "./useUpdateDutchAuction";
 
 function formatRoyaltyInfo(
   royaltyPaymentAddress: null | string,
@@ -41,6 +42,13 @@ function isValidIpfsUrl(uri: string) {
 
 const NEW_COLLECTION_FEE = coins("1000000000", "ustars");
 
+interface DutchAuctionConfig {
+  end_time: Timestamp;
+  resting_unit_price: Coin;
+  decline_period_seconds: number;
+  decline_decay: number;
+}
+
 export interface InstantiateMsg {
   base_token_uri: string;
   num_tokens: number;
@@ -50,6 +58,7 @@ export interface InstantiateMsg {
   start_time: Timestamp;
   unit_price: Coin;
   whitelist?: string | null;
+  dutch_auction_config: DutchAuctionConfig | null;
 
   [k: string]: unknown;
 }
@@ -162,7 +171,23 @@ async function instantiateNew(
   if (!work.coverImageCid) {
     throw new Error("missing cover image");
   }
-  //todo this is broken
+  let dutchAuctionConfig: DutchAuctionConfig | null = null;
+  if (
+    work.isDutchAuction &&
+    work.dutchAuctionEndDate &&
+    work.dutchAuctionEndPrice &&
+    work.dutchAuctionDeclinePeriodSeconds !== null &&
+    work.dutchAuctionDeclinePeriodSeconds !== undefined &&
+    work.dutchAuctionDecayRate !== null &&
+    work.dutchAuctionDecayRate !== undefined
+  ) {
+    dutchAuctionConfig = {
+      end_time: createTimestamp(new Date(work.dutchAuctionEndDate).getTime()),
+      resting_unit_price: createCoin(work.dutchAuctionEndPrice),
+      decline_period_seconds: work.dutchAuctionDeclinePeriodSeconds,
+      decline_decay: Math.round(work.dutchAuctionDecayRate * 1_000_000),
+    };
+  }
   const subdomain = config.testnet ? "testnetmetadata" : "metadata";
   const tempMsg: InstantiateMsg = {
     base_token_uri: `https://${subdomain}.publicworks.art/${work.id}`,
@@ -189,6 +214,7 @@ async function instantiateNew(
       amount: (work.priceStars * 1000000).toString(),
       denom: "ustars",
     },
+    dutch_auction_config: dutchAuctionConfig,
   };
 
   if (

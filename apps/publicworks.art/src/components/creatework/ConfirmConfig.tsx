@@ -18,7 +18,9 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
   const w = props.work;
 
   type Mapping = Record<keyof WorkSerializable, string | null>;
-
+  const whenDutchAuction = (label: string) => {
+    return w.isDutchAuction ? label : null;
+  };
   const pairs: Mapping = {
     name: "Name",
     description: "Description",
@@ -27,6 +29,11 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
     externalLink: "External Link",
     maxTokens: "Collection Size",
     priceStars: "Price $STARS",
+    isDutchAuction: "Dutch Auction Enabled",
+    dutchAuctionEndDate: whenDutchAuction("Dutch Auction End Time"),
+    dutchAuctionEndPrice: whenDutchAuction("Dutch Auction End Price"),
+    dutchAuctionDeclinePeriodSeconds: whenDutchAuction("Price Drop Interval"),
+    dutchAuctionDecayRate: whenDutchAuction("Price Decay Rate"),
     royaltyAddress: "Royalty Receiver",
     royaltyPercent: "Royalty Percent",
     resolution: "Resolution",
@@ -100,7 +107,7 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
                     </Form.Label>
                     <Col>
                       <Form.Label column="lg" size="sm">
-                        {w[k as keyof WorkSerializable]}
+                        {w[k as keyof WorkSerializable]?.toString()}
                       </Form.Label>
                     </Col>
                   </Form.Group>

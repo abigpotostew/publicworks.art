@@ -341,7 +341,7 @@ const EditWorkPage = () => {
           {stage === "view" && work && (
             // <Container fluid={false}>
             <>
-              <WorkOnChain minter={work.minter} slug={work.slug} />
+              <WorkOnChain work={work} minter={work.minter} slug={work.slug} />
               <div className={"Margin-T-1"}>
                 {
                   <Button
