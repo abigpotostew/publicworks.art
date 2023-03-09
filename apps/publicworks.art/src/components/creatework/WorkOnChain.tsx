@@ -20,6 +20,7 @@ import { FlexBox } from "../layout/FlexBoxCenter";
 import { useMinterPrice } from "../../hooks/useMinterPrice";
 import { useSetDutchAuction } from "../../hooks/useUpdateDutchAuction";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
+import { ChangePrice } from "../mint-price/ChangePrice";
 
 export const schema = z.object({
   addresses: z
@@ -48,6 +49,7 @@ type Props = {
 };
 export const WorkOnChain = ({ minter, slug, work }: Props) => {
   const [airdropVisible, setAirdropVisible] = useState<boolean>(false);
+  const [changePriceVisible, setChangePriceVisible] = useState<boolean>(false);
 
   const client = useStargazeClient();
   const getMinterQuery = useQuery(
@@ -96,7 +98,6 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
   });
   mutateAidrop = airdropMutation.mutate;
 
-  const minterPrice = useMinterPrice({ minter });
   const setDutchAuction = useSetDutchAuction();
 
   if (!minter) {
@@ -119,57 +120,87 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
   return (
     <div>
       <div>
-        <a
-          href={"#"}
-          onClick={(event) => {
-            event.preventDefault();
-            console.log("pizza hello set airdropVisible to ", !airdropVisible);
-            setAirdropVisible(!airdropVisible);
-          }}
-        >
-          <h5>
-            {airdropVisible ? (
-              <FontAwesomeIcon icon={"minus"} width={14} />
-            ) : (
-              <FontAwesomeIcon icon={"plus"} width={14} />
-            )}
-            Admin Airdrop
-          </h5>
-        </a>
-        <Collapse in={airdropVisible}>
-          <Form
-            onSubmit={(...a) => {
-              return formik.handleSubmit(...a);
+        <div>
+          <a
+            href={"#"}
+            onClick={(event) => {
+              event.preventDefault();
+              console.log(
+                "pizza hello set airdropVisible to ",
+                !airdropVisible
+              );
+              setAirdropVisible(!airdropVisible);
             }}
-            noValidate={true}
-            className={"Margin-L-1"}
           >
-            <Form.Group controlId="formAirdropAddresses">
-              <Form.Label>
-                Airdrop To <TooltipInfo>Airdrop costs 15 stars.</TooltipInfo>
-              </Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={1}
-                value={formik.values.addresses}
-                placeholder={"stars123..."}
-                onChange={formik.handleChange}
-                name="addresses"
-                isValid={formik.touched.addresses && !formik.errors.addresses}
-                isInvalid={
-                  formik.touched.addresses && !!formik.errors.addresses
-                }
-              />
-              <Form.Control.Feedback type="invalid">
-                {formik.errors.addresses}
-              </Form.Control.Feedback>
-              <Button variant="info" type="submit" className={"Margin-T-1"}>
-                Airdrop!
-              </Button>
-              {airdropMutation.isLoading && <SpinnerLoading />}
-            </Form.Group>
-          </Form>
-        </Collapse>
+            <h5>
+              {airdropVisible ? (
+                <FontAwesomeIcon icon={"minus"} width={14} />
+              ) : (
+                <FontAwesomeIcon icon={"plus"} width={14} />
+              )}
+              Admin Airdrop
+            </h5>
+          </a>
+          <Collapse in={airdropVisible}>
+            <Form
+              onSubmit={(...a) => {
+                return formik.handleSubmit(...a);
+              }}
+              noValidate={true}
+              className={"Margin-L-1"}
+            >
+              <Form.Group controlId="formAirdropAddresses">
+                <Form.Label>
+                  Airdrop To <TooltipInfo>Airdrop costs 15 stars.</TooltipInfo>
+                </Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={1}
+                  value={formik.values.addresses}
+                  placeholder={"stars123..."}
+                  onChange={formik.handleChange}
+                  name="addresses"
+                  isValid={formik.touched.addresses && !formik.errors.addresses}
+                  isInvalid={
+                    formik.touched.addresses && !!formik.errors.addresses
+                  }
+                />
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.addresses}
+                </Form.Control.Feedback>
+                <Button variant="info" type="submit" className={"Margin-T-1"}>
+                  Airdrop!
+                </Button>
+                {airdropMutation.isLoading && <SpinnerLoading />}
+              </Form.Group>
+            </Form>
+          </Collapse>
+        </div>
+        <div>
+          <a
+            href={"#"}
+            onClick={(event) => {
+              event.preventDefault();
+              console.log(
+                "pizza hello set changePrice to ",
+                !changePriceVisible
+              );
+              setChangePriceVisible(!changePriceVisible);
+            }}
+          >
+            <h5>
+              {changePriceVisible ? (
+                <FontAwesomeIcon icon={"minus"} width={14} />
+              ) : (
+                <FontAwesomeIcon icon={"plus"} width={14} />
+              )}
+              Update Price
+            </h5>
+          </a>
+          <Collapse key={"collapseChangePrice"} in={changePriceVisible}>
+            <Form>{(work && <ChangePrice work={work} />) || null}</Form>
+          </Collapse>
+        </div>
       </div>
       <FlexBox>
         <ButtonPW
@@ -217,7 +248,7 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
           </ButtonPW>
         )}
       </div>
-      <div>MinterPrice: {JSON.stringify(minterPrice.data, undefined, 2)}</div>
+      {/*<div>MinterPrice: {JSON.stringify(minterPrice.data, undefined, 2)}</div>*/}
     </div>
   );
 };

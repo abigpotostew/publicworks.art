@@ -17,19 +17,19 @@ import { DutchAuctionChart } from "../dutch-action-chart/DutchAuctionChart";
 // const formatInTimeZone = (date: Date, fmt: string, tz: string) =>
 //   format(utcToZonedTime(date, tz), fmt, { timeZone: tz });
 
-function defaultDate(hoursFromNow = 24) {
+export function defaultDate(hoursFromNow = 24) {
   const date = new Date();
   const coeff = 1000 * 60 * 60 * hoursFromNow;
   const rounded = new Date(Math.round(date.getTime() / coeff + 1) * coeff);
   return rounded;
 }
 
-function defaultTime(hoursFromNow = 24) {
+export function defaultTime(hoursFromNow = 24) {
   const rounded = defaultDate(hoursFromNow);
   return formatDateInput(rounded);
 }
 
-function formatDateInput(date: Date) {
+export function formatDateInput(date: Date) {
   const out = `${format(date, "yyyy-MM-dd")}T${format(date, "kk:mm")}`;
   // console.log("default date", out);
   return out;
@@ -90,6 +90,7 @@ export const schemaDutchAuctionPartial = z.object({
 });
 
 const schemaNoDutchAuction = schemaMainPartial.merge(schemaShared);
+
 const schemaDutchAuction = schemaMainPartial
   .merge(schemaShared)
   .merge(schemaDutchAuctionPartial)
@@ -116,10 +117,36 @@ const schemaDutchAuction = schemaMainPartial
     return true;
   }, "Dutch Auction end date must be after start date");
 
+export const schemaDutchAuctionPartialWithValidations =
+  schemaDutchAuctionPartial
+    .merge(schemaShared)
+    .refine((obj) => {
+      if (obj.isDutchAuction) {
+        return (
+          !!obj.dutchAuctionEndPrice &&
+          !!obj.dutchAuctionEndDate &&
+          !!obj.dutchAuctionDecayRate &&
+          !!obj.dutchAuctionDeclinePeriodSeconds
+        );
+      }
+      return true;
+    }, "All dutch auction fields are required if dutch auction is selected")
+    .refine((obj) => {
+      if (
+        obj.isDutchAuction &&
+        obj.startDate &&
+        obj.dutchAuctionEndDate &&
+        new Date(obj.startDate) < new Date(obj.dutchAuctionEndDate)
+      ) {
+        return false;
+      }
+      return true;
+    }, "Dutch Auction end date must be after start date");
+
 type SchemaTypeNoDutchAuction = z.infer<typeof schemaNoDutchAuction>;
 type SchemaDutchAuctionType = z.infer<typeof schemaDutchAuction>;
 
-const formatInUTC = (date: Date | null | undefined) => {
+export const formatInUTC = (date: Date | null | undefined) => {
   if (!date) {
     return "-";
   }
@@ -131,7 +158,7 @@ const formatInUTC = (date: Date | null | undefined) => {
   }
 };
 
-const numberInputOnWheelPreventChange = (e: any) => {
+export const numberInputOnWheelPreventChange = (e: any) => {
   // Prevent the input value change
   e.target.blur();
 
@@ -176,7 +203,6 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
       props.defaultValues?.dutchAuctionDeclinePeriodSeconds || 300,
     dutchAuctionDecayRate: props.defaultValues?.dutchAuctionDecayRate || 0.85,
   };
-  console.log("defualts", defaults, props.defaultValues?.isDutchAuction);
   const formik = useFormik({
     initialValues: defaults,
     onSubmit: async (values, { resetForm }) => {

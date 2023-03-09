@@ -184,7 +184,7 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
                 </a>
               </div>
 
-              <div className={`mt-2`}>
+              <div className={`mt-2 mb-2`}>
                 <MintPrice minter={work.minter} />
               </div>
 
@@ -195,9 +195,6 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
               </div>
               {work.additionalDescription && (
                 <>
-                  {/*<hr />*/}
-                  {/*<div className={`${styles.sectionBreak}`}></div>*/}
-
                   <div>
                     <h5 className={"mt-4"}>Additional Description</h5>
                     <p
@@ -208,7 +205,6 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
                   </div>
                 </>
               )}
-              {/*<div className={`${styles.sectionBreak}`}></div>*/}
               <h5 className={"mt-4"}>Metadata</h5>
               <div className={`${styles.workAuthorLink}}`}>
                 {work.externalLink && (

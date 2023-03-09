@@ -1,0 +1,287 @@
+// @flow
+import * as React from "react";
+import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
+import { useFormik } from "formik";
+import { toFormikValidationSchema } from "zod-formik-adapter";
+import { schema } from "../creatework/WorkOnChain";
+import {
+  defaultTime,
+  formatDateInput,
+  formatInUTC,
+  numberInputOnWheelPreventChange,
+  schemaDutchAuctionPartialWithValidations,
+} from "../creatework/NftDetails2";
+import { useSetDutchAuction } from "../../hooks/useUpdateDutchAuction";
+import { Alert, Collapse, Form } from "react-bootstrap";
+import { TooltipInfo } from "../tooltip";
+import { parseISO } from "date-fns";
+import { DutchAuctionChart } from "../dutch-action-chart/DutchAuctionChart";
+
+type Props = {
+  work: WorkSerializable;
+};
+
+export const ChangePrice = ({ work }: Props) => {
+  const defaults = {
+    priceStars: work.priceStars || 50,
+    startDate:
+      (work.startDate && formatDateInput(new Date(work.startDate))) ||
+      defaultTime(24),
+    isDutchAuction: work.isDutchAuction || false,
+    dutchAuctionEndPrice: work.dutchAuctionEndPrice || 50,
+    dutchAuctionEndDate:
+      (work.dutchAuctionEndDate &&
+        formatDateInput(new Date(work.dutchAuctionEndDate))) ||
+      defaultTime(25),
+    dutchAuctionDeclinePeriodSeconds:
+      work.dutchAuctionDeclinePeriodSeconds || 300,
+    dutchAuctionDecayRate: work.dutchAuctionDecayRate || 0.85,
+  };
+  const setDutchAuctionMutation = useSetDutchAuction();
+  const formik = useFormik({
+    initialValues: defaults,
+    onSubmit: async (values) => {
+      //todo save it in the db before the transaction
+      if (values.isDutchAuction && setDutchAuctionMutation) {
+        await setDutchAuctionMutation.mutateAsync({
+          work,
+          config: {
+            startTimeMs: new Date(values.startDate).getTime(),
+            unit_price: values.priceStars,
+            endTimeMs: new Date(values.dutchAuctionEndDate).getTime(),
+            restingUnitPrice: values.dutchAuctionEndPrice,
+            declineDecay: values.dutchAuctionDecayRate,
+            declinePeriodSeconds: values.dutchAuctionDeclinePeriodSeconds,
+          },
+        });
+      }
+      if (!values.isDutchAuction) {
+        //todo set update regular price
+      }
+    },
+    validationSchema: toFormikValidationSchema(
+      schemaDutchAuctionPartialWithValidations
+    ),
+    // validateOnMount: true,
+  });
+  return (
+    <div>
+      <Form.Group className="mb-3" controlId="formWorkStartTime">
+        <Form.Label>
+          Start Time <TooltipInfo>Public mint start time</TooltipInfo>
+        </Form.Label>
+        <Form.Control
+          type={"datetime-local"}
+          // defaultValue={defaultTime()}
+
+          // className={'form-input mt-1 block w-full'}
+          name="startDate"
+          onChange={formik.handleChange}
+          value={formik.values.startDate}
+          isValid={formik.touched.startDate && !formik.errors.startDate}
+          isInvalid={formik.touched.startDate && !!formik.errors.startDate}
+        />
+        <Form.Label>
+          {`${formatInUTC(parseISO(formik.values.startDate))} UTC`}
+        </Form.Label>
+
+        <Form.Control.Feedback type="invalid">
+          {formik.errors.startDate}
+        </Form.Control.Feedback>
+      </Form.Group>
+
+      <Form.Group className="mb-3" controlId="priceStars">
+        <Form.Label>
+          Price in $Stars <TooltipInfo>Public mint price</TooltipInfo>
+        </Form.Label>
+        <Form.Control
+          type="number"
+          onWheel={numberInputOnWheelPreventChange}
+          value={formik.values.priceStars}
+          name="priceStars"
+          onChange={formik.handleChange}
+          isValid={formik.touched.priceStars && !formik.errors.priceStars}
+          isInvalid={formik.touched.priceStars && !!formik.errors.priceStars}
+        />
+
+        <Form.Control.Feedback type="invalid">
+          {formik.errors.priceStars}
+        </Form.Control.Feedback>
+      </Form.Group>
+
+      <Form.Group className="mb-3" controlId="formIsDutchAuction">
+        <Form.Label>
+          Dutch Auction{" "}
+          <TooltipInfo>
+            Dutch Auctions gradually lower the mint price over time.
+          </TooltipInfo>
+        </Form.Label>
+        <Form.Check
+          name="isDutchAuction"
+          type="checkbox"
+          checked={formik.values.isDutchAuction}
+          // value={formik.values.isDutchAuction?.toString()}
+          onChange={formik.handleChange}
+          isValid={
+            formik.touched.isDutchAuction && !formik.errors.isDutchAuction
+          }
+        />
+      </Form.Group>
+
+      <Collapse in={formik.values.isDutchAuction}>
+        <div>
+          <Form.Group className="mb-3" controlId="formDutchAuctionEndDate">
+            <Form.Label>
+              End Time{" "}
+              <TooltipInfo>
+                When the Dutch Auction ends, the price will be fixed at the
+                resting price. Tokens can still be minted after the auction
+                ends.
+              </TooltipInfo>
+            </Form.Label>
+            <Form.Control
+              type={"datetime-local"}
+              name="dutchAuctionEndDate"
+              onChange={formik.handleChange}
+              value={formik.values.dutchAuctionEndDate}
+              isValid={
+                formik.touched.dutchAuctionEndDate &&
+                !formik.errors.dutchAuctionEndDate
+              }
+              isInvalid={
+                formik.touched.dutchAuctionEndDate &&
+                !!formik.errors.dutchAuctionEndDate
+              }
+            />
+            <Form.Label>
+              {`${formatInUTC(
+                parseISO(formik.values.dutchAuctionEndDate)
+              )} UTC`}
+            </Form.Label>
+
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.dutchAuctionEndDate}
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="dutchAuctionEndPrice">
+            <Form.Label>
+              Resting Price in $Stars{" "}
+              <TooltipInfo>
+                Final resting price after the auction has finished.
+              </TooltipInfo>
+            </Form.Label>
+            <Form.Control
+              type="number"
+              onWheel={numberInputOnWheelPreventChange}
+              value={formik.values.dutchAuctionEndPrice}
+              name="dutchAuctionEndPrice"
+              onChange={formik.handleChange}
+              isValid={
+                formik.touched.dutchAuctionEndPrice &&
+                !formik.errors.dutchAuctionEndPrice
+              }
+              isInvalid={
+                formik.touched.dutchAuctionEndPrice &&
+                !!formik.errors.dutchAuctionEndPrice
+              }
+            />
+
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.dutchAuctionEndPrice}
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <Form.Group
+            className="mb-3"
+            controlId="dutchAuctionDeclinePeriodSeconds"
+          >
+            <Form.Label>
+              Price Drop Interval{" "}
+              <TooltipInfo>
+                The price will drop at this interval. 5 minutes is recommended
+                (300 seconds).
+              </TooltipInfo>
+            </Form.Label>
+            <Form.Control
+              type="number"
+              onWheel={numberInputOnWheelPreventChange}
+              value={formik.values.dutchAuctionDeclinePeriodSeconds}
+              name="dutchAuctionDeclinePeriodSeconds"
+              onChange={formik.handleChange}
+              isValid={
+                formik.touched.dutchAuctionDeclinePeriodSeconds &&
+                !formik.errors.dutchAuctionDeclinePeriodSeconds
+              }
+              isInvalid={
+                formik.touched.dutchAuctionDeclinePeriodSeconds &&
+                !!formik.errors.dutchAuctionDeclinePeriodSeconds
+              }
+            />
+
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.dutchAuctionDeclinePeriodSeconds}
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="dutchAuctionDecayRate">
+            <Form.Label>
+              Price Decay Rate{" "}
+              <TooltipInfo>
+                The auction price drops based on a decay rate. When above 0.5
+                the price drops quickly then gradually slows down. When under
+                0.5, the price drops slowly then gradually speeds up near
+                auction end. When equal to 0.5 the price drops linearly.
+              </TooltipInfo>
+            </Form.Label>
+            <Form.Control
+              type="number"
+              step="0.000001"
+              onWheel={numberInputOnWheelPreventChange}
+              value={formik.values.dutchAuctionDecayRate}
+              name="dutchAuctionDecayRate"
+              onChange={formik.handleChange}
+              isValid={
+                formik.touched.dutchAuctionDecayRate &&
+                !formik.errors.dutchAuctionDecayRate
+              }
+              isInvalid={
+                formik.touched.dutchAuctionDecayRate &&
+                !!formik.errors.dutchAuctionDecayRate
+              }
+            />
+
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.dutchAuctionDecayRate}
+            </Form.Control.Feedback>
+          </Form.Group>
+          <Form.Label>
+            <Alert variant={"info"}>
+              This graph depicts the price over the duration of the dutch
+              auction. Elapsed time is a close estimate because actual time is
+              based on the blockchain.
+            </Alert>
+          </Form.Label>
+          <DutchAuctionChart
+            startPrice={formik.values.priceStars || 50}
+            endPrice={formik.values.dutchAuctionEndPrice || 50}
+            startTime={
+              formik.values.startDate
+                ? new Date(formik.values.startDate)
+                : new Date()
+            }
+            endTime={
+              formik.values.dutchAuctionEndDate
+                ? new Date(formik.values.dutchAuctionEndDate)
+                : new Date()
+            }
+            declinePeriodSeconds={
+              formik.values.dutchAuctionDeclinePeriodSeconds || 300
+            }
+            decay={formik.values.dutchAuctionDecayRate || 0.92435}
+          />
+        </div>
+      </Collapse>
+    </div>
+  );
+};

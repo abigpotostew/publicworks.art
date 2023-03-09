@@ -115,13 +115,8 @@ export const useSetDutchAuction = () => {
   const sgwallet = useWallet();
   const client = useStargazeClient();
   const toast = useToast();
-  const mutationContracts = trpcNextPW.works.editWorkContracts.useMutation({
-    onSuccess() {
-      utils.works.getWorkById.invalidate();
-    },
-  });
 
-  const instantiateMutation = useMutation(
+  const mutation = useMutation(
     async (opts: {
       work: WorkSerializable;
       config: SetUpdateDutchAuctionMsg;
@@ -161,5 +156,5 @@ export const useSetDutchAuction = () => {
     }
   );
 
-  return instantiateMutation;
+  return mutation;
 };
