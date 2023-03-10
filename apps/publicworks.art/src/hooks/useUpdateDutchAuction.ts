@@ -10,7 +10,7 @@ import { useToast } from "src/hooks/useToast";
 
 export const createCoin = (amount: number): Coin => {
   return {
-    amount: (amount * 1000000).toString(),
+    amount: (amount * 1_000_000).toString(),
     denom: "ustars",
   };
 };
@@ -21,7 +21,7 @@ export const createCoinFromNative = (amount: string): Coin => {
   };
 };
 export const fromCoin = (coin: Coin): number => {
-  return parseInt(coin.amount) / 1000000;
+  return parseInt(coin.amount) / 1_000_000;
 };
 export const createTimestamp = (unixMilliseconds: number): Timestamp => {
   return (unixMilliseconds * 1_000_000).toString();
@@ -78,7 +78,9 @@ async function setDutchAuction(
   if (!work.startDate) {
     throw new Error("incorrect start date");
   }
-  const startTime: Timestamp = (new Date(work.startDate).getTime() * 1_000_000).toString();
+  const startTime: Timestamp = (
+    new Date(work.startDate).getTime() * 1_000_000
+  ).toString();
 
   if (config.declineDecay < 0 || config.declineDecay > 1) {
     throw new Error("declineDecay must be between 0 and 1");
@@ -101,7 +103,10 @@ async function setDutchAuction(
 
   const result = await signer.execute(account, work.minter, msg, "auto");
   const wasmEvent = result.logs[0].events.find((e) => e.type === "wasm");
-  console.info("The `wasm` event emitted by the contract execution:", wasmEvent);
+  console.info(
+    "The `wasm` event emitted by the contract execution:",
+    wasmEvent
+  );
   if (wasmEvent === undefined) {
     throw new Error("wasm didn't return");
   }
@@ -116,7 +121,10 @@ export const useSetDutchAuction = () => {
   const toast = useToast();
 
   const mutation = useMutation(
-    async (opts: { work: WorkSerializable; config: SetUpdateDutchAuctionMsg }): Promise<boolean> => {
+    async (opts: {
+      work: WorkSerializable;
+      config: SetUpdateDutchAuctionMsg;
+    }): Promise<boolean> => {
       ///
       if (!sgwallet.wallet) return false;
 
@@ -130,10 +138,17 @@ export const useSetDutchAuction = () => {
         throw new Error("Couldn't connect client");
       }
       try {
-        await setDutchAuction(opts.work, sgwallet.wallet.address, opts.config, signingClient);
+        await setDutchAuction(
+          opts.work,
+          sgwallet.wallet.address,
+          opts.config,
+          signingClient
+        );
       } catch (e) {
         //
-        toast.error("Failed to configure dutch auction on chain: " + (e as any)?.message);
+        toast.error(
+          "Failed to configure dutch auction on chain: " + (e as any)?.message
+        );
         return false;
       }
       // await mutationContracts.mutateAsync({
