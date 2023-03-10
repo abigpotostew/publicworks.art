@@ -1,6 +1,5 @@
 import { FC, ReactElement, useCallback, useEffect, useState } from "react";
 import Head from "next/head";
-import { BsArrowRepeat } from "react-icons/bs";
 import { useRouter } from "next/router";
 import MainLayout from "../../../src/layout/MainLayout";
 import { Container } from "react-bootstrap";
@@ -33,7 +32,7 @@ import { useMutation } from "@tanstack/react-query";
 import useUserContext from "src/context/user/useUserContext";
 import { getToken } from "src/util/auth-token";
 import { WorkOnChain } from "../../../src/components/creatework/WorkOnChain";
-
+import { WorkSerializable } from "@publicworks/db-typeorm";
 // export const getServerSideProps: GetServerSideProps = async (context) => {
 //   await initializeIfNeeded();
 //   const workId = context.params?.workId;
@@ -65,10 +64,24 @@ const stages = [
   "text",
   "nft_detail",
   "cover_image",
-  // "review",
   "submit",
   "view",
-];
+] as const;
+type Stage = (typeof stages)[number];
+const stageContinuationCondition: Record<Stage, (keyof WorkSerializable)[]> = {
+  name_art: ["name", "codeCid"],
+  text: ["description"],
+  nft_detail: [
+    "maxTokens",
+    "startDate",
+    "priceStars",
+    "selector",
+    "resolution",
+  ],
+  cover_image: ["coverImageCid"],
+  submit: ["minter"],
+  view: ["minter"],
+};
 
 const stageMd = {
   name_art: {
@@ -145,13 +158,14 @@ const EditWorkPage = () => {
   const sgwallet = useWallet();
 
   const { stage: stageQp } = router.query;
-  const [stage, setStageState] = useState<string>("");
+  const [stage, setStageState] = useState<Stage | null>(null);
   // useUserRequired("/create/" + workIdIn + "?stage=" + stageQp);
   const redirectUrl = "/create/" + workIdIn + "?stage=" + stageQp;
   useEffect(() => {
-    setStageState(router.query?.stage?.toString() || stages[0]);
+    const stage = stages.find((s) => s === router.query?.stage?.toString());
+    setStageState(stage || stages[0]);
   }, [router]);
-  const setStage = (newStage: string) => {
+  const setStage = (newStage: Stage) => {
     setFormValid(false);
     setShowConfetti(false);
     setStageState(newStage);
@@ -165,10 +179,10 @@ const EditWorkPage = () => {
       },
     });
   };
-  const setStageNextFrom = (currStage: string) => {
+  const setStageNextFrom = (currStage: Stage) => {
     setStage(stages[stages.indexOf(currStage) + 1]);
   };
-  const setStagePrevFrom = (currStage: string) => {
+  const setStagePrevFrom = (currStage: Stage) => {
     mutation.reset();
     setStage(stages[stages.indexOf(currStage) - 1]);
   };
@@ -254,16 +268,37 @@ const EditWorkPage = () => {
     setShowConfetti(true);
   }, [work, instantiateMutation, toast]);
 
-  const createStep = (stageEnum: string): Step => {
-    const completed = stages.indexOf(stage) >= stages.indexOf(stageEnum);
-
+  const createStep = (stageEnum: Stage): Step => {
+    const completed =
+      !!stage && stages.indexOf(stage) >= stages.indexOf(stageEnum);
+    const isStageClickable = (stage: Stage) => {
+      if (!work) return false;
+      //first stage is alwasy clickable
+      if (stage === stages[0]) return true;
+      const prevStage = stages[stages.indexOf(stage) - 1];
+      const prevStageComplete = !stageContinuationCondition[prevStage].find(
+        (c) => !work[c]
+      );
+      return prevStageComplete;
+      // for (let i = 1; i < stages.length; i++) {
+      //   const notMet = stageContinuationCondition[stages[i]].find(
+      //     (c) => !work[c]
+      //   );
+      //   if (notMet) return false;
+      //   if (i < stages.length - 1 && stage === stages[i + 1]) {
+      //     return true;
+      //   }
+      // }
+      // return true;
+    };
+    const clickable = completed || work?.minter || isStageClickable(stageEnum);
     return {
       label: (stages.indexOf(stageEnum) + 1).toString(),
       // @ts-ignore
       description: stageMd[stageEnum]?.label || "<missing>",
       active: stage === stageEnum,
       completed,
-      onClick: completed ? () => setStage(stageEnum) : undefined,
+      onClick: clickable ? () => setStage(stageEnum) : undefined,
     };
   };
 

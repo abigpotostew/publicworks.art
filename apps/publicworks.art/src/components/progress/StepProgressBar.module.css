@@ -11,14 +11,19 @@
     align-items: center;
     flex: 1;
 
-@media (max-width: 768px) {
-    font-size: 12px;
-}
+    @media (max-width: 768px) {
+        font-size: 12px;
+    }
 }
 
 .clickable{
     cursor: pointer;
 }
+.stepperItem.clickable .stepCounter {
+    /*border-color: #43a8b5;*/
+    border: #43a8b5 2px solid;
+}
+
 
 .stepperItem::before {
     position: absolute;
