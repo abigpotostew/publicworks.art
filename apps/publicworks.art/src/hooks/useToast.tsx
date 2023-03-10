@@ -65,7 +65,7 @@ export const useToast = (): UseToastTypes => {
       toast.success(msg, {
         theme: "dark",
         position: "top-right",
-        autoClose: 30000,
+        autoClose: false,
         hideProgressBar: true,
         closeOnClick: true,
         pauseOnHover: true,

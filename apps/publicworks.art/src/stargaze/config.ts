@@ -164,7 +164,8 @@ export const ChainInfos: ChainInfoWithExplorer[] = [
     ],
     coinType: 118,
     features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
-    explorerUrlToTx: "https://www.mintscan.io/stargaze/txs/{txHash}",
+    explorerUrlToTx:
+      "https://stargaze-testnet-explorer.pages.dev/stargaze/tx/{txHash}",
   },
   {
     rpc: "https://rpc-osmosis.keplr.app",

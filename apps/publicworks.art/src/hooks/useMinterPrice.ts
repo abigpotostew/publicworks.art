@@ -38,40 +38,44 @@ const getPriceResponseZod = z.object({
 
 export type PriceResponse = z.infer<typeof getPriceInnerZod>;
 
-export const useMinterPrice = ({ minter }: { minter?: string | null }) => {
-  const msgBase64 = useMemo(
-    () => Buffer.from(JSON.stringify({ mint_price: {} })).toString("base64"),
-    []
+export const fetchMinterPrice = async (
+  minter: string
+): Promise<PriceResponse> => {
+  const msgBase64 = Buffer.from(JSON.stringify({ mint_price: {} })).toString(
+    "base64"
   );
+  const res = await fetch(
+    `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${minter}/smart/${msgBase64}`
+  );
+  if (!res.ok) {
+    const msg =
+      "failed to get mint price" +
+      res.status +
+      ", " +
+      (await res.text().toString());
+    console.log(msg);
+    throw new Error(msg);
+  }
+  const parsed = getPriceResponseZod.safeParse(await res.json());
+  if (!parsed.success) {
+    console.log("parsed.error", parsed.error);
+    throw new Error("failed to parse response");
+  }
+  const out = parsed.data.data;
 
+  return out;
+};
+
+export const useMinterPrice = ({ minter }: { minter?: string | null }) => {
   const [auctionLive, setAuctionLive] = useState(false);
 
   return useQuery(
-    [
-      `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${minter}/smart/${msgBase64}`,
-    ],
+    [`get-minter-price-${config.restEndpoint}-${minter}`],
     async (): Promise<PriceResponse | null> => {
       if (!minter) {
         return null;
       }
-      const res = await fetch(
-        `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${minter}/smart/${msgBase64}`
-      );
-      if (!res.ok) {
-        const msg =
-          "failed to get mint price" +
-          res.status +
-          ", " +
-          (await res.text().toString());
-        console.log(msg);
-        throw new Error(msg);
-      }
-      const parsed = getPriceResponseZod.safeParse(await res.json());
-      if (!parsed.success) {
-        console.log("parsed.error", parsed.error);
-        throw new Error("failed to parse response");
-      }
-      const out = parsed.data.data;
+      const out = await fetchMinterPrice(minter);
       if (out.auction_end_time) {
         const auctionLive =
           fromTimestamp(out.auction_end_time).getTime() > new Date().getTime();
@@ -81,7 +85,7 @@ export const useMinterPrice = ({ minter }: { minter?: string | null }) => {
       return out;
     },
     {
-      refetchInterval: auctionLive ? 1000 : false,
+      refetchInterval: auctionLive ? 1000 : 1000 * 10,
       refetchOnWindowFocus: true,
       enabled: !!minter,
     }

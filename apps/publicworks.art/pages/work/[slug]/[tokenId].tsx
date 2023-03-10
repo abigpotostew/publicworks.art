@@ -220,7 +220,7 @@ const WorkTokenPage = ({
               </div>
 
               <div
-                className={`${styles.workDescription} ${styles.displayLinebreak} ${styles.sectionBreak}`}
+                className={`${styles.displayLinebreak} ${styles.sectionBreak}`}
               >
                 {tokenMetadata?.data?.description}
               </div>

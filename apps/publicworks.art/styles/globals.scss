@@ -1,5 +1,5 @@
 
-@import '/styles/variables.module';
+@import './variables.module';
 
 /*html,*/
 html,
@@ -42,4 +42,8 @@ input {
 a {
     //color: $pw-text-color;
     text-decoration: none;
+}
+
+.form-label{
+  font-size:  calc($font-size-base - 10%) ;
 }

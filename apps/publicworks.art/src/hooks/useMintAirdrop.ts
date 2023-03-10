@@ -1,5 +1,5 @@
-import { OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import {
+  DeliverTxResponse,
   MsgExecuteContractEncodeObject,
   SigningCosmWasmClient,
 } from "@cosmjs/cosmwasm-stargate";
@@ -11,6 +11,8 @@ import useStargazeClient from "@stargazezone/client/react/client/useStargazeClie
 import { useToast } from "src/hooks/useToast";
 import { toUtf8 } from "@cosmjs/encoding";
 import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
+import { createCoin } from "./useUpdateDutchAuction";
+import { toUniqueArray } from "@publicworks/shared-utils/fn";
 
 export interface MintMsg {
   mint_to: {
@@ -18,17 +20,55 @@ export interface MintMsg {
   };
 }
 
-const AIRDROP_FEE = {
-  amount: (15 * 1000000).toString(),
-  denom: "ustars",
-};
+const AIRDROP_FEE = createCoin(15);
 
+export type MintTxResult = {
+  tokenIds: string[];
+  transactionHash: string;
+  success: boolean;
+  result: DeliverTxResponse;
+};
+export const toMintTxResult = (result: DeliverTxResponse): MintTxResult => {
+  if (result.code !== 0) {
+    throw new Error("Transaction failed");
+  }
+
+  const resultJson = JSON.parse(result.rawLog || "{}");
+  if (!Array.isArray(resultJson)) {
+    console.error("resultJson", resultJson);
+    throw new Error("resultJson is not an array");
+  }
+  console.log("resultJson", resultJson);
+  const tokenIds: string[] = [];
+  for (let i = 0; i < resultJson.length; i++) {
+    const wasm = resultJson[i]?.events?.find((e: any) => e.type === "wasm");
+    if (!wasm || !Array.isArray(wasm.attributes)) {
+      console.log(
+        "wasm not found in resultJson or is not an array. Did the transaction fail?"
+      );
+      continue;
+    }
+    const eventTokenIds: string[] = wasm.attributes
+      .filter((m: any) => m.key === "token_id")
+      .map((m: any) => m.value as string);
+    tokenIds.push(...eventTokenIds);
+  }
+
+  console.log("result.data", result.data);
+  console.log("result.tokenIds.all", tokenIds);
+  return {
+    tokenIds: toUniqueArray(tokenIds),
+    transactionHash: result.transactionHash,
+    result,
+    success: result.code === 0,
+  };
+};
 async function executeMintAirdrop(
   signer: SigningCosmWasmClient,
   address: string,
   recipients: string[],
   minter: string
-) {
+): Promise<MintTxResult> {
   const account = toStars(address);
 
   const msgs = recipients
@@ -59,22 +99,14 @@ async function executeMintAirdrop(
     "auto",
     "airdrop"
   );
-  const resultJson = JSON.parse(result.rawLog || "{}");
-  if (!Array.isArray(resultJson)) {
-    console.error("resultJson", resultJson);
-    throw new Error("resultJson is not an array");
-  }
-  console.log("resultJson", resultJson);
-  const wasm = resultJson[0]?.events?.find((e: any) => e.type === "wasm");
-  if (!wasm || !Array.isArray(wasm.attributes)) {
-    throw new Error("wasm not found in resultJson or is not an array");
-  }
-  const tokenId = wasm.attributes.find((m: any) => m.key === "token_id")
-    ?.value as string | undefined;
-  console.log("result.rawLog", wasm);
-  console.log("result.data", result.data);
-  console.log("result.tokenId", tokenId);
-  return { tokenId: tokenId || "", transactionHash: result.transactionHash };
+  const extracted = toMintTxResult(result);
+
+  return {
+    tokenIds: extracted.tokenIds,
+    transactionHash: result.transactionHash,
+    success: result.code === 0,
+    result,
+  };
 }
 
 export const useMintAirdrop = () => {
@@ -102,9 +134,8 @@ export const useMintAirdrop = () => {
       if (!signingClient) {
         throw new Error("Couldn't connect client");
       }
-      // let res: { sg721: string; minter: string } | undefined = undefined;
       try {
-        const { tokenId, transactionHash } = await executeMintAirdrop(
+        const { tokenIds, transactionHash } = await executeMintAirdrop(
           signingClient,
           sgwallet.wallet.address,
           recipients,
@@ -114,10 +145,10 @@ export const useMintAirdrop = () => {
           "Transaction successful. Click for Explorer",
           transactionHash
         );
-        toast.mint("Minted token " + tokenId, slug, tokenId);
+        toast.mint("Minted token " + tokenIds[0], slug, tokenIds[0]);
       } catch (e) {
         //
-        toast.error("Failed to airdrop on chain: " + (e as any)?.message);
+        toast.error("Failed to airdrop: " + (e as any)?.message);
         return;
       }
 

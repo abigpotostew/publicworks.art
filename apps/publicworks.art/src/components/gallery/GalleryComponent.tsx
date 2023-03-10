@@ -55,11 +55,11 @@ export const GalleryComponent = ({
             <StarsAddressName address={work.ownerAddress || work.creator} />
           </div>
           <div>
-            {numMinted.isLoading || collectionSize.loading ? (
+            {numMinted.isLoading || collectionSize.isLoading ? (
               "..."
             ) : (
               <>
-                {numMinted.data} of {collectionSize.collectionSize}
+                {numMinted.data} of {collectionSize.data}
               </>
             )}
           </div>

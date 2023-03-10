@@ -25,6 +25,7 @@ import { FieldControl } from "../../src/components/control/FieldControl";
 import { StarsAddressName } from "../../src/components/name/StarsAddressName";
 import { normalizeIpfsUri } from "../../src/wasm/metadata";
 import { MintPrice } from "../../src/components/mint/MintPrice";
+import { MintToken } from "../../src/components/mint/MintToken";
 
 export async function getStaticPaths() {
   console.log("getStaticPaths, works");
@@ -161,7 +162,7 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
             <div className={"mt-1"}>
               <div className={"d-flex"}>
                 <h2 className={"fw-bold"}>{work.name + " "}</h2>
-                <h2 className={` ms-2 me-1`}>
+                <h2 className={`ms-2 mb-1`}>
                   <StarsAddressName
                     address={work.ownerAddress || work.creator}
                   />
@@ -173,33 +174,39 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
                 )}
               </div>
 
-              <div className={`mt-2`}>
-                <a
-                  className={"btn"}
-                  href={`${config.launchpadUrl}/` + work.minter}
-                  rel="noreferrer"
-                  target={"_blank"}
-                >
-                  <Button>Mint on stargaze.zone</Button>
-                </a>
-              </div>
-
-              <div className={`mt-2 mb-2`}>
-                <MintPrice minter={work.minter} />
-              </div>
-
+              <MintPrice minter={work.minter} />
               <div
-                className={`${styles.workDescription} ${styles.displayLinebreak} `}
+                className={
+                  "d-flex justify-content-start align-items-center mt-3"
+                }
               >
+                <div className={``}>
+                  <MintToken work={work} />
+                </div>
+
+                <div className={``}>
+                  <a
+                    className={"btn"}
+                    href={`${config.launchpadUrl}/` + work.minter}
+                    rel="noreferrer"
+                    target={"_blank"}
+                  >
+                    <Button size={"sm"} variant={"outline-primary"}>
+                      Mint on stargaze.zone
+                    </Button>
+                  </a>
+                </div>
+              </div>
+
+              <hr className={"mt-4 mb-4"} />
+              <div className={`${styles.displayLinebreak}`}>
                 {work.description}
               </div>
               {work.additionalDescription && (
                 <>
                   <div>
                     <h5 className={"mt-4"}>Additional Description</h5>
-                    <p
-                      className={`${styles.workDescription} ${styles.displayLinebreak}`}
-                    >
+                    <p className={`${styles.displayLinebreak}`}>
                       {work.additionalDescription}
                     </p>
                   </div>

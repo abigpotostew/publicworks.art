@@ -16,9 +16,9 @@ export const NumMinted: FC<NumMintedParams> = (params: NumMintedParams) => {
     isLoading: numMintedLoading,
   } = useNumMinted(params.slug);
   const {
-    collectionSize,
+    data: collectionSize,
     error: collectionSizeError,
-    loading: collSizeLoading,
+    isLoading: collSizeLoading,
   } = useCollectionSize(params.minter);
 
   const numMintedText =

@@ -30,9 +30,5 @@ export const useCollectionSize = (
     { refetchInterval: refreshInterval, enabled: !!minter }
   );
 
-  return {
-    collectionSize: query.data,
-    loading: query.isLoading,
-    error: query.error,
-  };
+  return query;
 };
