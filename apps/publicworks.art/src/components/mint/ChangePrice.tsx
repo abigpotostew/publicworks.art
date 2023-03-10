@@ -3,7 +3,6 @@ import * as React from "react";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { useFormik } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
-import { schema } from "../creatework/WorkOnChain";
 import {
   defaultTime,
   formatDateInput,
@@ -11,7 +10,6 @@ import {
   numberInputOnWheelPreventChange,
   schemaDutchAuctionPartialWithValidations,
   SchemaDutchAuctionType,
-  schemaNoDutchAuction,
 } from "../creatework/NftDetails2";
 import {
   fromCoin,
@@ -24,7 +22,6 @@ import { parseISO } from "date-fns";
 import { DutchAuctionChart } from "../dutch-action-chart/DutchAuctionChart";
 import { Minter } from "../../../@stargazezone/client";
 import { ButtonPW } from "../button/Button";
-import { useMutation } from "@tanstack/react-query";
 import { useToast } from "../../hooks/useToast";
 import { z } from "zod";
 import { useSetPrice } from "../../hooks/useUpdatePrice";

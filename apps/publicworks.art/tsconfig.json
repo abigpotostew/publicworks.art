@@ -28,6 +28,7 @@
     "emitDecoratorMetadata": true,
     "paths": {
       "@publicworks/db-typeorm/*": ["../../packages/db-typeorm/src/*"],
+      "@publicworks/shared-utils/*": ["../../packages/shared-utils/src/*"],
     }
   },
   "include": [

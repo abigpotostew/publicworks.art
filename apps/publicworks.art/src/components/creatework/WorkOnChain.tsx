@@ -19,7 +19,8 @@ import { may } from "@cosmjs/tendermint-rpc/build/tendermint34/encodings";
 import { FlexBox } from "../layout/FlexBoxCenter";
 import { useMinterPrice } from "../../hooks/useMinterPrice";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
-import { ChangePrice } from "../mint-price/ChangePrice";
+import { ChangePrice } from "../mint/ChangePrice";
+import { useMinter } from "../../hooks/wasm/useMinter";
 
 export const schema = z.object({
   addresses: z
@@ -51,22 +52,7 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
   const [changePriceVisible, setChangePriceVisible] = useState<boolean>(false);
 
   const client = useStargazeClient();
-  const getMinterQuery = useQuery(
-    ["get-minter-" + minter],
-    async () => {
-      if (!client.client?.cosmwasmClient || !minter) {
-        return null;
-      }
-      const minterResponse = await getMinter(
-        minter,
-        client.client?.cosmwasmClient,
-        {}
-      );
-      console.log("minterResponse", minterResponse);
-      return minterResponse;
-    },
-    { enabled: !!minter }
-  );
+  const getMinterQuery = useMinter(minter);
   const defaults = {
     addresses: "",
   };

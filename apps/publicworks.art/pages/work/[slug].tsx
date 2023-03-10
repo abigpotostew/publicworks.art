@@ -24,7 +24,7 @@ import { useRouter } from "next/router";
 import { FieldControl } from "../../src/components/control/FieldControl";
 import { StarsAddressName } from "../../src/components/name/StarsAddressName";
 import { normalizeIpfsUri } from "../../src/wasm/metadata";
-import { MintPrice } from "../../src/components/mint-price/MintPrice";
+import { MintPrice } from "../../src/components/mint/MintPrice";
 
 export async function getStaticPaths() {
   console.log("getStaticPaths, works");
