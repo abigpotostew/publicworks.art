@@ -18,7 +18,6 @@ import { useMintAirdrop } from "../../hooks/useMintAirdrop";
 import { may } from "@cosmjs/tendermint-rpc/build/tendermint34/encodings";
 import { FlexBox } from "../layout/FlexBoxCenter";
 import { useMinterPrice } from "../../hooks/useMinterPrice";
-import { useSetDutchAuction } from "../../hooks/useUpdateDutchAuction";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { ChangePrice } from "../mint-price/ChangePrice";
 
@@ -99,8 +98,6 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
   });
   mutateAidrop = airdropMutation.mutate;
 
-  const setDutchAuction = useSetDutchAuction();
-
   if (!minter) {
     return (
       <>
@@ -121,6 +118,24 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
   return (
     <div>
       <div>
+        <FlexBox>
+          <ButtonPW
+            variant={"outline-primary"}
+            target={"_blank"}
+            href={`https://testnet.publicawesome.dev/launchpad/${minter}`}
+            className={"Margin-T-1"}
+          >
+            View on Stargaze.zone
+          </ButtonPW>
+          <ButtonPW
+            variant={"outline-primary"}
+            target={"_blank"}
+            href={`/work/${slug}`}
+            className={"Margin-T-1 Margin-L-1"}
+          >
+            View on PublicWorks.art
+          </ButtonPW>
+        </FlexBox>
         <div>
           <a
             href={"#"}
@@ -182,10 +197,6 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
             href={"#"}
             onClick={(event) => {
               event.preventDefault();
-              console.log(
-                "pizza hello set changePrice to ",
-                !changePriceVisible
-              );
               setChangePriceVisible(!changePriceVisible);
             }}
           >
@@ -199,61 +210,16 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
             </h5>
           </a>
           <Collapse key={"collapseChangePrice"} in={changePriceVisible}>
-            <Form>
+            <div>
               {(!!work && !!getMinterQuery.data && (
                 <ChangePrice work={work} minter={getMinterQuery.data} />
               )) ||
                 null}
-            </Form>
+            </div>
           </Collapse>
         </div>
       </div>
-      <FlexBox>
-        <ButtonPW
-          variant={"outline-primary"}
-          target={"_blank"}
-          href={`https://testnet.publicawesome.dev/launchpad/${minter}`}
-          className={"Margin-T-1"}
-        >
-          View on Stargaze.zone
-        </ButtonPW>
-        <ButtonPW
-          variant={"outline-primary"}
-          target={"_blank"}
-          href={`/work/${slug}`}
-          className={"Margin-T-1 Margin-L-1"}
-        >
-          View on PublicWorks.art
-        </ButtonPW>
-      </FlexBox>
-      <div>
-        {work && (
-          <ButtonPW
-            onClick={() =>
-              setDutchAuction.mutate({
-                work,
-                config: {
-                  startTimeMs: /*new Date(work?.startDate || 0)*/ new Date(
-                    "2023-03-07T23:39:00"
-                  ).getTime(),
-                  endTimeMs: new Date(
-                    /*new Date(work?.startDate || 0)*/ new Date(
-                      "2023-03-07T23:39:00"
-                    ).getTime() +
-                      60 * 60 * 1000
-                  ).getTime(),
-                  unit_price: 100,
-                  restingUnitPrice: 10,
-                  declinePeriodSeconds: 60,
-                  declineDecay: 0.85,
-                },
-              })
-            }
-          >
-            Update Dutch Auction
-          </ButtonPW>
-        )}
-      </div>
+
       {/*<div>MinterPrice: {JSON.stringify(minterPrice.data, undefined, 2)}</div>*/}
     </div>
   );

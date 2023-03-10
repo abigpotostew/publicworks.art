@@ -13,6 +13,8 @@ import { ButtonPW as Button } from "../button/Button";
 import { useWallet } from "@stargazezone/client";
 import { isStarAddress } from "../../wasm/address";
 import { DutchAuctionChart } from "../dutch-action-chart/DutchAuctionChart";
+import { work } from "../../helio";
+import Link from "next/link";
 
 // const formatInTimeZone = (date: Date, fmt: string, tz: string) =>
 //   format(utcToZonedTime(date, tz), fmt, { timeZone: tz });
@@ -89,9 +91,9 @@ export const schemaDutchAuctionPartial = z.object({
   dutchAuctionDecayRate: z.number().min(0).max(1).default(0.85),
 });
 
-const schemaNoDutchAuction = schemaMainPartial.merge(schemaShared);
+export const schemaNoDutchAuction = schemaMainPartial.merge(schemaShared);
 
-const schemaDutchAuction = schemaMainPartial
+export const schemaDutchAuction = schemaMainPartial
   .merge(schemaShared)
   .merge(schemaDutchAuctionPartial)
   .refine((obj) => {
@@ -143,8 +145,8 @@ export const schemaDutchAuctionPartialWithValidations =
       return true;
     }, "Dutch Auction end date must be after start date");
 
-type SchemaTypeNoDutchAuction = z.infer<typeof schemaNoDutchAuction>;
-type SchemaDutchAuctionType = z.infer<typeof schemaDutchAuction>;
+export type SchemaTypeNoDutchAuction = z.infer<typeof schemaNoDutchAuction>;
+export type SchemaDutchAuctionType = z.infer<typeof schemaDutchAuction>;
 
 export const formatInUTC = (date: Date | null | undefined) => {
   if (!date) {
@@ -238,6 +240,17 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   return (
     <>
       <h2>On Chain Configuration</h2>
+      {!!work.minter && (
+        <Alert variant="info">
+          Your work is already instantiated on chain. Head over to{" "}
+          <Alert.Link>
+            <Link href={`/create/${props.defaultValues?.id}?stage=view`}>
+              Mint
+            </Link>
+          </Alert.Link>{" "}
+          to configure your work on chain.
+        </Alert>
+      )}
       <>
         <Form
           onSubmit={(...a) => {

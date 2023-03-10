@@ -286,10 +286,7 @@ const EditWorkPage = () => {
 
   useEffect(() => {
     if (workId && !hasToken) {
-      toast.errorRedirect(
-        "Login required. Click here to Login.",
-        "/create/" + workId
-      );
+      toast.errorLoginModal();
     }
   }, [workId, hasToken, toast]);
 

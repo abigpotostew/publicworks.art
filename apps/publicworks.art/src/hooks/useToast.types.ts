@@ -4,4 +4,5 @@ export interface UseToastTypes {
   mint: (msg: string, slug: string, tokenId: string) => void;
   error: (msg: string) => void;
   errorRedirect: (msg: string, redirect: string) => void;
+  errorLoginModal: () => void;
 }

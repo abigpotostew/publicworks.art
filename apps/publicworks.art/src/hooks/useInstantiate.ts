@@ -13,6 +13,7 @@ import { useWallet } from "@stargazezone/client";
 import useStargazeClient from "@stargazezone/client/react/client/useStargazeClient";
 import { useToast } from "src/hooks/useToast";
 import { createCoin, createTimestamp } from "./useUpdateDutchAuction";
+import { DutchAuctionConfig } from "@stargazezone/client/core/minters/types";
 
 function formatRoyaltyInfo(
   royaltyPaymentAddress: null | string,

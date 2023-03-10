@@ -4,6 +4,8 @@ import { ToastContent } from "react-toastify/dist/types";
 import { UseToastTypes } from "src/hooks/useToast.types";
 import { useRouter } from "next/router";
 import chainInfo from "../stargaze/chainInfo";
+import ModalStore from "../modal/ModalStore";
+import { useState } from "react";
 
 const createToastWithMessage = (msg: string): ToastContent => {
   return ({ closeToast }) => {
@@ -19,8 +21,15 @@ const createToastWithMessage = (msg: string): ToastContent => {
     );
   };
 };
+const ToastStore = {
+  loginToastOpen: false,
+  setLoginToastOpen: function (open: boolean) {
+    this.loginToastOpen = open;
+  },
+};
 export const useToast = (): UseToastTypes => {
   const router = useRouter();
+  const [loginToastOpen, setLoginToastOpen] = useState(false);
   return {
     success: (msg: string) => {
       toast.success(msg, {
@@ -93,6 +102,25 @@ export const useToast = (): UseToastTypes => {
               redirect,
             },
           });
+        },
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+      });
+    },
+    errorLoginModal: () => {
+      if (ToastStore.loginToastOpen) return;
+      toast.error("Login required, click to Login", {
+        theme: "dark",
+        position: "top-right",
+        hideProgressBar: true,
+        closeOnClick: true,
+        onClick: () => {
+          ModalStore.open("LoginModal", {});
+          ToastStore.setLoginToastOpen(true);
+        },
+        onOpen: () => {
+          ToastStore.setLoginToastOpen(false);
         },
         pauseOnHover: true,
         draggable: false,
