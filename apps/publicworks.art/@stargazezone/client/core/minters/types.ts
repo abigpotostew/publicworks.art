@@ -1,10 +1,18 @@
 // Careful to only import types -- and not heavy code here.
-import type { Config as WhitelistConfig } from '@stargazezone/types/contracts/whitelist/config';
-import type { Collection } from '../collections/types';
+import type { Config as WhitelistConfig } from "@stargazezone/types/contracts/whitelist/config";
+import type { Collection } from "../collections/types";
+import { Timestamp } from "@stargazezone/types/contracts/sg721/shared-types";
 export interface Coin {
   denom: string;
   amount: string;
 }
+
+export type DutchAuctionConfig = {
+  end_time: Timestamp;
+  resting_unit_price: Coin;
+  decline_period_seconds: number;
+  decline_decay: number;
+};
 
 export type SaleConfig = {
   admin?: string;
@@ -16,6 +24,7 @@ export type SaleConfig = {
   start_time?: string;
   unit_price: Coin;
   whitelist?: string;
+  dutch_auction_config?: DutchAuctionConfig | null;
 };
 
 export interface Minter {

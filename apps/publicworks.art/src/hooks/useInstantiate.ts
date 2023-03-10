@@ -42,13 +42,6 @@ function isValidIpfsUrl(uri: string) {
 
 const NEW_COLLECTION_FEE = coins("1000000000", "ustars");
 
-interface DutchAuctionConfig {
-  end_time: Timestamp;
-  resting_unit_price: Coin;
-  decline_period_seconds: number;
-  decline_decay: number;
-}
-
 export interface InstantiateMsg {
   base_token_uri: string;
   num_tokens: number;

@@ -1,17 +1,13 @@
-import config from "../wasm/config";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
-import { OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Timestamp } from "@stargazezone/types/contracts/sg721/shared-types";
-import { Decimal } from "@stargazezone/types/contracts/minter/instantiate_msg";
-import { Coin } from "@stargazezone/types/contracts/minter/shared-types";
-import { coin, coins } from "cosmwasm";
 import { trpcNextPW } from "../server/utils/trpc";
 import { useMutation } from "@tanstack/react-query";
 import { toStars } from "src/wasm/address";
-import { useWallet } from "@stargazezone/client";
+import { Coin, useWallet } from "@stargazezone/client";
 import useStargazeClient from "@stargazezone/client/react/client/useStargazeClient";
 import { useToast } from "src/hooks/useToast";
+
 export const createCoin = (amount: number): Coin => {
   return {
     amount: (amount * 1000000).toString(),
@@ -27,6 +23,7 @@ export const createTimestamp = (seconds: number): Timestamp => {
 export const fromTimestamp = (timestamp: Timestamp): Date => {
   return new Date(parseInt(timestamp) / 1_000_000);
 };
+
 export interface UpdateDutchAuctionMsg {
   update_dutch_auction: {
     dutch_auction_config: {
@@ -39,6 +36,7 @@ export interface UpdateDutchAuctionMsg {
     start_time: Timestamp;
   };
 }
+
 export interface SetUpdateDutchAuctionMsg {
   startTimeMs: number;
   unit_price: number;

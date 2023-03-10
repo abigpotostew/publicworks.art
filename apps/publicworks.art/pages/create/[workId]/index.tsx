@@ -247,7 +247,8 @@ const EditWorkPage = () => {
   const onInstantiate = useCallback(async () => {
     //confetti
     if (!work) return;
-    await instantiateMutation.mutateAsync(work);
+    const success = await instantiateMutation.mutateAsync(work);
+    if (!success) return;
     console.log("instantiate and showing confettie");
     toast.success("Successfully instantiated!");
     setShowConfetti(true);
@@ -311,7 +312,9 @@ const EditWorkPage = () => {
               <div>
                 {
                   <Button
-                    disabled={!sgwallet.wallet?.address}
+                    disabled={
+                      !sgwallet.wallet?.address || instantiateMutation.isLoading
+                    }
                     onClick={() => onInstantiate()}
                     variant={"danger"}
                   >

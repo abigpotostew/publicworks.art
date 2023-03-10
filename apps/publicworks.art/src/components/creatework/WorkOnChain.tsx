@@ -63,6 +63,7 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
         client.client?.cosmwasmClient,
         {}
       );
+      console.log("minterResponse", minterResponse);
       return minterResponse;
     },
     { enabled: !!minter }
@@ -198,7 +199,12 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
             </h5>
           </a>
           <Collapse key={"collapseChangePrice"} in={changePriceVisible}>
-            <Form>{(work && <ChangePrice work={work} />) || null}</Form>
+            <Form>
+              {(!!work && !!getMinterQuery.data && (
+                <ChangePrice work={work} minter={getMinterQuery.data} />
+              )) ||
+                null}
+            </Form>
           </Collapse>
         </div>
       </div>

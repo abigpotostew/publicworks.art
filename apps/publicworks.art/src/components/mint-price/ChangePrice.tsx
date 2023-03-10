@@ -11,38 +11,54 @@ import {
   numberInputOnWheelPreventChange,
   schemaDutchAuctionPartialWithValidations,
 } from "../creatework/NftDetails2";
-import { useSetDutchAuction } from "../../hooks/useUpdateDutchAuction";
+import {
+  fromCoin,
+  fromTimestamp,
+  useSetDutchAuction,
+} from "../../hooks/useUpdateDutchAuction";
 import { Alert, Collapse, Form } from "react-bootstrap";
 import { TooltipInfo } from "../tooltip";
 import { parseISO } from "date-fns";
 import { DutchAuctionChart } from "../dutch-action-chart/DutchAuctionChart";
+import { Minter } from "../../../@stargazezone/client";
 
 type Props = {
+  minter: Minter;
   work: WorkSerializable;
 };
 
-export const ChangePrice = ({ work }: Props) => {
+export const ChangePrice = ({ minter, work }: Props) => {
+  //grab the config on chain! use that here instead of the work
+  const config = minter.config;
+  const isDutchAuction = !!config?.dutch_auction_config;
+  const dutchAuction = config?.dutch_auction_config;
+
   const defaults = {
-    priceStars: work.priceStars || 50,
+    priceStars: fromCoin(config.unit_price) || 50,
+    isDutchAuction: isDutchAuction,
     startDate:
-      (work.startDate && formatDateInput(new Date(work.startDate))) ||
+      (config.start_time &&
+        formatDateInput(fromTimestamp(config.start_time))) ||
       defaultTime(24),
-    isDutchAuction: work.isDutchAuction || false,
-    dutchAuctionEndPrice: work.dutchAuctionEndPrice || 50,
-    dutchAuctionEndDate:
-      (work.dutchAuctionEndDate &&
-        formatDateInput(new Date(work.dutchAuctionEndDate))) ||
-      defaultTime(25),
-    dutchAuctionDeclinePeriodSeconds:
-      work.dutchAuctionDeclinePeriodSeconds || 300,
-    dutchAuctionDecayRate: work.dutchAuctionDecayRate || 0.85,
+    dutchAuctionEndPrice: dutchAuction
+      ? fromCoin(dutchAuction.resting_unit_price)
+      : 0,
+    dutchAuctionEndDate: dutchAuction
+      ? formatDateInput(fromTimestamp(dutchAuction.end_time))
+      : defaultTime(25),
+    dutchAuctionDeclinePeriodSeconds: dutchAuction
+      ? dutchAuction.decline_period_seconds
+      : 300,
+    dutchAuctionDecayRate: dutchAuction ? dutchAuction.decline_decay : 0.85,
   };
+
   const setDutchAuctionMutation = useSetDutchAuction();
   const formik = useFormik({
     initialValues: defaults,
     onSubmit: async (values) => {
       //todo save it in the db before the transaction
       if (values.isDutchAuction && setDutchAuctionMutation) {
+        //todo only allow this for new minters
         await setDutchAuctionMutation.mutateAsync({
           work,
           config: {
@@ -66,49 +82,6 @@ export const ChangePrice = ({ work }: Props) => {
   });
   return (
     <div>
-      <Form.Group className="mb-3" controlId="formWorkStartTime">
-        <Form.Label>
-          Start Time <TooltipInfo>Public mint start time</TooltipInfo>
-        </Form.Label>
-        <Form.Control
-          type={"datetime-local"}
-          // defaultValue={defaultTime()}
-
-          // className={'form-input mt-1 block w-full'}
-          name="startDate"
-          onChange={formik.handleChange}
-          value={formik.values.startDate}
-          isValid={formik.touched.startDate && !formik.errors.startDate}
-          isInvalid={formik.touched.startDate && !!formik.errors.startDate}
-        />
-        <Form.Label>
-          {`${formatInUTC(parseISO(formik.values.startDate))} UTC`}
-        </Form.Label>
-
-        <Form.Control.Feedback type="invalid">
-          {formik.errors.startDate}
-        </Form.Control.Feedback>
-      </Form.Group>
-
-      <Form.Group className="mb-3" controlId="priceStars">
-        <Form.Label>
-          Price in $Stars <TooltipInfo>Public mint price</TooltipInfo>
-        </Form.Label>
-        <Form.Control
-          type="number"
-          onWheel={numberInputOnWheelPreventChange}
-          value={formik.values.priceStars}
-          name="priceStars"
-          onChange={formik.handleChange}
-          isValid={formik.touched.priceStars && !formik.errors.priceStars}
-          isInvalid={formik.touched.priceStars && !!formik.errors.priceStars}
-        />
-
-        <Form.Control.Feedback type="invalid">
-          {formik.errors.priceStars}
-        </Form.Control.Feedback>
-      </Form.Group>
-
       <Form.Group className="mb-3" controlId="formIsDutchAuction">
         <Form.Label>
           Dutch Auction{" "}
@@ -118,7 +91,7 @@ export const ChangePrice = ({ work }: Props) => {
         </Form.Label>
         <Form.Check
           name="isDutchAuction"
-          type="checkbox"
+          type="switch"
           checked={formik.values.isDutchAuction}
           // value={formik.values.isDutchAuction?.toString()}
           onChange={formik.handleChange}
@@ -128,8 +101,71 @@ export const ChangePrice = ({ work }: Props) => {
         />
       </Form.Group>
 
+      <Collapse in={!formik.values.isDutchAuction}>
+        <Form.Group className="mb-3" controlId="priceStars">
+          <Form.Label>
+            Price in $Stars <TooltipInfo>Public mint price</TooltipInfo>
+          </Form.Label>
+          <Form.Control
+            type="number"
+            onWheel={numberInputOnWheelPreventChange}
+            value={formik.values.priceStars}
+            name="priceStars"
+            onChange={formik.handleChange}
+            isValid={formik.touched.priceStars && !formik.errors.priceStars}
+            isInvalid={formik.touched.priceStars && !!formik.errors.priceStars}
+          />
+
+          <Form.Control.Feedback type="invalid">
+            {formik.errors.priceStars}
+          </Form.Control.Feedback>
+        </Form.Group>
+      </Collapse>
+
+      {/*<Form.Group className="mb-3" controlId="formIsDutchAuction">*/}
+      {/*  <Form.Label>*/}
+      {/*    Dutch Auction{" "}*/}
+      {/*    <TooltipInfo>*/}
+      {/*      Dutch Auctions gradually lower the mint price over time.*/}
+      {/*    </TooltipInfo>*/}
+      {/*  </Form.Label>*/}
+      {/*  <Form.Check*/}
+      {/*    name="isDutchAuction"*/}
+      {/*    type="checkbox"*/}
+      {/*    checked={formik.values.isDutchAuction}*/}
+      {/*    // value={formik.values.isDutchAuction?.toString()}*/}
+      {/*    onChange={formik.handleChange}*/}
+      {/*    isValid={*/}
+      {/*      formik.touched.isDutchAuction && !formik.errors.isDutchAuction*/}
+      {/*    }*/}
+      {/*  />*/}
+      {/*</Form.Group>*/}
+
       <Collapse in={formik.values.isDutchAuction}>
         <div>
+          <Form.Group className="mb-3" controlId="formWorkStartTime">
+            <Form.Label>
+              Start Time <TooltipInfo>Public mint start time</TooltipInfo>
+            </Form.Label>
+            <Form.Control
+              type={"datetime-local"}
+              // defaultValue={defaultTime()}
+
+              // className={'form-input mt-1 block w-full'}
+              name="startDate"
+              onChange={formik.handleChange}
+              value={formik.values.startDate}
+              isValid={formik.touched.startDate && !formik.errors.startDate}
+              isInvalid={formik.touched.startDate && !!formik.errors.startDate}
+            />
+            <Form.Label>
+              {`${formatInUTC(parseISO(formik.values.startDate))} UTC`}
+            </Form.Label>
+
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.startDate}
+            </Form.Control.Feedback>
+          </Form.Group>
           <Form.Group className="mb-3" controlId="formDutchAuctionEndDate">
             <Form.Label>
               End Time{" "}
@@ -161,6 +197,27 @@ export const ChangePrice = ({ work }: Props) => {
 
             <Form.Control.Feedback type="invalid">
               {formik.errors.dutchAuctionEndDate}
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="priceStars">
+            <Form.Label>
+              Start Price in $Stars <TooltipInfo>Public mint price</TooltipInfo>
+            </Form.Label>
+            <Form.Control
+              type="number"
+              onWheel={numberInputOnWheelPreventChange}
+              value={formik.values.priceStars}
+              name="priceStars"
+              onChange={formik.handleChange}
+              isValid={formik.touched.priceStars && !formik.errors.priceStars}
+              isInvalid={
+                formik.touched.priceStars && !!formik.errors.priceStars
+              }
+            />
+
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.priceStars}
             </Form.Control.Feedback>
           </Form.Group>
 
