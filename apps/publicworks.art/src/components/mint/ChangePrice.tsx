@@ -27,6 +27,7 @@ import { z } from "zod";
 import { useSetPrice } from "../../hooks/useUpdatePrice";
 import { useEditWorkMutation } from "../../hooks/useEditWorkMutation";
 import SpinnerLoading from "../loading/Loader";
+import config from "../../wasm/config";
 
 type Props = {
   minter: Minter;
@@ -35,17 +36,17 @@ type Props = {
 
 export const ChangePrice = ({ minter, work }: Props) => {
   //grab the config on chain! use that here instead of the work
-  const config = minter.config;
-  const isDutchAuction = !!config?.dutch_auction_config;
-  const dutchAuction = config?.dutch_auction_config;
+  const minterConfig = minter.config;
+  const isDutchAuction = !!minterConfig?.dutch_auction_config;
+  const dutchAuction = minterConfig?.dutch_auction_config;
   const toast = useToast();
 
   const defaults = {
-    priceStars: fromCoin(config.unit_price) || 50,
+    priceStars: fromCoin(minterConfig.unit_price) || 50,
     isDutchAuction: isDutchAuction,
     startDate:
-      (config.start_time &&
-        formatDateInput(fromTimestamp(config.start_time))) ||
+      (minterConfig.start_time &&
+        formatDateInput(fromTimestamp(minterConfig.start_time))) ||
       defaultTime(24),
     dutchAuctionEndPrice: dutchAuction
       ? fromCoin(dutchAuction.resting_unit_price)
@@ -120,14 +121,19 @@ export const ChangePrice = ({ minter, work }: Props) => {
         ).validate(form);
       },
     },
-    // validateOnMount: true,
   });
 
-  // const executeUpdateDutchAuction = useMutation(
-  //   async (formikIn: typeof formik) => {
-  //     formikIn.
-  //   }
-  // );
+  const isMinterVersion1 = work.minterCodeId === config.minterV1CodeId;
+  console.log(
+    "isMinterVersion2",
+    isMinterVersion1,
+    formik.dirty,
+    formik.isSubmitting,
+    !formik.dirty,
+    "diabled",
+    isMinterVersion1 || formik.isSubmitting || !formik.dirty
+  );
+
   return (
     <div>
       <Form
@@ -380,7 +386,9 @@ export const ChangePrice = ({ minter, work }: Props) => {
               decay={formik.values.dutchAuctionDecayRate || 0.92435}
             />
             <ButtonPW
-              disabled={formik.isSubmitting || !formik.dirty}
+              disabled={
+                isMinterVersion1 || formik.isSubmitting || !formik.dirty
+              }
               type="submit"
             >
               Update Dutch Auction

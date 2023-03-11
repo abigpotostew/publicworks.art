@@ -42,15 +42,15 @@ const MyApp: FC<AppPropsWithLayout> = ({
   const getLayout = Component.getLayout || ((page) => page);
   return (
     <SSRProvider>
-      <QueryClientProvider client={queryClient}>
-        <StargazeProvider client={stargazeClient}>
+      <StargazeProvider client={stargazeClient}>
+        <QueryClientProvider client={queryClient}>
           <UserProvider>
             <GoogleAnalytics trackPageViews />
             <ToastContainer />
             {getLayout(<Component {...pageProps} />)}
           </UserProvider>
-        </StargazeProvider>
-      </QueryClientProvider>
+        </QueryClientProvider>
+      </StargazeProvider>
     </SSRProvider>
   ) as ReactElement;
 };

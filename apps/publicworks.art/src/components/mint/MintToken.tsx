@@ -9,7 +9,6 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
 import { ButtonPW } from "../button/Button";
 import { useMintMutation } from "../../hooks/useMintMutation";
-import SpinnerLoading from "../loading/Loader";
 import { useToast } from "../../hooks/useToast";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { useSoldOut } from "../../hooks/useSoldOut";
@@ -74,11 +73,17 @@ export const MintToken = ({ work }: Props) => {
         }}
       >
         {(props) => (
-          <Form onSubmit={props.handleSubmit}>
-            <div className="d-flex justify-content-sm-start align-items-center gap-3">
-              <Form.Group className="mb-3" controlId="quantity">
-                <Form.Label># to Mint</Form.Label>
+          <Form className={"row"} onSubmit={props.handleSubmit}>
+            {/*<div className="d-flex justify-content-sm-start align-items-baseline gap-3">*/}
+            <Form.Group className="row" controlId="quantity">
+              <Form.Label
+                className={"col-sm-2 col-form-label col-form-label-sm"}
+              >
+                # to Mint
+              </Form.Label>
+              <div className={"col-sm-2"}>
                 <Form.Control
+                  disabled={isSoldOut}
                   type="number"
                   step="1"
                   min="1"
@@ -86,31 +91,55 @@ export const MintToken = ({ work }: Props) => {
                   onWheel={numberInputOnWheelPreventChange}
                   value={props.values.quantity}
                   name="quantity"
+                  size={"sm"}
                   onChange={props.handleChange}
-                  // isValid={props.touched.quantity && !props.errors.quantity}
                   isInvalid={props.touched.quantity && !!props.errors.quantity}
                 />
 
                 <Form.Control.Feedback type="invalid">
                   {props.errors.quantity}
                 </Form.Control.Feedback>
-              </Form.Group>
-              <ButtonPW
-                type="submit"
-                disabled={props.isSubmitting || mintDisabled}
-                className={"h-50"}
-              >
-                Mint
-                <>
-                  {loading ? (
-                    <>
-                      {" "}
-                      <SpinnerLoading />{" "}
-                    </>
-                  ) : null}
-                </>
-              </ButtonPW>
-            </div>
+              </div>
+              <div className={"col ps-3"}>
+                <ButtonPW
+                  type="submit"
+                  name="buttonsbmt"
+                  id={"buttonsbmt"}
+                  disabled={props.isSubmitting || mintDisabled || isSoldOut}
+                  className={"w-100"}
+                >
+                  Mint
+                  <>
+                    {mintMutation.isLoading ? (
+                      <>
+                        {" "}
+                        <span
+                          className="spinner-grow spinner-grow-sm"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
+                      </>
+                    ) : null}
+                  </>
+                </ButtonPW>
+              </div>
+            </Form.Group>
+
+            <Form.Group className="col" controlId="buttonsbmt">
+              {/*<div className={``}>*/}
+              {/*  <a*/}
+              {/*    className={"btn"}*/}
+              {/*    href={`${config.launchpadUrl}/` + work.minter}*/}
+              {/*    rel="noreferrer"*/}
+              {/*    target={"_blank"}*/}
+              {/*  >*/}
+              {/*    <Button size={"sm"} variant={"outline-primary"}>*/}
+              {/*      Mint on stargaze.zone*/}
+              {/*    </Button>*/}
+              {/*  </a>*/}
+              {/*</div>*/}
+            </Form.Group>
+            {/*</div>*/}
           </Form>
         )}
       </Formik>

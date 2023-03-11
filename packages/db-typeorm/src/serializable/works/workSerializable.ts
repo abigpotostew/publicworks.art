@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { isISODate } from "@publicworks/publicworks.art/src/util/isISODate";
+import { Column } from "typeorm";
 
 export const workZod = z.object({
   id: z.number(),
@@ -9,6 +10,8 @@ export const workZod = z.object({
   slug: z.string(),
   sg721: z.string().nullable(),
   minter: z.string().nullable(),
+  sg721CodeId: z.number().nullable(),
+  minterCodeId: z.number().nullable(),
 
   description: z.string(),
   additionalDescription: z.string().optional().nullable(),
@@ -45,8 +48,14 @@ export const workZod = z.object({
   dutchAuctionEndPrice: z.number().min(50).nullish(),
   dutchAuctionEndDate: z
     .date()
-      .transform((d) => d?.toISOString() || null).nullish(),
-  dutchAuctionDeclinePeriodSeconds: z.number().min(1).max(1000).default(300).nullish(),
+    .transform((d) => d?.toISOString() || null)
+    .nullish(),
+  dutchAuctionDeclinePeriodSeconds: z
+    .number()
+    .min(1)
+    .max(1000)
+    .default(300)
+    .nullish(),
   dutchAuctionDecayRate: z.number().min(0).max(1).default(0.85).nullish(),
 });
 
@@ -60,7 +69,7 @@ export const tokenZod = z.object({
   imageUrl: z.string().nullable(),
   metadataUri: z.string().nullable(),
   createdDate: z.date().transform((d) => d.toISOString()),
-  updatedDate: z.date().transform((d) => d.toISOString())
+  updatedDate: z.date().transform((d) => d.toISOString()),
 });
 
 export type TokenSerializable = z.infer<typeof tokenZod>;

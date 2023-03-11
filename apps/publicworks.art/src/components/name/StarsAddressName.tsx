@@ -6,7 +6,7 @@ import { isStarAddress, shortenAddress } from "../../wasm/address";
 import SpinnerLoading from "../loading/Loader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./StarsAddressName.module.scss";
-import { Button } from "react-bootstrap";
+import { Button, Placeholder } from "react-bootstrap";
 type Props = {
   address: string;
   noShorten?: boolean;
@@ -29,7 +29,12 @@ export const StarsAddressName = ({ address, noShorten, className }: Props) => {
         <CopyToClipboard text={starsname || address}>
           <div className={"d-flex gap-1 m-1 " + (className || "")}>
             <Button variant={"sm"}>
-              <>{name}</>{" "}
+              {nameInfo.isLoading && (
+                <Placeholder animation="glow">
+                  <Placeholder className={"d-inline-block Width-5"} />
+                </Placeholder>
+              )}
+              {!nameInfo.isLoading && <>{name}</>}{" "}
               <FontAwesomeIcon
                 className={styles.hoverIcon}
                 width={14}
@@ -38,7 +43,7 @@ export const StarsAddressName = ({ address, noShorten, className }: Props) => {
             </Button>
           </div>
         </CopyToClipboard>{" "}
-        <>{nameInfo.isLoading ? <SpinnerLoading /> : null}</>
+        {/*<>{nameInfo.isLoading ? <SpinnerLoading /> : null}</>*/}
       </>
     </span>
   );

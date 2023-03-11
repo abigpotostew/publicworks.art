@@ -83,7 +83,8 @@
     "zod": "^3.20.2",
     "zod-formik-adapter": "^1.1.1",
     "chart.js": "^4.2.1",
-    "react-chartjs-2": "^5.2.0"
+    "react-chartjs-2": "^5.2.0",
+    "react-countdown": "^2.3.5"
   },
   "devDependencies": {
     "@keplr-wallet/types": "^0.12.0-alpha.0",

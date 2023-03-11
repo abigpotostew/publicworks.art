@@ -102,18 +102,7 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
     tokenId: previewTokenId,
     refresh: false,
   });
-  // console.log("metadata", metadata);
 
-  // console.log("numMinted", numMinted, numMintedError, numMintedLoading);
-
-  // const tmp = trpcNextPW.works.tmp.useQuery(
-  //   { slug: "pizza" },
-  //   { refetchInterval: 2000 }
-  // );
-  // console.log("tmp", tmp.data);
-
-  // const loading = false;
-  // const errorMetadata = false;
   return (
     <>
       <div>
@@ -174,32 +163,9 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
                 )}
               </div>
 
-              <MintPrice minter={work.minter} />
-              <div
-                className={
-                  "d-flex justify-content-start align-items-center mt-3"
-                }
-              >
-                <div className={``}>
-                  <MintToken work={work} />
-                </div>
+              <MintPrice className={"mt-3"} minter={work.minter} work={work} />
 
-                <div className={``}>
-                  <a
-                    className={"btn"}
-                    href={`${config.launchpadUrl}/` + work.minter}
-                    rel="noreferrer"
-                    target={"_blank"}
-                  >
-                    <Button size={"sm"} variant={"outline-primary"}>
-                      Mint on stargaze.zone
-                    </Button>
-                  </a>
-                </div>
-              </div>
-
-              <hr className={"mt-4 mb-4"} />
-              <div className={`${styles.displayLinebreak}`}>
+              <div className={`mt-4 ${styles.displayLinebreak}`}>
                 {work.description}
               </div>
               {work.additionalDescription && (
@@ -255,7 +221,7 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
               <></>
             )}
 
-            {numMinted === 0 && <SpinnerLoading />}
+            {/*{numMinted === 0 && <SpinnerLoading />}*/}
             {numMinted && !work.sg721 && (
               <div>
                 <span>No NFTs minted</span>

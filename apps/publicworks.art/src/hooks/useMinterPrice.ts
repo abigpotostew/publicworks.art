@@ -23,20 +23,23 @@ const amountZod = z.object({
   denom: z.string(),
   amount: z.string(),
 });
-
+const dutchAuctionPriceZod = z.object({
+  rest_price: amountZod,
+  end_time: z.string(),
+  next_price_timestamp: z.string(),
+});
 const getPriceInnerZod = z.object({
   public_price: amountZod,
   current_price: amountZod,
   whitelist_price: amountZod.nullish(),
-  auction_rest_price: amountZod.nullish(),
-  auction_end_time: z.string().nullish(),
-  auction_next_price_timestamp: z.string().nullish(),
+  dutch_auction_price: dutchAuctionPriceZod.nullish(),
 });
 const getPriceResponseZod = z.object({
   data: getPriceInnerZod,
 });
 
 export type PriceResponse = z.infer<typeof getPriceInnerZod>;
+export type DutchAuctionPriceResponse = z.infer<typeof dutchAuctionPriceZod>;
 
 export const fetchMinterPrice = async (
   minter: string
@@ -76,9 +79,10 @@ export const useMinterPrice = ({ minter }: { minter?: string | null }) => {
         return null;
       }
       const out = await fetchMinterPrice(minter);
-      if (out.auction_end_time) {
+      if (out.dutch_auction_price) {
         const auctionLive =
-          fromTimestamp(out.auction_end_time).getTime() > new Date().getTime();
+          fromTimestamp(out.dutch_auction_price.end_time).getTime() >
+          new Date().getTime();
         setAuctionLive(auctionLive);
         console.log("auctionLive", auctionLive);
       }
