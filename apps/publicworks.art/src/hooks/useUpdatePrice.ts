@@ -1,5 +1,8 @@
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
-import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import {
+  ExecuteResult,
+  SigningCosmWasmClient,
+} from "@cosmjs/cosmwasm-stargate";
 import { Timestamp } from "@stargazezone/types/contracts/sg721/shared-types";
 import { trpcNextPW } from "../server/utils/trpc";
 import { useMutation } from "@tanstack/react-query";
@@ -53,7 +56,7 @@ async function setUpdatePrice(
     throw new Error("wasm didn't return");
   }
 
-  return;
+  return result;
 }
 
 export const useSetPrice = () => {
@@ -65,11 +68,11 @@ export const useSetPrice = () => {
     async (opts: {
       work: WorkSerializable;
       config: SetUpdatePriceMsg;
-    }): Promise<boolean> => {
+    }): Promise<ExecuteResult> => {
       ///
-      if (!sgwallet.wallet) return false;
+      if (!sgwallet.wallet) throw new Error("missing wallet");
 
-      if (!opts.work) return false;
+      if (!opts.work) throw new Error("missing work");
 
       if (!client.client) {
         throw new Error("missing sg client");
@@ -79,7 +82,7 @@ export const useSetPrice = () => {
         throw new Error("Couldn't connect client");
       }
       try {
-        await setUpdatePrice(
+        return await setUpdatePrice(
           opts.work,
           sgwallet.wallet.address,
           opts.config,
@@ -90,14 +93,8 @@ export const useSetPrice = () => {
         toast.error(
           "Failed to configure price on chain: " + (e as any)?.message
         );
-        return false;
+        throw e;
       }
-      // await mutationContracts.mutateAsync({
-      //   sg721: res.sg721,
-      //   minter: res.minter,
-      //   id: work.id,
-      // });
-      return true;
     }
   );
 

@@ -134,38 +134,6 @@ const DutchAuctionPriceInfo = ({
       {!auctionOver && (
         <div className={"overflow-scroll p-0"}>
           <Table striped="columns" className={"mb-0 p-0"}>
-            <thead>
-              <tr>
-                {new Array(labels.length + 1).fill(0).map((_, i) => {
-                  if (i === 0) {
-                    return (
-                      <td key={i} className={"Width-7 d-block"}>
-                        <span className={"small"}>Elapsed Time</span>
-                      </td>
-                    );
-                  } else {
-                    const past = prices[i - 1].time.getTime() < Date.now();
-                    const ended =
-                      prices[i - 1].time.getTime() +
-                        (minter.config.dutch_auction_config
-                          ?.decline_period_seconds || 0) *
-                          1000 <
-                      Date.now();
-                    const classname = ended
-                      ? "text-secondary"
-                      : past && !ended
-                      ? "text-success"
-                      : "";
-                    return (
-                      <td key={i}>
-                        <span className={classname}>{labels[i - 1]}</span>
-                      </td>
-                    );
-                  }
-                })}
-              </tr>
-            </thead>
-
             <tbody>
               <tr>
                 {new Array(prices.length + 1).fill(0).map((_, i) => {
@@ -198,6 +166,35 @@ const DutchAuctionPriceInfo = ({
                     //
                     // }
                     // return <td key={i}>{prices[i - 1].price}</td>;
+                  }
+                })}
+              </tr>
+              <tr>
+                {new Array(labels.length + 1).fill(0).map((_, i) => {
+                  if (i === 0) {
+                    return (
+                      <td key={i} className={"Width-7 block"}>
+                        <span className={"small"}>Elapsed Time</span>
+                      </td>
+                    );
+                  } else {
+                    const past = prices[i - 1].time.getTime() < Date.now();
+                    const ended =
+                      prices[i - 1].time.getTime() +
+                        (minter.config.dutch_auction_config
+                          ?.decline_period_seconds || 0) *
+                          1000 <
+                      Date.now();
+                    const classname = ended
+                      ? "text-secondary"
+                      : past && !ended
+                      ? "text-success"
+                      : "";
+                    return (
+                      <td key={i}>
+                        <span className={classname}>{labels[i - 1]}</span>
+                      </td>
+                    );
                   }
                 })}
               </tr>

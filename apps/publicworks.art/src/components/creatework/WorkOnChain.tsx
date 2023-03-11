@@ -1,9 +1,7 @@
 // @flow
 import * as React from "react";
 import { useState } from "react";
-import getMinter from "../../../@stargazezone/client/core/minters/getMinter";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import useStargazeClient from "../../../@stargazezone/client/react/client/useStargazeClient";
+import { useMutation } from "@tanstack/react-query";
 import SpinnerLoading from "../loading/Loader";
 import { ButtonPW as Button, ButtonPW } from "../button/Button";
 import { Form } from "react-bootstrap";
@@ -15,13 +13,13 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import Collapse from "react-bootstrap/Collapse";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMintAirdrop } from "../../hooks/useMintAirdrop";
-import { may } from "@cosmjs/tendermint-rpc/build/tendermint34/encodings";
 import { FlexBox } from "../layout/FlexBoxCenter";
-import { useMinterPrice } from "../../hooks/useMinterPrice";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { ChangePrice } from "../mint/ChangePrice";
 import { useMinter } from "../../hooks/wasm/useMinter";
-import config from "../../wasm/config";
+import { useRouter } from "next/router";
+import { useMigrateMutation } from "../../hooks/useMigrateMutation";
+import { GrowingDot } from "../spinner/GrowingDot";
 
 export const schema = z.object({
   addresses: z
@@ -49,8 +47,11 @@ type Props = {
   work?: WorkSerializable | null;
 };
 export const WorkOnChain = ({ minter, slug, work }: Props) => {
+  const router = useRouter();
+  const secretDefined = !!router.query.secret;
   const [airdropVisible, setAirdropVisible] = useState<boolean>(false);
   const [changePriceVisible, setChangePriceVisible] = useState<boolean>(false);
+  const migrateMutate = useMigrateMutation();
 
   const getMinterQuery = useMinter(minter);
   const defaults = {
@@ -203,6 +204,19 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
             </div>
           </Collapse>
         </div>
+        {secretDefined && (
+          <Button
+            variant="danger"
+            onClick={() =>
+              work?.minter
+                ? migrateMutate.mutate({ minter: work?.minter })
+                : null
+            }
+            className={"Margin-T-1"}
+          >
+            Migrate to V2! {migrateMutate.isLoading && <GrowingDot />}
+          </Button>
+        )}
       </div>
 
       {/*<div>MinterPrice: {JSON.stringify(minterPrice.data, undefined, 2)}</div>*/}

@@ -15,7 +15,7 @@ const useAsync = <T>(
   const [error, setError] = useState<Error>();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const callback = useCallback(asyncCall, dependencies);
+  const callback = useCallback(asyncCall, [asyncCall, ...dependencies]);
 
   useEffect(() => {
     clearData && setData(undefined);

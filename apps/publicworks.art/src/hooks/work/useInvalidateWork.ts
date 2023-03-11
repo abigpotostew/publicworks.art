@@ -8,7 +8,7 @@ export const useInvalidateWork = () => {
       id && utils.works.getWorkById.invalidate({ id });
       slug && utils.works.getWorkBySlug.invalidate({ slug });
     },
-    []
+    [utils]
   );
 
   return { invalidateWork };

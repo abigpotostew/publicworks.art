@@ -94,7 +94,7 @@ export const ChangePrice = ({ minter, work }: Props) => {
         toast.success("Dutch auction updated on chain");
       }
       if (!values.isDutchAuction && setPriceMutation) {
-        await setPriceMutation.mutateAsync({
+        const tx = await setPriceMutation.mutateAsync({
           work,
           config: { unit_price: values.priceStars },
         });
@@ -102,7 +102,7 @@ export const ChangePrice = ({ minter, work }: Props) => {
           id: work.id,
           priceStars: values.priceStars,
         });
-        toast.success("Price updated on chain");
+        toast.txHash("Price updated on chain", tx.transactionHash);
       }
       //todo save it in the db before the transaction
       // await resetForm();

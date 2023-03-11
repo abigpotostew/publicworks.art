@@ -11,7 +11,10 @@ export interface Step {
 export interface StepProgressBarProps {
   items: Step[];
 }
-export const StepProgressBar: FC<StepProgressBarProps> = (props: StepProgressBarProps) => {
+
+export const StepProgressBar: FC<StepProgressBarProps> = (
+  props: StepProgressBarProps
+) => {
   return (
     <div className={styles.stepperWrapper}>
       {props.items.map((i: Step, idx: number) => {
