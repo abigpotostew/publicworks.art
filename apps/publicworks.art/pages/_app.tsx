@@ -16,6 +16,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { StargazeProvider } from "@stargazezone/client";
 import stargazeClient from "src/stargaze/stargaze";
 import { UserProvider } from "src/context/user/UserProvider";
+import { Analytics } from "@vercel/analytics/react";
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -48,6 +49,7 @@ const MyApp: FC<AppPropsWithLayout> = ({
             <GoogleAnalytics trackPageViews />
             <ToastContainer />
             {getLayout(<Component {...pageProps} />)}
+            <Analytics />
           </UserProvider>
         </QueryClientProvider>
       </StargazeProvider>
