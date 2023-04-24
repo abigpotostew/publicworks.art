@@ -35,6 +35,7 @@ const DutchAuctionPriceInfo = ({
     startTime: fromTimestamp(minter.config.start_time || "0"),
     declinePeriodSeconds:
       minter.config.dutch_auction_config?.decline_period_seconds || 0,
+    omitPrices: false,
   });
 
   const beforeEndOfAuction =

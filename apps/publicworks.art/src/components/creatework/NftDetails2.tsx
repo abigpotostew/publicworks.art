@@ -1,6 +1,6 @@
 import { parseISO } from "date-fns";
 import { format, formatInTimeZone } from "date-fns-tz";
-import React, { FC, useEffect, WheelEvent } from "react";
+import React, { FC, useCallback, useEffect, useState, WheelEvent } from "react";
 import { Alert, Collapse, Form } from "react-bootstrap";
 import { EditProjectRequest } from "src/store";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
@@ -15,6 +15,8 @@ import { isStarAddress } from "../../wasm/address";
 import { DutchAuctionChart } from "../dutch-action-chart/DutchAuctionChart";
 import { work } from "../../helio";
 import Link from "next/link";
+import { log } from "next/dist/server/typescript/utils";
+import { DutchAuctionPrices } from "../../lib/dutch-auction/prices";
 
 // const formatInTimeZone = (date: Date, fmt: string, tz: string) =>
 //   format(utcToZonedTime(date, tz), fmt, { timeZone: tz });
@@ -174,9 +176,9 @@ export const numberInputOnWheelPreventChange = (e: any) => {
 };
 
 export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
+  const [pricesOmitted, setPricesOmitted] = useState<boolean>(false);
   // auth context here
   const sgwallet = useWallet();
-  console.log("NftDetails2 work maxTokens", props.defaultValues?.maxTokens);
   const defaults = {
     maxTokens: props.defaultValues?.maxTokens || 0,
     royaltyAddress:
@@ -232,7 +234,6 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
     },
     // validateOnMount: true,
   });
-  console.log("formik.values.isDutchAuction", formik.values.isDutchAuction);
   useEffect(() => {
     props.formValid({ isTouched: formik.dirty, isValid: formik.isValid });
   }, [formik.isValid, formik.dirty]);
@@ -308,7 +309,17 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
 
           <Form.Group className="mb-3" controlId="priceStars">
             <Form.Label>
-              Price in $Stars <TooltipInfo>Public mint price</TooltipInfo>
+              {formik.values.isDutchAuction ? (
+                <>
+                  Dutch Auction Start Price in $Stars{" "}
+                  <TooltipInfo>Public mint price</TooltipInfo>
+                </>
+              ) : (
+                <>
+                  Price in $Stars{" "}
+                  <TooltipInfo>Dutch Auction start price</TooltipInfo>
+                </>
+              )}{" "}
             </Form.Label>
             <Form.Control
               type="number"
@@ -418,7 +429,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                   Price Drop Interval{" "}
                   <TooltipInfo>
                     The price will drop at this interval. 5 minutes is
-                    recommended (300 seconds).
+                    recommended (300 seconds) for collector convenience.
                   </TooltipInfo>
                 </Form.Label>
                 <Form.Control
@@ -481,7 +492,20 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                   is based on the blockchain.
                 </Alert>
               </Form.Label>
+              {pricesOmitted && (
+                <Form.Label>
+                  <Alert variant={"warning"}>
+                    Prices were omitted from the graph because the auction is
+                    either very long or the decline period is very short. You
+                    may want to adjust the auction settings to have fewer price
+                    drops for collector convenience.
+                  </Alert>
+                </Form.Label>
+              )}
               <DutchAuctionChart
+                chartData={(res) => {
+                  setPricesOmitted(res.pricesOmitted);
+                }}
                 startPrice={formik.values.priceStars || 50}
                 endPrice={formik.values.dutchAuctionEndPrice || 50}
                 startTime={

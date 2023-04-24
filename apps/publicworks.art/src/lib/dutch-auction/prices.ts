@@ -5,6 +5,13 @@ export type Props = {
   endTime: Date;
   declinePeriodSeconds: number;
   decay: number;
+  omitPrices?: boolean;
+};
+
+export type DutchAuctionPrices = {
+  prices: { time: Date; price: number }[];
+  labels: string[];
+  pricesOmitted: boolean;
 };
 
 export const generatePrices = ({
@@ -14,13 +21,21 @@ export const generatePrices = ({
   endTime,
   startPrice,
   startTime,
-}: Props) => {
+  omitPrices = false,
+}: Props): DutchAuctionPrices => {
   const start = Math.round(startTime.getTime() / 1000);
   const end = Math.round(endTime.getTime() / 1000);
   const duration = end - start;
   const priceDiff = startPrice - endPrice;
   const prices: { time: Date; price: number }[] = [];
-  for (let i = 0; i <= duration; i += declinePeriodSeconds) {
+  const numPrices = Math.floor(duration / declinePeriodSeconds);
+  let step = declinePeriodSeconds;
+  console.log("numPrices", numPrices, startTime, endTime);
+  if (omitPrices && numPrices > 300) {
+    step = Math.floor(step * Math.floor(numPrices / 50));
+  }
+
+  for (let i = 0; i <= duration; i += step) {
     const t = i / duration;
     const v = Math.round(
       (1 - t / ((1 / decay - 2) * (1 - t) + 1)) * priceDiff + endPrice
@@ -43,5 +58,5 @@ export const generatePrices = ({
       minutesSinceElapsed(p.time).toFixed(0).padStart(2, "0") +
       ""
   );
-  return { prices, labels };
+  return { prices, labels, pricesOmitted: step !== declinePeriodSeconds };
 };

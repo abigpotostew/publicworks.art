@@ -9,12 +9,11 @@ import { RowThinContainer } from "src/components/layout/RowThinContainer";
 import { GetStaticPropsContext } from "next";
 import { initializeIfNeeded } from "src/typeorm/datasource";
 import { GalleryComponent } from "src/components/gallery/GalleryComponent";
-import { useQuery } from "@tanstack/react-query";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { appRouter } from "src/server/routes/_app";
 import { Context } from "src/server/context";
 import superjson from "superjson";
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   await initializeIfNeeded();
@@ -52,8 +51,6 @@ export async function getStaticProps(context: GetStaticPropsContext) {
 }
 
 const WorksPage = () => {
-  // const pagination = usePagination({ pageSize, pageCount, pageUrl: "/works" });
-  // console.log("currentPage", pagination.currentPage);
   const query = trpcNextPW.works.listWorks.useInfiniteQuery(
     {
       limit: 100,
@@ -61,21 +58,10 @@ const WorksPage = () => {
     },
     {
       getNextPageParam: (lastPage) => {
-        // console.log("hsdfdsfsdaasdf", lastPage);
         return lastPage.nextCursor;
       },
     }
   );
-
-  // const tmpQuery = useQuery(["once"], async () => {
-  //   //
-  //   // const res = await fetch("https://google.com");
-  //   console.log("pizza", "before");
-  //   await sleep(1000);
-  //   console.log("pizza", "after");
-  //   return "pizza";
-  // });
-  // console.log("tmpQuery.data", tmpQuery.data, tmpQuery.status);
 
   const pages = query.data?.pages;
   return (
@@ -87,7 +73,6 @@ const WorksPage = () => {
           </RowThinContainer>
           {query.isLoading && <SpinnerLoading />}
           <RowThinContainer innerClassName="p-4 ">
-            {/*<Row >*/}
             {query.isSuccess &&
               pages
                 ?.map((page, index) => {
@@ -104,25 +89,6 @@ const WorksPage = () => {
                     .flat();
                 })
                 ?.flat()}
-            {/*{[work].map((w, idx) => (*/}
-            {/*  <Col key={w.sg721}>*/}
-            {/*    <Link href={"/work/" + w.slug} passHref>*/}
-            {/*      <Card*/}
-            {/*        style={{ width: "32rem" }}*/}
-            {/*        className={`${styles.workCardContainer} `}*/}
-            {/*      >*/}
-            {/*        <Card.Img variant="top" src={w.previewImgThumb} />*/}
-            {/*        <Card.Body>*/}
-            {/*          <Card.Title className={stylesWork.workTitle}>*/}
-            {/*            {w.title} - {w.author}*/}
-            {/*          </Card.Title>*/}
-            {/*          <Card.Text>{w.blurb}</Card.Text>*/}
-            {/*        </Card.Body>*/}
-            {/*      </Card>*/}
-            {/*    </Link>*/}
-            {/*  </Col>*/}
-            {/*))}*/}
-            {/*</Row>*/}
 
             <Container
               fluid
@@ -144,18 +110,6 @@ const WorksPage = () => {
                   : "Nothing more to load"}
               </ButtonPW>
             </Container>
-            {/*{[work].map((w) => {*/}
-            {/*  return (*/}
-            {/*    <p key={w.sg721}>{w.title}</p>*/}
-            {/*  )*/}
-            {/*})}*/}
-
-            {/*<PaginationComp*/}
-            {/*  pages={pagination.pages}*/}
-            {/*  page={pagination.currentPage}*/}
-            {/*  changePage={pagination.changePage}*/}
-            {/*  pagesToRender={pagination.pagesToRender}*/}
-            {/*></PaginationComp>*/}
           </RowThinContainer>
         </>
       </>

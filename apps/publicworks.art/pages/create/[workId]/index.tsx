@@ -305,7 +305,6 @@ const EditWorkPage = () => {
   const [formValid, setFormValid] = useState(false);
   const [formTouched, setFormTouched] = useState(false);
   const setFormState = (props: { isValid: boolean; isTouched: boolean }) => {
-    console.log("props", props);
     setFormValid(props.isValid);
     setFormTouched(props.isTouched);
   };

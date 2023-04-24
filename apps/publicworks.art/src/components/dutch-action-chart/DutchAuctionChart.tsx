@@ -11,7 +11,11 @@ import {
 } from "chart.js";
 import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
-import { generatePrices } from "../../lib/dutch-auction/prices";
+import {
+  DutchAuctionPrices,
+  generatePrices,
+} from "../../lib/dutch-auction/prices";
+import { Alert } from "react-bootstrap";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -28,6 +32,7 @@ type Props = {
   endTime: Date;
   declinePeriodSeconds: number;
   decay: number;
+  chartData?: (res: DutchAuctionPrices) => void;
 };
 
 export const DutchAuctionChart = ({
@@ -37,6 +42,7 @@ export const DutchAuctionChart = ({
   endTime,
   startPrice,
   startTime,
+  chartData,
 }: Props) => {
   // const [data, setData] = useState< { time:Date;price:number }[]>([])
   const [data, setData] = useState<any>(null);
@@ -45,13 +51,14 @@ export const DutchAuctionChart = ({
   useEffect(() => {
     //
     // f(x) = x / ((1 / b - 2) * (1 - x) + 1)
-    const { prices, labels } = generatePrices({
+    const { prices, labels, pricesOmitted } = generatePrices({
       decay,
       declinePeriodSeconds,
       endPrice,
       endTime,
       startPrice,
       startTime,
+      omitPrices: true,
     });
 
     const data = {
@@ -97,7 +104,16 @@ export const DutchAuctionChart = ({
     };
     setOptions(opts2);
     setData(data);
+    chartData && chartData({ prices, labels, pricesOmitted });
   }, [startPrice, endPrice, startTime, endTime, declinePeriodSeconds, decay]);
+
+  if (endTime.getTime() < new Date().getTime() || endTime < startTime) {
+    return (
+      <div>
+        <Alert variant={"danger"}>End time must be in the future</Alert>
+      </div>
+    );
+  }
 
   return (
     <div>
