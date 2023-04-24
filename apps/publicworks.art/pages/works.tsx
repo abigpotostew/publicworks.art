@@ -14,7 +14,6 @@ import { appRouter } from "src/server/routes/_app";
 import { Context } from "src/server/context";
 import superjson from "superjson";
 
-
 export async function getStaticProps(context: GetStaticPropsContext) {
   await initializeIfNeeded();
 
