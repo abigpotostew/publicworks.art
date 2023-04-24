@@ -18,7 +18,7 @@ function GroupDividerBottom() {
 }
 
 const AboutPage = () => {
-  console.log("bkpoint", useBreakpoint());
+  // console.log("bkpoint", useBreakpoint());
   return (
     <Container>
       <RowThinContainer>

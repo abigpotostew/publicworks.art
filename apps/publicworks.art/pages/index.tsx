@@ -72,7 +72,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
     })
   );
 
-  console.log("hello pizza");
+  // console.log("hello pizza");
 
   return {
     props: {

@@ -10,39 +10,42 @@ import { GetStaticPropsContext } from "next";
 import { initializeIfNeeded } from "src/typeorm/datasource";
 import { GalleryComponent } from "src/components/gallery/GalleryComponent";
 import { useQuery } from "@tanstack/react-query";
-
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import { appRouter } from "src/server/routes/_app";
+import { Context } from "src/server/context";
+import superjson from "superjson";
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   await initializeIfNeeded();
 
   // console.log("in getStaticProps");
-  // const ssg = await createProxySSGHelpers({
-  //   router: appRouter,
-  //   ctx: {} as Context,
-  //   transformer: superjson, // optional - adds superjson serialization
-  // });
+  const ssg = await createProxySSGHelpers({
+    router: appRouter,
+    ctx: {} as Context,
+    transformer: superjson, // optional - adds superjson serialization
+  });
   // // const id = context.params?.id as string;
   // // prefetch `post.byId`
-  // const prefetch = async () => {
-  //   await ssg.works.listWorks.prefetch({
-  //     limit: 100,
-  //     cursor: undefined,
-  //   });
-  //   const works = await ssg.works.listWorks.fetch({
-  //     limit: 100,
-  //     cursor: undefined,
-  //   });
-  //   await Promise.all(
-  //     works.items.map((w) => {
-  //       return ssg.works.workPreviewImg.prefetch({ workId: w.id });
-  //     })
-  //   );
-  // };
-  // await prefetch();
+  const prefetch = async () => {
+    await ssg.works.listWorks.prefetch({
+      limit: 100,
+      includeHidden: false,
+    });
+    const works = await ssg.works.listWorks.fetch({
+      limit: 100,
+      includeHidden: false,
+    });
+    await Promise.all(
+      works.items.map((w) => {
+        return ssg.works.workPreviewImg.prefetch({ workId: w.id });
+      })
+    );
+  };
+  await prefetch();
   return {
     props: {
-      // trpcState: ssg.dehydrate(),
+      trpcState: ssg.dehydrate(),
     },
     revalidate: 160,
   };
@@ -64,18 +67,17 @@ const WorksPage = () => {
     }
   );
 
-  const tmpQuery = useQuery(["once"], async () => {
-    //
-    // const res = await fetch("https://google.com");
-    console.log("pizza", "before");
-    await sleep(1000);
-    console.log("pizza", "after");
-    return "pizza";
-  });
-  console.log("tmpQuery.data", tmpQuery.data, tmpQuery.status);
+  // const tmpQuery = useQuery(["once"], async () => {
+  //   //
+  //   // const res = await fetch("https://google.com");
+  //   console.log("pizza", "before");
+  //   await sleep(1000);
+  //   console.log("pizza", "after");
+  //   return "pizza";
+  // });
+  // console.log("tmpQuery.data", tmpQuery.data, tmpQuery.status);
 
   const pages = query.data?.pages;
-  console.log("query.data", query.isLoading, query.status, query.error);
   return (
     <Container>
       <>

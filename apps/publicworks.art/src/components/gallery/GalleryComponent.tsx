@@ -19,7 +19,6 @@ export const GalleryComponent = ({
   const query = trpcNextPW.works.workPreviewImg.useQuery({
     workId: work.id,
   });
-  console.log(query.data);
   const w = work;
   const router = useRouter();
   const numMinted = useNumMinted(work.slug);
