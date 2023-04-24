@@ -234,8 +234,8 @@ export const MintPrice = ({ minter, work, className }: Props) => {
             <Placeholder xs={4} /> <Placeholder xs={4} />
             <Placeholder xs={2} /> <Placeholder xs={10} />
             <Placeholder xs={5} /> <Placeholder xs={6} />
-            <hr />
           </Placeholder>
+          <hr />
           <Placeholder as={Card.Text} animation="glow">
             <Placeholder xs={2} /> <Placeholder xs={2} />{" "}
             <Placeholder.Button xs={7} variant="primary" />

@@ -99,7 +99,7 @@ export const editProjectZod = z.object({
     .refine(isISODate, { message: "Not a valid ISO string date " })
     .refine((v) => new Date(v) > new Date(), "Must be in the future")
     .optional(),
-  dutchAuctionDeclinePeriodSeconds: z.number().min(1).max(1000).default(300),
+  dutchAuctionDeclinePeriodSeconds: z.number().min(1).max(86400).default(300),
   dutchAuctionDecayRate: z.number().min(0).max(1).default(0.85),
 });
 

@@ -53,7 +53,7 @@ export const workZod = z.object({
   dutchAuctionDeclinePeriodSeconds: z
     .number()
     .min(1)
-    .max(1000)
+    .max(86400)
     .default(300)
     .nullish(),
   dutchAuctionDecayRate: z.number().min(0).max(1).default(0.85).nullish(),

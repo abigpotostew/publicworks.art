@@ -87,7 +87,7 @@ export const schemaDutchAuctionPartial = z.object({
     .refine((v) => new Date(v) > new Date(), "Must be in the future")
     .transform((v) => parseISO(v).toISOString())
     .optional(),
-  dutchAuctionDeclinePeriodSeconds: z.number().min(1).max(1000).default(300),
+  dutchAuctionDeclinePeriodSeconds: z.number().min(1).max(86400).default(300),
   dutchAuctionDecayRate: z.number().min(0).max(1).default(0.85),
 });
 

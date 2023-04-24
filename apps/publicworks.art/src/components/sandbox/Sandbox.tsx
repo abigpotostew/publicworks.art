@@ -19,6 +19,7 @@ import {
 import { TooltipInfo } from "../tooltip/TooltipInfo";
 import SpinnerLoading from "../loading/Loader";
 import { cs } from "date-fns/locale";
+import { validAttributes } from "@publicworks/shared-utils/attributes";
 
 export function Sandbox() {
   const artworkIframeRef = useRef<ArtworkIframeRef>(null);
@@ -201,7 +202,12 @@ export function Sandbox() {
                   )}
                 </h5>
                 {previewReady && <p>Your sketch has marked Preview Ready</p>}
-                {!previewReady && <p>Waiting for Preview Ready to be set.</p>}
+                {!previewReady && (
+                  <p>
+                    <FontAwesomeIcon icon={"xmark"} width={18} /> Waiting for
+                    Preview Ready to be set.
+                  </p>
+                )}
                 <h5>
                   Attributes{" "}
                   {hasAttributes ? (
