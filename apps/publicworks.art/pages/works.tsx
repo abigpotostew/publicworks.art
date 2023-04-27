@@ -9,28 +9,23 @@ import { RowThinContainer } from "src/components/layout/RowThinContainer";
 import { GetStaticPropsContext } from "next";
 import { initializeIfNeeded } from "src/typeorm/datasource";
 import { GalleryComponent } from "src/components/gallery/GalleryComponent";
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { appRouter } from "src/server/routes/_app";
 import { Context } from "src/server/context";
 import superjson from "superjson";
-import { RowMediumContainer } from "../src/components/layout/RowMediumContainer";
 import { WorksGalleryComponent } from "../src/components/gallery/WorksGalleryComponent";
 import { RowWideContainer } from "../src/components/layout/RowWideContainer";
 import { PlaceholderCard } from "../src/components/placeholder/PlaceholderCard";
+import { createServerSideHelpers } from "@trpc/react-query/server";
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   await initializeIfNeeded();
-
-  // console.log("in getStaticProps");
-  const ssg = await createProxySSGHelpers({
+  const ssg = await createServerSideHelpers({
     router: appRouter,
     ctx: {} as Context,
     transformer: superjson, // optional - adds superjson serialization
   });
-  // // const id = context.params?.id as string;
-  // // prefetch `post.byId`
   const prefetch = async () => {
-    await ssg.works.listWorks.prefetch({
+    await ssg.works.listWorks.prefetchInfinite({
       limit: 100,
       includeHidden: false,
     });
