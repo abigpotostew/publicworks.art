@@ -1,5 +1,6 @@
 // @flow
 import * as React from "react";
+import "chartjs-adapter-date-fns";
 import {
   Chart as ChartJS,
   BarElement,
@@ -8,9 +9,12 @@ import {
   LinearScale,
   Title,
   Tooltip,
+  LineElement,
+  PointElement,
+  TimeSeriesScale,
 } from "chart.js";
 import { useEffect, useState } from "react";
-import { Bar } from "react-chartjs-2";
+import { Bar, Line } from "react-chartjs-2";
 import {
   DutchAuctionPrices,
   generatePrices,
@@ -20,9 +24,12 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   BarElement,
+  LineElement,
+  PointElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  TimeSeriesScale
 );
 
 type Props = {
@@ -49,7 +56,6 @@ export const DutchAuctionChart = ({
   const [options, setOptions] = useState<any>(null);
 
   useEffect(() => {
-    //
     // f(x) = x / ((1 / b - 2) * (1 - x) + 1)
     const { prices, labels, pricesOmitted } = generatePrices({
       decay,
@@ -62,12 +68,12 @@ export const DutchAuctionChart = ({
     });
 
     const data = {
-      labels,
+      labels: prices.map((p, i) => p.time),
       datasets: [
         {
           // label: 'Price At Time',
-          data: prices.map((p) => p.price),
-          backgroundColor: "rgba(255, 99, 132, 0.5)",
+          data: prices.map((p, i) => p.price),
+          backgroundColor: "rgba(103,68,131,0.5)",
         },
       ],
     };
@@ -87,6 +93,7 @@ export const DutchAuctionChart = ({
           },
         },
         x: {
+          type: "time",
           title: {
             display: true,
             text: "Elapsed Time",

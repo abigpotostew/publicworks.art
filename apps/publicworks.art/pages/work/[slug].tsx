@@ -25,7 +25,6 @@ import { FieldControl } from "../../src/components/control/FieldControl";
 import { StarsAddressName } from "../../src/components/name/StarsAddressName";
 import { normalizeIpfsUri } from "../../src/wasm/metadata";
 import { MintPrice } from "../../src/components/mint/MintPrice";
-import { MintToken } from "../../src/components/mint/MintToken";
 
 export async function getStaticPaths() {
   console.log("getStaticPaths, works");

@@ -46,17 +46,14 @@ export const generatePrices = ({
     });
   }
   const hoursSinceElapsed = (t: Date) =>
-    Math.floor((Math.round(t.getTime() / 1000) - start) / (60 * 60))
-      .toFixed(0)
-      .padStart(2, "0");
+    Math.floor((Math.round(t.getTime() / 1000) - start) / (60 * 60));
   const minutesSinceElapsed = (t: Date) =>
     Math.round((Math.round(t.getTime() / 1000) - start) / 60) % 60;
-  const labels = prices.map(
-    (p) =>
-      hoursSinceElapsed(p.time) +
-      ":" +
-      minutesSinceElapsed(p.time).toFixed(0).padStart(2, "0") +
-      ""
-  );
+  const labels = prices.map((p) => {
+    const hours = hoursSinceElapsed(p.time);
+    return (
+      `${hours > 0 ? hours + "h" : ""}` + minutesSinceElapsed(p.time) + "m"
+    );
+  });
   return { prices, labels, pricesOmitted: step !== declinePeriodSeconds };
 };

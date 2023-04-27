@@ -22,10 +22,12 @@ const DutchAuctionPriceInfo = ({
   work,
   da,
   minter,
+  className,
 }: {
   work: WorkSerializable;
   da: DutchAuctionPriceResponse;
   minter: Minter;
+  className?: string;
 }) => {
   const { prices, labels } = generatePrices({
     decay: (minter.config.dutch_auction_config?.decline_decay || 0) / 1_000_000,
@@ -59,7 +61,7 @@ const DutchAuctionPriceInfo = ({
   // const labelsToShow = labels.slice(activePrices, activePrices + 5);
 
   return (
-    <div>
+    <div className={className}>
       {auctionOver && (
         <Card.Text>
           The auction is complete. The resting price is{" "}
@@ -93,7 +95,7 @@ const DutchAuctionPriceInfo = ({
       )}
       {auctionDuring && (
         <>
-          <Card.Text>
+          <Card.Text className={"mb-3 text-sm fs-7"}>
             Next Price change:{" "}
             <Countdown
               date={fromTimestamp(da.next_price_timestamp)}
@@ -133,7 +135,7 @@ const DutchAuctionPriceInfo = ({
         </>
       )}
       {!auctionOver && (
-        <div className={"overflow-scroll p-0"}>
+        <div className={"overflow-scroll p-0 "}>
           <Table striped="columns" className={"mb-0 p-0"}>
             <tbody>
               <tr>
@@ -293,12 +295,13 @@ export const MintPrice = ({ minter, work, className }: Props) => {
           !!d.dutch_auction_price &&
           !!minterQuery.data && (
             <DutchAuctionPriceInfo
+              className={"mb-3"}
               work={work}
               da={d.dutch_auction_price}
               minter={minterQuery.data}
             />
           )}
-        <hr />
+        {!d.dutch_auction_price && <hr />}
         {!!work && <MintToken work={work} />}
 
         {!work && (
