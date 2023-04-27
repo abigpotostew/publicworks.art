@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 import MainLayout from "../src/layout/MainLayout";
-import { Col, Container } from "react-bootstrap";
+import { Col, Container, Placeholder } from "react-bootstrap";
 import stylesSpacing from "../styles/Spacing.module.scss";
 import { trpcNextPW } from "../src/server/utils/trpc";
 import SpinnerLoading from "../src/components/loading/Loader";
@@ -16,6 +16,7 @@ import superjson from "superjson";
 import { RowMediumContainer } from "../src/components/layout/RowMediumContainer";
 import { WorksGalleryComponent } from "../src/components/gallery/WorksGalleryComponent";
 import { RowWideContainer } from "../src/components/layout/RowWideContainer";
+import { PlaceholderCard } from "../src/components/placeholder/PlaceholderCard";
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   await initializeIfNeeded();
@@ -53,6 +54,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
 }
 
 const WorksPage = () => {
+  const [page, setPage] = React.useState(0);
   const query = trpcNextPW.works.listWorks.useInfiniteQuery(
     {
       limit: 100,
@@ -66,6 +68,7 @@ const WorksPage = () => {
   );
 
   const pages = query.data?.pages;
+  const loading = query.isLoading;
   return (
     <Container>
       <>
@@ -73,7 +76,25 @@ const WorksPage = () => {
           <RowWideContainer>
             <h1>Works</h1>
           </RowWideContainer>
-          {query.isLoading && <SpinnerLoading />}
+          {/*{query.isLoading && <SpinnerLoading />}*/}
+          {loading && (
+            <RowWideContainer>
+              <div className={"row row-cols-1 row-cols-lg-2 g-4 "}>
+                <Col>
+                  <PlaceholderCard className={"Margin-B-4 Margin-T-4"} />
+                </Col>
+                <Col>
+                  <PlaceholderCard className={"Margin-B-4 Margin-T-4"} />
+                </Col>
+                <Col>
+                  <PlaceholderCard className={"Margin-B-4 Margin-T-4"} />
+                </Col>
+                <Col>
+                  <PlaceholderCard className={"Margin-B-4 Margin-T-4"} />
+                </Col>
+              </div>
+            </RowWideContainer>
+          )}
           <RowWideContainer>
             <div className={"row row-cols-1 row-cols-lg-2 g-4"}>
               {query.isSuccess &&
@@ -108,7 +129,7 @@ const WorksPage = () => {
                 onClick={() => query.fetchNextPage()}
                 disabled={!query.hasNextPage || query.isFetchingNextPage}
               >
-                {query.isLoading || query.isFetchingNextPage
+                {loading || query.isFetchingNextPage
                   ? "Loading more..."
                   : query.hasNextPage
                   ? "Load More"
