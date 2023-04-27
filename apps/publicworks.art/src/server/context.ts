@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as trpc from "@trpc/server";
-import * as trpcNext from "@trpc/server/adapters/next";
-import { NextApiRequest } from "next";
+import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
+import { NextApiRequest, NextApiResponse } from "next";
 import { User } from "../store";
 import { UserEntity } from "../store/model";
 
@@ -15,10 +15,11 @@ interface CreateContextOptions {
  * This is useful for testing when we don't want to mock Next.js' request/response
  */
 export async function createContextInner(
-  opts: trpcNext.CreateNextContextOptions
+  opts: CreateNextContextOptions
 ): Promise<Context> {
   return {
     req: opts.req,
+    res: opts.res,
     authorized: false,
     user: undefined,
   };
@@ -26,9 +27,10 @@ export async function createContextInner(
 
 export interface Context {
   req: NextApiRequest;
+  res: NextApiResponse;
   authorized: boolean | undefined;
   user: UserEntity | undefined | null;
-  [key: string]: unknown;
+  // [key: string]: unknown;
 }
 
 /**
@@ -36,9 +38,15 @@ export interface Context {
  * @link https://trpc.io/docs/context
  */
 export async function createContext(
-  opts: trpcNext.CreateNextContextOptions
+  opts: CreateNextContextOptions
 ): Promise<Context> {
   // for API-response caching see https://trpc.io/docs/caching
+  const contextInner = await createContextInner(opts);
 
-  return await createContextInner(opts);
+  return {
+    ...contextInner,
+    req: opts.req,
+    res: opts.res,
+  };
+  // return await createContextInner(opts);
 }
