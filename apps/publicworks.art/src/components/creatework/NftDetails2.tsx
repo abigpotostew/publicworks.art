@@ -236,7 +236,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   });
   useEffect(() => {
     props.formValid({ isTouched: formik.dirty, isValid: formik.isValid });
-  }, [formik.isValid, formik.dirty]);
+  }, [formik.isValid, formik.dirty, props]);
 
   return (
     <>

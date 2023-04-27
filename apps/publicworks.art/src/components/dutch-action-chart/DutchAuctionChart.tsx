@@ -112,7 +112,15 @@ export const DutchAuctionChart = ({
     setOptions(opts2);
     setData(data);
     chartData && chartData({ prices, labels, pricesOmitted });
-  }, [startPrice, endPrice, startTime, endTime, declinePeriodSeconds, decay]);
+  }, [
+    startPrice,
+    endPrice,
+    startTime,
+    endTime,
+    declinePeriodSeconds,
+    decay,
+    chartData,
+  ]);
 
   if (endTime.getTime() < new Date().getTime() || endTime < startTime) {
     return (

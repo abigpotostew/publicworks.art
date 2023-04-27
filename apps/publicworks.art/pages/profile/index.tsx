@@ -1,4 +1,4 @@
-import { FC, ReactElement, useCallback, useState } from "react";
+import { FC, ReactElement, useCallback, useMemo, useState } from "react";
 import { Container, Toast } from "react-bootstrap";
 import MainLayout from "../../src/layout/MainLayout";
 import SpinnerLoading from "../../src/components/loading/Loader";
@@ -44,22 +44,25 @@ export const UserWorks: FC<UserWorksProps> = (props: UserWorksProps) => {
   );
   const nextPage = useCallback(async () => {
     await setPageNumber(pageNumber + 1);
-  }, [pageNumber]);
+  }, [pageNumber, setPageNumber]);
   const prevPage = useCallback(async () => {
     await setPageNumber(pageNumber - 1);
-  }, [pageNumber]);
+  }, [pageNumber, setPageNumber]);
   // const [pageNumber, setPageNumber] = useState(0);
   const utils = trpcNextPW.useContext();
   const limit = 5;
   const [page, setPage] = useState<WorkSerializable[]>([]);
 
-  const queryInput = {
-    publishedState: "ALL",
-    limit,
-    address: props.user.address,
-    direction: "DESC",
-    cursor: pageNumber * limit,
-  };
+  const queryInput = useMemo(
+    () => ({
+      publishedState: "ALL",
+      limit,
+      address: props.user.address,
+      direction: "DESC",
+      cursor: pageNumber * limit,
+    }),
+    [pageNumber, props.user.address, limit]
+  );
   const userWorksPage = trpcNextPW.works.listAddressWorks.useQuery(queryInput, {
     onSettled: (data, error) => {
       if (data) {

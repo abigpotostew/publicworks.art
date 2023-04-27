@@ -41,7 +41,7 @@ export const LiveMedia: FC<LiveMediaParams> = (params: LiveMediaParams) => {
         `&publicworks=true`;
   useEffect(() => {
     setAppIsLoading(true);
-  }, [url]);
+  }, [url, setAppIsLoading]);
 
   const onIframeLoad = useCallback(() => {
     const iframe = frame.current;

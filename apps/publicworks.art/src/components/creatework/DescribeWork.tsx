@@ -64,7 +64,7 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
       isTouched: formik.dirty,
       isValid: formik.isValid,
     });
-  }, [formik.isValid, formik.dirty]);
+  }, [formik.isValid, formik.dirty, props]);
   return (
     <>
       <>

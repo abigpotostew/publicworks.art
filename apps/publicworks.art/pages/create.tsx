@@ -35,7 +35,7 @@ const CreatePage = () => {
         await router.push(`/create/${mutation?.data?.id}`);
       })();
     }
-  }, [mutation]);
+  }, [mutation, router]);
 
   const onCreateProject = useCallback(
     async (req: Partial<EditProjectRequest>) => {
