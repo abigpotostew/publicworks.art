@@ -1,6 +1,6 @@
-import { ReactElement } from "react";
+import React, { ReactElement } from "react";
 import MainLayout from "../src/layout/MainLayout";
-import { Container } from "react-bootstrap";
+import { Col, Container } from "react-bootstrap";
 import stylesSpacing from "../styles/Spacing.module.scss";
 import { trpcNextPW } from "../src/server/utils/trpc";
 import SpinnerLoading from "../src/components/loading/Loader";
@@ -13,6 +13,9 @@ import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { appRouter } from "src/server/routes/_app";
 import { Context } from "src/server/context";
 import superjson from "superjson";
+import { RowMediumContainer } from "../src/components/layout/RowMediumContainer";
+import { WorksGalleryComponent } from "../src/components/gallery/WorksGalleryComponent";
+import { RowWideContainer } from "../src/components/layout/RowWideContainer";
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   await initializeIfNeeded();
@@ -67,28 +70,31 @@ const WorksPage = () => {
     <Container>
       <>
         <>
-          <RowThinContainer>
+          <RowWideContainer>
             <h1>Works</h1>
-          </RowThinContainer>
+          </RowWideContainer>
           {query.isLoading && <SpinnerLoading />}
-          <RowThinContainer innerClassName="p-4 ">
-            {query.isSuccess &&
-              pages
-                ?.map((page, index) => {
-                  return page.items
-                    .map((w) => {
-                      return (
-                        <GalleryComponent
-                          key={(page.items[0]?.id || index) + w.id}
-                          work={w}
-                          className={"Margin-B-4 Margin-T-4"}
-                        ></GalleryComponent>
-                      );
-                    })
-                    .flat();
-                })
-                ?.flat()}
-
+          <RowWideContainer>
+            <div className={"row row-cols-1 row-cols-lg-2 g-4"}>
+              {query.isSuccess &&
+                pages
+                  ?.map((page, index) => {
+                    return page.items
+                      .map((w) => {
+                        return (
+                          <Col>
+                            <WorksGalleryComponent
+                              key={(page.items[0]?.id || index) + w.id}
+                              work={w}
+                              className={"Margin-B-4 Margin-T-4"}
+                            ></WorksGalleryComponent>
+                          </Col>
+                        );
+                      })
+                      .flat();
+                  })
+                  ?.flat()}
+            </div>
             <Container
               fluid
               className={stylesSpacing.sectionGap}
@@ -109,7 +115,7 @@ const WorksPage = () => {
                   : "Nothing more to load"}
               </ButtonPW>
             </Container>
-          </RowThinContainer>
+          </RowWideContainer>
         </>
       </>
     </Container>

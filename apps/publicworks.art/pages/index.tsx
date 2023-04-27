@@ -135,7 +135,7 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
           </div>
         </RowThinContainer>
       </Container>
-      <RowLogoContainer className={"Margin-T-4 Margin-B-24"}>
+      <RowLogoContainer className={"Margin-T-4 Margin-B-16"}>
         <div className={styles.wrappingFlex}>
           <Pill color={"red"}>🏃‍ Mint on demand</Pill>
           <Pill color={"orange"}>⚙️ Metadata Generation</Pill>
