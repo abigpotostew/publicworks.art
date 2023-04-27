@@ -19,9 +19,8 @@ import { appRouter } from "src/server/routes/_app";
 import { Context } from "src/server/context";
 import superjson from "superjson";
 import { GalleryComponent } from "src/components/gallery/GalleryComponent";
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { ButtonPW } from "src/components/button/Button";
-import { useRouter } from "next/router";
+import { createServerSideHelpers } from "@trpc/react-query/server";
 
 function GroupDividerBottom() {
   return (
@@ -47,7 +46,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
   await initializeIfNeeded();
 
   console.log("in getStaticProps HOME");
-  const ssg = await createProxySSGHelpers({
+  const ssg = await createServerSideHelpers({
     router: appRouter,
     ctx: {} as Context,
     transformer: superjson, // optional - adds superjson serialization
