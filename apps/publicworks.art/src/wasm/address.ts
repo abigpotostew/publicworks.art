@@ -13,8 +13,13 @@ export const zodStarsAddress = z
   .refine((val) => isStarAddress(val));
 export const zodStarsContractAddress = z
   .string()
-  .length(56)
+  .length(64)
   .refine((val) => isStarAddress(val));
+
+export const zodStarsAddressOrContractAddress = z.union([
+  zodStarsAddress,
+  zodStarsContractAddress,
+]);
 
 export const isStarAddress = (addr: string) => {
   try {

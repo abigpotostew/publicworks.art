@@ -464,22 +464,27 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                     linearly.
                   </TooltipInfo>
                 </Form.Label>
-                <Form.Control
-                  type="number"
-                  step="0.000001"
-                  onWheel={numberInputOnWheelPreventChange}
-                  value={formik.values.dutchAuctionDecayRate}
-                  name="dutchAuctionDecayRate"
-                  onChange={formik.handleChange}
-                  isValid={
-                    formik.touched.dutchAuctionDecayRate &&
-                    !formik.errors.dutchAuctionDecayRate
-                  }
-                  isInvalid={
-                    formik.touched.dutchAuctionDecayRate &&
-                    !!formik.errors.dutchAuctionDecayRate
-                  }
-                />
+                <Form.Group>
+                  <Form.Control
+                    type="range"
+                    step="0.000001"
+                    min="0.000001"
+                    max={"0.999999"}
+                    onWheel={numberInputOnWheelPreventChange}
+                    value={formik.values.dutchAuctionDecayRate}
+                    name="dutchAuctionDecayRate"
+                    onChange={formik.handleChange}
+                    isValid={
+                      formik.touched.dutchAuctionDecayRate &&
+                      !formik.errors.dutchAuctionDecayRate
+                    }
+                    isInvalid={
+                      formik.touched.dutchAuctionDecayRate &&
+                      !!formik.errors.dutchAuctionDecayRate
+                    }
+                  />
+                  <Form.Text>{formik.values.dutchAuctionDecayRate}</Form.Text>
+                </Form.Group>
 
                 <Form.Control.Feedback type="invalid">
                   {formik.errors.dutchAuctionDecayRate}

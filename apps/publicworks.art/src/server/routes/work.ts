@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { isISODate } from "../../util/isISODate";
 import { stores } from "../../store/stores";
 import { authorizedProcedure, baseProcedure, t } from "../trpc";
 import { CreateProjectRequestZ, editProjectZod } from "../../store";
@@ -15,8 +14,7 @@ import {
   uploadFileToPinata,
 } from "../../ipfs/pinata";
 import { dataUrlToBuffer } from "../../base64/dataurl";
-import { zodStarsAddress, zodStarsContractAddress } from "src/wasm/address";
-import cuid from "cuid";
+import { zodStarsAddress } from "src/wasm/address";
 import { createPresignedUrl } from "src/upload/presignedUrl";
 import {
   confirmCoverImageUpload,
