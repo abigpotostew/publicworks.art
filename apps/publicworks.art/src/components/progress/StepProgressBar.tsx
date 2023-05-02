@@ -1,5 +1,5 @@
 import { FC } from "react";
-import styles from "./StepProgressBar.module.css";
+import styles from "./StepProgressBar.module.scss";
 
 export interface Step {
   label: string;

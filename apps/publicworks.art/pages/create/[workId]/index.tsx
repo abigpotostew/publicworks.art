@@ -5,12 +5,10 @@ import MainLayout from "../../../src/layout/MainLayout";
 import { Container } from "react-bootstrap";
 import { ButtonPW as Button } from "../../../src/components/button/Button";
 import { generateTxHash } from "../../../src/generateHash";
-import { useCosmosWallet } from "../../../src/components/provider/CosmosWalletProvider";
 import { FlexBox, FlexBoxCenter } from "src/components/layout/FlexBoxCenter";
 import { useInstantiate } from "src/hooks/useInstantiate";
 import { trpcNextPW } from "src/server/utils/trpc";
 import { useUploadWorkMutation } from "src/works/upload";
-import { LiveMedia } from "src/components/media/LiveMedia";
 import { Step, StepProgressBar } from "src/components/progress/StepProgressBar";
 import { TooltipInfo } from "src/components/tooltip/TooltipInfo";
 import { NameWork } from "src/components/creatework/NameWork";
@@ -23,12 +21,8 @@ import { ConfirmConfig } from "src/components/creatework/ConfirmConfig";
 import { NftDetails2 } from "src/components/creatework/NftDetails2";
 import { RowThinContainer } from "src/components/layout/RowThinContainer";
 import { useToast } from "src/hooks/useToast";
-import { useUserRequired } from "src/hooks/useUserRequired";
 import { useStargazeClient, useWallet } from "@stargazezone/client";
-import { NeedToLoginButton } from "src/components/login/NeedToLoginButton";
-import { signMessageAndLoginIfNeeded } from "src/wasm/keplr/client-login";
 import { onMutateLogin } from "src/trpc/onMutate";
-import { useMutation } from "@tanstack/react-query";
 import useUserContext from "src/context/user/useUserContext";
 import { getToken } from "src/util/auth-token";
 import { WorkOnChain } from "../../../src/components/creatework/WorkOnChain";
@@ -103,6 +97,7 @@ const stageMd = {
     label: "Mint",
   },
 };
+
 interface INavButtons {
   onNextClick?: () => void;
   onPrevClick?: () => void;
@@ -228,35 +223,11 @@ const EditWorkPage = () => {
     [mutation, workId]
   );
 
-  // const onUploadMutation = useMutation(async (files: File[]) => {
-  //   await onWorkUpload(workId, files, utils);
-  // });
   const onUploadMutation = useUploadWorkMutation(workId);
-  // const onUploadMutation = useMutation(async (files: File[]) => {
-  //   const uploadTmp = await onWorkUploadFileMutation.mutateAsync({
-  //     workId: workId,
-  //   });
-  //
-  //   if (!uploadTmp.ok) {
-  //     throw new Error(
-  //       "Something went wrong while uploading the code work, try again."
-  //     );
-  //   }
-  //   await onWorkUploadNew(
-  //     workId,
-  //     files,
-  //     utils,
-  //     uploadTmp.url,
-  //     uploadTmp.method
-  //   );
-  // });
+
   const onUpload = onUploadMutation.mutate;
 
   const { instantiateMutation } = useInstantiate();
-
-  const onClickRefreshHash = useCallback(() => {
-    setHash(generateTxHash());
-  }, []);
 
   const onInstantiate = useCallback(async () => {
     //confetti
@@ -280,16 +251,6 @@ const EditWorkPage = () => {
         (c) => !work[c]
       );
       return prevStageComplete;
-      // for (let i = 1; i < stages.length; i++) {
-      //   const notMet = stageContinuationCondition[stages[i]].find(
-      //     (c) => !work[c]
-      //   );
-      //   if (notMet) return false;
-      //   if (i < stages.length - 1 && stage === stages[i + 1]) {
-      //     return true;
-      //   }
-      // }
-      // return true;
     };
     const clickable = completed || work?.minter || isStageClickable(stageEnum);
     return {

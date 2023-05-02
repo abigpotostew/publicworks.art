@@ -20,6 +20,9 @@ import { TooltipInfo } from "../tooltip/TooltipInfo";
 import SpinnerLoading from "../loading/Loader";
 import { cs } from "date-fns/locale";
 import { validAttributes } from "@publicworks/shared-utils/attributes";
+import Link from "next/link";
+import { ButtonPW } from "../button/Button";
+import { cn } from "../../lib/css/cs";
 
 export function Sandbox() {
   const artworkIframeRef = useRef<ArtworkIframeRef>(null);
@@ -146,6 +149,8 @@ export function Sandbox() {
     }
   };
 
+  const allConditionsMet = previewReady && hasAttributes && imgUrl;
+
   return (
     <section>
       {/*<FlexBoxCenter></FlexBoxCenter>*/}
@@ -159,18 +164,22 @@ export function Sandbox() {
                 </div>
               </a>
 
-              <div className={"mt-3"}>
+              <div className={"tw-mt-6"}>
                 <h5>CSS Selector</h5>
                 <span>{cssSelector ? cssSelector : "not specified"}</span>
               </div>
 
-              <div className={"mt-3"}>
+              <div className={"tw-mt-6 tw-mb-3"}>
                 <h5>Files</h5>
                 <span>
                   <i aria-hidden className="fas fa-file-archive" /> {file?.name}
                 </span>
               </div>
-              <div className={styles.filesListContainer + " overflow-scroll"}>
+              <div
+                className={
+                  styles.filesListContainer + " overflow-scroll tw-p-2"
+                }
+              >
                 <div className={"overflow-scroll mh-100"}>
                   {fileList?.map((f, index) => (
                     <div key={index}>{f}</div>
@@ -178,13 +187,13 @@ export function Sandbox() {
                 </div>
               </div>
 
-              <div className={"mt-2"}>
+              <div className={"tw-mt-6"}>
                 <h5>Testing</h5>
                 <p>Your work must pass these conditions:</p>
                 <ul>
                   <li>
                     the same hash will <strong>always</strong> generate the same
-                    output
+                    output and be resolution agnostic
                   </li>
                   <li>
                     different hashes generate <strong>different</strong> outputs
@@ -192,7 +201,7 @@ export function Sandbox() {
                 </ul>
               </div>
 
-              <div>
+              <div className={"tw-mt-6"}>
                 <h5>
                   Preview Ready{" "}
                   {previewReady ? (
@@ -208,39 +217,43 @@ export function Sandbox() {
                     Preview Ready to be set.
                   </p>
                 )}
-                <h5>
-                  Attributes{" "}
-                  {hasAttributes ? (
-                    <FontAwesomeIcon icon={"check"} width={18} />
-                  ) : previewReady ? (
-                    <FontAwesomeIcon icon={"minus"} width={18} />
+                <div className={"tw-mt-6"}>
+                  <h5>
+                    Attributes{" "}
+                    {hasAttributes ? (
+                      <FontAwesomeIcon icon={"check"} width={18} />
+                    ) : previewReady ? (
+                      <FontAwesomeIcon icon={"minus"} width={18} />
+                    ) : (
+                      <SpinnerLoading />
+                    )}
+                  </h5>
+                  {!hasAttributes ? (
+                    <ul>
+                      No attributes. (Attributes are optional but recommended)
+                    </ul>
                   ) : (
-                    <SpinnerLoading />
+                    <RawProperties properties={attributes} />
                   )}
-                </h5>
-                {!hasAttributes ? (
-                  <ul>
-                    No attributes. (Attributes are optional but recommended)
-                  </ul>
-                ) : (
-                  <RawProperties properties={attributes} />
-                )}
-                <h5 className={"me-1"}>
-                  Traits{" "}
-                  {hasTraits ? (
-                    <FontAwesomeIcon icon={"check"} width={18} />
-                  ) : previewReady ? (
-                    <FontAwesomeIcon icon={"minus"} width={18} />
-                  ) : (
-                    <SpinnerLoading />
-                  )}
-                </h5>
+                </div>
+                <div className={"tw-mt-6"}>
+                  <h5 className={""}>
+                    Traits{" "}
+                    {hasTraits ? (
+                      <FontAwesomeIcon icon={"check"} width={18} />
+                    ) : previewReady ? (
+                      <FontAwesomeIcon icon={"minus"} width={18} />
+                    ) : (
+                      <SpinnerLoading />
+                    )}
+                  </h5>
 
-                {!traits || Object.keys(traits).length === 0 ? (
-                  <ul>No traits. (Traits are optional)</ul>
-                ) : (
-                  <RawProperties properties={traits} />
-                )}
+                  {!traits || Object.keys(traits).length === 0 ? (
+                    <ul>No traits. (Traits are optional)</ul>
+                  ) : (
+                    <RawProperties properties={traits} />
+                  )}
+                </div>
               </div>
             </div>
           ) : (
@@ -260,16 +273,23 @@ export function Sandbox() {
                   />
                   <>drop your ZIP file here, or click to select</>
                 </span>
-                <div className={"mt-2 overflow-hidden"}>
-                  File: {file ? file.name : ""}
-                </div>
+                {file && (
+                  <div className={"mt-2 overflow-hidden"}>
+                    File: {file ? file.name : ""}
+                  </div>
+                )}
+                {!file && (
+                  <div className={"mt-2 overflow-hidden"}>
+                    Waiting for file...
+                  </div>
+                )}
               </DropZone>
 
               <Form.Group className={"mt-3"} controlId="cssSelector">
                 <Form.Label>
-                  CSS Selector
+                  CSS Selector{" "}
                   <TooltipInfo>
-                    Optional canvas CSS selector targeting your sketch canvas.
+                    Required canvas CSS selector targeting your sketch canvas.
                     Used to test the image preview.
                   </TooltipInfo>
                 </Form.Label>
@@ -310,8 +330,8 @@ export function Sandbox() {
 
         {/*//sandbox preview*/}
         <div>
-          <div className={"ms-auto w-100  " + styles.border2px}>
-            <h5>Live Preview</h5>
+          <div className={"ms-auto w-100 tw-p-8 tw-pt-0 " + styles.border2px}>
+            <h5 className={"tw-mt-4"}>Live Preview</h5>
             {file ? (
               <SandboxPreview
                 hash={hash}
@@ -325,26 +345,29 @@ export function Sandbox() {
               <div className={"w-100 mb-2 " + styles.height30rem}></div>
             )}
 
-            {url && (
-              <Button
-                variant={"secondary"}
-                onClick={() => setHash(generateTxHash())}
-              >
-                test new hash
-              </Button>
-            )}
-            {url && (
-              <Button
-                // @ts-ignore
-                href={url}
-                target="_blank"
-              >
-                open live
-              </Button>
-            )}
+            <div className={"tw-pt-4"}>
+              {url && (
+                <Button
+                  variant={"secondary"}
+                  onClick={() => setHash(generateTxHash())}
+                >
+                  test new hash
+                </Button>
+              )}
+              {url && (
+                <Button
+                  className={"tw-ms-2"}
+                  // @ts-ignore
+                  href={url}
+                  target="_blank"
+                >
+                  open live
+                </Button>
+              )}
+            </div>
           </div>
-          <div className={styles.border2px}>
-            <h5>Image Preview</h5>
+          <div className={cn(styles.border2px, "tw-p-8 tw-pt-0")}>
+            <h5 className={"tw-mt-4"}>Image Preview</h5>
             {file && !cssSelector && (
               <div>
                 No CSS selector specified. Image preview will not be captured.
@@ -352,6 +375,14 @@ export function Sandbox() {
             )}
             {imgUrl && <img src={imgUrl} className={"w-100 "} />}
           </div>
+          {allConditionsMet && (
+            <div className={"tw-mt-5"}>
+              Your works meets all testing parameters!{" "}
+              <Link href={"/create"}>
+                <Button className={""}>Create Work</Button>
+              </Link>
+            </div>
+          )}
         </div>
       </FlexBoxCenterStretch>
     </section>

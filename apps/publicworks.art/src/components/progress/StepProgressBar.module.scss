@@ -1,3 +1,7 @@
+@import '/styles/colors';
+
+$inactive-color:$gray-400;
+
 .stepperWrapper {
     margin-top: auto;
     display: flex;
@@ -21,14 +25,14 @@
 }
 .stepperItem.clickable .stepCounter {
     /*border-color: #43a8b5;*/
-    border: #43a8b5 2px solid;
+    border: #000000 2px solid;
 }
 
 
 .stepperItem::before {
     position: absolute;
     content: "";
-    border-bottom: 2px solid #ccc;
+    border-bottom: 2px solid $inactive-color;
     width: 100%;
     top: 20px;
     left: -50%;
@@ -38,7 +42,7 @@
 .stepperItem::after {
     position: absolute;
     content: "";
-    border-bottom: 2px solid #ccc;
+    border-bottom: 2px solid $inactive-color;
     width: 100%;
     top: 20px;
     left: 50%;
@@ -54,7 +58,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: #ccc;
+    background: $inactive-color;
     margin-bottom: 6px;
 }
 
@@ -63,13 +67,14 @@
 }
 
 .stepperItem.completed .stepCounter {
-    background-color: #43a8b5;
+    background-color: #000000;
+    color: #ffffff;
 }
 
 .stepperItem.completed::after {
     position: absolute;
     content: "";
-    border-bottom: 2px solid #43a8b5;
+    border-bottom: 2px solid #000;
     width: 100%;
     top: 20px;
     left: 50%;

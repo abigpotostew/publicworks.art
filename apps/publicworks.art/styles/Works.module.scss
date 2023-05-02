@@ -15,5 +15,15 @@
   width: 100%;
   height: 20rem;
   object-fit: cover;
+  transition: transform 0.5s ease;
 
+
+}
+.card-img-overlay > .workCardImage:hover{
+
+  transform: scale(1.05);
+}
+
+.card-img-overlay > .workCardImage{
+  transition: transform 0.5s ease;
 }

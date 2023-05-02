@@ -10,6 +10,7 @@ import { useNumMinted } from "../../hooks/useNumMinted";
 import { useCollectionSize } from "../../hooks/useCollectionSize";
 import React from "react";
 import Link from "next/link";
+import { cn } from "../../lib/css/cs";
 
 export const WorksGalleryComponent = ({
   work,
@@ -30,22 +31,25 @@ export const WorksGalleryComponent = ({
   if (isStarAddress(creatorName)) {
     creatorName = shortenAddress(creatorName);
   }
-  const onClick = () => {
-    router.push("/work/" + w.slug);
-  };
   return (
     // <Col key={w.sg721} className={className}>
     <Card
       // style={{ width: "24rem" }}
-      className={`${styles.workCardContainer} ${className} border-light`}
+      className={cn(styles.workCardContainer, className, "border-light")}
     >
       <Card.Img
-        className={styles.workCardImage + " rounded-1 rounded-top button"}
+        className={cn(
+          styles.workCardImage,
+          "rounded-1 rounded-top button tw-overflow-hidden"
+        )}
         variant="top"
         src={query.isSuccess ? query.data : ""}
       />
-      <Card.ImgOverlay className={` p-0`}>
-        <Link href={"/work/" + w.slug} className={"text-decoration-none"}>
+      <Card.ImgOverlay className={`p-0 `}>
+        <Link
+          href={"/work/" + w.slug}
+          className={cn("text-decoration-none", "tw-overflow-hidden")}
+        >
           <Container
             className={
               "bg-gradient-transparent text-light rounded-top rounded-1 pt-3 pb-3 "
