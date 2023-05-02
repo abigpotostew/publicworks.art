@@ -73,7 +73,7 @@ export const LiveMedia: FC<LiveMediaParams> = (params: LiveMediaParams) => {
         width={"100%"}
         // onLoad={(e)=>{e.currentTarget.contentWindow?.focus()}}
         style={{ ...(params.style || {}), minHeight: params.minHeight }}
-        title={"hello"}
+        title={"Live Media"}
         onLoad={() => {
           onIframeLoad();
         }}

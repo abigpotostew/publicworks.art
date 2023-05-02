@@ -218,8 +218,6 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
           </Button>
         )}
       </div>
-
-      {/*<div>MinterPrice: {JSON.stringify(minterPrice.data, undefined, 2)}</div>*/}
     </div>
   );
 };
