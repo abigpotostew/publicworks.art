@@ -14,6 +14,7 @@ import useStargazeClient from "@stargazezone/client/react/client/useStargazeClie
 import { useToast } from "src/hooks/useToast";
 import { createCoin, createTimestamp } from "./useUpdateDutchAuction";
 import { DutchAuctionConfig } from "@stargazezone/client/core/minters/types";
+import { useClientLoginMutation } from "./useClientLoginMutation";
 
 function formatRoyaltyInfo(
   royaltyPaymentAddress: null | string,
@@ -264,6 +265,8 @@ export const useInstantiate = () => {
   const sgwallet = useWallet();
   const client = useStargazeClient();
   const toast = useToast();
+  const login = useClientLoginMutation();
+
   const mutationContracts = trpcNextPW.works.editWorkContracts.useMutation({
     onSuccess() {
       utils.works.getWorkById.invalidate();
@@ -294,6 +297,7 @@ export const useInstantiate = () => {
     if (!res) {
       return;
     }
+    await login.mutateAsync();
     await mutationContracts.mutateAsync({
       sg721: res.sg721,
       minter: res.minter,

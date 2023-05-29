@@ -5,14 +5,16 @@ import ModalStore from "../../modal/ModalStore";
 import { trpcNextPW } from "../../server/utils/trpc";
 import { useMutation } from "@tanstack/react-query";
 import SpinnerLoading from "../loading/Loader";
+import { useClientLoginMutation } from "src/hooks/useClientLoginMutation";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export const DeleteWorkModal = () => {
   const work = ModalStore.state.data?.work;
-
+  const login = useClientLoginMutation();
   const deleteWork = trpcNextPW.works.deleteWork.useMutation();
   const deleteWorkAndClose = useMutation(async () => {
     if (work?.id) {
+      await login.mutateAsync();
       await deleteWork.mutateAsync({ workId: work?.id });
     }
     ModalStore.close();

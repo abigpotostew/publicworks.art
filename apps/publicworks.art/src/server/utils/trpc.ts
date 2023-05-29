@@ -4,6 +4,7 @@ import { NextPageContext } from "next";
 import superjson from "superjson";
 import { appRouter, AppRouter } from "../routes/_app";
 import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
+import { getToken } from "../../util/auth-token";
 // ℹ️ Type-only import:
 // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-8.html#type-only-imports-and-export
 
@@ -87,6 +88,14 @@ export interface SSRContext extends NextPageContext {
 const queryCache = new QueryCache();
 export const queryClient = new QueryClient({
   queryCache,
+  defaultOptions: {
+    mutations: {
+      onMutate: async (vars) => {
+        // do login here if needed
+        // const token = getToken();
+      },
+    },
+  },
 });
 // queryCache.subscribe((event) => {
 //   if (event.query.queryHash.includes("getUser"))

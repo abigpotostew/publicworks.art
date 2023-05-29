@@ -14,12 +14,14 @@ import { onMutateLogin } from "src/trpc/onMutate";
 import { useToast } from "src/hooks/useToast";
 import config from "../src/wasm/config";
 import Link from "next/link";
+import { useClientLoginMutation } from "../src/hooks/useClientLoginMutation";
 const CreatePage = () => {
   const { user } = useUserContext();
   const utils = trpcNextPW.useContext();
   const router = useRouter();
   const toast = useToast();
   const sgclient = useStargazeClient();
+  const login = useClientLoginMutation();
   const mutation = trpcNextPW.works.createWork.useMutation({
     onMutate: onMutateLogin(sgclient.client, toast),
     onSuccess: async () => {
@@ -43,6 +45,7 @@ const CreatePage = () => {
       if (!req.name) {
         throw new Error("missing name");
       }
+      await login.mutateAsync();
       mutation.mutate({ name: req.name });
     },
     [mutation]
@@ -64,7 +67,7 @@ const CreatePage = () => {
           <RowThinContainer>
             <h1>Create Work</h1>
             {(user.isFetching || user.isLoading) && <SpinnerLoading />}
-            <NeedToLoginButton url={"/create"} />
+            {/*<NeedToLoginButton url={"/create"} />*/}
             {testnetComponent}
             {user.isSuccess && <NameWork onCreateProject={onCreateProject} />}
 

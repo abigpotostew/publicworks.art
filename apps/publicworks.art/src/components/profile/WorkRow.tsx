@@ -26,6 +26,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useInvalidateWork } from "../../hooks/work/useInvalidateWork";
 import useUserContext from "../../context/user/useUserContext";
 import ModalStore from "../../modal/ModalStore";
+import { useClientLoginMutation } from "src/hooks/useClientLoginMutation";
 interface Props {
   work: WorkSerializable;
   onChange: () => void;
@@ -65,10 +66,12 @@ export const WorkRow: FC<Props> = ({ work, onChange }: Props) => {
   const { invalidateWork: invalidate } = useInvalidateWork();
 
   const utils = trpcNextPW.useContext();
+  const login = useClientLoginMutation();
 
   const editWorkMutation = trpcNextPW.works.editWork.useMutation();
   const setHiddenMutation = useMutation(
     async (hidden: boolean) => {
+      await login.mutateAsync();
       console.log("setting hidden to", hidden);
       await editWorkMutation.mutateAsync({ id: work.id, hidden });
     },

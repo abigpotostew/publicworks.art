@@ -28,6 +28,7 @@ import { useSetPrice } from "../../hooks/useUpdatePrice";
 import { useEditWorkMutation } from "../../hooks/useEditWorkMutation";
 import SpinnerLoading from "../loading/Loader";
 import config from "../../wasm/config";
+import { useClientLoginMutation } from "../../hooks/useClientLoginMutation";
 
 type Props = {
   minter: Minter;
@@ -40,6 +41,7 @@ export const ChangePrice = ({ minter, work }: Props) => {
   const isDutchAuction = !!minterConfig?.dutch_auction_config;
   const dutchAuction = minterConfig?.dutch_auction_config;
   const toast = useToast();
+  const login = useClientLoginMutation();
 
   const defaults = {
     priceStars: fromCoin(minterConfig.unit_price) || 50,
@@ -70,6 +72,7 @@ export const ChangePrice = ({ minter, work }: Props) => {
     onSubmit: async (values, { resetForm }) => {
       if (values.isDutchAuction && setDutchAuctionMutation) {
         //todo only allow this for new minters
+
         await setDutchAuctionMutation.mutateAsync({
           work,
           config: {
@@ -81,6 +84,7 @@ export const ChangePrice = ({ minter, work }: Props) => {
             declinePeriodSeconds: values.dutchAuctionDeclinePeriodSeconds,
           },
         });
+        await login.mutateAsync();
         await editWorkMutation.mutateAsync({
           id: work.id,
           startDate: values.startDate
@@ -102,6 +106,7 @@ export const ChangePrice = ({ minter, work }: Props) => {
           work,
           config: { unit_price: values.priceStars },
         });
+        await login.mutateAsync();
         await editWorkMutation.mutateAsync({
           id: work.id,
           priceStars: values.priceStars,

@@ -23,6 +23,8 @@ import { useProfileInfo } from "../../src/hooks/sg-names";
 import { WorkRow } from "../../src/components/profile/WorkRow";
 import { Hr } from "../../src/components/content/horizontalrule/HR";
 import { useRouter } from "next/router";
+import { useMutation } from "@tanstack/react-query";
+import { useClientLoginMutation } from "../../src/hooks/useClientLoginMutation";
 
 interface Props {
   work: WorkSerializable;
@@ -152,7 +154,7 @@ const ProfilePage = () => {
   const username = useName.walletName ? useName.walletName + ".stars" : address;
 
   // useUserRequired("/profile");
-
+  // const login = useClientLoginMutation();
   const toast = useToast();
   const editUserMutation = trpcNextPW.users.editUser.useMutation({
     onMutate: onMutateLogin(sgclient.client, toast),
@@ -167,6 +169,10 @@ const ProfilePage = () => {
       toast.error(e.message);
     },
   });
+  // const editUserLocalMutation = useMutation(async () => {
+  //   await login.mutateAsync();
+  //   await editUserMutation.mutateAsync();
+  // });
   const onSubmitEdit = (req: Partial<EditUserRequest>) => {
     editUserMutation.mutate(req);
   };
@@ -189,7 +195,7 @@ const ProfilePage = () => {
               </h1>
             </FlexBox>
 
-            <NeedToLoginButton url={"/profile"} />
+            {/*<NeedToLoginButton url={"/profile"} />*/}
 
             {!editMode && user.isSuccess && <UserProfile user={user.data} />}
             {editMode && (

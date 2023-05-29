@@ -27,6 +27,7 @@ import useUserContext from "src/context/user/useUserContext";
 import { getToken } from "src/util/auth-token";
 import { WorkOnChain } from "../../../src/components/creatework/WorkOnChain";
 import { WorkSerializable } from "@publicworks/db-typeorm";
+import { useClientLoginMutation } from "../../../src/hooks/useClientLoginMutation";
 // export const getServerSideProps: GetServerSideProps = async (context) => {
 //   await initializeIfNeeded();
 //   const workId = context.params?.workId;
@@ -152,6 +153,7 @@ const EditWorkPage = () => {
 
   const sgwallet = useWallet();
 
+  const login = useClientLoginMutation();
   const { stage: stageQp } = router.query;
   const [stage, setStageState] = useState<Stage | null>(null);
   // useUserRequired("/create/" + workIdIn + "?stage=" + stageQp);
@@ -217,6 +219,7 @@ const EditWorkPage = () => {
     async (req: Partial<EditProjectRequest>) => {
       console.log("workId", workId);
       console.log("edit request", { ...req, id: workId });
+      await login.mutateAsync();
       await mutation.mutateAsync({ ...req, id: workId });
       console.log("finished on create project mutation");
     },
@@ -279,11 +282,11 @@ const EditWorkPage = () => {
     return createStep(s);
   });
 
-  useEffect(() => {
-    if (workId && !hasToken) {
-      toast.errorLoginModal();
-    }
-  }, [workId, hasToken, toast]);
+  // useEffect(() => {
+  //   if (workId && !hasToken) {
+  //     toast.errorLoginModal();
+  //   }
+  // }, [workId, hasToken, toast]);
 
   return (
     <>

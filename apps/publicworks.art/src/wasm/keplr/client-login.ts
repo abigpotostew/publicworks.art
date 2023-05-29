@@ -16,7 +16,7 @@ export async function signMessageAndLoginIfNeeded(sg: StargazeClient) {
     const otp = Math.floor(Math.random() * 100_000).toString();
     return signMessageAndLogin(otp, sg);
   }
-  return true;
+  return null;
 }
 
 export interface SigningStrategy<Res extends SignatureVerify> {

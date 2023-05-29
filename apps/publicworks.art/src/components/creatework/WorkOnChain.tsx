@@ -20,6 +20,7 @@ import { useMinter } from "../../hooks/wasm/useMinter";
 import { useRouter } from "next/router";
 import { useMigrateMutation } from "../../hooks/useMigrateMutation";
 import { GrowingDot } from "../spinner/GrowingDot";
+import { useClientLoginMutation } from "../../hooks/useClientLoginMutation";
 
 export const schema = z.object({
   addresses: z
@@ -52,6 +53,16 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
   const [airdropVisible, setAirdropVisible] = useState<boolean>(false);
   const [changePriceVisible, setChangePriceVisible] = useState<boolean>(false);
   const migrateMutate = useMigrateMutation();
+  const login = useClientLoginMutation();
+  const migrateMutationClient = useMutation(
+    async ({ minter }: { minter?: string | null }) => {
+      if (!minter) {
+        return;
+      }
+      await login.mutateAsync();
+      await migrateMutate.mutateAsync({ minter });
+    }
+  );
 
   const getMinterQuery = useMinter(minter);
   const defaults = {
@@ -208,13 +219,11 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
           <Button
             variant="danger"
             onClick={() =>
-              work?.minter
-                ? migrateMutate.mutate({ minter: work?.minter })
-                : null
+              migrateMutationClient.mutate({ minter: work?.minter })
             }
             className={"Margin-T-1"}
           >
-            Migrate to V2! {migrateMutate.isLoading && <GrowingDot />}
+            Migrate to V2! {migrateMutationClient.isLoading && <GrowingDot />}
           </Button>
         )}
       </div>

@@ -7,6 +7,7 @@ import { toStars } from "src/wasm/address";
 import { Coin, useWallet } from "@stargazezone/client";
 import useStargazeClient from "@stargazezone/client/react/client/useStargazeClient";
 import { useToast } from "src/hooks/useToast";
+import { useClientLoginMutation } from "./useClientLoginMutation";
 
 export const createCoin = (amount: number): Coin => {
   return {
@@ -133,6 +134,7 @@ export const useSetDutchAuction = () => {
       if (!client.client) {
         throw new Error("missing sg client");
       }
+
       const signingClient = await client.client.connectSigningClient();
       if (!signingClient) {
         throw new Error("Couldn't connect client");
