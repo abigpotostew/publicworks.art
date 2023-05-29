@@ -6,7 +6,7 @@ const configBase = {
     chainId: "elgafar-1",
     testnet: true,
     sg721CodeId: 133,
-    minterCodeId: 1844, //v4 //1842 //<-v3 //1838 //<- v2
+    minterCodeId: 2233, //v6 //1844,//v5 //v4 //1842 //<-v3 //1838 //<- v2
     minterV1CodeId: 134,
     whitelistCodeId: 3,
     finalizerCodeId: 132,

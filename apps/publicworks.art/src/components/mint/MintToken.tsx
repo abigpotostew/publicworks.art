@@ -30,13 +30,13 @@ export const MintToken = ({ work }: Props) => {
   const hasStarted = minterQuery.data?.config?.start_time
     ? fromTimestamp(minterQuery.data?.config?.start_time).getTime() < Date.now()
     : false;
-  console.log(
-    "pizza minterQuery.data?.config?.start_time",
-    minterQuery.data?.config?.start_time,
-    minterQuery.data?.config?.start_time &&
-      fromTimestamp(minterQuery.data?.config?.start_time).getTime(),
-    hasStarted
-  );
+  // console.log(
+  //   "pizza minterQuery.data?.config?.start_time",
+  //   minterQuery.data?.config?.start_time,
+  //   minterQuery.data?.config?.start_time &&
+  //     fromTimestamp(minterQuery.data?.config?.start_time).getTime(),
+  //   hasStarted
+  // );
 
   const isSoldOut = soldOutQuery.data === true;
   const loading =

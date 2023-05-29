@@ -83,9 +83,13 @@ export const ChangePrice = ({ minter, work }: Props) => {
         });
         await editWorkMutation.mutateAsync({
           id: work.id,
-          startDate: values.startDate,
+          startDate: values.startDate
+            ? parseISO(values.startDate).toISOString()
+            : undefined,
+          dutchAuctionEndDate: values.dutchAuctionEndDate
+            ? parseISO(values.dutchAuctionEndDate).toISOString()
+            : undefined,
           priceStars: values.priceStars,
-          dutchAuctionEndDate: values.dutchAuctionEndDate,
           dutchAuctionEndPrice: values.dutchAuctionEndPrice,
           dutchAuctionDeclinePeriodSeconds:
             values.dutchAuctionDeclinePeriodSeconds,

@@ -75,6 +75,7 @@ export const editProjectZod = z.object({
   externalLink: z.string().max(2048).optional(),
   startDate: z
     .string()
+    .refine((v) => new Date(v) > new Date(), "Must be in the future")
     .refine(isISODate, { message: "Not a valid ISO string date " })
     .optional(),
   royaltyAddress: zodStarsAddressOrContractAddress.optional(),

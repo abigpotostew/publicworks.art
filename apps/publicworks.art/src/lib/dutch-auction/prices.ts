@@ -30,7 +30,7 @@ export const generatePrices = ({
   const prices: { time: Date; price: number }[] = [];
   const numPrices = Math.floor(duration / declinePeriodSeconds);
   let step = declinePeriodSeconds;
-  console.log("numPrices", numPrices, startTime, endTime);
+  // console.log("numPrices", numPrices, startTime, endTime);
   if (omitPrices && numPrices > 300) {
     step = Math.floor(step * Math.floor(numPrices / 50));
   }

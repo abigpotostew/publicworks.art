@@ -11,7 +11,6 @@ import { Button, Card, Placeholder, Table } from "react-bootstrap";
 import { useSoldOut } from "../../hooks/useSoldOut";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { MintToken } from "./MintToken";
-import config from "../../wasm/config";
 import { useMinter } from "../../hooks/wasm/useMinter";
 import { Minter } from "../../../@stargazezone/client";
 import Countdown from "react-countdown";
@@ -48,7 +47,6 @@ const DutchAuctionPriceInfo = ({
       : Date.now()) < new Date().getTime();
   const auctionBefore = beforeEndOfAuction && !afterStartOfAuction;
   const auctionOver = !beforeEndOfAuction;
-  console.log("auctionOver,pizza", auctionOver);
   const auctionDuring = beforeEndOfAuction && afterStartOfAuction;
 
   const nextPriceChangeSeconds = Math.round(

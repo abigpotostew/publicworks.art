@@ -219,6 +219,9 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
         startDate: values.startDate
           ? parseISO(values.startDate).toISOString()
           : undefined,
+        dutchAuctionEndDate: values.dutchAuctionEndDate
+          ? parseISO(values.dutchAuctionEndDate).toISOString()
+          : undefined,
       });
       await resetForm();
     },

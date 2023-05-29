@@ -71,7 +71,7 @@ export const UploadCoverImage: FC<CreateWorkProps> = (
     console.log("uploading", id, files, utils, uploadTmp.url, uploadTmp.method);
     await onWorkUploadNew(id, files, utils, uploadTmp.url, uploadTmp.method);
     try {
-      console.log("pizza finished confirmWorkUploadFileMutation");
+      // console.log("pizza finished confirmWorkUploadFileMutation");
       await confirmWorkUploadFileMutation.mutateAsync({
         workId: id,
         uploadId: uploadTmp.uploadId,

@@ -127,10 +127,10 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
             href={"#"}
             onClick={(event) => {
               event.preventDefault();
-              console.log(
-                "pizza hello set airdropVisible to ",
-                !airdropVisible
-              );
+              // console.log(
+              //   "pizza hello set airdropVisible to ",
+              //   !airdropVisible
+              // );
               setAirdropVisible(!airdropVisible);
             }}
           >

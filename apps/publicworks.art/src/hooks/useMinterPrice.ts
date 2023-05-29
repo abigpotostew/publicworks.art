@@ -84,7 +84,6 @@ export const useMinterPrice = ({ minter }: { minter?: string | null }) => {
           fromTimestamp(out.dutch_auction_price.end_time).getTime() >
           new Date().getTime();
         setAuctionLive(auctionLive);
-        console.log("auctionLive", auctionLive);
       }
       return out;
     },
