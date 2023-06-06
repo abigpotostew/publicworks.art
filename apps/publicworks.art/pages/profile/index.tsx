@@ -149,7 +149,19 @@ const ProfilePage = () => {
   const sgclient = useStargazeClient();
   const useName = useProfileInfo({ address: sgwallet.wallet?.address });
 
-  const { user } = useUserContext();
+  // const { user } = useUserContext();
+  // const sgwallet = useWallet();
+  // const address = sgwallet.wallet?.address;
+
+  const userQuery = trpcNextPW.users.getUser.useQuery(
+    {
+      address: sgwallet.wallet?.address as string,
+    },
+    {
+      enabled: !!sgwallet.wallet?.address,
+    }
+  );
+
   const address = sgwallet?.wallet?.address;
   const username = useName.walletName ? useName.walletName + ".stars" : address;
 
@@ -197,12 +209,19 @@ const ProfilePage = () => {
 
             {/*<NeedToLoginButton url={"/profile"} />*/}
 
-            {!editMode && user.isSuccess && <UserProfile user={user.data} />}
+            {!editMode && userQuery.isSuccess && (
+              <UserProfile user={userQuery.data} />
+            )}
             {editMode && (
-              <EditProfile defaultValues={user.data} onSubmit={onSubmitEdit} />
+              <EditProfile
+                defaultValues={userQuery.data}
+                onSubmit={onSubmitEdit}
+              />
             )}
             {editMode && editUserMutation.isLoading && <SpinnerLoading />}
-            {!editMode && user.data && <UserWorks user={user.data} />}
+            {!editMode && !!userQuery.isSuccess && (
+              <UserWorks user={userQuery.data} />
+            )}
           </RowThinContainer>
         </Container>
       </div>

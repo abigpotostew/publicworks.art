@@ -8,9 +8,17 @@ import { Coin, useWallet } from "@stargazezone/client";
 import useStargazeClient from "@stargazezone/client/react/client/useStargazeClient";
 import { useToast } from "src/hooks/useToast";
 import { createCoin, createCoinFromNative } from "./useUpdateDutchAuction";
-import { MsgExecuteContractEncodeObject, toUtf8 } from "cosmwasm";
+import {
+  calculateFee,
+  Decimal,
+  GasPrice,
+  MsgExecuteContractEncodeObject,
+  toUtf8,
+} from "cosmwasm";
 import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
 import { toMintTxResult, MintTxResult } from "./useMintAirdrop";
+import { decodeString, unmarshalTx } from "@tendermint/amino-js";
+import { StdFee } from "@cosmjs/amino/build/signdoc";
 
 export interface ExecuteMintMsg {
   mint: Record<string, never>;
@@ -45,7 +53,14 @@ async function executeMint(
     msgArray.push(executeContractMsg);
   }
 
-  const result = await client.signAndBroadcast(account, msgArray, "auto", "");
+  // const gasUsed = (await client.simulate(account, msgArray, "")) * 3;
+  // const fee = calculateFee(
+  //   gasUsed,
+  //   new GasPrice(Decimal.fromUserInput("0.03", 3), "ustars")
+  // );
+  const fee = "auto";
+  console.log("minting with gas", fee);
+  const result = await client.signAndBroadcast(account, msgArray, fee, "");
   return toMintTxResult(result);
 }
 

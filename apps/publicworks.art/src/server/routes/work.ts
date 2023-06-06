@@ -415,7 +415,7 @@ export const workRouter = t.router({
   listWorks: listWorks,
   workPreviewImg,
   uploadPreviewImg: uploadPreviewImg,
-  listAddressWorks,
+  listAddressWorks: listAddressWorks,
   workTokenCount: workTokenCount,
   lastMintedToken: lastMintedToken,
   uploadWorkGenerateUrl: uploadWorkGenerateUrl,

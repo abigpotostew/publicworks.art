@@ -46,8 +46,8 @@ export const keplrClient = async (config: Config): Promise<KeplrClient> => {
         {
           prefix,
           //@ts-ignore
-          gasPrice,
-          // gasPrice:new GasPrice(0),
+          // gasPrice,
+          gasPrice: new GasPrice(1),
         }
       ),
       offlineSigner,

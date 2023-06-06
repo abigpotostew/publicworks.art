@@ -30,6 +30,7 @@ export type MintTxResult = {
 };
 export const toMintTxResult = (result: DeliverTxResponse): MintTxResult => {
   if (result.code !== 0) {
+    console.log("Transaction failed on chain. result", result);
     throw new Error("Transaction failed");
   }
 

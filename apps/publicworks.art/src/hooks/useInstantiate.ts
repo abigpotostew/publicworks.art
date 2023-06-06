@@ -5,7 +5,12 @@ import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Timestamp } from "@stargazezone/types/contracts/sg721/shared-types";
 import { Decimal } from "@stargazezone/types/contracts/minter/instantiate_msg";
 import { Coin } from "@stargazezone/types/contracts/minter/shared-types";
-import { coins } from "cosmwasm";
+import {
+  calculateFee,
+  coins,
+  Decimal as CosmWasmDecimal,
+  GasPrice,
+} from "cosmwasm";
 import { trpcNextPW } from "../server/utils/trpc";
 import { useMutation } from "@tanstack/react-query";
 import { toStars } from "src/wasm/address";
@@ -234,6 +239,12 @@ async function instantiateNew(
       NEW_COLLECTION_FEE[0].denom
   );
   console.log("funds", NEW_COLLECTION_FEE);
+
+  // const gasUsed = 1_200_000;
+  // const fee = calculateFee(
+  //   gasUsed,
+  //   new GasPrice(CosmWasmDecimal.fromUserInput("1.0", 3), "ustars")
+  // );
 
   const result = await signer.instantiate(
     account,
