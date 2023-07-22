@@ -26,9 +26,7 @@ export const emptyTrpcQueryResult = <T>(): UseTRPCQueryResult<T, any> => {
     isStale: false,
 
     // @ts-ignore
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     refetch: () => {},
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     remove: () => {},
     trpc: { path: "" },
   };

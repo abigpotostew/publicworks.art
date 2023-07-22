@@ -17,9 +17,7 @@ export function safariStorageFix() {
     if (!browser?.storage) {
       browser.storage = {
         local: {
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
           get: () => {},
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
           set: () => {},
         },
       };

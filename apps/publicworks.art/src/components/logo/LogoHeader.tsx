@@ -12,61 +12,65 @@ export const LogoHeader = () => {
       {/*  bswidth={2}*/}
       {/*  className={"d-inline text-center"}*/}
       {/*>*/}
-      <RowLogoContainer className={`text-center ${styles.logotext}`}>
-        <span className={"font-weight-bold"}>A home </span>
-        <span
-          style={{
-            width: aniSize,
-            height: aniSize,
-            minWidth: aniSize,
-            minHeight: aniSize,
-          }}
-          className={"d-inline-block"}
-        >
-          <SpinAnimation
-            animation={"waveyFlower"}
-            width={aniSize}
-            height={aniSize}
-          />
-        </span>
-        <span> for generative art </span>
-        <span
-          style={{
-            width: aniSize,
-            height: aniSize,
-            minWidth: aniSize,
-            minHeight: aniSize,
-          }}
-          className={"d-inline-block"}
-        >
-          <SpinAnimation
-            animation={"drawChasingTailMulti"}
-            width={aniSize}
-            height={aniSize}
-          />
-        </span>
-        <span> in the </span>
-        {/*<SpinAnimation*/}
-        {/*  animation={"waveyFlower"}*/}
-        {/*  width={aniSize}*/}
-        {/*  height={aniSize}*/}
-        {/*/>*/}
-        <span
-          style={{
-            width: aniSize,
-            height: aniSize,
-            minWidth: aniSize,
-            minHeight: aniSize,
-          }}
-          className={"d-inline-block"}
-        >
-          <SpinAnimation
-            animation={"orbits"}
-            width={aniSize}
-            height={aniSize}
-          />
-        </span>
-        <span> cosmos </span>
+      <RowLogoContainer
+        className={`text-center ${styles.logotext}`}
+        colClassName={"inline-flex items-baseline"}
+      >
+        <p>
+          A home{" "}
+          <span
+            style={{
+              width: aniSize,
+              height: aniSize,
+              minWidth: aniSize,
+              minHeight: aniSize,
+            }}
+            className={"inline-flex items-baseline"}
+          >
+            <SpinAnimation
+              animation={"waveyFlower"}
+              width={aniSize}
+              height={aniSize}
+            />
+          </span>{" "}
+          for generative art{" "}
+          <span
+            style={{
+              width: aniSize,
+              height: aniSize,
+              minWidth: aniSize,
+              minHeight: aniSize,
+            }}
+            className={"inline-flex items-baseline"}
+          >
+            <SpinAnimation
+              animation={"drawChasingTailMulti"}
+              width={aniSize}
+              height={aniSize}
+            />
+          </span>{" "}
+          in the {/*<SpinAnimation*/}
+          {/*  animation={"waveyFlower"}*/}
+          {/*  width={aniSize}*/}
+          {/*  height={aniSize}*/}
+          {/*/>*/}
+          <span
+            style={{
+              width: aniSize,
+              height: aniSize,
+              minWidth: aniSize,
+              minHeight: aniSize,
+            }}
+            className={"inline-flex items-baseline"}
+          >
+            <SpinAnimation
+              animation={"orbits"}
+              width={aniSize}
+              height={aniSize}
+            />
+          </span>{" "}
+          cosmos
+        </p>
       </RowLogoContainer>
       {/*</AutoContainer>*/}
       {/*<SpinAnimation animation={"kitchensink"} width={500} height={500} />*/}

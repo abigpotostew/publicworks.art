@@ -1,6 +1,6 @@
 // import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/globals.scss";
-import "../styles/bootstrap-theme/theme-dark.scss";
+// import "../styles/bootstrap-theme/theme-dark.scss";
 
 import type { FC, ReactElement, ReactNode } from "react";
 import type { NextPage } from "next";

@@ -107,7 +107,7 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
     recentWorks = <>Loading...</>;
   } else {
     recentWorks = (
-      <Container fluid className={" gap-2"}>
+      <div className={"flex flow-inline"}>
         <Row>
           {queryWorks.data.items.map((item, index) => {
             return (
@@ -117,7 +117,7 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
             );
           })}
         </Row>
-      </Container>
+      </div>
     );
   }
 
@@ -130,13 +130,17 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
 
       <Container className={styles.group2}>
         <RowThinContainer>
-          <div style={{ textAlign: "center" }}>
+          <div className={"text-center"}>
             <h1>Everything you need to create generative art works</h1>
           </div>
         </RowThinContainer>
       </Container>
       <RowLogoContainer className={"Margin-T-4 Margin-B-24"}>
-        <div className={styles.wrappingFlex}>
+        <div
+          className={
+            "flex-row flex-wrap align-center justify-center inline-flex"
+          }
+        >
           <Pill color={"red"}>🏃‍ Mint on demand</Pill>
           <Pill color={"orange"}>⚙️ Metadata Generation</Pill>
           <Pill color={"yellow"}>🛠 Any Javascript Library</Pill>
