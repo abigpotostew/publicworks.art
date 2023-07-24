@@ -12,7 +12,7 @@ export interface KeplrClient {
 
 export const keplrClient = async (config: Config): Promise<KeplrClient> => {
   const prefix = "wasm";
-  const gasPrice = GasPrice.fromString("0ustars");
+  const gasPrice = GasPrice.fromString("0.025ustars");
 
   // hack foo to wait for keplr to be available
   await new Promise((r) => setTimeout(r, 200));
