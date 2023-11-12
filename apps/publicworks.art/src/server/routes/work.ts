@@ -1,27 +1,27 @@
-import { z } from "zod";
-import { stores } from "../../store/stores";
-import { authorizedProcedure, baseProcedure, t } from "../trpc";
-import { CreateProjectRequestZ, editProjectZod } from "../../store";
-import { TRPCError } from "@trpc/server";
 import {
   serializeWork,
   serializeWorkToken,
 } from "../../../../../packages/db-typeorm/src/serializable/works/serialize-work";
-import { normalizeMetadataUri } from "../../wasm/metadata";
+import { dataUrlToBuffer } from "../../base64/dataurl";
 import {
   deleteCid,
   getMetadataWorkId,
   uploadFileToPinata,
 } from "../../ipfs/pinata";
-import { dataUrlToBuffer } from "../../base64/dataurl";
-import { zodStarsAddress } from "src/wasm/address";
-import { createPresignedUrl } from "src/upload/presignedUrl";
+import chainInfo from "../../stargaze/chainInfo";
+import { CreateProjectRequestZ, editProjectZod } from "../../store";
+import { stores } from "../../store/stores";
+import { normalizeMetadataUri } from "../../wasm/metadata";
+import { authorizedProcedure, baseProcedure, t } from "../trpc";
+import { TRPCError } from "@trpc/server";
+import mime from "mime-types";
 import {
   confirmCoverImageUpload,
   confirmUpload,
 } from "src/upload/confirm-upload";
-import mime from "mime-types";
-import chainInfo from "../../stargaze/chainInfo";
+import { createPresignedUrl } from "src/upload/presignedUrl";
+import { zodStarsAddress } from "src/wasm/address";
+import { z } from "zod";
 
 const createWork = authorizedProcedure
   .input(CreateProjectRequestZ)
@@ -136,6 +136,26 @@ const getWorkBySlug = baseProcedure
       throw new TRPCError({ code: "NOT_FOUND" });
     }
     return serializeWork(project);
+  });
+
+const getWorkTokenByTokenId = baseProcedure
+  .input(
+    z.object({
+      workId: z.number(),
+      tokenId: z.number().int().positive(),
+    })
+  )
+
+  .query(async ({ input, ctx }) => {
+    const token = await stores().project.getToken({
+      workId: input.workId,
+      tokenId: input.tokenId.toString(),
+    });
+
+    if (!token) {
+      throw new TRPCError({ code: "NOT_FOUND" });
+    }
+    return serializeWorkToken(token);
   });
 
 const listWorks = baseProcedure
@@ -412,6 +432,7 @@ export const workRouter = t.router({
   editWorkContracts,
   getWorkById: getWorkById,
   getWorkBySlug,
+  getWorkTokenByTokenId: getWorkTokenByTokenId,
   listWorks: listWorks,
   workPreviewImg,
   uploadPreviewImg: uploadPreviewImg,

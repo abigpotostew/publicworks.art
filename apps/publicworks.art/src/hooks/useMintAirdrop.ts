@@ -1,18 +1,18 @@
+import { trpcNextPW } from "../server/utils/trpc";
+import { createCoin } from "./useUpdateDutchAuction";
 import {
   DeliverTxResponse,
   MsgExecuteContractEncodeObject,
   SigningCosmWasmClient,
 } from "@cosmjs/cosmwasm-stargate";
-import { trpcNextPW } from "../server/utils/trpc";
-import { useMutation } from "@tanstack/react-query";
-import { toStars } from "src/wasm/address";
+import { toUtf8 } from "@cosmjs/encoding";
+import { toUniqueArray } from "@publicworks/shared-utils/fn";
 import { useWallet } from "@stargazezone/client";
 import useStargazeClient from "@stargazezone/client/react/client/useStargazeClient";
-import { useToast } from "src/hooks/useToast";
-import { toUtf8 } from "@cosmjs/encoding";
+import { useMutation } from "@tanstack/react-query";
 import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
-import { createCoin } from "./useUpdateDutchAuction";
-import { toUniqueArray } from "@publicworks/shared-utils/fn";
+import { useToast } from "src/hooks/useToast";
+import { toStars } from "src/wasm/address";
 
 export interface MintMsg {
   mint_to: {
@@ -20,7 +20,7 @@ export interface MintMsg {
   };
 }
 
-const AIRDROP_FEE = createCoin(15);
+const AIRDROP_FEE = createCoin(50);
 
 export type MintTxResult = {
   tokenIds: string[];

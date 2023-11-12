@@ -1,25 +1,25 @@
+import { trpcNextPW } from "../server/utils/trpc";
 import config from "../wasm/config";
-import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
-import { OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
+import { useClientLoginMutation } from "./useClientLoginMutation";
+import { createCoin, createTimestamp } from "./useUpdateDutchAuction";
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { Timestamp } from "@stargazezone/types/contracts/sg721/shared-types";
+import { OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
+import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
+import { useWallet } from "@stargazezone/client";
+import { DutchAuctionConfig } from "@stargazezone/client/core/minters/types";
+import useStargazeClient from "@stargazezone/client/react/client/useStargazeClient";
 import { Decimal } from "@stargazezone/types/contracts/minter/instantiate_msg";
 import { Coin } from "@stargazezone/types/contracts/minter/shared-types";
+import { Timestamp } from "@stargazezone/types/contracts/sg721/shared-types";
+import { useMutation } from "@tanstack/react-query";
 import {
   calculateFee,
   coins,
   Decimal as CosmWasmDecimal,
   GasPrice,
 } from "cosmwasm";
-import { trpcNextPW } from "../server/utils/trpc";
-import { useMutation } from "@tanstack/react-query";
-import { toStars } from "src/wasm/address";
-import { useWallet } from "@stargazezone/client";
-import useStargazeClient from "@stargazezone/client/react/client/useStargazeClient";
 import { useToast } from "src/hooks/useToast";
-import { createCoin, createTimestamp } from "./useUpdateDutchAuction";
-import { DutchAuctionConfig } from "@stargazezone/client/core/minters/types";
-import { useClientLoginMutation } from "./useClientLoginMutation";
+import { toStars } from "src/wasm/address";
 
 function formatRoyaltyInfo(
   royaltyPaymentAddress: null | string,
@@ -47,7 +47,7 @@ function isValidIpfsUrl(uri: string) {
   return url.protocol === "ipfs:";
 }
 
-const NEW_COLLECTION_FEE = coins("1000000000", "ustars");
+const NEW_COLLECTION_FEE = coins("0", "ustars");
 
 export interface InstantiateMsg {
   base_token_uri: string;
@@ -252,7 +252,7 @@ async function instantiateNew(
     msg,
     work.name,
     "auto",
-    { funds: NEW_COLLECTION_FEE, admin: account }
+    { /*funds: NEW_COLLECTION_FEE, */ admin: account }
   );
   const wasmEvent = result.logs[0].events.find((e) => e.type === "wasm");
   console.info(

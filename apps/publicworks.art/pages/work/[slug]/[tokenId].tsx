@@ -1,37 +1,35 @@
-import { ReactElement, useState } from "react";
-import MainLayout from "../../../src/layout/MainLayout";
-import styles from "../../../styles/Work.module.scss";
-import { Container } from "react-bootstrap";
-import { LiveMedia } from "../../../src/components/media/LiveMedia";
-import { RowThinContainer } from "../../../src/components/layout/RowThinContainer";
+import { FieldControl } from "../../../src/components/control/FieldControl";
 import { RowSquareContainer } from "../../../src/components/layout/RowSquareContainer";
-import { NftMetadata } from "../../../src/hooks/useNftMetadata";
-import { getTokenMetadata, normalizeIpfsUri } from "../../../src/wasm/metadata";
-import Link from "next/link";
-import Head from "next/head";
-import { useTokenOwner } from "../../../src/hooks/useTokenOwner";
-import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/router";
-import { trpcNextPW } from "src/server/utils/trpc";
-import SpinnerLoading from "src/components/loading/Loader";
+import { RowThinContainer } from "../../../src/components/layout/RowThinContainer";
+import { LiveMedia } from "../../../src/components/media/LiveMedia";
 import { Attributes } from "../../../src/components/metadata/Attributes";
-import { GetStaticProps, InferGetStaticPropsType } from "next";
-import { initializeIfNeeded } from "../../../src/typeorm/datasource";
+import { StarsAddressName } from "../../../src/components/name/StarsAddressName";
+import { useTokenOwner } from "../../../src/hooks/useTokenOwner";
+import MainLayout from "../../../src/layout/MainLayout";
+import { cn } from "../../../src/lib/css/cs";
 import { stores } from "../../../src/store/stores";
+import { initializeIfNeeded } from "../../../src/typeorm/datasource";
+import { getTokenMetadata, normalizeIpfsUri } from "../../../src/wasm/metadata";
+import styles from "../../../styles/Work.module.scss";
+import { TokenEntity } from "@publicworks/db-typeorm/model/work.entity";
 import {
   serializeWork,
   serializeWorkToken,
 } from "@publicworks/db-typeorm/serializable";
-import { StarsAddressName } from "../../../src/components/name/StarsAddressName";
-import { FieldControl } from "../../../src/components/control/FieldControl";
-import { TokenEntity } from "@publicworks/db-typeorm/model/work.entity";
+import { useQuery } from "@tanstack/react-query";
+import { GetStaticProps, InferGetStaticPropsType } from "next";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { ReactElement, useState } from "react";
+import { Container } from "react-bootstrap";
+import SpinnerLoading from "src/components/loading/Loader";
+import { trpcNextPW } from "src/server/utils/trpc";
 
 export async function getStaticPaths() {
   console.log("getStaticPaths, token");
   await initializeIfNeeded();
   const out: { params: { slug: string; tokenId: string } }[] = [];
   let nextOffset: number | undefined = undefined;
-  const next: number | undefined = undefined;
   let tokens: TokenEntity[] = [];
   do {
     const res: { items: TokenEntity[]; nextOffset: number | undefined } =
@@ -91,20 +89,19 @@ export const getStaticProps: GetStaticProps = async (context) => {
 const WorkTokenPage = ({
   work,
   slug,
+  token,
   tokenId,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const router = useRouter();
-  // const { slug, tokenId } = router.query;
   const [notFound, setNotFound] = useState(false);
 
   const workQuery = trpcNextPW.works.getWorkBySlug.useQuery(
     { slug: slug?.toString() || "" },
     { enabled: !!slug }
   );
+
   const { data } = workQuery;
   work = data || work;
-
-  // workQuery?.data?.externalLink
 
   const tokenMetadata = useQuery(
     ["gettokenmetadata", slug, tokenId, work?.sg721],
@@ -122,22 +119,6 @@ const WorkTokenPage = ({
         return;
       }
 
-      // let metadata: NftMetadata | null = null;
-      // const fetchMd = async () => {
-      //   try {
-      //     metadata = await getTokenMetadata(
-      //       sg721,
-      //       tokenId,
-      //       process.env.NEXT_PUBLIC_IPFS_GATEWAY
-      //     );
-      //   } catch (e) {
-      //     console.warn(`error fetching attempt 2 ${slug} ${tokenId}`, e);
-      //   }
-      // };
-      // await fetchMd();
-      // // console.log({ metadata });
-      //
-      // return metadata;
       try {
         return getTokenMetadata(
           sg721,
@@ -198,12 +179,22 @@ const WorkTokenPage = ({
             className={`${styles.paddingTop} ${styles.workHeader}`}
           >
             <div className={styles.paddingTop}>
-              <div>
+              <div className={"d-inline-flex align-items-center"}>
                 <span className={styles.workTitle}>
                   {workQuery?.data?.name}
                 </span>
-                <span className={styles.workAuthor}>
-                  {" - " + workQuery?.data?.creator}
+                <span
+                  className={cn(
+                    styles.workAuthor,
+                    "px-3 d-inline-flex align-items-center"
+                  )}
+                >
+                  {!!workQuery?.data?.creator && (
+                    <>
+                      <span>By </span>
+                      <StarsAddressName address={owner} className={"inline"} />
+                    </>
+                  )}
                 </span>
               </div>
               {process.env.NEXT_PUBLIC_TESTNET === "true" ? (
@@ -251,6 +242,9 @@ const WorkTokenPage = ({
                 {work.minter ? (
                   <StarsAddressName address={work.minter} noShorten={false} />
                 ) : null}
+              </FieldControl>
+              <FieldControl name={"Hash"}>
+                {token?.hash ? <>{token?.hash}</> : null}
               </FieldControl>
               <a
                 href={tokenMetadata?.data?.image}

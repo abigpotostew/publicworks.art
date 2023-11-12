@@ -1,22 +1,19 @@
+import { isStarAddress } from "../../wasm/address";
+import { ButtonPW as Button } from "../button/Button";
+import { DutchAuctionChart } from "../dutch-action-chart/DutchAuctionChart";
+import { TooltipInfo } from "../tooltip/TooltipInfo";
+import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
+import { useWallet } from "@stargazezone/client";
 import { parseISO } from "date-fns";
 import { format, formatInTimeZone } from "date-fns-tz";
-import React, { FC, useCallback, useEffect, useState, WheelEvent } from "react";
+import { useFormik } from "formik";
+import Link from "next/link";
+import React, { FC, useEffect, useState } from "react";
 import { Alert, Collapse, Form } from "react-bootstrap";
 import { EditProjectRequest } from "src/store";
-import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
-import { TooltipInfo } from "../tooltip/TooltipInfo";
-import { useFormik } from "formik";
-import { toFormikValidationSchema } from "zod-formik-adapter";
-import { z } from "zod";
 import { isISODate } from "src/util/isISODate";
-import { ButtonPW as Button } from "../button/Button";
-import { useWallet } from "@stargazezone/client";
-import { isStarAddress } from "../../wasm/address";
-import { DutchAuctionChart } from "../dutch-action-chart/DutchAuctionChart";
-import { work } from "../../helio";
-import Link from "next/link";
-import { log } from "next/dist/server/typescript/utils";
-import { DutchAuctionPrices } from "../../lib/dutch-auction/prices";
+import { z } from "zod";
+import { toFormikValidationSchema } from "zod-formik-adapter";
 
 // const formatInTimeZone = (date: Date, fmt: string, tz: string) =>
 //   format(utcToZonedTime(date, tz), fmt, { timeZone: tz });
@@ -245,7 +242,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   return (
     <>
       <h2>On Chain Configuration</h2>
-      {!!work.minter && (
+      {!!props.defaultValues?.minter && (
         <Alert variant="info">
           Your work is already instantiated on chain. Head over to{" "}
           <Alert.Link>
