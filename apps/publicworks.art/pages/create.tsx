@@ -66,10 +66,8 @@ const CreatePage = () => {
         <Container>
           <RowThinContainer>
             <h1>Create Work</h1>
-            {(user.isFetching || user.isLoading) && <SpinnerLoading />}
-            {/*<NeedToLoginButton url={"/create"} />*/}
             {testnetComponent}
-            {user.isSuccess && <NameWork onCreateProject={onCreateProject} />}
+            {<NameWork onCreateProject={onCreateProject} />}
 
             {mutation.isLoading && <SpinnerLoading />}
             {mutation.error && <p>{mutation.error.message}</p>}

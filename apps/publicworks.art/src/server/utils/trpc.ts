@@ -85,7 +85,7 @@ export interface SSRContext extends NextPageContext {
 //    */
 //   ssr: false,
 // });
-const queryCache = new QueryCache();
+export const queryCache = new QueryCache();
 export const queryClient = new QueryClient({
   queryCache,
   defaultOptions: {

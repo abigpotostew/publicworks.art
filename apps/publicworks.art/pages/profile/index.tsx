@@ -17,7 +17,6 @@ import useUserContext from "src/context/user/useUserContext";
 import { useStargazeClient, useWallet } from "@stargazezone/client";
 import { UserSerializable } from "../../../../packages/db-typeorm/src/serializable/users/userSerializable";
 import { shortenAddress } from "src/wasm/address";
-import { NeedToLoginButton } from "src/components/login/NeedToLoginButton";
 import { onMutateLogin } from "src/trpc/onMutate";
 import { useProfileInfo } from "../../src/hooks/sg-names";
 import { WorkRow } from "../../src/components/profile/WorkRow";

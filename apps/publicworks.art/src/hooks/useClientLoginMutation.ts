@@ -5,7 +5,7 @@ import {
 } from "../wasm/keplr/client-login";
 import { useStargazeClient, useWallet } from "../../@stargazezone/client";
 import { useToast } from "./useToast";
-import { trpcNextPW } from "../server/utils/trpc";
+import { queryCache, queryClient, trpcNextPW } from "../server/utils/trpc";
 //
 // const loginClient = async () => {
 //   //
@@ -33,7 +33,11 @@ export const useClientLoginMutation = () => {
       return;
     }
     // await utils.users.getUser.invalidate();
-    await utils.users.invalidate();
+    await Promise.all([
+      utils.users.invalidate(),
+      queryClient.invalidateQueries({ queryKey: ["gettoken"] }),
+    ]);
+
     console.log("invalidate users");
     // utils.users.getUser.invalidate({ address: wallet?.address });
   });

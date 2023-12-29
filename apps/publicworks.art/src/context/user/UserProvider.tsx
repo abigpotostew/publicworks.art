@@ -10,10 +10,10 @@ interface Props {
   children: ReactNode;
 }
 
-export const UserProvider: FC<Props> = ({ children }: Props) => {
+const useGetTokenCookie = () => {
   const sgwallet = useWallet();
   const address = sgwallet.wallet?.address;
-  const tokenD = useQuery(
+  return useQuery(
     ["gettoken", address],
     async () => {
       if (!address) return "";
@@ -21,6 +21,13 @@ export const UserProvider: FC<Props> = ({ children }: Props) => {
     },
     { enabled: !!address }
   );
+};
+
+export const UserProvider: FC<Props> = ({ children }: Props) => {
+  const sgwallet = useWallet();
+  const address = sgwallet.wallet?.address;
+
+  const tokenD = useGetTokenCookie();
   const userCtx = trpcNextPW.users.getUser.useQuery(
     {
       address: address,
