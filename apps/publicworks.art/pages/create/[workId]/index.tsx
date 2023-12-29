@@ -1,33 +1,34 @@
-import { FC, ReactElement, useCallback, useEffect, useState } from "react";
+import { ButtonPW as Button } from "../../../src/components/button/Button";
+import { WorkOnChain } from "../../../src/components/creatework/WorkOnChain";
+import { generateTxHash } from "../../../src/generateHash";
+import { useClientLoginMutation } from "../../../src/hooks/useClientLoginMutation";
+import MainLayout from "../../../src/layout/MainLayout";
+import { WorkSerializable } from "@publicworks/db-typeorm";
+import { useStargazeClient, useWallet } from "@stargazezone/client";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import MainLayout from "../../../src/layout/MainLayout";
+import { FC, ReactElement, useCallback, useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
-import { ButtonPW as Button } from "../../../src/components/button/Button";
-import { generateTxHash } from "../../../src/generateHash";
+import { ConfettiScreen } from "src/components/celebration/ConfettiScreen";
+import { ConfirmConfig } from "src/components/creatework/ConfirmConfig";
+import { DescribeWork } from "src/components/creatework/DescribeWork";
+import { NameWork } from "src/components/creatework/NameWork";
+import { NftDetails2 } from "src/components/creatework/NftDetails2";
+import { UploadCoverImage } from "src/components/creatework/UploadCoverImage";
 import { FlexBox, FlexBoxCenter } from "src/components/layout/FlexBoxCenter";
-import { useInstantiate } from "src/hooks/useInstantiate";
-import { trpcNextPW } from "src/server/utils/trpc";
-import { useUploadWorkMutation } from "src/works/upload";
+import { RowThinContainer } from "src/components/layout/RowThinContainer";
+import SpinnerLoading from "src/components/loading/Loader";
 import { Step, StepProgressBar } from "src/components/progress/StepProgressBar";
 import { TooltipInfo } from "src/components/tooltip/TooltipInfo";
-import { NameWork } from "src/components/creatework/NameWork";
-import { EditProjectRequest } from "src/store";
-import { ConfettiScreen } from "src/components/celebration/ConfettiScreen";
-import SpinnerLoading from "src/components/loading/Loader";
-import { DescribeWork } from "src/components/creatework/DescribeWork";
-import { UploadCoverImage } from "src/components/creatework/UploadCoverImage";
-import { ConfirmConfig } from "src/components/creatework/ConfirmConfig";
-import { NftDetails2 } from "src/components/creatework/NftDetails2";
-import { RowThinContainer } from "src/components/layout/RowThinContainer";
-import { useToast } from "src/hooks/useToast";
-import { useStargazeClient, useWallet } from "@stargazezone/client";
-import { onMutateLogin } from "src/trpc/onMutate";
 import useUserContext from "src/context/user/useUserContext";
+import { useInstantiate } from "src/hooks/useInstantiate";
+import { useToast } from "src/hooks/useToast";
+import { trpcNextPW } from "src/server/utils/trpc";
+import { EditProjectRequest } from "src/store";
+import { onMutateLogin } from "src/trpc/onMutate";
 import { getToken } from "src/util/auth-token";
-import { WorkOnChain } from "../../../src/components/creatework/WorkOnChain";
-import { WorkSerializable } from "@publicworks/db-typeorm";
-import { useClientLoginMutation } from "../../../src/hooks/useClientLoginMutation";
+import { useUploadWorkMutation } from "src/works/upload";
+
 // export const getServerSideProps: GetServerSideProps = async (context) => {
 //   await initializeIfNeeded();
 //   const workId = context.params?.workId;
@@ -209,12 +210,6 @@ const EditWorkPage = () => {
     },
   });
 
-  const mutationContracts = trpcNextPW.works.editWorkContracts.useMutation({
-    onSuccess() {
-      utils.works.getWorkById.invalidate();
-    },
-  });
-
   const onCreateProject = useCallback(
     async (req: Partial<EditProjectRequest>) => {
       console.log("workId", workId);
@@ -223,7 +218,7 @@ const EditWorkPage = () => {
       await mutation.mutateAsync({ ...req, id: workId });
       console.log("finished on create project mutation");
     },
-    [mutation, workId]
+    [login, mutation, workId]
   );
 
   const onUploadMutation = useUploadWorkMutation(workId);
@@ -277,6 +272,14 @@ const EditWorkPage = () => {
 
   const canMoveToNext =
     canOperate && formTouched ? mutation.isSuccess && formValid : formValid;
+
+  console.log("canMoveToNext", {
+    canMoveToNext,
+    canOperate,
+    formTouched,
+    isSuccess: mutation.isSuccess,
+    formValid,
+  });
 
   const steps = stages.map((s) => {
     return createStep(s);
