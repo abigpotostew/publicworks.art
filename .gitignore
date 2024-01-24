@@ -38,3 +38,4 @@ idea/
 build/
 
 .env
+.env.*
