@@ -20,6 +20,9 @@ todo:
 - bring your own ipfs cid
 - consolidate create flow
 
+- index work tokens by contract address instead of work id so that replacing the contract doesn't screw up the tokens.
+- replace the live preview with a static image
+
 design inspiration:
 - https://nouns.build/
 - a home for generative art in the cosmos

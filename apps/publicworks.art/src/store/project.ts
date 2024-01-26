@@ -255,6 +255,14 @@ export class ProjectRepo {
     return Ok(work);
   }
 
+  async deleteWorkTokens(id: number): Promise<Result<number>> {
+    const result = await dataSource().getRepository(TokenEntity).delete({
+      work: {
+        id,
+      },
+    });
+    return Ok(result.affected ?? 0);
+  }
   async updateProject(
     id: number,
     request: Partial<FullEditProjectRequest>

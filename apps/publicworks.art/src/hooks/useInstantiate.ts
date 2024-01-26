@@ -2,7 +2,10 @@ import { trpcNextPW } from "../server/utils/trpc";
 import config from "../wasm/config";
 import { useClientLoginMutation } from "./useClientLoginMutation";
 import { createCoin, createTimestamp } from "./useUpdateDutchAuction";
-import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import {
+  MsgInstantiateContractEncodeObject,
+  SigningCosmWasmClient,
+} from "@cosmjs/cosmwasm-stargate";
 import { OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { useWallet } from "@stargazezone/client";
@@ -20,6 +23,14 @@ import {
 } from "cosmwasm";
 import { useToast } from "src/hooks/useToast";
 import { toStars } from "src/wasm/address";
+import { useWallet } from "@stargazezone/client";
+import useStargazeClient from "@stargazezone/client/react/client/useStargazeClient";
+import { useToast } from "src/hooks/useToast";
+import {
+  MsgExecuteContract,
+  MsgInstantiateContract,
+} from "cosmjs-types/cosmwasm/wasm/v1/tx";
+import { toUtf8 } from "@cosmjs/encoding";
 
 function formatRoyaltyInfo(
   royaltyPaymentAddress: null | string,
@@ -110,7 +121,8 @@ const client:
 async function instantiateNew(
   work: WorkSerializable,
   address: string,
-  client: SigningCosmWasmClient
+  client: SigningCosmWasmClient,
+  useSimulatedGasFee = false
 ) {
   if (!work.id) {
     throw new Error("work id invalid");
@@ -246,13 +258,39 @@ async function instantiateNew(
   //   new GasPrice(CosmWasmDecimal.fromUserInput("1.0", 3), "ustars")
   // );
 
+  let gasUsed = 0;
+  try {
+    const executeContractMsg: MsgInstantiateContractEncodeObject = {
+      typeUrl: "/cosmwasm.wasm.v1.MsgInstantiateContract",
+      value: MsgInstantiateContract.fromPartial({
+        sender: account,
+        admin: account,
+        codeId: config.minterCodeId,
+        label: work.name,
+        // fee: "auto",
+        msg: toUtf8(JSON.stringify(msg)),
+        funds: NEW_COLLECTION_FEE,
+      }),
+    };
+    const gasUsedResult = await signer.simulate(
+      account,
+      [executeContractMsg],
+      undefined
+    );
+    console.log("simulate gasUsed", gasUsedResult);
+    gasUsed = gasUsedResult;
+  } catch (e) {
+    console.log("simulate error", e);
+  }
+  const gasfee = useSimulatedGasFee ? gasUsed : "auto";
+  console.log("gasfee", gasfee);
   const result = await signer.instantiate(
     account,
     config.minterCodeId,
     msg,
     work.name,
-    "auto",
-    { /*funds: NEW_COLLECTION_FEE, */ admin: account }
+    gasfee,
+    { /*funds: NEW_COLLECTION_FEE,*/ admin: account }
   );
   const wasmEvent = result.logs[0].events.find((e) => e.type === "wasm");
   console.info(
@@ -284,38 +322,50 @@ export const useInstantiate = () => {
     },
   });
 
-  const instantiateMutation = useMutation(async (work: WorkSerializable) => {
-    ///
-    if (!sgwallet.wallet) return false;
+  const instantiateMutation = useMutation(
+    async ({
+      work,
+      useSimulatedGasFee,
+    }: {
+      work: WorkSerializable;
+      useSimulatedGasFee?: boolean;
+    }) => {
+      if (!sgwallet.wallet) return false;
 
-    if (!work) return false;
+      if (!work) return false;
 
-    if (!client.client) {
-      throw new Error("missing sg client");
+      if (!client.client) {
+        throw new Error("missing sg client");
+      }
+      const signingClient = await client.client.connectSigningClient();
+      if (!signingClient) {
+        throw new Error("Couldn't connect client");
+      }
+      let res: { sg721: string; minter: string } | undefined = undefined;
+      try {
+        res = await instantiateNew(
+          work,
+          sgwallet.wallet.address,
+          signingClient,
+          useSimulatedGasFee
+        );
+      } catch (e) {
+        toast.error("Failed to instantiate on chain: " + (e as any)?.message);
+        throw e;
+      }
+      if (!res) {
+        return;
+      }
+      await login.mutateAsync();
+
+      await mutationContracts.mutateAsync({
+        sg721: res.sg721,
+        minter: res.minter,
+        id: work.id,
+      });
+      return true;
     }
-    const signingClient = await client.client.connectSigningClient();
-    if (!signingClient) {
-      throw new Error("Couldn't connect client");
-    }
-    let res: { sg721: string; minter: string } | undefined = undefined;
-    try {
-      res = await instantiateNew(work, sgwallet.wallet.address, signingClient);
-    } catch (e) {
-      //
-      toast.error("Failed to instantiate on chain: " + (e as any)?.message);
-      return;
-    }
-    if (!res) {
-      return;
-    }
-    await login.mutateAsync();
-    await mutationContracts.mutateAsync({
-      sg721: res.sg721,
-      minter: res.minter,
-      id: work.id,
-    });
-    return true;
-  });
+  );
 
   return { instantiateMutation };
 };

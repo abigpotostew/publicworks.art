@@ -10,6 +10,7 @@ import { BsArrowRepeat } from "react-icons/bs";
 
 interface ConfirmConfigProps {
   work: WorkSerializable;
+  setUseSimulatedGasFee: (useSimulatedGasFee: boolean) => void;
 }
 
 export const ConfirmConfig: FC<ConfirmConfigProps> = (

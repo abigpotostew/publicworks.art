@@ -8,7 +8,7 @@ import { useStargazeClient, useWallet } from "@stargazezone/client";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { FC, ReactElement, useCallback, useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
+import { Container, Form } from "react-bootstrap";
 import { ConfettiScreen } from "src/components/celebration/ConfettiScreen";
 import { ConfirmConfig } from "src/components/creatework/ConfirmConfig";
 import { DescribeWork } from "src/components/creatework/DescribeWork";
@@ -226,6 +226,7 @@ const EditWorkPage = () => {
   const onUpload = onUploadMutation.mutate;
 
   const { instantiateMutation } = useInstantiate();
+  const [useSimulatedGasFee, setUseSimulatedGasFee] = useState<boolean>(false);
 
   const onInstantiate = useCallback(async () => {
     //confetti
@@ -235,7 +236,7 @@ const EditWorkPage = () => {
     console.log("instantiate and showing confettie");
     toast.success("Successfully instantiated!");
     setShowConfetti(true);
-  }, [work, instantiateMutation, toast]);
+  }, [work, instantiateMutation, toast, useSimulatedGasFee]);
 
   const createStep = (stageEnum: Stage): Step => {
     const completed =
@@ -305,9 +306,21 @@ const EditWorkPage = () => {
             // <Container fluid={false}>
             <>
               <FlexBoxCenter fluid={false}>
-                {work && <ConfirmConfig work={work} />}
+                {work && (
+                  <ConfirmConfig
+                    work={work}
+                    setUseSimulatedGasFee={setUseSimulatedGasFee}
+                  />
+                )}
               </FlexBoxCenter>
               <div>
+                <Form.Check
+                  type="switch"
+                  id="custom-switch"
+                  label="Check this switch"
+                  value={useSimulatedGasFee.toString()}
+                  onChange={() => setUseSimulatedGasFee(!useSimulatedGasFee)}
+                />
                 {
                   <Button
                     disabled={

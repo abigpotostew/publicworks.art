@@ -104,6 +104,10 @@ const editWorkContracts = authorizedProcedure
     if (!project.ok) {
       throw new TRPCError({ code: "BAD_REQUEST" });
     }
+    //delete work tokens too in the case that the work was already minted then stop
+    //todo index the work tokens by contract id instead of work id
+    const deleteRes = await stores().project.deleteWorkTokens(input.id);
+    console.log("deleted existing work tokens", deleteRes);
     return serializeWork(project.value);
   });
 const getWorkById = baseProcedure
