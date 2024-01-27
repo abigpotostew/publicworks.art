@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { isISODate } from "@publicworks/publicworks.art/src/util/isISODate";
 import { Column } from "typeorm";
+import { normalizeMetadataUri } from "@publicworks/publicworks.art/src/wasm/metadata";
 
 export const workZod = z.object({
   id: z.number(),
@@ -66,10 +67,15 @@ export const tokenZod = z.object({
   hash: z.string(),
   token_id: z.string(),
   status: z.number(),
-  imageUrl: z.string().nullable(),
-  metadataUri: z.string().nullable(),
+  imageUrl: z.string(),
+  metadataUri: z.string(),
   createdDate: z.date().transform((d) => d.toISOString()),
   updatedDate: z.date().transform((d) => d.toISOString()),
 });
 
 export type TokenSerializable = z.infer<typeof tokenZod>;
+
+export type TokenSerializableWithMetadata = TokenSerializable & {
+  imageUrl: string | null;
+  metadataUri: string | null;
+};

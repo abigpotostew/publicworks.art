@@ -1,4 +1,3 @@
-
 // the main common security headers
 const baseSecurityHeaders = [
   {
@@ -20,6 +19,16 @@ const nextConfig = {
   reactStrictMode: false,
   experimental: {},
   productionBrowserSourceMaps: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "ipfs.publicworks.art",
+        port: "",
+        pathname: "/ipfs/**",
+      },
+    ],
+  },
   async headers() {
     return [
       {

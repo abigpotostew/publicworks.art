@@ -9,21 +9,29 @@ import MainLayout from "../../../src/layout/MainLayout";
 import { cn } from "../../../src/lib/css/cs";
 import { stores } from "../../../src/store/stores";
 import { initializeIfNeeded } from "../../../src/typeorm/datasource";
-import { getTokenMetadata, normalizeIpfsUri } from "../../../src/wasm/metadata";
+import {
+  getTokenMetadata,
+  normalizeIpfsUri,
+  normalizeMetadataUri,
+} from "../../../src/wasm/metadata";
 import styles from "../../../styles/Work.module.scss";
 import { TokenEntity } from "@publicworks/db-typeorm/model/work.entity";
 import {
   serializeWork,
   serializeWorkToken,
+  TokenSerializableWithMetadata,
 } from "@publicworks/db-typeorm/serializable";
 import { useQuery } from "@tanstack/react-query";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ReactElement, useState } from "react";
+import React, { ReactElement, useMemo, useState } from "react";
 import { Container } from "react-bootstrap";
 import SpinnerLoading from "src/components/loading/Loader";
 import { trpcNextPW } from "src/server/utils/trpc";
+import Image from "next/image";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 
 export async function getStaticPaths() {
   console.log("getStaticPaths, token");
@@ -74,10 +82,19 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const token = await stores().project.getToken({ workId: work.id, tokenId });
 
+  const tokenSerialized: TokenSerializableWithMetadata | null = token
+    ? {
+        ...serializeWorkToken(token),
+        imageUrl: token.imageUrl ? normalizeMetadataUri(token.imageUrl) : "",
+        metadataUri: token.metadataUri
+          ? normalizeMetadataUri(token.metadataUri)
+          : "",
+      }
+    : null;
   return {
     props: {
       slug,
-      token: token ? serializeWorkToken(token) : null,
+      token: tokenSerialized,
       work: serializeWork(work),
       tokenId,
     },
@@ -89,7 +106,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 const WorkTokenPage = ({
   work,
   slug,
-  token,
+  token: tokenIn,
   tokenId,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const router = useRouter();
@@ -108,7 +125,7 @@ const WorkTokenPage = ({
     async () => {
       const sg721 = work?.sg721;
       if (!sg721) {
-        return;
+        throw new Error("No sg721");
       }
       if (
         !tokenId ||
@@ -116,7 +133,7 @@ const WorkTokenPage = ({
         !Number.isFinite(parseInt(tokenId))
       ) {
         setNotFound(true);
-        return;
+        return null;
       }
 
       try {
@@ -132,6 +149,35 @@ const WorkTokenPage = ({
     { enabled: !!work && !!slug && !!tokenId && !!work?.sg721 }
   );
 
+  type Token = {
+    image: string;
+    animationUrl: string;
+    description: string;
+    hash: string;
+  };
+
+  const token: Token | null = useMemo((): Token | null => {
+    const tokenCast = tokenIn as TokenSerializableWithMetadata | null;
+    if (tokenMetadata?.data) {
+      return {
+        image: tokenMetadata.data.image,
+        animationUrl: tokenMetadata.data.animation_url || "",
+        description: tokenMetadata.data.description,
+        hash: tokenCast?.hash || "",
+      };
+    }
+    if (!tokenCast) {
+      return null;
+    }
+
+    return {
+      image: tokenCast.imageUrl || "",
+      animationUrl: tokenCast.metadataUri || "",
+      description: work.description || "",
+      hash: tokenCast.hash,
+    };
+  }, [tokenMetadata?.data, tokenIn, work.description]);
+
   const errorMetadata = tokenMetadata.isError;
   const {
     loading: ownerLoading,
@@ -141,7 +187,9 @@ const WorkTokenPage = ({
 
   const notFoundActual =
     (!workQuery.isLoading && !workQuery.isSuccess && !workQuery.data) ||
+    (!tokenMetadata.isLoading && !token) ||
     notFound;
+
   return (
     <>
       <div>
@@ -165,6 +213,14 @@ const WorkTokenPage = ({
                 <div>Not Found</div>
               ) : tokenMetadata.isLoading ? (
                 <SpinnerLoading />
+              ) : token?.image &&
+                process.env.NEXT_PUBLIC_IMAGE_TOKENS === "true" ? (
+                <Image
+                  src={token.image}
+                  alt={"nft media"}
+                  width={500}
+                  height={500}
+                />
               ) : (
                 <LiveMedia
                   ipfsUrl={tokenMetadata?.data?.animation_url || ""}
@@ -189,10 +245,13 @@ const WorkTokenPage = ({
                     "px-3 d-inline-flex align-items-center"
                   )}
                 >
-                  {!!workQuery?.data?.creator && (
+                  {!!workQuery?.data?.ownerAddress && (
                     <>
                       <span>By </span>
-                      <StarsAddressName address={owner} className={"inline"} />
+                      <StarsAddressName
+                        address={workQuery?.data?.ownerAddress}
+                        className={"inline"}
+                      />
                     </>
                   )}
                 </span>
@@ -213,7 +272,7 @@ const WorkTokenPage = ({
               <div
                 className={`${styles.displayLinebreak} ${styles.sectionBreak}`}
               >
-                {tokenMetadata?.data?.description}
+                {token?.description}
               </div>
               <div
                 className={`${styles.workAuthorLink} ${styles.sectionBreak}`}
@@ -261,6 +320,10 @@ const WorkTokenPage = ({
                 rel="noreferrer"
               >
                 Live
+                <span className={"text-decoration-none"}>
+                  {" "}
+                  <FontAwesomeIcon icon={faArrowUpRightFromSquare} width={16} />
+                </span>
               </a>
             </div>
             <div className={"mt-4"}>

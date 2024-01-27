@@ -125,10 +125,10 @@ export class TokenEntity extends AuditedEntity {
   @Column("text", { name: "hash_input" })
   hashInput: string;
 
-  @Column("text", { name: "image_url", nullable: true })
-  imageUrl: string | null;
-  @Column("text", { name: "metadata_uri", nullable: true })
-  metadataUri: string | null;
+  @Column("text", { name: "image_url", nullable: false })
+  imageUrl: string;
+  @Column("text", { name: "metadata_uri", nullable: false })
+  metadataUri: string;
 
   @ManyToOne(() => WorkEntity, (r) => r.tokens)
   @JoinColumn({ name: "work_id" })

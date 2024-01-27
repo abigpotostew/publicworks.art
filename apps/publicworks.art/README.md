@@ -22,6 +22,8 @@ todo:
 
 - index work tokens by contract address instead of work id so that replacing the contract doesn't screw up the tokens.
 - replace the live preview with a static image
+- load images from the gcp storage (requires making the image bucket public)
+- give user option to show live view or static image
 
 design inspiration:
 - https://nouns.build/

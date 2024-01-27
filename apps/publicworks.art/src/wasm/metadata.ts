@@ -61,7 +61,11 @@ export const getTokenMetadata = async (
     `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${sg721}/smart/${msgBase64}`
   );
   if (!res.ok) {
-    console.log("status: " + res.status, " text: " + (await res.text()));
+    const text = await res.text();
+    console.log("status: " + res.status, " text: " + text);
+    if (text.includes("not found")) {
+      return null;
+    }
     throw new Error("Failed to fetch token info");
   }
   const data = await res.json();
