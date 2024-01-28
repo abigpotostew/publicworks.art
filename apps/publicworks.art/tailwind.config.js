@@ -21,17 +21,17 @@ module.exports = {
   plugins: [require("@tailwindcss/typography"), require("daisyui")],
   // prefix: "tw-",
   corePlugins: {
-    preflight: false,
+    preflight: true,
   },
   important: true,
 
   daisyui: {
     utils: true,
-    // prefix: "ds-",
     logs: true,
     // darkTheme: "dark",
     base: true,
     styled: true,
+    rtl: false,
     themes: [
       // "dark",
       {

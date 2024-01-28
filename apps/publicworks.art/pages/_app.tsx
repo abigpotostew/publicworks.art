@@ -1,6 +1,4 @@
-// import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/globals.scss";
-// import "../styles/bootstrap-theme/theme-dark.scss";
 
 import type { FC, ReactElement, ReactNode } from "react";
 import type { NextPage } from "next";
@@ -59,10 +57,12 @@ const MyApp: FC<AppPropsWithLayout> = ({
         <QueryClientProvider client={queryClient}>
           <UserProvider>
             <GoogleAnalytics trackPageViews />
-            <ToastContainer
-              className={`${robotoFlex.variable} ${adventPro.variable}`}
-            />
-            <div>{getLayout(<Component {...pageProps} />)}</div>
+            <ToastContainer />
+            <div
+              className={`${robotoFlex.variable} ${adventPro.variable} font-body`}
+            >
+              {getLayout(<Component {...pageProps} />)}
+            </div>
             <Analytics />
           </UserProvider>
         </QueryClientProvider>

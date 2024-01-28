@@ -4,6 +4,7 @@ import { NavBar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 import styles from "../../styles/Home.module.scss";
 import { Modal } from "src/components/modal/Modal";
+import { NavBar2 } from "../components/Navbar2";
 
 interface ILayout {
   description?: string;
@@ -67,7 +68,7 @@ const MainLayout: FC<ILayout> = ({
       {/*    // )*/}
       {/*  }*/}
       {/*>*/}
-      <NavBar />
+      <NavBar2 />
       {/*<header>*/}
       {/*</header>*/}
 

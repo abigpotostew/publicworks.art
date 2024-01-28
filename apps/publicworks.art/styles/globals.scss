@@ -5,6 +5,8 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 $font-size-base:1rem;
 
 /*html,*/
@@ -12,7 +14,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: "Roboto+Flex", sans-serif;
+  //font-family: "Roboto+Flex", sans-serif;
   //background-color: #212529;
 }
 /*prevent overflow on right side*/

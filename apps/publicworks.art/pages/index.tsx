@@ -120,8 +120,8 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   }
 
   return (
-    <div className={"bg-neutral"}>
-      <div className={"Margin-T-4 Margin-B-16"}>
+    <>
+      <div className={"mt-4 mb-8"}>
         <LogoHeader />
       </div>
       <GroupDividerBottom />
@@ -228,7 +228,7 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
           </FlexBoxCenter>
         </RowThinContainer>
       </Container>
-    </div>
+    </>
   );
 };
 
