@@ -231,7 +231,7 @@ const EditWorkPage = () => {
   const onInstantiate = useCallback(async () => {
     //confetti
     if (!work) return;
-    const success = await instantiateMutation.mutateAsync(work);
+    const success = await instantiateMutation.mutateAsync({ work });
     if (!success) return;
     console.log("instantiate and showing confettie");
     toast.success("Successfully instantiated!");

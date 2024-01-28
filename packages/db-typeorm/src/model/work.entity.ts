@@ -120,15 +120,13 @@ export class TokenEntity extends AuditedEntity {
   @Column("int", { name: "status" })
   status: number;
 
-  @Column("text", { name: "tx_memo" })
-  txMemo: string;
   @Column("text", { name: "hash_input" })
   hashInput: string;
 
-  @Column("text", { name: "image_url", nullable: false })
-  imageUrl: string;
-  @Column("text", { name: "metadata_uri", nullable: false })
-  metadataUri: string;
+  @Column("text", { name: "image_url", nullable: true })
+  imageUrl: string | null;
+  @Column("text", { name: "metadata_uri", nullable: true })
+  metadataUri: string | null;
 
   @Column("bigint", { name: "work_id", nullable: false })
   work_id: string;

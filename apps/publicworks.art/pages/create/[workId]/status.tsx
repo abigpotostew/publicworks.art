@@ -170,15 +170,23 @@ const WorkStatusPage = () => {
                             <td>{relativeTime(token.updatedDate)}</td>
                             <td>
                               <Link
-                                href={`${normalizeMetadataUri(token.imageUrl)}`}
+                                href={
+                                  token.imageUrl
+                                    ? `${normalizeMetadataUri(token.imageUrl)}`
+                                    : "#"
+                                }
                               >
                                 Image
                               </Link>
                               {" • "}
                               <Link
-                                href={`${normalizeMetadataUri(
+                                href={
                                   token.metadataUri
-                                )}`}
+                                    ? `${normalizeMetadataUri(
+                                        token.metadataUri
+                                      )}`
+                                    : "#"
+                                }
                               >
                                 Metadata
                               </Link>

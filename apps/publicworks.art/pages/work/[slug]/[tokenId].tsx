@@ -19,6 +19,7 @@ import { TokenEntity } from "@publicworks/db-typeorm/model/work.entity";
 import {
   serializeWork,
   serializeWorkToken,
+  TokenSerializable,
   TokenSerializableWithMetadata,
 } from "@publicworks/db-typeorm/serializable";
 import { useQuery } from "@tanstack/react-query";
@@ -82,7 +83,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const token = await stores().project.getToken({ workId: work.id, tokenId });
 
-  const tokenSerialized: TokenSerializableWithMetadata | null = token
+  const tokenSerialized: TokenSerializable | null = token
     ? {
         ...serializeWorkToken(token),
         imageUrl: token.imageUrl ? normalizeMetadataUri(token.imageUrl) : "",

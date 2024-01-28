@@ -67,8 +67,8 @@ export const tokenZod = z.object({
   hash: z.string(),
   token_id: z.string(),
   status: z.number(),
-  imageUrl: z.string(),
-  metadataUri: z.string(),
+  imageUrl: z.string().nullish(),
+  metadataUri: z.string().nullish(),
   createdDate: z.date().transform((d) => d.toISOString()),
   updatedDate: z.date().transform((d) => d.toISOString()),
 });
@@ -84,7 +84,4 @@ export const tokenFullZod = tokenZod.merge(
 export type TokenSerializable = z.infer<typeof tokenZod>;
 export type TokenFullSerializable = z.infer<typeof tokenFullZod>;
 
-export type TokenSerializableWithMetadata = TokenSerializable & {
-  imageUrl: string | null;
-  metadataUri: string | null;
-};
+export type TokenSerializableWithMetadata = TokenSerializable;
