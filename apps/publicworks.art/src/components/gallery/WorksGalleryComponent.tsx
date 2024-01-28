@@ -40,7 +40,7 @@ export const WorksGalleryComponent = ({
       <Card.Img
         className={cn(
           styles.workCardImage,
-          "rounded-1 rounded-top button tw-overflow-hidden"
+          "rounded-1 rounded-top button overflow-hidden"
         )}
         variant="top"
         src={query.isSuccess ? query.data : ""}
@@ -48,7 +48,7 @@ export const WorksGalleryComponent = ({
       <Card.ImgOverlay className={`p-0 `}>
         <Link
           href={"/work/" + w.slug}
-          className={cn("text-decoration-none", "tw-overflow-hidden")}
+          className={cn("text-decoration-none", "overflow-hidden")}
         >
           <Container
             className={

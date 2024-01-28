@@ -1,9 +1,11 @@
 
-@import './variables.module';
+//@import './variables.module';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+$font-size-base:1rem;
 
 /*html,*/
 html,

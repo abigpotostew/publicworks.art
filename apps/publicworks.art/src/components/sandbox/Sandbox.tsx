@@ -164,21 +164,19 @@ export function Sandbox() {
                 </div>
               </a>
 
-              <div className={"tw-mt-6"}>
+              <div className={"mt-6"}>
                 <h5>CSS Selector</h5>
                 <span>{cssSelector ? cssSelector : "not specified"}</span>
               </div>
 
-              <div className={"tw-mt-6 tw-mb-3"}>
+              <div className={"mt-6 mb-3"}>
                 <h5>Files</h5>
                 <span>
                   <i aria-hidden className="fas fa-file-archive" /> {file?.name}
                 </span>
               </div>
               <div
-                className={
-                  styles.filesListContainer + " overflow-scroll tw-p-2"
-                }
+                className={styles.filesListContainer + " overflow-scroll p-2"}
               >
                 <div className={"overflow-scroll mh-100"}>
                   {fileList?.map((f, index) => (
@@ -187,7 +185,7 @@ export function Sandbox() {
                 </div>
               </div>
 
-              <div className={"tw-mt-6"}>
+              <div className={"mt-6"}>
                 <h5>Testing</h5>
                 <p>Your work must pass these conditions:</p>
                 <ul>
@@ -201,7 +199,7 @@ export function Sandbox() {
                 </ul>
               </div>
 
-              <div className={"tw-mt-6"}>
+              <div className={"mt-6"}>
                 <h5>
                   Preview Ready{" "}
                   {previewReady ? (
@@ -217,7 +215,7 @@ export function Sandbox() {
                     Preview Ready to be set.
                   </p>
                 )}
-                <div className={"tw-mt-6"}>
+                <div className={"mt-6"}>
                   <h5>
                     Attributes{" "}
                     {hasAttributes ? (
@@ -236,7 +234,7 @@ export function Sandbox() {
                     <RawProperties properties={attributes} />
                   )}
                 </div>
-                <div className={"tw-mt-6"}>
+                <div className={"mt-6"}>
                   <h5 className={""}>
                     Traits{" "}
                     {hasTraits ? (
@@ -330,8 +328,8 @@ export function Sandbox() {
 
         {/*//sandbox preview*/}
         <div>
-          <div className={"ms-auto w-100 tw-p-8 tw-pt-0 " + styles.border2px}>
-            <h5 className={"tw-mt-4"}>Live Preview</h5>
+          <div className={"ms-auto w-100 p-8 pt-0 " + styles.border2px}>
+            <h5 className={"mt-4"}>Live Preview</h5>
             {file ? (
               <SandboxPreview
                 hash={hash}
@@ -345,7 +343,7 @@ export function Sandbox() {
               <div className={"w-100 mb-2 " + styles.height30rem}></div>
             )}
 
-            <div className={"tw-pt-4"}>
+            <div className={"pt-4"}>
               {url && (
                 <Button
                   variant={"secondary"}
@@ -356,7 +354,7 @@ export function Sandbox() {
               )}
               {url && (
                 <Button
-                  className={"tw-ms-2"}
+                  className={"ms-2"}
                   // @ts-ignore
                   href={url}
                   target="_blank"
@@ -366,8 +364,8 @@ export function Sandbox() {
               )}
             </div>
           </div>
-          <div className={cn(styles.border2px, "tw-p-8 tw-pt-0")}>
-            <h5 className={"tw-mt-4"}>Image Preview</h5>
+          <div className={cn(styles.border2px, "p-8 pt-0")}>
+            <h5 className={"mt-4"}>Image Preview</h5>
             {file && !cssSelector && (
               <div>
                 No CSS selector specified. Image preview will not be captured.
@@ -376,7 +374,7 @@ export function Sandbox() {
             {imgUrl && <img src={imgUrl} className={"w-100 "} />}
           </div>
           {allConditionsMet && (
-            <div className={"tw-mt-5"}>
+            <div className={"mt-5"}>
               Your works meets all testing parameters!{" "}
               <Link href={"/create"}>
                 <Button className={""}>Create Work</Button>

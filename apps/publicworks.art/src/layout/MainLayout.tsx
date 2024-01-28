@@ -3,11 +3,6 @@ import Head from "next/head";
 import { NavBar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 import styles from "../../styles/Home.module.scss";
-import { CosmosWalletProviderContext } from "../components/provider/CosmosWalletProvider";
-import { Container } from "react-bootstrap";
-import { useUserSession } from "src/hooks/useUserSession";
-import { StargazeProvider, useWallet } from "@stargazezone/client";
-import stargazeClient from "src/stargaze/stargaze";
 import { Modal } from "src/components/modal/Modal";
 
 interface ILayout {

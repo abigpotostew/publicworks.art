@@ -1,6 +1,6 @@
 // import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/globals.scss";
-import "../styles/bootstrap-theme/theme-dark.scss";
+// import "../styles/bootstrap-theme/theme-dark.scss";
 
 import type { FC, ReactElement, ReactNode } from "react";
 import type { NextPage } from "next";
@@ -17,7 +17,19 @@ import { StargazeProvider } from "@stargazezone/client";
 import stargazeClient from "src/stargaze/stargaze";
 import { UserProvider } from "src/context/user/UserProvider";
 import { Analytics } from "@vercel/analytics/react";
+import { Advent_Pro, Roboto_Flex } from "next/font/google";
 
+const adventPro = Advent_Pro({
+  weight: "variable",
+  subsets: ["latin"],
+  variable: "--font-advent-pro",
+});
+
+const robotoFlex = Roboto_Flex({
+  weight: "variable",
+  subsets: ["latin"],
+  variable: "--font-roboto-flex",
+});
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
@@ -47,8 +59,10 @@ const MyApp: FC<AppPropsWithLayout> = ({
         <QueryClientProvider client={queryClient}>
           <UserProvider>
             <GoogleAnalytics trackPageViews />
-            <ToastContainer />
-            {getLayout(<Component {...pageProps} />)}
+            <ToastContainer
+              className={`${robotoFlex.variable} ${adventPro.variable}`}
+            />
+            <div>{getLayout(<Component {...pageProps} />)}</div>
             <Analytics />
           </UserProvider>
         </QueryClientProvider>

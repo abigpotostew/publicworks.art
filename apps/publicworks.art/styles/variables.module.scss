@@ -1,211 +1,211 @@
-/* variables.module.scss */
-
-//dark theme
-//$pw-bg-color: #1f2b37;
+///* variables.module.scss */
+//
+////dark theme
+////$pw-bg-color: #1f2b37;
+//////$pw-bg-color: #212529;
+////$pw-text-color: #ffffff;
+//
+//
+//
+//// boostrap vars
+//$spacer:1.5rem;
+//$border-width:1px;
+//$btn-border-radius:1.35rem;
+//$line-height-base:1.5;
+//$font-size-base:1rem;
+//
+//$pw-p-content-line-height: calc($spacer + 10%) ;
+//$pw-p-spacer: 1.25rem;
+//
+//$pw-bg-color: #ffffff;
 ////$pw-bg-color: #212529;
-//$pw-text-color: #ffffff;
-
-
-
-// boostrap vars
-$spacer:1.5rem;
-$border-width:1px;
-$btn-border-radius:1.35rem;
-$line-height-base:1.5;
-$font-size-base:1rem;
-
-$pw-p-content-line-height: calc($spacer + 10%) ;
-$pw-p-spacer: 1.25rem;
-
-$pw-bg-color: #ffffff;
-//$pw-bg-color: #212529;
-$pw-text-color: #000000;
-
-// bootstrap colors
-$primary: #212529;
-//$primary:#0d6efd;
-$secondary:#6c757d;
-$success:#198754;
-$danger:#dc3545;
-$info:#0dcaf0;
-$warning:#ffc107;
-$light:#f8f9fa;
-$dark:#212529;
-
-//other custom colors
-$title-primary: #03366b;
-
-// Form styles
-$form-feedback-valid-color: #5b806e;
-
-//dark theme
-//$primary:#5C8F94;
-//$secondary:#6f7f8c;
-//$success:#3e4d59;
-//$danger:#cc330d;
-//$info:#2F3C48;
-//$warning:#6e9fa5;
-//$light:#eceeec;
-//$dark:#1e2b37;
-
-.Margin-B-0{
-  margin-bottom: 0;
-}
-.Margin-B-1{
-  margin-bottom: calc($pw-p-spacer * 0.5);
-}
-.Margin-B-2{
-  margin-bottom: calc($pw-p-spacer * 1.0);
-}
-.Margin-B-4{
-  margin-bottom: calc($pw-p-spacer * 1.5);
-}
-.Margin-B-8{
-   margin-bottom: calc($pw-p-spacer * 2);
- }
-.Margin-B-12{
-   margin-bottom: calc($pw-p-spacer * 2.5);
- }
-.Margin-B-16{
-   margin-bottom: calc($pw-p-spacer * 4);
- }
-.Margin-B-24{
-   margin-bottom: calc($pw-p-spacer * 6);
- }
-.Margin-T-0{
-  margin-top: 0;
-}
-.Margin-T-1{
-  margin-top: calc($pw-p-spacer * 0.5);
-}
-.Margin-T-2{
-  margin-top: calc($pw-p-spacer * 1.0);
-}
-.Margin-T-4{
-  margin-top: calc($pw-p-spacer * 1.5);
-}
-.Margin-T-8{
-  margin-top: calc($pw-p-spacer * 2);
-}
-.Margin-T-12{
-  margin-top: calc($pw-p-spacer * 2.5);
-}
-.Margin-T-16{
-  margin-top: calc($pw-p-spacer * 4);
-}
-.Margin-T-24{
-  margin-top: calc($pw-p-spacer * 6);
-}
-
-.Margin-L-0{
-  margin-left: 0;
-}
-.Margin-L-1{
-  margin-left: calc($pw-p-spacer * 0.5);
-}
-.Margin-L-2{
-  margin-left: calc($pw-p-spacer * 1.0);
-}
-.Margin-L-4{
-  margin-left: calc($pw-p-spacer * 1.5);
-}
-.Margin-L-8{
-  margin-left: calc($pw-p-spacer * 2);
-}
-.Margin-L-12{
-  margin-left: calc($pw-p-spacer * 2.5);
-}
-.Margin-L-16{
-  margin-left: calc($pw-p-spacer * 4);
-}
-.Margin-L-24{
-  margin-left: calc($pw-p-spacer * 6);
-}
-.Margin-R-0{
-  margin-right: 0;
-}
-.Margin-R-1{
-  margin-right: calc($pw-p-spacer * 0.5);
-}
-.Margin-R-2{
-  margin-right: calc($pw-p-spacer * 1.0);
-}
-.Margin-R-4{
-  margin-right: calc($pw-p-spacer * 1.5);
-}
-.Margin-R-8{
-  margin-right: calc($pw-p-spacer * 2);
-}
-.Margin-R-12{
-  margin-right: calc($pw-p-spacer * 2.5);
-}
-.Margin-R-16{
-  margin-right: calc($pw-p-spacer * 4);
-}
-.Margin-R-24{
-  margin-right: calc($pw-p-spacer * 6);
-}
-
-$pw-width: 18px;
-.Width-full{
-  width: 100%;
-}
-.Width-0{
-  width: 0;
-}
-.Width-1{
-  width: calc($pw-p-spacer * 1.0);
-}
-.Width-2{
-  width: calc($pw-p-spacer * 1.25);
-}
-.Width-3{
-  width: calc($pw-p-spacer * 1.5);
-}
-.Width-4{
-  width: calc($pw-p-spacer * 2);
-}
-.Width-5{
-  width: calc($pw-p-spacer * 2.5);
-}
-.Width-6{
-  width: calc($pw-p-spacer * 4);
-}
-.Width-7{
-  width: calc($pw-p-spacer * 6);
-}
-
-
-
-$headings-font-family:"Advent Pro";
-$font-family-base:"Roboto+Flex";
-
-:export {
-  pw-bg-color:$pw-bg-color;
-  pw-text-color:$pw-text-color;
-  pw-p-content-line-height:$pw-p-content-line-height;
-  spacer:$spacer;
-  border-width:$border-width;
-  btn-border-radius:$btn-border-radius;
-  line-height-base:$line-height-base;
-  pw-p-spacer:$pw-p-spacer;
-  //pw-section-spacer:$pw-section-spacer;
-  //pw-subsection-spacer:$pw-subsection-spacer;
-
-  primary:$primary;
-  secondary:$secondary;
-  success:$success;
-  danger:$danger;
-  info:$info;
-  warning:$warning;
-  light:$light;
-  dark:$dark;
-
-
-}
-
-
-
-.fs-7 {
-  font-size: $font-size-base * 0.9;
-}
+//$pw-text-color: #000000;
+//
+//// bootstrap colors
+//$primary: #212529;
+////$primary:#0d6efd;
+//$secondary:#6c757d;
+//$success:#198754;
+//$danger:#dc3545;
+//$info:#0dcaf0;
+//$warning:#ffc107;
+//$light:#f8f9fa;
+//$dark:#212529;
+//
+////other custom colors
+//$title-primary: #03366b;
+//
+//// Form styles
+//$form-feedback-valid-color: #5b806e;
+//
+////dark theme
+////$primary:#5C8F94;
+////$secondary:#6f7f8c;
+////$success:#3e4d59;
+////$danger:#cc330d;
+////$info:#2F3C48;
+////$warning:#6e9fa5;
+////$light:#eceeec;
+////$dark:#1e2b37;
+//
+//.Margin-B-0{
+//  margin-bottom: 0;
+//}
+//.Margin-B-1{
+//  margin-bottom: calc($pw-p-spacer * 0.5);
+//}
+//.Margin-B-2{
+//  margin-bottom: calc($pw-p-spacer * 1.0);
+//}
+//.Margin-B-4{
+//  margin-bottom: calc($pw-p-spacer * 1.5);
+//}
+//.Margin-B-8{
+//   margin-bottom: calc($pw-p-spacer * 2);
+// }
+//.Margin-B-12{
+//   margin-bottom: calc($pw-p-spacer * 2.5);
+// }
+//.Margin-B-16{
+//   margin-bottom: calc($pw-p-spacer * 4);
+// }
+//.Margin-B-24{
+//   margin-bottom: calc($pw-p-spacer * 6);
+// }
+//.Margin-T-0{
+//  margin-top: 0;
+//}
+//.Margin-T-1{
+//  margin-top: calc($pw-p-spacer * 0.5);
+//}
+//.Margin-T-2{
+//  margin-top: calc($pw-p-spacer * 1.0);
+//}
+//.Margin-T-4{
+//  margin-top: calc($pw-p-spacer * 1.5);
+//}
+//.Margin-T-8{
+//  margin-top: calc($pw-p-spacer * 2);
+//}
+//.Margin-T-12{
+//  margin-top: calc($pw-p-spacer * 2.5);
+//}
+//.Margin-T-16{
+//  margin-top: calc($pw-p-spacer * 4);
+//}
+//.Margin-T-24{
+//  margin-top: calc($pw-p-spacer * 6);
+//}
+//
+//.Margin-L-0{
+//  margin-left: 0;
+//}
+//.Margin-L-1{
+//  margin-left: calc($pw-p-spacer * 0.5);
+//}
+//.Margin-L-2{
+//  margin-left: calc($pw-p-spacer * 1.0);
+//}
+//.Margin-L-4{
+//  margin-left: calc($pw-p-spacer * 1.5);
+//}
+//.Margin-L-8{
+//  margin-left: calc($pw-p-spacer * 2);
+//}
+//.Margin-L-12{
+//  margin-left: calc($pw-p-spacer * 2.5);
+//}
+//.Margin-L-16{
+//  margin-left: calc($pw-p-spacer * 4);
+//}
+//.Margin-L-24{
+//  margin-left: calc($pw-p-spacer * 6);
+//}
+//.Margin-R-0{
+//  margin-right: 0;
+//}
+//.Margin-R-1{
+//  margin-right: calc($pw-p-spacer * 0.5);
+//}
+//.Margin-R-2{
+//  margin-right: calc($pw-p-spacer * 1.0);
+//}
+//.Margin-R-4{
+//  margin-right: calc($pw-p-spacer * 1.5);
+//}
+//.Margin-R-8{
+//  margin-right: calc($pw-p-spacer * 2);
+//}
+//.Margin-R-12{
+//  margin-right: calc($pw-p-spacer * 2.5);
+//}
+//.Margin-R-16{
+//  margin-right: calc($pw-p-spacer * 4);
+//}
+//.Margin-R-24{
+//  margin-right: calc($pw-p-spacer * 6);
+//}
+//
+//$pw-width: 18px;
+//.Width-full{
+//  width: 100%;
+//}
+//.Width-0{
+//  width: 0;
+//}
+//.Width-1{
+//  width: calc($pw-p-spacer * 1.0);
+//}
+//.Width-2{
+//  width: calc($pw-p-spacer * 1.25);
+//}
+//.Width-3{
+//  width: calc($pw-p-spacer * 1.5);
+//}
+//.Width-4{
+//  width: calc($pw-p-spacer * 2);
+//}
+//.Width-5{
+//  width: calc($pw-p-spacer * 2.5);
+//}
+//.Width-6{
+//  width: calc($pw-p-spacer * 4);
+//}
+//.Width-7{
+//  width: calc($pw-p-spacer * 6);
+//}
+//
+//
+//
+//$headings-font-family:"Advent Pro";
+//$font-family-base:"Roboto+Flex";
+//
+//:export {
+//  pw-bg-color:$pw-bg-color;
+//  pw-text-color:$pw-text-color;
+//  pw-p-content-line-height:$pw-p-content-line-height;
+//  spacer:$spacer;
+//  border-width:$border-width;
+//  btn-border-radius:$btn-border-radius;
+//  line-height-base:$line-height-base;
+//  pw-p-spacer:$pw-p-spacer;
+//  //pw-section-spacer:$pw-section-spacer;
+//  //pw-subsection-spacer:$pw-subsection-spacer;
+//
+//  primary:$primary;
+//  secondary:$secondary;
+//  success:$success;
+//  danger:$danger;
+//  info:$info;
+//  warning:$warning;
+//  light:$light;
+//  dark:$dark;
+//
+//
+//}
+//
+//
+//
+//.fs-7 {
+//  font-size: $font-size-base * 0.9;
+//}

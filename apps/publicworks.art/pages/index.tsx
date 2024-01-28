@@ -120,7 +120,7 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   }
 
   return (
-    <div>
+    <div className={"bg-neutral"}>
       <div className={"Margin-T-4 Margin-B-16"}>
         <LogoHeader />
       </div>
