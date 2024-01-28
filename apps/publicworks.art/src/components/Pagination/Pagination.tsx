@@ -66,12 +66,7 @@ export const useChangePage = (
 ) => {
   const router = useRouter();
   // const pageIn = parseInt(router.query.page?.toString() || "1");
-  console.log(
-    "hello usechangepage",
-    router.query.page,
-    router.query,
-    router.isReady
-  );
+
   const [page, setPage] = useState<number>(1);
   useEffect(() => {
     if (router.isReady) {

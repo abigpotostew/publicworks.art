@@ -45,7 +45,6 @@ function GroupDivider() {
 export async function getStaticProps(context: GetStaticPropsContext) {
   await initializeIfNeeded();
 
-  console.log("in getStaticProps HOME");
   const ssg = await createServerSideHelpers({
     router: appRouter,
     ctx: {} as Context,

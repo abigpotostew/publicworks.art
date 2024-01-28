@@ -29,7 +29,6 @@ const AuthPage = () => {
       await claimUserAccountMutation.mutateAsync();
       utils.users.getUser.invalidate();
       const token = getCookie("PWToken");
-      console.log("here after login");
       if (typeof query.redirect === "string") {
         console.log("redirecting to ", query.redirect);
         await router.push({

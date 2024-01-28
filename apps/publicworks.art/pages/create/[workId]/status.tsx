@@ -90,10 +90,8 @@ const WorkStatusPage = () => {
 
   useEffect(() => {
     const newSkip = (page - 1) * take;
-    console.log("hi from useEffect", { page, take, newSkip });
     setSkip(newSkip);
   }, [take, skip, page]);
-  console.log("pizza data", { page, skip });
 
   // isReady = true;
   const workIsLoading = workQuery.isLoading;
