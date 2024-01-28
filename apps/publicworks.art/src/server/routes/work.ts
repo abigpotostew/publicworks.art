@@ -97,6 +97,13 @@ const editWorkContracts = authorizedProcedure
       });
     }
 
+    if (
+      sg721CodeId === work.sg721CodeId &&
+      minterCodeId === work.minterCodeId
+    ) {
+      console.log("no change to contracts");
+      return serializeWork(work);
+    }
     const project = await stores().project.updateProject(input.id, {
       ...input,
       sg721CodeId,
