@@ -24,6 +24,7 @@ todo:
 - replace the live preview with a static image
 - load images from the gcp storage (requires making the image bucket public)
 - give user option to show live view or static image
+- a page for users to see the status of a mint (ie progress in the render pipeline)
 
 design inspiration:
 - https://nouns.build/

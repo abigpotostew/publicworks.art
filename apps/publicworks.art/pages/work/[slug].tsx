@@ -69,14 +69,19 @@ export const getStaticProps: GetStaticProps = async (context) => {
     workId: work.id,
     tokenId: "1",
   });
-  return {
-    props: {
-      work: serializeWork(work),
-      token: token ? serializeWorkToken(token) : null,
-    },
-    revalidate: 10, // In seconds
-    // fallback: "blocking",
-  };
+  try {
+    return {
+      props: {
+        work: serializeWork(work),
+        token: token ? serializeWorkToken(token) : null,
+      },
+      revalidate: 10, // In seconds
+      // fallback: "blocking",
+    };
+  } catch (e) {
+    console.log("error", e);
+    throw e;
+  }
 };
 //InferGetStaticPropsType<typeof getStaticProps>
 const WorkPage = ({ work }: { work: WorkSerializable }) => {

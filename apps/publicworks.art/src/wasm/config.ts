@@ -15,7 +15,7 @@ const configBase = {
     finalizerCodeId: 132,
     finalizer:
       "stars107h5lh00zzdp8yqpdc3x8vtnaufh4ts5uay8x4vjyws9xzhrm3ysaw34as",
-    launchpadUrl: "https://testnet.publicawesome.dev/launchpad",
+    launchpadUrl: "https://testnet.publicawesome.dev",
   },
   // Production Values
   production: {
@@ -30,7 +30,7 @@ const configBase = {
     finalizerCodeId: 11,
     finalizer:
       "stars1urdxzux805z7xltx0vzdaqhlmm3helvklprz03svwykmlhmaayyq7pwl8t",
-    launchpadUrl: "https://www.stargaze.zone/launchpad",
+    launchpadUrl: "https://www.stargaze.zone",
   },
   useTestnet: process.env.NEXT_PUBLIC_TESTNET === "true", // Set to false on mainnet
 };

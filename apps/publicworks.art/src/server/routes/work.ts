@@ -1,6 +1,7 @@
 import {
   serializeWork,
   serializeWorkToken,
+  serializeWorkTokenFull,
 } from "../../../../../packages/db-typeorm/src/serializable/works/serialize-work";
 import { dataUrlToBuffer } from "../../base64/dataurl";
 import {
@@ -428,6 +429,29 @@ const deleteWork = authorizedProcedure
 
     return stores().project.deleteWork(work);
   });
+const tokenStatus = baseProcedure
+  .input(
+    z.object({
+      workId: z.number(),
+      take: z.number().int().positive().max(100).default(10),
+      skip: z.number().int().nonnegative().default(0),
+    })
+  )
+
+  .query(async ({ input, ctx }) => {
+    const work = await stores().project.getProject(input.workId);
+    if (!work) {
+      throw new TRPCError({ code: "NOT_FOUND" });
+    }
+
+    const { tokens, count } = await stores().project.listTokens({
+      work_id: input.workId.toString(),
+      take: input.take,
+      skip: input.skip,
+    });
+
+    return { tokens: tokens.map(serializeWorkTokenFull), count };
+  });
 
 export const workRouter = t.router({
   // Public
@@ -448,4 +472,5 @@ export const workRouter = t.router({
   confirmWorkUpload: confirmWorkUpload,
   confirmWorkCoverImageUpload: confirmWorkCoverImageUpload,
   deleteWork: deleteWork,
+  tokenStatus: tokenStatus,
 });

@@ -362,6 +362,30 @@ export class ProjectRepo {
         },
       });
   }
+
+  async listTokens({
+    work_id,
+    take,
+    skip,
+  }: {
+    work_id: string;
+    take: number;
+    skip: number;
+  }): Promise<{ tokens: TokenEntity[]; count: number }> {
+    const [tokens, count] = await dataSource()
+      .getRepository(TokenEntity)
+      .findAndCount({
+        where: {
+          work_id,
+        },
+        order: {
+          token_id: "ASC",
+        },
+        take,
+        skip,
+      });
+    return { tokens, count };
+  }
 }
 
 export function convertToSlug(str: string) {

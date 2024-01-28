@@ -10,7 +10,6 @@ import { OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { useWallet } from "@stargazezone/client";
 import { DutchAuctionConfig } from "@stargazezone/client/core/minters/types";
-import useStargazeClient from "@stargazezone/client/react/client/useStargazeClient";
 import { Decimal } from "@stargazezone/types/contracts/minter/instantiate_msg";
 import { Coin } from "@stargazezone/types/contracts/minter/shared-types";
 import { Timestamp } from "@stargazezone/types/contracts/sg721/shared-types";
@@ -23,9 +22,7 @@ import {
 } from "cosmwasm";
 import { useToast } from "src/hooks/useToast";
 import { toStars } from "src/wasm/address";
-import { useWallet } from "@stargazezone/client";
 import useStargazeClient from "@stargazezone/client/react/client/useStargazeClient";
-import { useToast } from "src/hooks/useToast";
 import {
   MsgExecuteContract,
   MsgInstantiateContract,

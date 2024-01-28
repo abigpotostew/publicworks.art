@@ -130,6 +130,17 @@ export class TokenEntity extends AuditedEntity {
   @Column("text", { name: "metadata_uri", nullable: false })
   metadataUri: string;
 
+  @Column("bigint", { name: "work_id", nullable: false })
+  work_id: string;
+
+  @Column("bigint", { name: "blockheight", nullable: false })
+  blockheight: string;
+
+  @Column("text", { name: "tx_hash", nullable: false })
+  tx_hash: string;
+  @Column("text", { name: "tx_memo", nullable: false })
+  tx_memo: string;
+
   @ManyToOne(() => WorkEntity, (r) => r.tokens)
   @JoinColumn({ name: "work_id" })
   work: WorkEntity;

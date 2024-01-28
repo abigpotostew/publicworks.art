@@ -21,6 +21,8 @@ import { useRouter } from "next/router";
 import { useMigrateMutation } from "../../hooks/useMigrateMutation";
 import { GrowingDot } from "../spinner/GrowingDot";
 import { useClientLoginMutation } from "../../hooks/useClientLoginMutation";
+import chainInfo from "../../stargaze/chainInfo";
+import config from "../../wasm/config";
 
 export const schema = z.object({
   addresses: z
@@ -119,7 +121,7 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
           <ButtonPW
             variant={"outline-primary"}
             target={"_blank"}
-            href={`https://testnet.publicawesome.dev/launchpad/${minter}`}
+            href={`${config.launchpadUrl}/launchpad/${minter}`}
             className={"Margin-T-1"}
           >
             View on Stargaze.zone

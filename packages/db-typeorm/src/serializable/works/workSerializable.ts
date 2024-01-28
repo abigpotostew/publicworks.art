@@ -73,7 +73,16 @@ export const tokenZod = z.object({
   updatedDate: z.date().transform((d) => d.toISOString()),
 });
 
+export const tokenFullZod = tokenZod.merge(
+  z.object({
+    blockheight: z.string(),
+    tx_hash: z.string(),
+    tx_memo: z.string(),
+  })
+);
+
 export type TokenSerializable = z.infer<typeof tokenZod>;
+export type TokenFullSerializable = z.infer<typeof tokenFullZod>;
 
 export type TokenSerializableWithMetadata = TokenSerializable & {
   imageUrl: string | null;

@@ -98,7 +98,6 @@ export const WorkRow: FC<Props> = ({ work, onChange }: Props) => {
       }
     >
       <div>
-        {/*Name flex*/}
         <FlexBox>
           <Link
             className={styles.workTitleLink}
@@ -132,17 +131,29 @@ export const WorkRow: FC<Props> = ({ work, onChange }: Props) => {
           </FlexBox>
         </div>
         <>
-          <Form.Check
-            className={"mt-2"}
-            type="switch"
-            id="custom-switch"
-            label="Hidden"
-            defaultChecked={!!work.hidden}
-            disabled={!user.data || setHiddenMutation.isLoading}
-            onChange={(e) => {
-              onHide(e.target.checked);
-            }}
-          />
+          <div className={"d-flex align-items-center mt-2 gap-2"}>
+            <Form.Check
+              className={""}
+              type="switch"
+              id="custom-switch"
+              label="Hidden"
+              defaultChecked={!!work.hidden}
+              disabled={!user.data || setHiddenMutation.isLoading}
+              onChange={(e) => {
+                onHide(e.target.checked);
+              }}
+            />
+            <div>
+              <Link
+                href={`/create/${work.id}/status`}
+                passHref={true}
+                legacyBehavior
+                className={"text-decoration-none"}
+              >
+                Token Mint Status
+              </Link>
+            </div>
+          </div>
         </>
       </div>
 

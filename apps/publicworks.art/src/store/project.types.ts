@@ -2,11 +2,9 @@ import { z } from "zod";
 import { isISODate } from "../util/isISODate";
 import { cidRegex } from "../ipfs/cid";
 import {
-  zodStarsAddress,
   zodStarsAddressOrContractAddress,
   zodStarsContractAddress,
 } from "src/wasm/address";
-import { parseISO } from "date-fns";
 
 export interface Token {
   hash: string;
@@ -16,14 +14,6 @@ export interface Token {
   image_url: string | undefined;
   metadata_uri?: string | undefined;
   updated: number;
-}
-
-export enum TokenStatuses {
-  QUEUEING = 0,
-  ERR_MISSING_PROJECT = 1,
-  COMPLETE = 2,
-  FINALIZING = 3,
-  ERROR_QUEUEING = 4,
 }
 
 export const ProjectFullZ = z.object({
