@@ -43,27 +43,31 @@ export const NavBar2: FC = () => {
             className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
           >
             {links.map((link, i) => (
-              <li key={i}>
-                <a href={link.href}>{link.label}</a>
-              </li>
+              <Link key={i} href={link.href} legacyBehavior passHref>
+                <li>
+                  <a href={link.href}>{link.label}</a>
+                </li>
+              </Link>
             ))}
           </ul>
         </div>
-        <a className="font-title text-xl" href={"/"}>
+        <a className="font-title text-xl tracking-widest pl-2" href={"/"}>
           PublicWorks.Art
         </a>
         <div className="hidden lg:flex">
-          <ul className="menu menu-vertical text-secondary  lg:menu-horizontal flex-col lg:flex-row px-1">
+          <ul className="menu menu-vertical lg:menu-horizontal flex-col  lg:flex-row text-base-400 bg-neutral hover:bg-neutral rounded-box px-1">
             {links.map((link, i) => (
-              <li key={i}>
-                <a href={link.href}>{link.label}</a>
-              </li>
+              <Link key={i} href={link.href} legacyBehavior passHref>
+                <li>
+                  <a href={link.href}>{link.label}</a>
+                </li>
+              </Link>
             ))}
           </ul>
         </div>
       </div>
 
-      <div className="navbar-end">
+      <div className="hidden lg:flex navbar-end">
         <a className="btn">Button</a>
       </div>
     </div>
