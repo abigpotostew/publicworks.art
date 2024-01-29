@@ -262,7 +262,7 @@ async function instantiateNew(
       value: MsgInstantiateContract.fromPartial({
         sender: account,
         admin: account,
-        codeId: config.minterCodeId,
+        codeId: BigInt(config.minterCodeId),
         label: work.name,
         // fee: "auto",
         msg: toUtf8(JSON.stringify(msg)),

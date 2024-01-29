@@ -42,6 +42,7 @@ export const keplrClient = async (config: Config): Promise<KeplrClient> => {
     return {
       signer: await SigningCosmWasmClient.connectWithSigner(
         config.rpcEndpoint,
+        //@ts-ignore
         offlineSigner,
         {
           prefix,
@@ -50,6 +51,7 @@ export const keplrClient = async (config: Config): Promise<KeplrClient> => {
           gasPrice: new GasPrice(1),
         }
       ),
+      //@ts-ignore
       offlineSigner,
     };
   } else {
