@@ -13,6 +13,7 @@ export interface NftMetadata {
   animation_url: string | undefined;
   description: string;
   image: string;
+  imageCdn: string;
   attributes: Attribute[] | undefined;
   traits: Attribute[] | undefined;
   name: string | undefined;

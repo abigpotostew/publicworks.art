@@ -6,7 +6,6 @@ import {
   RowThinContainer,
   RowThinContainerFlex,
 } from "../src/components/layout/RowThinContainer";
-import useBreakpoint from "../src/hooks/style/useBreakpoint";
 import Link from "next/link";
 
 function GroupDividerBottom() {

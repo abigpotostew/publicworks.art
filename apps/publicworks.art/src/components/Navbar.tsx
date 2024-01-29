@@ -15,7 +15,6 @@ import { useNameInfo, useProfileInfo } from "../hooks/sg-names";
 
 export const NavBar: FC = () => {
   const sgwallet = useWallet();
-  const { user } = useUserContext();
   const address = sgwallet?.wallet?.address;
   const nameInfo = useProfileInfo({ address });
   const username = nameInfo.walletName

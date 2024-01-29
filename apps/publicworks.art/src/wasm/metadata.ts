@@ -19,7 +19,9 @@ export async function fetchTokenUriInfo(tokenUri: string) {
 
   // Replace IPFS links for browsers that don't support them
   nftInfo.image = getImageUri(nftInfo.image);
-  nftInfo.animation_url = getImageUri(nftInfo.animation_url);
+  nftInfo.animation_url = getAnimationUri(nftInfo.animation_url);
+  const url = process.env.NEXT_PUBLIC_CDN;
+  nftInfo.imageCdn = normalizeIpfsCdnUri(nftInfo.image);
 
   return nftInfo as NftMetadata;
 }
@@ -38,6 +40,14 @@ export function normalizeIpfsUri(ipfsUri: string) {
   );
 }
 
+export function normalizeIpfsCdnUri(ipfsUri: string) {
+  return ipfsUri.replace(
+    /ipfs:\/\//i,
+    (process.env.NEXT_PUBLIC_IMAGES_CDN ||
+      "https://metadata.publicworks.art/images") + "/"
+  );
+}
+
 export function normalizeIpfsAnimationUri(ipfsUri: string) {
   return ipfsUri.replace(
     /ipfs:\/\//i,
@@ -46,6 +56,10 @@ export function normalizeIpfsAnimationUri(ipfsUri: string) {
 }
 
 export function getImageUri(ipfsUri: string, queryArgs = "") {
+  return `${normalizeIpfsCdnUri(ipfsUri)}${queryArgs}`;
+}
+
+export function getAnimationUri(ipfsUri: string, queryArgs = "") {
   return `${normalizeIpfsUri(ipfsUri)}${queryArgs}`;
 }
 

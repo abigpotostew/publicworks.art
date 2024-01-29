@@ -68,5 +68,14 @@ const nextConfig = {
   },
   transpilePackages: ["@publicworks.art/db-typeorm"],
 };
+const analyze = process.env.ANALYZE === "true";
+let withBundleAnalyzer;
+if (analyze) {
+  withBundleAnalyzer = require("@next/bundle-analyzer")({
+    enabled: true,
+  });
+} else {
+  withBundleAnalyzer = (x) => x;
+}
 
-module.exports = nextConfig;
+module.exports = withBundleAnalyzer(nextConfig);

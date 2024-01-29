@@ -11,6 +11,7 @@ import { stores } from "../../../src/store/stores";
 import { initializeIfNeeded } from "../../../src/typeorm/datasource";
 import {
   getTokenMetadata,
+  normalizeIpfsCdnUri,
   normalizeIpfsUri,
   normalizeMetadataUri,
 } from "../../../src/wasm/metadata";
@@ -86,7 +87,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const tokenSerialized: TokenSerializable | null = token
     ? {
         ...serializeWorkToken(token),
-        imageUrl: token.imageUrl ? normalizeMetadataUri(token.imageUrl) : "",
+        imageUrl: token.imageUrl ? normalizeIpfsCdnUri(token.imageUrl) : "",
         metadataUri: token.metadataUri
           ? normalizeMetadataUri(token.metadataUri)
           : "",
@@ -152,6 +153,7 @@ const WorkTokenPage = ({
 
   type Token = {
     image: string;
+    // imageCdn: string;
     animationUrl: string;
     description: string;
     hash: string;
@@ -161,10 +163,11 @@ const WorkTokenPage = ({
     const tokenCast = tokenIn as TokenSerializableWithMetadata | null;
     if (tokenMetadata?.data) {
       return {
-        image: tokenMetadata.data.image,
+        image: normalizeIpfsCdnUri(tokenMetadata.data.image), //tokenMetadata.data.image,
         animationUrl: tokenMetadata.data.animation_url || "",
         description: tokenMetadata.data.description,
         hash: tokenCast?.hash || "",
+        // imageCdn: tokenMetadata.data.imageCdn,
       };
     }
     if (!tokenCast) {
@@ -172,7 +175,8 @@ const WorkTokenPage = ({
     }
 
     return {
-      image: tokenCast.imageUrl || "",
+      image: normalizeIpfsCdnUri(tokenCast.imageUrl || ""), //tokenCast.imageUrl || "",
+      // imageCdn: normalizeIpfsCdnUri(tokenCast.imageUrl || ""),
       animationUrl: tokenCast.metadataUri || "",
       description: work.description || "",
       hash: tokenCast.hash,
