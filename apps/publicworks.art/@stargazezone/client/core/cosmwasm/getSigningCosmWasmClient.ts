@@ -76,13 +76,14 @@ export default async function getSigningCosmWasmClient(
     ...createWasmAminoConverters(),
     ...createGovAminoConverters(),
     ...createBankAminoConverters(),
-    ...createStakingAminoConverters("stars"),
+    ...createStakingAminoConverters(),
     ...createDistributionAminoConverters(),
     ...createClaimingAminoConverters(),
   });
 
   const client = await SigningCosmWasmClient.connectWithSigner(
     chainInfo.rpc,
+    // @ts-ignore
     offlineSigner,
     {
       // @ts-ignore
