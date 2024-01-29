@@ -8,7 +8,7 @@ import { FC, useCallback, useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { BsArrowRepeat } from "react-icons/bs";
 import { generateTxHash } from "src/generateHash";
-import { EditProjectRequest } from "src/store";
+import { EditProjectRequest } from "src/store/project.types";
 import { normalizeMetadataUri } from "src/wasm/metadata";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";

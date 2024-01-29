@@ -1,6 +1,4 @@
 import { Dispatch, ReactNode, useCallback, useEffect, useState } from "react";
-import { Modal } from "react-bootstrap";
-import { isMobile } from "react-device-detect";
 import { WalletInfo } from "../../core/wallet/types";
 import useStargazeClient from "../client/useStargazeClient";
 import WalletContext from "./WalletContext";

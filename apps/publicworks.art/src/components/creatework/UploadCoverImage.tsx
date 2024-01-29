@@ -1,6 +1,5 @@
 import { FC } from "react";
-import { EditProjectRequest } from "../../store";
-import { WorkSerializable } from "../../../../../packages/db-typeorm/src/serializable/works/workSerializable";
+import { EditProjectRequest } from "../../store/project.types";
 import { FlexBoxCenter } from "../layout/FlexBoxCenter";
 import { DropZone } from "../DropZone";
 import { trpcNextPW } from "../../server/utils/trpc";
@@ -11,6 +10,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useToast } from "../../hooks/useToast";
 import { onWorkUploadNew } from "../../works/upload";
 import { useClientLoginMutation } from "../../hooks/useClientLoginMutation";
+import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 
 export interface CreateWorkProps {
   onCreateProject:

@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { Form } from "react-bootstrap";
-import { EditUserRequest, EditUserRequestZ } from "src/store";
+import { EditUserRequest, EditUserRequestZ } from "src/store/user.types";
 import { TooltipInfo } from "../tooltip";
 import { useFormik } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";

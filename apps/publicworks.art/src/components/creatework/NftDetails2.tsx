@@ -10,7 +10,7 @@ import { useFormik } from "formik";
 import Link from "next/link";
 import React, { FC, useEffect, useState } from "react";
 import { Alert, Collapse, Form } from "react-bootstrap";
-import { EditProjectRequest } from "src/store";
+import { EditProjectRequest } from "src/store/project.types";
 import { isISODate } from "src/util/isISODate";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";

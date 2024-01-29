@@ -3,7 +3,7 @@ import { Container, Toast } from "react-bootstrap";
 import MainLayout from "../../src/layout/MainLayout";
 import SpinnerLoading from "../../src/components/loading/Loader";
 import { trpcNextPW } from "../../src/server/utils/trpc";
-import { EditUserRequest } from "../../src/store";
+import { EditUserRequest } from "../../src/store/user.types";
 import { RowThinContainer } from "src/components/layout/RowThinContainer";
 import { EditProfile } from "src/components/profile/EditProfile";
 import { useToast } from "src/hooks/useToast";

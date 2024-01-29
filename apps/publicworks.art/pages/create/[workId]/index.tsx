@@ -24,7 +24,7 @@ import useUserContext from "src/context/user/useUserContext";
 import { useInstantiate } from "src/hooks/useInstantiate";
 import { useToast } from "src/hooks/useToast";
 import { trpcNextPW } from "src/server/utils/trpc";
-import { EditProjectRequest } from "src/store";
+import { EditProjectRequest } from "src/store/project.types";
 import { onMutateLogin } from "src/trpc/onMutate";
 import { getToken } from "src/util/auth-token";
 import { useUploadWorkMutation } from "src/works/upload";
@@ -314,13 +314,13 @@ const EditWorkPage = () => {
                 )}
               </FlexBoxCenter>
               <div>
-                <Form.Check
-                  type="switch"
-                  id="custom-switch"
-                  label="Check this switch"
-                  value={useSimulatedGasFee.toString()}
-                  onChange={() => setUseSimulatedGasFee(!useSimulatedGasFee)}
-                />
+                {/*<Form.Check*/}
+                {/*  type="switch"*/}
+                {/*  id="custom-switch"*/}
+                {/*  label="Check this switch"*/}
+                {/*  value={useSimulatedGasFee.toString()}*/}
+                {/*  onChange={() => setUseSimulatedGasFee(!useSimulatedGasFee)}*/}
+                {/*/>*/}
                 {
                   <Button
                     disabled={

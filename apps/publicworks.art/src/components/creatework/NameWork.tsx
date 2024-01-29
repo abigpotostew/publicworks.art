@@ -1,6 +1,6 @@
 import React, { FC, FormEventHandler, useCallback, useState } from "react";
 import { Form } from "react-bootstrap";
-import { EditProjectRequest } from "../../store";
+import { EditProjectRequest } from "../../store/project.types";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { RowWideContainer } from "../layout/RowWideContainer";
 import { LiveMedia } from "../media/LiveMedia";
