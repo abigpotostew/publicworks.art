@@ -3,7 +3,7 @@ import { verifyCookie } from "../auth/jwt";
 import { stores } from "../store/stores";
 import { Context } from "./context";
 import superjson from "superjson";
-import { NextApiRequest } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 import { initializeIfNeeded } from "../typeorm/datasource";
 
 export const t = initTRPC.context<Context>().create({
@@ -13,7 +13,10 @@ export const t = initTRPC.context<Context>().create({
   },
 });
 
-export const getContext = async (req: NextApiRequest): Promise<Context> => {
+export const getContext = async (
+  req: NextApiRequest,
+  res: NextApiResponse
+): Promise<Context> => {
   async function getUser() {
     const cookies = req?.cookies || {};
     if (cookies["PWToken"]) {
@@ -30,12 +33,28 @@ export const getContext = async (req: NextApiRequest): Promise<Context> => {
     authorized: !!maybeUser,
     user: maybeUser,
     req,
+    res,
   };
 };
+
+const isAuthorized = t.middleware(async ({ next, ctx }) => {
+  const { user, authorized } = await getContext(ctx.req, ctx.res);
+  if (!user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  } else {
+    return next({
+      ctx: {
+        ...ctx,
+        user,
+        authorized,
+      },
+    });
+  }
+});
 function createAuthorizedMiddleware() {
   return t.middleware(async ({ ctx, next }) => {
     //
-    const { user, authorized } = await getContext(ctx.req);
+    const { user, authorized } = await getContext(ctx.req, ctx.res);
     if (!user) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     } else {
@@ -57,6 +76,4 @@ export const baseProcedure = t.procedure.use(
   })
 );
 
-export const authorizedProcedure = baseProcedure.use(
-  createAuthorizedMiddleware()
-);
+export const authorizedProcedure = baseProcedure.use(isAuthorized);

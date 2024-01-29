@@ -1,9 +1,9 @@
-import { FC, ReactElement, useCallback, useState } from "react";
+import { FC, ReactElement, useCallback, useMemo, useState } from "react";
 import { Container, Toast } from "react-bootstrap";
 import MainLayout from "../../src/layout/MainLayout";
 import SpinnerLoading from "../../src/components/loading/Loader";
 import { trpcNextPW } from "../../src/server/utils/trpc";
-import { EditUserRequest } from "../../src/store";
+import { EditUserRequest } from "../../src/store/user.types";
 import { RowThinContainer } from "src/components/layout/RowThinContainer";
 import { EditProfile } from "src/components/profile/EditProfile";
 import { useToast } from "src/hooks/useToast";
@@ -17,12 +17,13 @@ import useUserContext from "src/context/user/useUserContext";
 import { useStargazeClient, useWallet } from "@stargazezone/client";
 import { UserSerializable } from "../../../../packages/db-typeorm/src/serializable/users/userSerializable";
 import { shortenAddress } from "src/wasm/address";
-import { NeedToLoginButton } from "src/components/login/NeedToLoginButton";
 import { onMutateLogin } from "src/trpc/onMutate";
 import { useProfileInfo } from "../../src/hooks/sg-names";
 import { WorkRow } from "../../src/components/profile/WorkRow";
 import { Hr } from "../../src/components/content/horizontalrule/HR";
 import { useRouter } from "next/router";
+import { useMutation } from "@tanstack/react-query";
+import { useClientLoginMutation } from "../../src/hooks/useClientLoginMutation";
 
 interface Props {
   work: WorkSerializable;
@@ -44,22 +45,25 @@ export const UserWorks: FC<UserWorksProps> = (props: UserWorksProps) => {
   );
   const nextPage = useCallback(async () => {
     await setPageNumber(pageNumber + 1);
-  }, [pageNumber]);
+  }, [pageNumber, setPageNumber]);
   const prevPage = useCallback(async () => {
     await setPageNumber(pageNumber - 1);
-  }, [pageNumber]);
+  }, [pageNumber, setPageNumber]);
   // const [pageNumber, setPageNumber] = useState(0);
   const utils = trpcNextPW.useContext();
   const limit = 5;
   const [page, setPage] = useState<WorkSerializable[]>([]);
 
-  const queryInput = {
-    publishedState: "ALL",
-    limit,
-    address: props.user.address,
-    direction: "DESC",
-    cursor: pageNumber * limit,
-  };
+  const queryInput = useMemo(
+    () => ({
+      publishedState: "ALL",
+      limit,
+      address: props.user.address,
+      direction: "DESC",
+      cursor: pageNumber * limit,
+    }),
+    [pageNumber, props.user.address, limit]
+  );
   const userWorksPage = trpcNextPW.works.listAddressWorks.useQuery(queryInput, {
     onSettled: (data, error) => {
       if (data) {
@@ -144,12 +148,24 @@ const ProfilePage = () => {
   const sgclient = useStargazeClient();
   const useName = useProfileInfo({ address: sgwallet.wallet?.address });
 
-  const { user } = useUserContext();
+  // const { user } = useUserContext();
+  // const sgwallet = useWallet();
+  // const address = sgwallet.wallet?.address;
+
+  const userQuery = trpcNextPW.users.getUser.useQuery(
+    {
+      address: sgwallet.wallet?.address as string,
+    },
+    {
+      enabled: !!sgwallet.wallet?.address,
+    }
+  );
+
   const address = sgwallet?.wallet?.address;
   const username = useName.walletName ? useName.walletName + ".stars" : address;
 
   // useUserRequired("/profile");
-
+  // const login = useClientLoginMutation();
   const toast = useToast();
   const editUserMutation = trpcNextPW.users.editUser.useMutation({
     onMutate: onMutateLogin(sgclient.client, toast),
@@ -164,6 +180,10 @@ const ProfilePage = () => {
       toast.error(e.message);
     },
   });
+  // const editUserLocalMutation = useMutation(async () => {
+  //   await login.mutateAsync();
+  //   await editUserMutation.mutateAsync();
+  // });
   const onSubmitEdit = (req: Partial<EditUserRequest>) => {
     editUserMutation.mutate(req);
   };
@@ -186,14 +206,21 @@ const ProfilePage = () => {
               </h1>
             </FlexBox>
 
-            <NeedToLoginButton url={"/profile"} />
+            {/*<NeedToLoginButton url={"/profile"} />*/}
 
-            {!editMode && user.isSuccess && <UserProfile user={user.data} />}
+            {!editMode && userQuery.isSuccess && (
+              <UserProfile user={userQuery.data} />
+            )}
             {editMode && (
-              <EditProfile defaultValues={user.data} onSubmit={onSubmitEdit} />
+              <EditProfile
+                defaultValues={userQuery.data}
+                onSubmit={onSubmitEdit}
+              />
             )}
             {editMode && editUserMutation.isLoading && <SpinnerLoading />}
-            {!editMode && user.data && <UserWorks user={user.data} />}
+            {!editMode && !!userQuery.isSuccess && (
+              <UserWorks user={userQuery.data} />
+            )}
           </RowThinContainer>
         </Container>
       </div>

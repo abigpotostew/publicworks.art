@@ -1,4 +1,3 @@
-
 // the main common security headers
 const baseSecurityHeaders = [
   {
@@ -20,6 +19,28 @@ const nextConfig = {
   reactStrictMode: false,
   experimental: {},
   productionBrowserSourceMaps: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "ipfs.publicworks.art",
+        port: "",
+        pathname: "/ipfs/**",
+      },
+      {
+        protocol: "https",
+        hostname: "testnetmetadata.publicworks.art",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "metadata.publicworks.art",
+        port: "",
+        pathname: "/**",
+      },
+    ],
+  },
   async headers() {
     return [
       {
@@ -59,5 +80,14 @@ const nextConfig = {
   },
   transpilePackages: ["@publicworks.art/db-typeorm"],
 };
+const analyze = process.env.ANALYZE === "true";
+let withBundleAnalyzer;
+if (analyze) {
+  withBundleAnalyzer = require("@next/bundle-analyzer")({
+    enabled: true,
+  });
+} else {
+  withBundleAnalyzer = (x) => x;
+}
 
-module.exports = nextConfig;
+module.exports = withBundleAnalyzer(nextConfig);

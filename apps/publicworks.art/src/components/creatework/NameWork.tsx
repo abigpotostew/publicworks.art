@@ -1,6 +1,6 @@
-import { FC, FormEventHandler, useCallback, useState } from "react";
+import React, { FC, FormEventHandler, useCallback, useState } from "react";
 import { Form } from "react-bootstrap";
-import { EditProjectRequest } from "../../store";
+import { EditProjectRequest } from "../../store/project.types";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { RowWideContainer } from "../layout/RowWideContainer";
 import { LiveMedia } from "../media/LiveMedia";
@@ -14,6 +14,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useFormik } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
+import { NeedToLoginButton } from "../login/NeedToLoginButton";
+import useUserContext from "../../context/user/useUserContext";
 
 const schema = z.object({
   name: z.string().min(3),
@@ -35,7 +37,7 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   };
   const [projectName, setProjectName] = useState<string>(defaults.name);
   const [hash, setHash] = useState<string>(generateTxHash());
-
+  const { user } = useUserContext();
   const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     const req = {
@@ -142,9 +144,12 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
 
             {/*divider*/}
 
-            <Button variant="primary" type="submit">
-              Save
-            </Button>
+            {!user.data && <NeedToLoginButton />}
+            {!!user.data && (
+              <Button variant="primary" type="submit">
+                Save
+              </Button>
+            )}
           </Form>
         </>
       </>

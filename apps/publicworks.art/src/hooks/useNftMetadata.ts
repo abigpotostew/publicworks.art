@@ -13,6 +13,7 @@ export interface NftMetadata {
   animation_url: string | undefined;
   description: string;
   image: string;
+  imageCdn: string;
   attributes: Attribute[] | undefined;
   traits: Attribute[] | undefined;
   name: string | undefined;
@@ -56,7 +57,7 @@ export const useNftMetadata = ({
       );
       if (!res.ok) {
         throw new Error(
-          "failed to get collection size" +
+          "failed to get nft metadata" +
             res.status +
             ", " +
             (await res.text().toString())

@@ -1,17 +1,17 @@
+import { ButtonPW as Button } from "../button/Button";
+import { FlexBox } from "../layout/FlexBoxCenter";
+import { LiveMedia } from "../media/LiveMedia";
+import { TooltipInfo } from "../tooltip/TooltipInfo";
+import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
+import { useFormik } from "formik";
 import { FC, useCallback, useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
-import { LiveMedia } from "../media/LiveMedia";
 import { BsArrowRepeat } from "react-icons/bs";
-import { FlexBox } from "../layout/FlexBoxCenter";
-import { TooltipInfo } from "../tooltip/TooltipInfo";
-import { ButtonPW as Button } from "../button/Button";
 import { generateTxHash } from "src/generateHash";
+import { EditProjectRequest } from "src/store/project.types";
 import { normalizeMetadataUri } from "src/wasm/metadata";
-import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
-import { EditProjectRequest } from "src/store";
-import { useFormik } from "formik";
-import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
+import { toFormikValidationSchema } from "zod-formik-adapter";
 
 export interface CreateWorkProps {
   onCreateProject:
@@ -64,7 +64,7 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
       isTouched: formik.dirty,
       isValid: formik.isValid,
     });
-  }, [formik.isValid, formik.dirty]);
+  }, [formik.isValid, formik.dirty, props]);
   return (
     <>
       <>
@@ -142,9 +142,9 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                 placeholder={"Appears in every NFT description"}
                 onChange={formik.handleChange}
                 name="description"
-                isValid={
-                  formik.touched.description && !formik.errors.description
-                }
+                // isValid={
+                //   formik.touched.description && !formik.errors.description
+                // }
                 isInvalid={
                   formik.touched.description && !!formik.errors.description
                 }

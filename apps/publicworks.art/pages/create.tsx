@@ -1,25 +1,27 @@
-import { ReactElement, useCallback, useEffect } from "react";
-import { Alert, Container } from "react-bootstrap";
-import { useRouter } from "next/router";
-import MainLayout from "../src/layout/MainLayout";
+import { NameWork } from "../src/components/creatework/NameWork";
 import SpinnerLoading from "../src/components/loading/Loader";
+import { useClientLoginMutation } from "../src/hooks/useClientLoginMutation";
+import MainLayout from "../src/layout/MainLayout";
 import { trpcNextPW } from "../src/server/utils/trpc";
 import { EditProjectRequest } from "../src/store";
-import { NameWork } from "../src/components/creatework/NameWork";
+import config from "../src/wasm/config";
+import { useStargazeClient } from "@stargazezone/client";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { ReactElement, useCallback, useEffect } from "react";
+import { Alert, Container } from "react-bootstrap";
 import { RowThinContainer } from "src/components/layout/RowThinContainer";
 import useUserContext from "src/context/user/useUserContext";
-import { useStargazeClient } from "@stargazezone/client";
-import { NeedToLoginButton } from "src/components/login/NeedToLoginButton";
-import { onMutateLogin } from "src/trpc/onMutate";
 import { useToast } from "src/hooks/useToast";
-import config from "../src/wasm/config";
-import Link from "next/link";
+import { onMutateLogin } from "src/trpc/onMutate";
+
 const CreatePage = () => {
   const { user } = useUserContext();
   const utils = trpcNextPW.useContext();
   const router = useRouter();
   const toast = useToast();
   const sgclient = useStargazeClient();
+  const login = useClientLoginMutation();
   const mutation = trpcNextPW.works.createWork.useMutation({
     onMutate: onMutateLogin(sgclient.client, toast),
     onSuccess: async () => {
@@ -35,7 +37,7 @@ const CreatePage = () => {
         await router.push(`/create/${mutation?.data?.id}`);
       })();
     }
-  }, [mutation]);
+  }, [mutation, router]);
 
   const onCreateProject = useCallback(
     async (req: Partial<EditProjectRequest>) => {
@@ -43,9 +45,10 @@ const CreatePage = () => {
       if (!req.name) {
         throw new Error("missing name");
       }
+      await login.mutateAsync();
       mutation.mutate({ name: req.name });
     },
-    [mutation]
+    [login, mutation]
   );
 
   const testnetComponent = config.testnet ? null : (
@@ -63,10 +66,8 @@ const CreatePage = () => {
         <Container>
           <RowThinContainer>
             <h1>Create Work</h1>
-            {(user.isFetching || user.isLoading) && <SpinnerLoading />}
-            <NeedToLoginButton url={"/create"} />
             {testnetComponent}
-            {user.isSuccess && <NameWork onCreateProject={onCreateProject} />}
+            {<NameWork onCreateProject={onCreateProject} />}
 
             {mutation.isLoading && <SpinnerLoading />}
             {mutation.error && <p>{mutation.error.message}</p>}

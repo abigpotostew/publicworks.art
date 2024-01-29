@@ -10,10 +10,12 @@ export default function StargazeProvider({
   client: StargazeClient;
   children: ReactNode;
 }) {
+  // console.log("StargazeProvider, client,pizza", client);
   const [, updateState] = useState<{}>();
   const forceUpdate = useCallback(() => updateState({}), []);
 
   const connectSigning = useCallback(async () => {
+    // console.log("StargazeProvider, connectSigning, pizza", client);
     if (client) {
       await client?.connectSigning();
       forceUpdate();
@@ -24,6 +26,7 @@ export default function StargazeProvider({
   useEffect(() => {
     // Unsigned Client
     async function connectClient() {
+      // console.log("StargazeProvider, connectClient, pizza", client);
       await client?.connect();
       forceUpdate();
     }

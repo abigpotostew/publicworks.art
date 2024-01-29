@@ -1,9 +1,7 @@
 // @flow
 import * as React from "react";
 import { useState } from "react";
-import getMinter from "../../../@stargazezone/client/core/minters/getMinter";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import useStargazeClient from "../../../@stargazezone/client/react/client/useStargazeClient";
+import { useMutation } from "@tanstack/react-query";
 import SpinnerLoading from "../loading/Loader";
 import { ButtonPW as Button, ButtonPW } from "../button/Button";
 import { Form } from "react-bootstrap";
@@ -15,8 +13,16 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import Collapse from "react-bootstrap/Collapse";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMintAirdrop } from "../../hooks/useMintAirdrop";
-import { may } from "@cosmjs/tendermint-rpc/build/tendermint34/encodings";
 import { FlexBox } from "../layout/FlexBoxCenter";
+import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
+import { ChangePrice } from "../mint/ChangePrice";
+import { useMinter } from "../../hooks/wasm/useMinter";
+import { useRouter } from "next/router";
+import { useMigrateMutation } from "../../hooks/useMigrateMutation";
+import { GrowingDot } from "../spinner/GrowingDot";
+import { useClientLoginMutation } from "../../hooks/useClientLoginMutation";
+import chainInfo from "../../stargaze/chainInfo";
+import config from "../../wasm/config";
 
 export const schema = z.object({
   addresses: z
@@ -41,26 +47,26 @@ export const schema = z.object({
 type Props = {
   minter?: string | null;
   slug?: string | null;
+  work?: WorkSerializable | null;
 };
-export const WorkOnChain = ({ minter, slug }: Props) => {
+export const WorkOnChain = ({ minter, slug, work }: Props) => {
+  const router = useRouter();
+  const secretDefined = !!router.query.secret;
   const [airdropVisible, setAirdropVisible] = useState<boolean>(false);
-
-  const client = useStargazeClient();
-  const getMinterQuery = useQuery(
-    ["get-minter-" + minter],
-    async () => {
-      if (!client.client?.cosmwasmClient || !minter) {
-        return null;
+  const [changePriceVisible, setChangePriceVisible] = useState<boolean>(false);
+  const migrateMutate = useMigrateMutation();
+  const login = useClientLoginMutation();
+  const migrateMutationClient = useMutation(
+    async ({ minter }: { minter?: string | null }) => {
+      if (!minter) {
+        return;
       }
-      const minterResponse = await getMinter(
-        minter,
-        client.client?.cosmwasmClient,
-        {}
-      );
-      return minterResponse;
-    },
-    { enabled: !!minter }
+      await login.mutateAsync();
+      await migrateMutate.mutateAsync({ minter });
+    }
   );
+
+  const getMinterQuery = useMinter(minter);
   const defaults = {
     addresses: "",
   };
@@ -72,7 +78,6 @@ export const WorkOnChain = ({ minter, slug }: Props) => {
       if (mutateAidrop) mutateAidrop(values.addresses);
     },
     validationSchema: toFormikValidationSchema(schema),
-    // validateOnMount: true,
   });
   const { mutation: airdropMutationOnChain } = useMintAirdrop();
   const airdropMutation = useMutation(async (addressList: string) => {
@@ -112,76 +117,118 @@ export const WorkOnChain = ({ minter, slug }: Props) => {
   return (
     <div>
       <div>
-        <a
-          href={"#"}
-          onClick={(event) => {
-            event.preventDefault();
-            console.log("pizza hello set airdropVisible to ", !airdropVisible);
-            setAirdropVisible(!airdropVisible);
-          }}
-        >
-          <h5>
-            {airdropVisible ? (
-              <FontAwesomeIcon icon={"minus"} width={14} />
-            ) : (
-              <FontAwesomeIcon icon={"plus"} width={14} />
-            )}
-            Admin Airdrop
-          </h5>
-        </a>
-        <Collapse in={airdropVisible}>
-          <Form
-            onSubmit={(...a) => {
-              return formik.handleSubmit(...a);
-            }}
-            noValidate={true}
-            className={"Margin-L-1"}
+        <FlexBox>
+          <ButtonPW
+            variant={"outline-primary"}
+            target={"_blank"}
+            href={`${config.launchpadUrl}/launchpad/${minter}`}
+            className={"Margin-T-1"}
           >
-            <Form.Group controlId="formAirdropAddresses">
-              <Form.Label>
-                Airdrop To <TooltipInfo>Airdrop costs 15 stars.</TooltipInfo>
-              </Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={1}
-                value={formik.values.addresses}
-                placeholder={"stars123..."}
-                onChange={formik.handleChange}
-                name="addresses"
-                isValid={formik.touched.addresses && !formik.errors.addresses}
-                isInvalid={
-                  formik.touched.addresses && !!formik.errors.addresses
-                }
-              />
-              <Form.Control.Feedback type="invalid">
-                {formik.errors.addresses}
-              </Form.Control.Feedback>
-              <Button variant="info" type="submit" className={"Margin-T-1"}>
-                Airdrop!
-              </Button>
-              {airdropMutation.isLoading && <SpinnerLoading />}
-            </Form.Group>
-          </Form>
-        </Collapse>
+            View on Stargaze.zone
+          </ButtonPW>
+          <ButtonPW
+            variant={"outline-primary"}
+            target={"_blank"}
+            href={`/work/${slug}`}
+            className={"Margin-T-1 Margin-L-1"}
+          >
+            View on PublicWorks.art
+          </ButtonPW>
+        </FlexBox>
+        <div>
+          <a
+            href={"#"}
+            onClick={(event) => {
+              event.preventDefault();
+              // console.log(
+              //   "pizza hello set airdropVisible to ",
+              //   !airdropVisible
+              // );
+              setAirdropVisible(!airdropVisible);
+            }}
+          >
+            <h5>
+              {airdropVisible ? (
+                <FontAwesomeIcon icon={"minus"} width={14} />
+              ) : (
+                <FontAwesomeIcon icon={"plus"} width={14} />
+              )}
+              Admin Airdrop
+            </h5>
+          </a>
+          <Collapse in={airdropVisible}>
+            <Form
+              onSubmit={(...a) => {
+                return formik.handleSubmit(...a);
+              }}
+              noValidate={true}
+              className={"Margin-L-1"}
+            >
+              <Form.Group controlId="formAirdropAddresses">
+                <Form.Label>
+                  Airdrop To <TooltipInfo>Airdrop costs 15 stars.</TooltipInfo>
+                </Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={1}
+                  value={formik.values.addresses}
+                  placeholder={"stars123..."}
+                  onChange={formik.handleChange}
+                  name="addresses"
+                  isValid={formik.touched.addresses && !formik.errors.addresses}
+                  isInvalid={
+                    formik.touched.addresses && !!formik.errors.addresses
+                  }
+                />
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.addresses}
+                </Form.Control.Feedback>
+                <Button variant="info" type="submit" className={"Margin-T-1"}>
+                  Airdrop!
+                </Button>
+                {airdropMutation.isLoading && <SpinnerLoading />}
+              </Form.Group>
+            </Form>
+          </Collapse>
+        </div>
+        <div>
+          <a
+            href={"#"}
+            onClick={(event) => {
+              event.preventDefault();
+              setChangePriceVisible(!changePriceVisible);
+            }}
+          >
+            <h5>
+              {changePriceVisible ? (
+                <FontAwesomeIcon icon={"minus"} width={14} />
+              ) : (
+                <FontAwesomeIcon icon={"plus"} width={14} />
+              )}
+              Update Price
+            </h5>
+          </a>
+          <Collapse key={"collapseChangePrice"} in={changePriceVisible}>
+            <div>
+              {(!!work && !!getMinterQuery.data && (
+                <ChangePrice work={work} minter={getMinterQuery.data} />
+              )) ||
+                null}
+            </div>
+          </Collapse>
+        </div>
+        {secretDefined && (
+          <Button
+            variant="danger"
+            onClick={() =>
+              migrateMutationClient.mutate({ minter: work?.minter })
+            }
+            className={"Margin-T-1"}
+          >
+            Migrate to V2! {migrateMutationClient.isLoading && <GrowingDot />}
+          </Button>
+        )}
       </div>
-      <FlexBox>
-        <ButtonPW
-          variant={"outline-primary"}
-          target={"_blank"}
-          href={`https://testnet.publicawesome.dev/launchpad/${minter}`}
-          className={"Margin-T-1"}
-        >
-          View on Stargaze.zone
-        </ButtonPW>
-        <ButtonPW
-          variant={"outline-primary"}
-          target={"_blank"}
-          href={`/work/${slug}`}
-          className={"Margin-T-1 Margin-L-1"}
-        >
-          View on PublicWorks.art
-        </ButtonPW>
-      </FlexBox>
     </div>
   );
 };

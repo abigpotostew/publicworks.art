@@ -81,7 +81,7 @@ export const SandboxPreview = forwardRef<ArtworkIframeRef, Props>(
         iframeRef.current.src = previewUrl;
         onUrlUpdate && onUrlUpdate(previewUrl);
       }
-    }, [id, hash]);
+    }, [id, hash, onUrlUpdate]);
 
     const reloadIframe = () => {
       if (iframeRef.current) {

@@ -70,9 +70,31 @@ export class WorkEntity extends AuditedEntity {
   @Column("boolean", { name: "hidden" })
   hidden: boolean;
   @Column("int", { name: "sg721_code_id", nullable: true })
-  sg721CodeId: number;
+  sg721CodeId: number | null;
   @Column("int", { name: "minter_code_id", nullable: true })
-  minterCodeId: number;
+  minterCodeId: number | null;
+
+  @Column("boolean", {
+    name: "is_dutch_auction",
+    nullable: false,
+    default: false,
+  })
+  isDutchAuction: boolean;
+
+  @Column("timestamp", { name: "dutch_auction_end_date", nullable: true })
+  dutchAuctionEndDate: Date | null;
+
+  @Column("double", { name: "dutch_auction_end_price", nullable: true })
+  dutchAuctionEndPrice: number | null;
+
+  @Column("double", {
+    name: "dutch_auction_decline_period_seconds",
+    nullable: true,
+  })
+  dutchAuctionDeclinePeriodSeconds: number | null;
+
+  @Column("double", { name: "dutch_auction_decay_rate", nullable: true })
+  dutchAuctionDecayRate: number | null;
 
   @OneToMany(() => TokenEntity, (r) => r.work)
   tokens: Relation<TokenEntity>[] | null;
@@ -98,10 +120,24 @@ export class TokenEntity extends AuditedEntity {
   @Column("int", { name: "status" })
   status: number;
 
+  @Column("text", { name: "hash_input" })
+  hashInput: string;
+
   @Column("text", { name: "image_url", nullable: true })
   imageUrl: string | null;
   @Column("text", { name: "metadata_uri", nullable: true })
   metadataUri: string | null;
+
+  @Column("bigint", { name: "work_id", nullable: false })
+  work_id: string;
+
+  @Column("bigint", { name: "blockheight", nullable: false })
+  blockheight: string;
+
+  @Column("text", { name: "tx_hash", nullable: false })
+  tx_hash: string;
+  @Column("text", { name: "tx_memo", nullable: false })
+  tx_memo: string;
 
   @ManyToOne(() => WorkEntity, (r) => r.tokens)
   @JoinColumn({ name: "work_id" })

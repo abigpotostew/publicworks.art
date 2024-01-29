@@ -1,8 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
-import { signMessageAndLogin } from "../wasm/keplr/client-login";
+import {
+  signMessageAndLogin,
+  signMessageAndLoginIfNeeded,
+} from "../wasm/keplr/client-login";
 import { useStargazeClient, useWallet } from "../../@stargazezone/client";
 import { useToast } from "./useToast";
-import { trpcNextPW } from "../server/utils/trpc";
+import { queryCache, queryClient, trpcNextPW } from "../server/utils/trpc";
+//
+// const loginClient = async () => {
+//   //
+// }
 
 export const useClientLoginMutation = () => {
   const sgwallet = useWallet();
@@ -12,18 +19,25 @@ export const useClientLoginMutation = () => {
   const claimUserAccountMutation = useMutation(async () => {
     const wallet = await sgwallet.login();
     if (!wallet?.address || !sgclient.client) {
+      console.log("no wallet or client. Cannot login");
       return;
     }
-    const otp = Math.floor(Math.random() * 100_000).toString();
-    const ok = await signMessageAndLogin(otp, sgclient.client);
+    const ok = await signMessageAndLoginIfNeeded(sgclient.client);
 
-    if (!ok) {
+    if (ok === false) {
       toast.error("Unauthorized");
-    } else {
+    } else if (ok === true) {
       toast.success("Logged in!");
+    } else {
+      // already logged in
+      return;
     }
     // await utils.users.getUser.invalidate();
-    await utils.users.invalidate();
+    await Promise.all([
+      utils.users.invalidate(),
+      queryClient.invalidateQueries({ queryKey: ["gettoken"] }),
+    ]);
+
     console.log("invalidate users");
     // utils.users.getUser.invalidate({ address: wallet?.address });
   });

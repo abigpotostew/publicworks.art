@@ -1,8 +1,10 @@
-import { FC } from "react";
 import styles from "../../../styles/Work.module.scss";
-import { useNumMinted } from "../../hooks/useNumMinted";
 import { useCollectionSize } from "../../hooks/useCollectionSize";
+import { useNumMinted } from "../../hooks/useNumMinted";
 import SpinnerLoading from "../loading/Loader";
+import { FC } from "react";
+import * as React from "react";
+import { Card, Placeholder } from "react-bootstrap";
 
 interface NumMintedParams {
   slug: string;
@@ -16,9 +18,9 @@ export const NumMinted: FC<NumMintedParams> = (params: NumMintedParams) => {
     isLoading: numMintedLoading,
   } = useNumMinted(params.slug);
   const {
-    collectionSize,
+    data: collectionSize,
     error: collectionSizeError,
-    loading: collSizeLoading,
+    isLoading: collSizeLoading,
   } = useCollectionSize(params.minter);
 
   const numMintedText =
@@ -27,13 +29,26 @@ export const NumMinted: FC<NumMintedParams> = (params: NumMintedParams) => {
     collectionSizeError || !Number.isFinite(collectionSize)
       ? "?"
       : collectionSize;
-
+  // numMintedLoading = true;
+  // collSizeLoading = true;
   return (
     <span className={styles.workAuthor}>
-      {" - "}
-      {numMintedLoading ? <SpinnerLoading /> : numMintedText}
+      {numMintedLoading ? (
+        <Placeholder animation="glow">
+          <Placeholder className={"d-inline-block Width-3"} />
+        </Placeholder>
+      ) : (
+        numMintedText
+      )}
       {" of "}
-      {collSizeLoading ? <SpinnerLoading /> : collectionSizeText + " minted"}
+      {collSizeLoading ? (
+        <Placeholder animation="glow">
+          <Placeholder className={"d-inline-block Width-3"} />
+        </Placeholder>
+      ) : (
+        collectionSizeText
+      )}
+      {" minted"}
     </span>
   );
 };

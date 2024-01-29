@@ -1,38 +1,33 @@
-import { FC, ReactElement, useCallback, useEffect, useState } from "react";
-import Head from "next/head";
-import { BsArrowRepeat } from "react-icons/bs";
-import { useRouter } from "next/router";
-import MainLayout from "../../../src/layout/MainLayout";
-import { Container } from "react-bootstrap";
 import { ButtonPW as Button } from "../../../src/components/button/Button";
+import { WorkOnChain } from "../../../src/components/creatework/WorkOnChain";
 import { generateTxHash } from "../../../src/generateHash";
-import { useCosmosWallet } from "../../../src/components/provider/CosmosWalletProvider";
+import { useClientLoginMutation } from "../../../src/hooks/useClientLoginMutation";
+import MainLayout from "../../../src/layout/MainLayout";
+import { WorkSerializable } from "@publicworks/db-typeorm";
+import { useStargazeClient, useWallet } from "@stargazezone/client";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { FC, ReactElement, useCallback, useEffect, useState } from "react";
+import { Container, Form } from "react-bootstrap";
+import { ConfettiScreen } from "src/components/celebration/ConfettiScreen";
+import { ConfirmConfig } from "src/components/creatework/ConfirmConfig";
+import { DescribeWork } from "src/components/creatework/DescribeWork";
+import { NameWork } from "src/components/creatework/NameWork";
+import { NftDetails2 } from "src/components/creatework/NftDetails2";
+import { UploadCoverImage } from "src/components/creatework/UploadCoverImage";
 import { FlexBox, FlexBoxCenter } from "src/components/layout/FlexBoxCenter";
-import { useInstantiate } from "src/hooks/useInstantiate";
-import { trpcNextPW } from "src/server/utils/trpc";
-import { useUploadWorkMutation } from "src/works/upload";
-import { LiveMedia } from "src/components/media/LiveMedia";
+import { RowThinContainer } from "src/components/layout/RowThinContainer";
+import SpinnerLoading from "src/components/loading/Loader";
 import { Step, StepProgressBar } from "src/components/progress/StepProgressBar";
 import { TooltipInfo } from "src/components/tooltip/TooltipInfo";
-import { NameWork } from "src/components/creatework/NameWork";
-import { EditProjectRequest } from "src/store";
-import { ConfettiScreen } from "src/components/celebration/ConfettiScreen";
-import SpinnerLoading from "src/components/loading/Loader";
-import { DescribeWork } from "src/components/creatework/DescribeWork";
-import { UploadCoverImage } from "src/components/creatework/UploadCoverImage";
-import { ConfirmConfig } from "src/components/creatework/ConfirmConfig";
-import { NftDetails2 } from "src/components/creatework/NftDetails2";
-import { RowThinContainer } from "src/components/layout/RowThinContainer";
-import { useToast } from "src/hooks/useToast";
-import { useUserRequired } from "src/hooks/useUserRequired";
-import { useStargazeClient, useWallet } from "@stargazezone/client";
-import { NeedToLoginButton } from "src/components/login/NeedToLoginButton";
-import { signMessageAndLoginIfNeeded } from "src/wasm/keplr/client-login";
-import { onMutateLogin } from "src/trpc/onMutate";
-import { useMutation } from "@tanstack/react-query";
 import useUserContext from "src/context/user/useUserContext";
+import { useInstantiate } from "src/hooks/useInstantiate";
+import { useToast } from "src/hooks/useToast";
+import { trpcNextPW } from "src/server/utils/trpc";
+import { EditProjectRequest } from "src/store/project.types";
+import { onMutateLogin } from "src/trpc/onMutate";
 import { getToken } from "src/util/auth-token";
-import { WorkOnChain } from "../../../src/components/creatework/WorkOnChain";
+import { useUploadWorkMutation } from "src/works/upload";
 
 // export const getServerSideProps: GetServerSideProps = async (context) => {
 //   await initializeIfNeeded();
@@ -65,10 +60,24 @@ const stages = [
   "text",
   "nft_detail",
   "cover_image",
-  // "review",
   "submit",
   "view",
-];
+] as const;
+type Stage = (typeof stages)[number];
+const stageContinuationCondition: Record<Stage, (keyof WorkSerializable)[]> = {
+  name_art: ["name", "codeCid"],
+  text: ["description"],
+  nft_detail: [
+    "maxTokens",
+    "startDate",
+    "priceStars",
+    "selector",
+    "resolution",
+  ],
+  cover_image: ["coverImageCid"],
+  submit: ["minter"],
+  view: ["minter"],
+};
 
 const stageMd = {
   name_art: {
@@ -90,6 +99,7 @@ const stageMd = {
     label: "Mint",
   },
 };
+
 interface INavButtons {
   onNextClick?: () => void;
   onPrevClick?: () => void;
@@ -144,14 +154,16 @@ const EditWorkPage = () => {
 
   const sgwallet = useWallet();
 
+  const login = useClientLoginMutation();
   const { stage: stageQp } = router.query;
-  const [stage, setStageState] = useState<string>("");
+  const [stage, setStageState] = useState<Stage | null>(null);
   // useUserRequired("/create/" + workIdIn + "?stage=" + stageQp);
   const redirectUrl = "/create/" + workIdIn + "?stage=" + stageQp;
   useEffect(() => {
-    setStageState(router.query?.stage?.toString() || stages[0]);
+    const stage = stages.find((s) => s === router.query?.stage?.toString());
+    setStageState(stage || stages[0]);
   }, [router]);
-  const setStage = (newStage: string) => {
+  const setStage = (newStage: Stage) => {
     setFormValid(false);
     setShowConfetti(false);
     setStageState(newStage);
@@ -165,10 +177,10 @@ const EditWorkPage = () => {
       },
     });
   };
-  const setStageNextFrom = (currStage: string) => {
+  const setStageNextFrom = (currStage: Stage) => {
     setStage(stages[stages.indexOf(currStage) + 1]);
   };
-  const setStagePrevFrom = (currStage: string) => {
+  const setStagePrevFrom = (currStage: Stage) => {
     mutation.reset();
     setStage(stages[stages.indexOf(currStage) - 1]);
   };
@@ -198,78 +210,61 @@ const EditWorkPage = () => {
     },
   });
 
-  const mutationContracts = trpcNextPW.works.editWorkContracts.useMutation({
-    onSuccess() {
-      utils.works.getWorkById.invalidate();
-    },
-  });
-
   const onCreateProject = useCallback(
     async (req: Partial<EditProjectRequest>) => {
       console.log("workId", workId);
       console.log("edit request", { ...req, id: workId });
+      await login.mutateAsync();
       await mutation.mutateAsync({ ...req, id: workId });
       console.log("finished on create project mutation");
     },
-    [mutation, workId]
+    [login, mutation, workId]
   );
 
-  // const onUploadMutation = useMutation(async (files: File[]) => {
-  //   await onWorkUpload(workId, files, utils);
-  // });
   const onUploadMutation = useUploadWorkMutation(workId);
-  // const onUploadMutation = useMutation(async (files: File[]) => {
-  //   const uploadTmp = await onWorkUploadFileMutation.mutateAsync({
-  //     workId: workId,
-  //   });
-  //
-  //   if (!uploadTmp.ok) {
-  //     throw new Error(
-  //       "Something went wrong while uploading the code work, try again."
-  //     );
-  //   }
-  //   await onWorkUploadNew(
-  //     workId,
-  //     files,
-  //     utils,
-  //     uploadTmp.url,
-  //     uploadTmp.method
-  //   );
-  // });
+
   const onUpload = onUploadMutation.mutate;
 
   const { instantiateMutation } = useInstantiate();
-
-  const onClickRefreshHash = useCallback(() => {
-    setHash(generateTxHash());
-  }, []);
+  const [useSimulatedGasFee, setUseSimulatedGasFee] = useState<boolean>(false);
 
   const onInstantiate = useCallback(async () => {
     //confetti
     if (!work) return;
-    await instantiateMutation.mutateAsync(work);
+    const success = await instantiateMutation.mutateAsync({ work });
+    if (!success) return;
     console.log("instantiate and showing confettie");
     toast.success("Successfully instantiated!");
     setShowConfetti(true);
-  }, [work, instantiateMutation, toast]);
+  }, [work, instantiateMutation, toast, useSimulatedGasFee]);
 
-  const createStep = (stageEnum: string): Step => {
-    const completed = stages.indexOf(stage) >= stages.indexOf(stageEnum);
-
+  const createStep = (stageEnum: Stage): Step => {
+    const completed =
+      !!stage && stages.indexOf(stage) >= stages.indexOf(stageEnum);
+    const isStageClickable = (stage: Stage) => {
+      if (!work) return false;
+      //first stage is alwasy clickable
+      if (stage === stages[0]) return true;
+      const prevStage = stages[stages.indexOf(stage) - 1];
+      const prevStageComplete = !stageContinuationCondition[prevStage].find(
+        (c) => !work[c]
+      );
+      return prevStageComplete;
+    };
+    const clickable = completed || work?.minter || isStageClickable(stageEnum);
     return {
       label: (stages.indexOf(stageEnum) + 1).toString(),
       // @ts-ignore
       description: stageMd[stageEnum]?.label || "<missing>",
       active: stage === stageEnum,
       completed,
-      onClick: completed ? () => setStage(stageEnum) : undefined,
+      onClick: clickable ? () => setStage(stageEnum) : undefined,
     };
   };
 
   const [formValid, setFormValid] = useState(false);
   const [formTouched, setFormTouched] = useState(false);
   const setFormState = (props: { isValid: boolean; isTouched: boolean }) => {
-    console.log("props", props);
     setFormValid(props.isValid);
     setFormTouched(props.isTouched);
   };
@@ -279,18 +274,23 @@ const EditWorkPage = () => {
   const canMoveToNext =
     canOperate && formTouched ? mutation.isSuccess && formValid : formValid;
 
+  console.log("canMoveToNext", {
+    canMoveToNext,
+    canOperate,
+    formTouched,
+    isSuccess: mutation.isSuccess,
+    formValid,
+  });
+
   const steps = stages.map((s) => {
     return createStep(s);
   });
 
-  useEffect(() => {
-    if (workId && !hasToken) {
-      toast.errorRedirect(
-        "Login required. Click here to Login.",
-        "/create/" + workId
-      );
-    }
-  }, [workId, hasToken, toast]);
+  // useEffect(() => {
+  //   if (workId && !hasToken) {
+  //     toast.errorLoginModal();
+  //   }
+  // }, [workId, hasToken, toast]);
 
   return (
     <>
@@ -306,12 +306,26 @@ const EditWorkPage = () => {
             // <Container fluid={false}>
             <>
               <FlexBoxCenter fluid={false}>
-                {work && <ConfirmConfig work={work} />}
+                {work && (
+                  <ConfirmConfig
+                    work={work}
+                    setUseSimulatedGasFee={setUseSimulatedGasFee}
+                  />
+                )}
               </FlexBoxCenter>
               <div>
+                {/*<Form.Check*/}
+                {/*  type="switch"*/}
+                {/*  id="custom-switch"*/}
+                {/*  label="Check this switch"*/}
+                {/*  value={useSimulatedGasFee.toString()}*/}
+                {/*  onChange={() => setUseSimulatedGasFee(!useSimulatedGasFee)}*/}
+                {/*/>*/}
                 {
                   <Button
-                    disabled={!sgwallet.wallet?.address}
+                    disabled={
+                      !sgwallet.wallet?.address || instantiateMutation.isLoading
+                    }
                     onClick={() => onInstantiate()}
                     variant={"danger"}
                   >
@@ -341,7 +355,7 @@ const EditWorkPage = () => {
           {stage === "view" && work && (
             // <Container fluid={false}>
             <>
-              <WorkOnChain minter={work.minter} slug={work.slug} />
+              <WorkOnChain work={work} minter={work.minter} slug={work.slug} />
               <div className={"Margin-T-1"}>
                 {
                   <Button

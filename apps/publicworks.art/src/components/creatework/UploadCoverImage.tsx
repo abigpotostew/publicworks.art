@@ -1,6 +1,5 @@
 import { FC } from "react";
-import { EditProjectRequest } from "../../store";
-import { WorkSerializable } from "../../../../../packages/db-typeorm/src/serializable/works/workSerializable";
+import { EditProjectRequest } from "../../store/project.types";
 import { FlexBoxCenter } from "../layout/FlexBoxCenter";
 import { DropZone } from "../DropZone";
 import { trpcNextPW } from "../../server/utils/trpc";
@@ -10,6 +9,8 @@ import { Container } from "react-bootstrap";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "../../hooks/useToast";
 import { onWorkUploadNew } from "../../works/upload";
+import { useClientLoginMutation } from "../../hooks/useClientLoginMutation";
+import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 
 export interface CreateWorkProps {
   onCreateProject:
@@ -35,6 +36,8 @@ export const UploadCoverImage: FC<CreateWorkProps> = (
   const confirmWorkUploadFileMutation =
     trpcNextPW.works.confirmWorkCoverImageUpload.useMutation();
   const toast = useToast();
+  const login = useClientLoginMutation();
+
   const onUploadMutation = useMutation(async (files: File[]) => {
     //onUpload
     const mime = files[0].type;
@@ -57,6 +60,8 @@ export const UploadCoverImage: FC<CreateWorkProps> = (
       contentType: mime,
       contentSize,
     });
+
+    await login.mutateAsync();
     const uploadTmp = await presignedUrlMutation.mutateAsync({
       workId: id,
       contentType: mime,
@@ -69,9 +74,11 @@ export const UploadCoverImage: FC<CreateWorkProps> = (
       throw new Error(msg);
     }
     console.log("uploading", id, files, utils, uploadTmp.url, uploadTmp.method);
+    await login.mutateAsync();
     await onWorkUploadNew(id, files, utils, uploadTmp.url, uploadTmp.method);
     try {
-      console.log("pizza finished confirmWorkUploadFileMutation");
+      // console.log("pizza finished confirmWorkUploadFileMutation");
+      await login.mutateAsync();
       await confirmWorkUploadFileMutation.mutateAsync({
         workId: id,
         uploadId: uploadTmp.uploadId,

@@ -19,9 +19,8 @@ import { appRouter } from "src/server/routes/_app";
 import { Context } from "src/server/context";
 import superjson from "superjson";
 import { GalleryComponent } from "src/components/gallery/GalleryComponent";
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { ButtonPW } from "src/components/button/Button";
-import { useRouter } from "next/router";
+import { createServerSideHelpers } from "@trpc/react-query/server";
 
 function GroupDividerBottom() {
   return (
@@ -46,8 +45,7 @@ function GroupDivider() {
 export async function getStaticProps(context: GetStaticPropsContext) {
   await initializeIfNeeded();
 
-  console.log("in getStaticProps HOME");
-  const ssg = await createProxySSGHelpers({
+  const ssg = await createServerSideHelpers({
     router: appRouter,
     ctx: {} as Context,
     transformer: superjson, // optional - adds superjson serialization
@@ -72,7 +70,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
     })
   );
 
-  console.log("hello pizza");
+  // console.log("hello pizza");
 
   return {
     props: {
@@ -135,7 +133,7 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
           </div>
         </RowThinContainer>
       </Container>
-      <RowLogoContainer className={"Margin-T-4 Margin-B-24"}>
+      <RowLogoContainer className={"Margin-T-4 Margin-B-16"}>
         <div className={styles.wrappingFlex}>
           <Pill color={"red"}>🏃‍ Mint on demand</Pill>
           <Pill color={"orange"}>⚙️ Metadata Generation</Pill>

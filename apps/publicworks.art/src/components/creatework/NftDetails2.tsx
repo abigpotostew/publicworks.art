@@ -1,34 +1,36 @@
+import { isStarAddress } from "../../wasm/address";
+import { ButtonPW as Button } from "../button/Button";
+import { DutchAuctionChart } from "../dutch-action-chart/DutchAuctionChart";
+import { TooltipInfo } from "../tooltip/TooltipInfo";
+import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
+import { useWallet } from "@stargazezone/client";
 import { parseISO } from "date-fns";
 import { format, formatInTimeZone } from "date-fns-tz";
-import { FC, useEffect } from "react";
-import { Form } from "react-bootstrap";
-import { EditProjectRequest } from "src/store";
-import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
-import { TooltipInfo } from "../tooltip/TooltipInfo";
 import { useFormik } from "formik";
-import { toFormikValidationSchema } from "zod-formik-adapter";
-import { z } from "zod";
+import Link from "next/link";
+import React, { FC, useEffect, useState } from "react";
+import { Alert, Collapse, Form } from "react-bootstrap";
+import { EditProjectRequest } from "src/store/project.types";
 import { isISODate } from "src/util/isISODate";
-import { ButtonPW as Button } from "../button/Button";
-import { useWallet } from "@stargazezone/client";
-import { isStarAddress } from "../../wasm/address";
+import { z } from "zod";
+import { toFormikValidationSchema } from "zod-formik-adapter";
 
 // const formatInTimeZone = (date: Date, fmt: string, tz: string) =>
 //   format(utcToZonedTime(date, tz), fmt, { timeZone: tz });
 
-function defaultDate() {
+export function defaultDate(hoursFromNow = 24) {
   const date = new Date();
-  const coeff = 1000 * 60 * 60 * 24;
+  const coeff = 1000 * 60 * 60 * hoursFromNow;
   const rounded = new Date(Math.round(date.getTime() / coeff + 1) * coeff);
   return rounded;
 }
 
-function defaultTime() {
-  const rounded = defaultDate();
+export function defaultTime(hoursFromNow = 24) {
+  const rounded = defaultDate(hoursFromNow);
   return formatDateInput(rounded);
 }
 
-function formatDateInput(date: Date) {
+export function formatDateInput(date: Date) {
   const out = `${format(date, "yyyy-MM-dd")}T${format(date, "kk:mm")}`;
   // console.log("default date", out);
   return out;
@@ -42,14 +44,17 @@ export interface CreateWorkProps {
   formValid: (props: { isValid: boolean; isTouched: boolean }) => void;
 }
 
-export const schema = z.object({
-  maxTokens: z.number().min(1).max(10_000).optional().default(1),
+export const schemaShared = z.object({
   startDate: z
     .string()
     .refine(isISODate, { message: "Not a valid ISO string date " })
     .refine((v) => new Date(v) > new Date(), "Must be in the future")
     .transform((v) => parseISO(v).toISOString())
     .optional(),
+  isDutchAuction: z.boolean().optional(),
+});
+export const schemaMainPartial = z.object({
+  maxTokens: z.number().min(1).max(10_000).optional().default(1),
   royaltyAddress: z
     .string()
     .optional()
@@ -71,8 +76,78 @@ export const schema = z.object({
   pixelRatio: z.number().min(0).max(10),
   priceStars: z.number().min(50),
 });
+// .merge(schemaShared);
 
-const formatInUTC = (date: Date | null | undefined) => {
+export const schemaDutchAuctionPartial = z.object({
+  dutchAuctionEndPrice: z.number().min(50).optional(),
+  dutchAuctionEndDate: z
+    .string()
+    .refine(isISODate, { message: "Not a valid ISO string date " })
+    .refine((v) => new Date(v) > new Date(), "Must be in the future")
+    .transform((v) => parseISO(v).toISOString())
+    .optional(),
+  dutchAuctionDeclinePeriodSeconds: z.number().min(1).max(86400).default(300),
+  dutchAuctionDecayRate: z.number().min(0).max(1).default(0.85),
+});
+
+export const schemaNoDutchAuction = schemaMainPartial.merge(schemaShared);
+
+export const schemaDutchAuction = schemaMainPartial
+  .merge(schemaShared)
+  .merge(schemaDutchAuctionPartial)
+  .refine((obj) => {
+    if (obj.isDutchAuction) {
+      return (
+        !!obj.dutchAuctionEndPrice &&
+        !!obj.dutchAuctionEndDate &&
+        !!obj.dutchAuctionDecayRate &&
+        !!obj.dutchAuctionDeclinePeriodSeconds
+      );
+    }
+    return true;
+  }, "All dutch auction fields are required if dutch auction is selected")
+  .refine((obj) => {
+    if (
+      obj.isDutchAuction &&
+      obj.startDate &&
+      obj.dutchAuctionEndDate &&
+      new Date(obj.startDate) < new Date(obj.dutchAuctionEndDate)
+    ) {
+      return false;
+    }
+    return true;
+  }, "Dutch Auction end date must be after start date");
+
+export const schemaDutchAuctionPartialWithValidations =
+  schemaDutchAuctionPartial
+    .merge(schemaShared)
+    .refine((obj) => {
+      if (obj.isDutchAuction) {
+        return (
+          !!obj.dutchAuctionEndPrice &&
+          !!obj.dutchAuctionEndDate &&
+          !!obj.dutchAuctionDecayRate &&
+          !!obj.dutchAuctionDeclinePeriodSeconds
+        );
+      }
+      return true;
+    }, "All dutch auction fields are required if dutch auction is selected")
+    .refine((obj) => {
+      if (
+        obj.isDutchAuction &&
+        obj.startDate &&
+        obj.dutchAuctionEndDate &&
+        new Date(obj.startDate) < new Date(obj.dutchAuctionEndDate)
+      ) {
+        return false;
+      }
+      return true;
+    }, "Dutch Auction end date must be after start date");
+
+export type SchemaTypeNoDutchAuction = z.infer<typeof schemaNoDutchAuction>;
+export type SchemaDutchAuctionType = z.infer<typeof schemaDutchAuction>;
+
+export const formatInUTC = (date: Date | null | undefined) => {
   if (!date) {
     return "-";
   }
@@ -83,10 +158,24 @@ const formatInUTC = (date: Date | null | undefined) => {
     return "-";
   }
 };
+
+export const numberInputOnWheelPreventChange = (e: any) => {
+  // Prevent the input value change
+  e.target.blur();
+
+  // Prevent the page/container scrolling
+  e.stopPropagation();
+
+  // Refocus immediately, on the next tick (after the currentfunction is done)
+  setTimeout(() => {
+    e.target.focus();
+  }, 0);
+};
+
 export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
+  const [pricesOmitted, setPricesOmitted] = useState<boolean>(false);
   // auth context here
   const sgwallet = useWallet();
-  console.log("NftDetails2 work maxTokens", props.defaultValues?.maxTokens);
   const defaults = {
     maxTokens: props.defaultValues?.maxTokens || 0,
     royaltyAddress:
@@ -104,12 +193,22 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
     startDate:
       (props.defaultValues?.startDate &&
         formatDateInput(new Date(props.defaultValues.startDate))) ||
-      defaultTime(),
+      defaultTime(24),
+    isDutchAuction: props.defaultValues?.isDutchAuction || false,
+    dutchAuctionEndPrice: props.defaultValues?.dutchAuctionEndPrice || 50,
+    dutchAuctionEndDate:
+      (props.defaultValues?.dutchAuctionEndDate &&
+        formatDateInput(new Date(props.defaultValues.dutchAuctionEndDate))) ||
+      defaultTime(25),
+    dutchAuctionDeclinePeriodSeconds:
+      props.defaultValues?.dutchAuctionDeclinePeriodSeconds || 300,
+    dutchAuctionDecayRate: props.defaultValues?.dutchAuctionDecayRate || 0.85,
   };
   const formik = useFormik({
     initialValues: defaults,
     onSubmit: async (values, { resetForm }) => {
       console.log("values", values);
+      //check dutch auction here
       // alert(JSON.stringify(values, null, 2));
 
       await props.onCreateProject({
@@ -117,21 +216,43 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
         startDate: values.startDate
           ? parseISO(values.startDate).toISOString()
           : undefined,
+        dutchAuctionEndDate:
+          values.isDutchAuction && values.dutchAuctionEndDate
+            ? parseISO(values.dutchAuctionEndDate).toISOString()
+            : undefined,
       });
       await resetForm();
     },
-    validationSchema: toFormikValidationSchema(schema),
+    validationSchema: {
+      validate: (form: SchemaDutchAuctionType) => {
+        if (!form.isDutchAuction) {
+          console.log("validating no dutch auction", form);
+          return toFormikValidationSchema(schemaNoDutchAuction).validate(form);
+        }
+        console.log("validating with dutch auction", form);
+        return toFormikValidationSchema(schemaDutchAuction).validate(form);
+      },
+    },
     // validateOnMount: true,
   });
   useEffect(() => {
     props.formValid({ isTouched: formik.dirty, isValid: formik.isValid });
-  }, [formik.isValid, formik.dirty]);
-
-  //todo add license field
+  }, [formik.isValid, formik.dirty, props]);
 
   return (
     <>
       <h2>On Chain Configuration</h2>
+      {!!props.defaultValues?.minter && (
+        <Alert variant="info">
+          Your work is already instantiated on chain. Head over to{" "}
+          <Alert.Link>
+            <Link href={`/create/${props.defaultValues?.id}?stage=view`}>
+              Mint
+            </Link>
+          </Alert.Link>{" "}
+          to configure your work on chain.
+        </Alert>
+      )}
       <>
         <Form
           onSubmit={(...a) => {
@@ -147,7 +268,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               </TooltipInfo>
             </Form.Label>
             <Form.Control
-              onWheel={() => false}
+              onWheel={numberInputOnWheelPreventChange}
               type={"number"}
               value={formik.values.maxTokens}
               onChange={formik.handleChange}
@@ -186,13 +307,24 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               {formik.errors.startDate}
             </Form.Control.Feedback>
           </Form.Group>
+
           <Form.Group className="mb-3" controlId="priceStars">
             <Form.Label>
-              Price in $Stars <TooltipInfo>Public mint price</TooltipInfo>
+              {formik.values.isDutchAuction ? (
+                <>
+                  Dutch Auction Start Price in $Stars{" "}
+                  <TooltipInfo>Public mint price</TooltipInfo>
+                </>
+              ) : (
+                <>
+                  Price in $Stars{" "}
+                  <TooltipInfo>Dutch Auction start price</TooltipInfo>
+                </>
+              )}{" "}
             </Form.Label>
             <Form.Control
               type="number"
-              onWheel={() => false}
+              onWheel={numberInputOnWheelPreventChange}
               value={formik.values.priceStars}
               name="priceStars"
               onChange={formik.handleChange}
@@ -206,6 +338,200 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               {formik.errors.priceStars}
             </Form.Control.Feedback>
           </Form.Group>
+
+          <Form.Group className="mb-3" controlId="formIsDutchAuction">
+            <Form.Label>
+              Dutch Auction{" "}
+              <TooltipInfo>
+                Dutch Auctions gradually lower the mint price over time.
+              </TooltipInfo>
+            </Form.Label>
+            <Form.Check
+              name="isDutchAuction"
+              type="checkbox"
+              checked={formik.values.isDutchAuction}
+              // value={formik.values.isDutchAuction?.toString()}
+              onChange={formik.handleChange}
+              isValid={
+                formik.touched.isDutchAuction && !formik.errors.isDutchAuction
+              }
+            />
+          </Form.Group>
+
+          <Collapse in={formik.values.isDutchAuction}>
+            <div>
+              <Form.Group className="mb-3" controlId="formDutchAuctionEndDate">
+                <Form.Label>
+                  End Time{" "}
+                  <TooltipInfo>
+                    When the Dutch Auction ends, the price will be fixed at the
+                    resting price. Tokens can still be minted after the auction
+                    ends.
+                  </TooltipInfo>
+                </Form.Label>
+                <Form.Control
+                  type={"datetime-local"}
+                  name="dutchAuctionEndDate"
+                  onChange={formik.handleChange}
+                  value={formik.values.dutchAuctionEndDate}
+                  isValid={
+                    formik.touched.dutchAuctionEndDate &&
+                    !formik.errors.dutchAuctionEndDate
+                  }
+                  isInvalid={
+                    formik.touched.dutchAuctionEndDate &&
+                    !!formik.errors.dutchAuctionEndDate
+                  }
+                />
+                <Form.Label>
+                  {`${formatInUTC(
+                    parseISO(formik.values.dutchAuctionEndDate)
+                  )} UTC`}
+                </Form.Label>
+
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.dutchAuctionEndDate}
+                </Form.Control.Feedback>
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="dutchAuctionEndPrice">
+                <Form.Label>
+                  Resting Price in $Stars{" "}
+                  <TooltipInfo>
+                    Final resting price after the auction has finished.
+                  </TooltipInfo>
+                </Form.Label>
+                <Form.Control
+                  type="number"
+                  onWheel={numberInputOnWheelPreventChange}
+                  value={formik.values.dutchAuctionEndPrice}
+                  name="dutchAuctionEndPrice"
+                  onChange={formik.handleChange}
+                  isValid={
+                    formik.touched.dutchAuctionEndPrice &&
+                    !formik.errors.dutchAuctionEndPrice
+                  }
+                  isInvalid={
+                    formik.touched.dutchAuctionEndPrice &&
+                    !!formik.errors.dutchAuctionEndPrice
+                  }
+                />
+
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.dutchAuctionEndPrice}
+                </Form.Control.Feedback>
+              </Form.Group>
+
+              <Form.Group
+                className="mb-3"
+                controlId="dutchAuctionDeclinePeriodSeconds"
+              >
+                <Form.Label>
+                  Price Drop Interval{" "}
+                  <TooltipInfo>
+                    The price will drop at this interval. 5 minutes is
+                    recommended (300 seconds) for collector convenience.
+                  </TooltipInfo>
+                </Form.Label>
+                <Form.Control
+                  type="number"
+                  onWheel={numberInputOnWheelPreventChange}
+                  value={formik.values.dutchAuctionDeclinePeriodSeconds}
+                  name="dutchAuctionDeclinePeriodSeconds"
+                  onChange={formik.handleChange}
+                  isValid={
+                    formik.touched.dutchAuctionDeclinePeriodSeconds &&
+                    !formik.errors.dutchAuctionDeclinePeriodSeconds
+                  }
+                  isInvalid={
+                    formik.touched.dutchAuctionDeclinePeriodSeconds &&
+                    !!formik.errors.dutchAuctionDeclinePeriodSeconds
+                  }
+                />
+
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.dutchAuctionDeclinePeriodSeconds}
+                </Form.Control.Feedback>
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="dutchAuctionDecayRate">
+                <Form.Label>
+                  Price Decay Rate{" "}
+                  <TooltipInfo>
+                    The auction price drops based on a decay rate. When above
+                    0.5 the price drops quickly then gradually slows down. When
+                    under 0.5, the price drops slowly then gradually speeds up
+                    near auction end. When equal to 0.5 the price drops
+                    linearly.
+                  </TooltipInfo>
+                </Form.Label>
+                <Form.Group>
+                  <Form.Control
+                    type="range"
+                    step="0.000001"
+                    min="0.000001"
+                    max={"0.999999"}
+                    onWheel={numberInputOnWheelPreventChange}
+                    value={formik.values.dutchAuctionDecayRate}
+                    name="dutchAuctionDecayRate"
+                    onChange={formik.handleChange}
+                    isValid={
+                      formik.touched.dutchAuctionDecayRate &&
+                      !formik.errors.dutchAuctionDecayRate
+                    }
+                    isInvalid={
+                      formik.touched.dutchAuctionDecayRate &&
+                      !!formik.errors.dutchAuctionDecayRate
+                    }
+                  />
+                  <Form.Text>{formik.values.dutchAuctionDecayRate}</Form.Text>
+                </Form.Group>
+
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.dutchAuctionDecayRate}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Label>
+                <Alert variant={"info"}>
+                  This graph depicts the price over the duration of the dutch
+                  auction. Elapsed time is a close estimate because actual time
+                  is based on the blockchain.
+                </Alert>
+              </Form.Label>
+              {pricesOmitted && (
+                <Form.Label>
+                  <Alert variant={"warning"}>
+                    Prices were omitted from the graph because the auction is
+                    either very long or the decline period is very short. You
+                    may want to adjust the auction settings to have fewer price
+                    drops for collector convenience.
+                  </Alert>
+                </Form.Label>
+              )}
+              <DutchAuctionChart
+                chartData={(res) => {
+                  setPricesOmitted(res.pricesOmitted);
+                }}
+                startPrice={formik.values.priceStars || 50}
+                endPrice={formik.values.dutchAuctionEndPrice || 50}
+                startTime={
+                  formik.values.startDate
+                    ? new Date(formik.values.startDate)
+                    : new Date()
+                }
+                endTime={
+                  formik.values.dutchAuctionEndDate
+                    ? new Date(formik.values.dutchAuctionEndDate)
+                    : new Date()
+                }
+                declinePeriodSeconds={
+                  formik.values.dutchAuctionDeclinePeriodSeconds || 300
+                }
+                decay={formik.values.dutchAuctionDecayRate || 0.92435}
+              />
+            </div>
+          </Collapse>
+
           <Form.Group className="mb-3" controlId="formRoyaltyAddress">
             <Form.Label>
               Royalty Address{" "}
@@ -216,6 +542,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
             </Form.Label>
             <Form.Control
               name="royaltyAddress"
+              onWheel={numberInputOnWheelPreventChange}
               type="text"
               value={formik.values.royaltyAddress}
               onChange={formik.handleChange}

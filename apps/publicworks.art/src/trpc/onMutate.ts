@@ -14,11 +14,13 @@ export const onMutateLogin = (
     }
     const ok = await signMessageAndLoginIfNeeded(client);
 
-    if (!ok) {
+    if (ok === false) {
       toast.error("Unauthorized");
       throw new Error("skip mutation");
-    } else {
+    } else if (ok) {
       toast.success("Logged in!");
+    } else {
+      console.log("already logged in");
     }
   };
 };

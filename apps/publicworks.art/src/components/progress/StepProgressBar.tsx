@@ -1,5 +1,5 @@
 import { FC } from "react";
-import styles from "./StepProgressBar.module.css";
+import styles from "./StepProgressBar.module.scss";
 
 export interface Step {
   label: string;
@@ -11,6 +11,7 @@ export interface Step {
 export interface StepProgressBarProps {
   items: Step[];
 }
+
 export const StepProgressBar: FC<StepProgressBarProps> = (
   props: StepProgressBarProps
 ) => {

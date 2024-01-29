@@ -5,8 +5,8 @@
 
 .filesListContainer{
   height: 10rem;
-  border: 2px solid;
-  padding: 1rem;
+  border: 1px solid $secondary;
+  //padding: 1rem;
 }
 
 .height30rem{
@@ -14,11 +14,5 @@
 }
 
 .border2px{
-    border: 2px solid;
-  padding: 0 2rem 2rem 2rem;
-}
-
-.border2px{
-  border: 2px solid;
-  padding:  2rem;
+  border: 1px solid $secondary;
 }

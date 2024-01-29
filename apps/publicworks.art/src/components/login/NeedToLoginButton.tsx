@@ -8,11 +8,7 @@ import { getToken } from "src/util/auth-token";
 import { LoginModal } from "../modal/LoginModal";
 import ModalStore from "../../modal/ModalStore";
 
-interface Props {
-  url: string;
-}
-
-export const NeedToLoginButton: FC<Props> = ({ url }) => {
+export const NeedToLoginButton: FC = () => {
   const router = useRouter();
   const { user } = useUserContext();
   const { wallet } = useWallet();

@@ -1,6 +1,7 @@
 import { AppRouterUtilContext, trpcNextPW } from "../server/utils/trpc";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "src/hooks/useToast";
+import { useClientLoginMutation } from "../hooks/useClientLoginMutation";
 
 export const onWorkUploadNew = async (
   workId: number,
@@ -34,6 +35,8 @@ export const useUploadWorkMutation = (workId: number | null | undefined) => {
     trpcNextPW.works.uploadWorkGenerateUrl.useMutation();
   const confirmWorkUploadFileMutation =
     trpcNextPW.works.confirmWorkUpload.useMutation();
+  const login = useClientLoginMutation();
+
   const onUploadMutation = useMutation(async (files: File[]) => {
     if (!workId) {
       const msg = "work id not defined";
@@ -41,6 +44,8 @@ export const useUploadWorkMutation = (workId: number | null | undefined) => {
       throw new Error(msg);
     }
     const contentSize = files[0].size;
+
+    await login.mutateAsync();
     const uploadTmp = await onWorkUploadFileMutation.mutateAsync({
       workId: workId,
       contentSize,
@@ -60,6 +65,7 @@ export const useUploadWorkMutation = (workId: number | null | undefined) => {
       uploadTmp.method
     );
     try {
+      await login.mutateAsync();
       await confirmWorkUploadFileMutation.mutateAsync({
         workId,
         uploadId: uploadTmp.uploadId,

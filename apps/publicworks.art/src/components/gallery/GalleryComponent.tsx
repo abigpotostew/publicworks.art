@@ -19,7 +19,6 @@ export const GalleryComponent = ({
   const query = trpcNextPW.works.workPreviewImg.useQuery({
     workId: work.id,
   });
-  console.log(query.data);
   const w = work;
   const router = useRouter();
   const numMinted = useNumMinted(work.slug);
@@ -55,11 +54,11 @@ export const GalleryComponent = ({
             <StarsAddressName address={work.ownerAddress || work.creator} />
           </div>
           <div>
-            {numMinted.isLoading || collectionSize.loading ? (
+            {numMinted.isLoading || collectionSize.isLoading ? (
               "..."
             ) : (
               <>
-                {numMinted.data} of {collectionSize.collectionSize}
+                {numMinted.data} of {collectionSize.data}
               </>
             )}
           </div>

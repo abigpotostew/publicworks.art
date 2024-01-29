@@ -20,12 +20,13 @@ import {
 } from "react-bootstrap";
 import { useLastMintedToken } from "../../hooks/useLastMintedToken";
 import { relativeTimeFromDates } from "../../util/date-fmt/format";
-import { ButtonPW } from "../button/Button";
+import { ButtonPW, ButtonPWFRef } from "../button/Button";
 import { trpcNextPW } from "../../server/utils/trpc";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidateWork } from "../../hooks/work/useInvalidateWork";
 import useUserContext from "../../context/user/useUserContext";
 import ModalStore from "../../modal/ModalStore";
+import { useClientLoginMutation } from "src/hooks/useClientLoginMutation";
 interface Props {
   work: WorkSerializable;
   onChange: () => void;
@@ -35,7 +36,9 @@ function EditButtonDropdown({ work }: { work: WorkSerializable }) {
   return (
     <Dropdown as={ButtonGroup}>
       <Link href={`/create/${work.id}`} passHref={true} legacyBehavior>
-        <ButtonPW variant={"outline-secondary"}>Edit</ButtonPW>
+        <ButtonPWFRef as="a" variant={"outline-secondary"}>
+          Edit
+        </ButtonPWFRef>
       </Link>
       <Dropdown.Toggle split variant="outline-secondary" />
       <Dropdown.Menu>
@@ -63,10 +66,12 @@ export const WorkRow: FC<Props> = ({ work, onChange }: Props) => {
   const { invalidateWork: invalidate } = useInvalidateWork();
 
   const utils = trpcNextPW.useContext();
+  const login = useClientLoginMutation();
 
   const editWorkMutation = trpcNextPW.works.editWork.useMutation();
   const setHiddenMutation = useMutation(
     async (hidden: boolean) => {
+      await login.mutateAsync();
       console.log("setting hidden to", hidden);
       await editWorkMutation.mutateAsync({ id: work.id, hidden });
     },
@@ -93,7 +98,6 @@ export const WorkRow: FC<Props> = ({ work, onChange }: Props) => {
       }
     >
       <div>
-        {/*Name flex*/}
         <FlexBox>
           <Link
             className={styles.workTitleLink}
@@ -127,17 +131,29 @@ export const WorkRow: FC<Props> = ({ work, onChange }: Props) => {
           </FlexBox>
         </div>
         <>
-          <Form.Check
-            className={"mt-2"}
-            type="switch"
-            id="custom-switch"
-            label="Hidden"
-            defaultChecked={!!work.hidden}
-            disabled={!user.data || setHiddenMutation.isLoading}
-            onChange={(e) => {
-              onHide(e.target.checked);
-            }}
-          />
+          <div className={"d-flex align-items-center mt-2 gap-2"}>
+            <Form.Check
+              className={""}
+              type="switch"
+              id="custom-switch"
+              label="Hidden"
+              defaultChecked={!!work.hidden}
+              disabled={!user.data || setHiddenMutation.isLoading}
+              onChange={(e) => {
+                onHide(e.target.checked);
+              }}
+            />
+            <div>
+              <Link
+                href={`/create/${work.id}/status`}
+                passHref={true}
+                legacyBehavior
+                className={"text-decoration-none"}
+              >
+                Token Mint Status
+              </Link>
+            </div>
+          </div>
         </>
       </div>
 

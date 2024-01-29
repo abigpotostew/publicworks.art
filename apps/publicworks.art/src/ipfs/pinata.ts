@@ -3,7 +3,6 @@ import * as unzipper from "unzipper";
 import FormData from "form-data";
 import got from "got";
 import AdmZip from "adm-zip";
-import cuid from "cuid";
 
 const readZipAdm = async (
   zipPath: string,

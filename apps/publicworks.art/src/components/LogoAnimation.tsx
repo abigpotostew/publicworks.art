@@ -4,7 +4,6 @@ import dynamic from "next/dynamic";
 import { Container } from "react-bootstrap";
 import useSize from "@react-hook/size";
 import { hashCode } from "../util/hashcode";
-import { Bezier } from "bezier-js";
 // Will only import `react-p5` on client-side
 
 /**

@@ -1,10 +1,5 @@
-import { Err, Ok, Result } from "../util/result";
-import { User } from "./user.types";
-import {
-  CreateProjectRequest,
-  EditProjectRequest,
-  FullEditProjectRequest,
-} from "./project.types";
+import { Ok, Result } from "../util/result";
+import { CreateProjectRequest, FullEditProjectRequest } from "./project.types";
 import { dataSource } from "../typeorm/datasource";
 import { TokenEntity, UserEntity, WorkEntity, WorkUploadFile } from "./model";
 import { IsNull, Not } from "typeorm";
@@ -178,6 +173,7 @@ export class ProjectRepo {
       nextOffset,
     };
   }
+
   async getProject(id: number): Promise<WorkEntity | null> {
     return dataSource()
       .getRepository(WorkEntity)
@@ -188,6 +184,7 @@ export class ProjectRepo {
         relations: ["owner"],
       });
   }
+
   async getProjectBySlug(slug: string): Promise<WorkEntity | null> {
     return dataSource()
       .getRepository(WorkEntity)
@@ -258,6 +255,14 @@ export class ProjectRepo {
     return Ok(work);
   }
 
+  async deleteWorkTokens(id: number): Promise<Result<number>> {
+    const result = await dataSource().getRepository(TokenEntity).delete({
+      work: {
+        id,
+      },
+    });
+    return Ok(result.affected ?? 0);
+  }
   async updateProject(
     id: number,
     request: Partial<FullEditProjectRequest>
@@ -289,6 +294,15 @@ export class ProjectRepo {
       minter: request.minter,
       sg721CodeId: request.sg721CodeId,
       minterCodeId: request.minterCodeId,
+
+      isDutchAuction: request.isDutchAuction,
+      dutchAuctionEndDate: request.dutchAuctionEndDate
+        ? new Date(request.dutchAuctionEndDate)
+        : undefined,
+      dutchAuctionEndPrice: request.dutchAuctionEndPrice,
+      dutchAuctionDecayRate: request.dutchAuctionDecayRate,
+      dutchAuctionDeclinePeriodSeconds:
+        request.dutchAuctionDeclinePeriodSeconds,
     };
 
     const result = await dataSource().getRepository(WorkEntity).update(
@@ -320,6 +334,7 @@ export class ProjectRepo {
     item.filename = filename;
     return await dataSource().getRepository(WorkUploadFile).save(item);
   }
+
   async getLastFileUpload(work: WorkEntity) {
     return dataSource()
       .getRepository(WorkUploadFile)
@@ -346,6 +361,30 @@ export class ProjectRepo {
           },
         },
       });
+  }
+
+  async listTokens({
+    work_id,
+    take,
+    skip,
+  }: {
+    work_id: string;
+    take: number;
+    skip: number;
+  }): Promise<{ tokens: TokenEntity[]; count: number }> {
+    const [tokens, count] = await dataSource()
+      .getRepository(TokenEntity)
+      .findAndCount({
+        where: {
+          work_id,
+        },
+        order: {
+          token_id: "ASC",
+        },
+        take,
+        skip,
+      });
+    return { tokens, count };
   }
 }
 

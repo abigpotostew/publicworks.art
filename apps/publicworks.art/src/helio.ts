@@ -1,4 +1,4 @@
-export const work = {
+export const helioWork = {
   workId: 1,
   title: "Helio",
   author: "skymagic",
@@ -36,9 +36,9 @@ Works on any screen size at any resolution. Helio requires WebGL2 and Google Chr
   slug: "helio",
   testnet: false,
 };
-if (work.testnet) {
-  work.sg721 =
+if (helioWork.testnet) {
+  helioWork.sg721 =
     "stars1kp82qny9vf086chmlqe9wdasxra4a0423vxuterv0k8ddeggyzwqaz3kxw";
-  work.minter =
+  helioWork.minter =
     "stars1j4p0qkqhnqeukw6s7u94w8rscq5cpskncxendvj6maw50ukh4wfstwtqc3";
 }

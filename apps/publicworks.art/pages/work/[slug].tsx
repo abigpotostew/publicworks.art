@@ -1,29 +1,31 @@
-import { ReactElement, useEffect, useState } from "react";
-import MainLayout from "../../src/layout/MainLayout";
-import styles from "../../styles/Work.module.scss";
-import { Button, Container } from "react-bootstrap";
-import { LiveMedia } from "../../src/components/media/LiveMedia";
-import { RowThinContainer } from "../../src/components/layout/RowThinContainer";
+import { FieldControl } from "../../src/components/control/FieldControl";
 import { RowSquareContainer } from "../../src/components/layout/RowSquareContainer";
+import { RowThinContainer } from "../../src/components/layout/RowThinContainer";
+import { RowWideContainer } from "../../src/components/layout/RowWideContainer";
+import SpinnerLoading from "../../src/components/loading/Loader";
+import { LiveMedia } from "../../src/components/media/LiveMedia";
+import { PagedGallery } from "../../src/components/media/PagedGallery";
+import { MintPrice } from "../../src/components/mint/MintPrice";
+import { StarsAddressName } from "../../src/components/name/StarsAddressName";
 import { NumMinted } from "../../src/components/work/NumMinted";
 import { useNftMetadata } from "../../src/hooks/useNftMetadata";
-import SpinnerLoading from "../../src/components/loading/Loader";
-import { GetStaticProps } from "next";
-import { RowWideContainer } from "../../src/components/layout/RowWideContainer";
 import { useNumMinted } from "../../src/hooks/useNumMinted";
-import { PagedGallery } from "../../src/components/media/PagedGallery";
-import { stores } from "src/store/stores";
-import { initializeIfNeeded } from "src/typeorm/datasource";
+import MainLayout from "../../src/layout/MainLayout";
+import { normalizeIpfsUri } from "../../src/wasm/metadata";
+import styles from "../../styles/Work.module.scss";
 import {
   serializeWork,
   serializeWorkToken,
   WorkSerializable,
 } from "@publicworks/db-typeorm/serializable";
-import config from "src/wasm/config";
+import { GetStaticProps } from "next";
+import Link from "next/link";
 import { useRouter } from "next/router";
-import { FieldControl } from "../../src/components/control/FieldControl";
-import { StarsAddressName } from "../../src/components/name/StarsAddressName";
-import { normalizeIpfsUri } from "../../src/wasm/metadata";
+import { ReactElement, useEffect, useState } from "react";
+import { Button, Container } from "react-bootstrap";
+import { stores } from "src/store/stores";
+import { initializeIfNeeded } from "src/typeorm/datasource";
+import config from "src/wasm/config";
 
 export async function getStaticPaths() {
   console.log("getStaticPaths, works");
@@ -67,14 +69,19 @@ export const getStaticProps: GetStaticProps = async (context) => {
     workId: work.id,
     tokenId: "1",
   });
-  return {
-    props: {
-      work: serializeWork(work),
-      token: token ? serializeWorkToken(token) : null,
-    },
-    revalidate: 10, // In seconds
-    // fallback: "blocking",
-  };
+  try {
+    return {
+      props: {
+        work: serializeWork(work),
+        token: token ? serializeWorkToken(token) : null,
+      },
+      revalidate: 10, // In seconds
+      // fallback: "blocking",
+    };
+  } catch (e) {
+    console.log("error", e);
+    throw e;
+  }
 };
 //InferGetStaticPropsType<typeof getStaticProps>
 const WorkPage = ({ work }: { work: WorkSerializable }) => {
@@ -100,18 +107,7 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
     tokenId: previewTokenId,
     refresh: false,
   });
-  // console.log("metadata", metadata);
 
-  // console.log("numMinted", numMinted, numMintedError, numMintedLoading);
-
-  // const tmp = trpcNextPW.works.tmp.useQuery(
-  //   { slug: "pizza" },
-  //   { refetchInterval: 2000 }
-  // );
-  // console.log("tmp", tmp.data);
-
-  // const loading = false;
-  // const errorMetadata = false;
   return (
     <>
       <div>
@@ -140,70 +136,59 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
                 />
               )}
             </div>
-            <div className={"mt-2 text-end"}>
-              <a
-                onClick={() => {
-                  router.push(`/work/${work.slug}/${previewTokenId}`);
-                }}
-              >
-                {metadata.data ? (
-                  <>Showing #{previewTokenId}</>
-                ) : (
-                  <>Showing cover image</>
-                )}
-              </a>
+            <div className={" mt-2 text-end fw-light fst-italic"}>
+              <Link href={`/work/${work.slug}/${previewTokenId}`}>
+                <span className={""}>
+                  {metadata.data ? (
+                    <>Showing #{previewTokenId}</>
+                  ) : (
+                    <>Showing cover image</>
+                  )}
+                </span>
+              </Link>
             </div>
           </RowSquareContainer>
         </Container>
         <Container>
           <RowThinContainer className={`mt-1 ${styles.workHeader}`}>
             <div className={"mt-1"}>
-              <div className={"d-flex"}>
+              <div className={"d-flex flex-row justify-content-between"}>
                 <h2 className={"fw-bold"}>{work.name + " "}</h2>
-                <h2 className={` ms-2 me-1`}>
-                  <StarsAddressName
-                    address={work.ownerAddress || work.creator}
-                  />
-                </h2>
-                {work.sg721 && work.minter ? (
-                  <NumMinted slug={work.slug} minter={work.minter} />
-                ) : (
-                  <div>Deploy your work to view</div>
-                )}
               </div>
-
-              <p className={`mt-2`}>
-                <a
-                  className={"btn"}
-                  href={`${config.launchpadUrl}/` + work.minter}
-                  rel="noreferrer"
-                  target={"_blank"}
+              <div className={`mt-1`}>
+                <div
+                  className={
+                    "d-flex flex-row align-items-baseline justify-content-between"
+                  }
                 >
-                  <Button>Mint on stargaze.zone</Button>
-                </a>
-              </p>
+                  <div className={"d-flex flex-row align-items-center"}>
+                    <span>By </span>
+                    <StarsAddressName
+                      address={work.ownerAddress || work.creator}
+                    />
+                  </div>
+                  {work.sg721 && work.minter ? (
+                    <NumMinted slug={work.slug} minter={work.minter} />
+                  ) : (
+                    <div>Deploy your work to view</div>
+                  )}
+                </div>
+              </div>
+              <MintPrice className={"mt-4"} minter={work.minter} work={work} />
 
-              <div
-                className={`${styles.workDescription} ${styles.displayLinebreak} `}
-              >
+              <div className={`mt-4 ${styles.displayLinebreak}`}>
                 {work.description}
               </div>
               {work.additionalDescription && (
                 <>
-                  {/*<hr />*/}
-                  {/*<div className={`${styles.sectionBreak}`}></div>*/}
-
                   <div>
                     <h5 className={"mt-4"}>Additional Description</h5>
-                    <p
-                      className={`${styles.workDescription} ${styles.displayLinebreak}`}
-                    >
+                    <p className={`${styles.displayLinebreak}`}>
                       {work.additionalDescription}
                     </p>
                   </div>
                 </>
               )}
-              {/*<div className={`${styles.sectionBreak}`}></div>*/}
               <h5 className={"mt-4"}>Metadata</h5>
               <div className={`${styles.workAuthorLink}}`}>
                 {work.externalLink && (
@@ -247,7 +232,7 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
               <></>
             )}
 
-            {numMinted === 0 && <SpinnerLoading />}
+            {/*{numMinted === 0 && <SpinnerLoading />}*/}
             {numMinted && !work.sg721 && (
               <div>
                 <span>No NFTs minted</span>

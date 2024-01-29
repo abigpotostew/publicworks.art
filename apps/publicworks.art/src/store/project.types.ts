@@ -1,7 +1,10 @@
 import { z } from "zod";
 import { isISODate } from "../util/isISODate";
 import { cidRegex } from "../ipfs/cid";
-import { zodStarsAddress, zodStarsContractAddress } from "src/wasm/address";
+import {
+  zodStarsAddressOrContractAddress,
+  zodStarsContractAddress,
+} from "src/wasm/address";
 
 export interface Token {
   hash: string;
@@ -11,14 +14,6 @@ export interface Token {
   image_url: string | undefined;
   metadata_uri?: string | undefined;
   updated: number;
-}
-
-export enum TokenStatuses {
-  QUEUEING = 0,
-  ERR_MISSING_PROJECT = 1,
-  COMPLETE = 2,
-  FINALIZING = 3,
-  ERROR_QUEUEING = 4,
 }
 
 export const ProjectFullZ = z.object({
@@ -48,7 +43,7 @@ export const CreateProjectRequestZ = z.object({
     .string()
     .refine(isISODate, { message: "Not a valid ISO string date " })
     .optional(),
-  royaltyAddress: zodStarsAddress.optional(),
+  royaltyAddress: zodStarsAddressOrContractAddress.optional(),
   royaltyPercent: z.number().min(0).max(100).optional(),
 
   resolution: z.string().optional(),
@@ -70,9 +65,10 @@ export const editProjectZod = z.object({
   externalLink: z.string().max(2048).optional(),
   startDate: z
     .string()
+    .refine((v) => new Date(v) > new Date(), "Must be in the future")
     .refine(isISODate, { message: "Not a valid ISO string date " })
     .optional(),
-  royaltyAddress: zodStarsAddress.optional(),
+  royaltyAddress: zodStarsAddressOrContractAddress.optional(),
   royaltyPercent: z.number().min(0).max(100).optional(),
   // codeCid: z.string().regex(cidRegex).optional(),
 
@@ -91,6 +87,15 @@ export const editProjectZod = z.object({
   hidden: z.boolean().optional(),
   // sg721CodeId: z.number().optional(),
   // minterCodeId: z.number().optional(),
+  isDutchAuction: z.boolean().optional(),
+  dutchAuctionEndPrice: z.number().min(50).optional(),
+  dutchAuctionEndDate: z
+    .string()
+    .refine(isISODate, { message: "Not a valid ISO string date " })
+    .refine((v) => new Date(v) > new Date(), "Must be in the future")
+    .optional(),
+  dutchAuctionDeclinePeriodSeconds: z.number().min(1).max(86400).default(300),
+  dutchAuctionDecayRate: z.number().min(0).max(1).default(0.85),
 });
 
 export type EditProjectRequest = z.infer<typeof editProjectZod>;

@@ -15,10 +15,17 @@ todo:
 
 - Add additional description to the edit flow
 - add a button to open to fullscreen!
-- user hidden visibility
+- [x] user hidden visibility
 - delete project
 - bring your own ipfs cid
 - consolidate create flow
+
+- index work tokens by contract address instead of work id so that replacing the contract doesn't screw up the tokens.
+- replace the live preview with a static image
+- load images from the gcp storage (requires making the image bucket public)
+- give user option to show live view or static image
+- [x] a page for users to see the status of a mint (ie progress in the render pipeline)
+
 
 design inspiration:
 - https://nouns.build/

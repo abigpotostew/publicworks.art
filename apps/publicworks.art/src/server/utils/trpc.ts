@@ -1,9 +1,10 @@
-import { httpBatchLink, loggerLink } from "@trpc/client";
+import { httpBatchLink, httpLink, loggerLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import { NextPageContext } from "next";
 import superjson from "superjson";
 import { appRouter, AppRouter } from "../routes/_app";
 import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
+import { getToken } from "../../util/auth-token";
 // ℹ️ Type-only import:
 // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-8.html#type-only-imports-and-export
 
@@ -84,9 +85,17 @@ export interface SSRContext extends NextPageContext {
 //    */
 //   ssr: false,
 // });
-const queryCache = new QueryCache();
+export const queryCache = new QueryCache();
 export const queryClient = new QueryClient({
   queryCache,
+  defaultOptions: {
+    mutations: {
+      onMutate: async (vars) => {
+        // do login here if needed
+        // const token = getToken();
+      },
+    },
+  },
 });
 // queryCache.subscribe((event) => {
 //   if (event.query.queryHash.includes("getUser"))
@@ -97,7 +106,14 @@ export const trpcNextPW = createTRPCNext<AppRouter, SSRContext>({
     return {
       transformer: superjson,
       links: [
-        httpBatchLink({
+        // httpBatchLink({
+        //   /**
+        //    * If you want to use SSR, you need to use the server's full URL
+        //    * @link https://trpc.io/docs/ssr
+        //    **/
+        //   url: `${getBaseUrl()}/api/trpc`,
+        // }),
+        httpLink({
           /**
            * If you want to use SSR, you need to use the server's full URL
            * @link https://trpc.io/docs/ssr

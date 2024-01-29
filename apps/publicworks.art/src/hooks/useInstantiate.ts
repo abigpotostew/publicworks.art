@@ -1,17 +1,33 @@
+import { trpcNextPW } from "../server/utils/trpc";
 import config from "../wasm/config";
-import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
+import { useClientLoginMutation } from "./useClientLoginMutation";
+import { createCoin, createTimestamp } from "./useUpdateDutchAuction";
+import {
+  MsgInstantiateContractEncodeObject,
+  SigningCosmWasmClient,
+} from "@cosmjs/cosmwasm-stargate";
 import { OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
-import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { Timestamp } from "@stargazezone/types/contracts/sg721/shared-types";
+import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
+import { useWallet } from "@stargazezone/client";
+import { DutchAuctionConfig } from "@stargazezone/client/core/minters/types";
 import { Decimal } from "@stargazezone/types/contracts/minter/instantiate_msg";
 import { Coin } from "@stargazezone/types/contracts/minter/shared-types";
-import { coins } from "cosmwasm";
-import { trpcNextPW } from "../server/utils/trpc";
+import { Timestamp } from "@stargazezone/types/contracts/sg721/shared-types";
 import { useMutation } from "@tanstack/react-query";
-import { toStars } from "src/wasm/address";
-import { useWallet } from "@stargazezone/client";
-import useStargazeClient from "@stargazezone/client/react/client/useStargazeClient";
+import {
+  calculateFee,
+  coins,
+  Decimal as CosmWasmDecimal,
+  GasPrice,
+} from "cosmwasm";
 import { useToast } from "src/hooks/useToast";
+import { toStars } from "src/wasm/address";
+import useStargazeClient from "@stargazezone/client/react/client/useStargazeClient";
+import {
+  MsgExecuteContract,
+  MsgInstantiateContract,
+} from "cosmjs-types/cosmwasm/wasm/v1/tx";
+import { toUtf8 } from "@cosmjs/encoding";
 
 function formatRoyaltyInfo(
   royaltyPaymentAddress: null | string,
@@ -39,7 +55,7 @@ function isValidIpfsUrl(uri: string) {
   return url.protocol === "ipfs:";
 }
 
-const NEW_COLLECTION_FEE = coins("1000000000", "ustars");
+const NEW_COLLECTION_FEE = coins("0", "ustars");
 
 export interface InstantiateMsg {
   base_token_uri: string;
@@ -50,6 +66,7 @@ export interface InstantiateMsg {
   start_time: Timestamp;
   unit_price: Coin;
   whitelist?: string | null;
+  dutch_auction_config: DutchAuctionConfig | null;
 
   [k: string]: unknown;
 }
@@ -101,7 +118,8 @@ const client:
 async function instantiateNew(
   work: WorkSerializable,
   address: string,
-  client: SigningCosmWasmClient
+  client: SigningCosmWasmClient,
+  useSimulatedGasFee = false
 ) {
   if (!work.id) {
     throw new Error("work id invalid");
@@ -162,7 +180,23 @@ async function instantiateNew(
   if (!work.coverImageCid) {
     throw new Error("missing cover image");
   }
-  //todo this is broken
+  let dutchAuctionConfig: DutchAuctionConfig | null = null;
+  if (
+    work.isDutchAuction &&
+    work.dutchAuctionEndDate &&
+    work.dutchAuctionEndPrice &&
+    work.dutchAuctionDeclinePeriodSeconds !== null &&
+    work.dutchAuctionDeclinePeriodSeconds !== undefined &&
+    work.dutchAuctionDecayRate !== null &&
+    work.dutchAuctionDecayRate !== undefined
+  ) {
+    dutchAuctionConfig = {
+      end_time: createTimestamp(new Date(work.dutchAuctionEndDate).getTime()),
+      resting_unit_price: createCoin(work.dutchAuctionEndPrice),
+      decline_period_seconds: work.dutchAuctionDeclinePeriodSeconds,
+      decline_decay: Math.round(work.dutchAuctionDecayRate * 1_000_000),
+    };
+  }
   const subdomain = config.testnet ? "testnetmetadata" : "metadata";
   const tempMsg: InstantiateMsg = {
     base_token_uri: `https://${subdomain}.publicworks.art/${work.id}`,
@@ -189,6 +223,7 @@ async function instantiateNew(
       amount: (work.priceStars * 1000000).toString(),
       denom: "ustars",
     },
+    dutch_auction_config: dutchAuctionConfig,
   };
 
   if (
@@ -214,13 +249,45 @@ async function instantiateNew(
   );
   console.log("funds", NEW_COLLECTION_FEE);
 
+  // const gasUsed = 1_200_000;
+  // const fee = calculateFee(
+  //   gasUsed,
+  //   new GasPrice(CosmWasmDecimal.fromUserInput("1.0", 3), "ustars")
+  // );
+
+  let gasUsed = 0;
+  try {
+    const executeContractMsg: MsgInstantiateContractEncodeObject = {
+      typeUrl: "/cosmwasm.wasm.v1.MsgInstantiateContract",
+      value: MsgInstantiateContract.fromPartial({
+        sender: account,
+        admin: account,
+        codeId: BigInt(config.minterCodeId),
+        label: work.name,
+        // fee: "auto",
+        msg: toUtf8(JSON.stringify(msg)),
+        funds: NEW_COLLECTION_FEE,
+      }),
+    };
+    const gasUsedResult = await signer.simulate(
+      account,
+      [executeContractMsg],
+      undefined
+    );
+    console.log("simulate gasUsed", gasUsedResult);
+    gasUsed = gasUsedResult;
+  } catch (e) {
+    console.log("simulate error", e);
+  }
+  const gasfee = useSimulatedGasFee ? gasUsed : "auto";
+  console.log("gasfee", gasfee);
   const result = await signer.instantiate(
     account,
     config.minterCodeId,
     msg,
     work.name,
-    "auto",
-    { funds: NEW_COLLECTION_FEE, admin: account }
+    gasfee,
+    { /*funds: NEW_COLLECTION_FEE,*/ admin: account }
   );
   const wasmEvent = result.logs[0].events.find((e) => e.type === "wasm");
   console.info(
@@ -244,43 +311,58 @@ export const useInstantiate = () => {
   const sgwallet = useWallet();
   const client = useStargazeClient();
   const toast = useToast();
+  const login = useClientLoginMutation();
+
   const mutationContracts = trpcNextPW.works.editWorkContracts.useMutation({
     onSuccess() {
       utils.works.getWorkById.invalidate();
     },
   });
 
-  const instantiateMutation = useMutation(async (work: WorkSerializable) => {
-    ///
-    if (!sgwallet.wallet) return false;
+  const instantiateMutation = useMutation(
+    async ({
+      work,
+      useSimulatedGasFee,
+    }: {
+      work: WorkSerializable;
+      useSimulatedGasFee?: boolean;
+    }) => {
+      if (!sgwallet.wallet) return false;
 
-    if (!work) return false;
+      if (!work) return false;
 
-    if (!client.client) {
-      throw new Error("missing sg client");
+      if (!client.client) {
+        throw new Error("missing sg client");
+      }
+      const signingClient = await client.client.connectSigningClient();
+      if (!signingClient) {
+        throw new Error("Couldn't connect client");
+      }
+      let res: { sg721: string; minter: string } | undefined = undefined;
+      try {
+        res = await instantiateNew(
+          work,
+          sgwallet.wallet.address,
+          signingClient,
+          useSimulatedGasFee
+        );
+      } catch (e) {
+        toast.error("Failed to instantiate on chain: " + (e as any)?.message);
+        throw e;
+      }
+      if (!res) {
+        return;
+      }
+      await login.mutateAsync();
+
+      await mutationContracts.mutateAsync({
+        sg721: res.sg721,
+        minter: res.minter,
+        id: work.id,
+      });
+      return true;
     }
-    const signingClient = await client.client.connectSigningClient();
-    if (!signingClient) {
-      throw new Error("Couldn't connect client");
-    }
-    let res: { sg721: string; minter: string } | undefined = undefined;
-    try {
-      res = await instantiateNew(work, sgwallet.wallet.address, signingClient);
-    } catch (e) {
-      //
-      toast.error("Failed to instantiate on chain: " + (e as any)?.message);
-      return;
-    }
-    if (!res) {
-      return;
-    }
-    await mutationContracts.mutateAsync({
-      sg721: res.sg721,
-      minter: res.minter,
-      id: work.id,
-    });
-    return true;
-  });
+  );
 
   return { instantiateMutation };
 };

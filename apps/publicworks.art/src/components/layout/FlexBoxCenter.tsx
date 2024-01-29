@@ -52,7 +52,7 @@ export const FlexBox = ({
   style?: CSSProperties | undefined;
 }) => {
   return (
-    <div className={className + " d-inline-flex"} style={{ ...style }}>
+    <div className={(className || "") + " d-inline-flex"} style={{ ...style }}>
       {children}
     </div>
   );

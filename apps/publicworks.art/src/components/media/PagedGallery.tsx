@@ -61,7 +61,7 @@ export const PagedGallery: FC<Props> = ({
       tokenIds.push(i.toString());
     }
     return tokenIds;
-  }, [lastPage, page]);
+  }, [lastPage, page, totalNumTokens]);
 
   const changePage = (page: number) => {
     const newPage = Math.max(pages[0], Math.min(page, pages[pages.length - 1]));

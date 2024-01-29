@@ -9,7 +9,7 @@
 
 // boostrap vars
 $spacer:1.5rem;
-$border-width:3px;
+$border-width:1px;
 $btn-border-radius:1.35rem;
 $line-height-base:1.5;
 $font-size-base:1rem;
@@ -146,6 +146,34 @@ $form-feedback-valid-color: #5b806e;
   margin-right: calc($pw-p-spacer * 6);
 }
 
+$pw-width: 18px;
+.Width-full{
+  width: 100%;
+}
+.Width-0{
+  width: 0;
+}
+.Width-1{
+  width: calc($pw-p-spacer * 1.0);
+}
+.Width-2{
+  width: calc($pw-p-spacer * 1.25);
+}
+.Width-3{
+  width: calc($pw-p-spacer * 1.5);
+}
+.Width-4{
+  width: calc($pw-p-spacer * 2);
+}
+.Width-5{
+  width: calc($pw-p-spacer * 2.5);
+}
+.Width-6{
+  width: calc($pw-p-spacer * 4);
+}
+.Width-7{
+  width: calc($pw-p-spacer * 6);
+}
 
 
 

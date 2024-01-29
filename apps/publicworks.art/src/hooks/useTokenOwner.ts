@@ -45,7 +45,7 @@ export const useTokenOwner = ({
       );
       if (!res.ok) {
         throw new Error(
-          "failed to get collection size" +
+          "failed to get token owner" +
             res.status +
             ", " +
             (await res.text().toString())

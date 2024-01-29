@@ -1,29 +1,28 @@
-import { z } from "zod";
-import { isISODate } from "../../util/isISODate";
-import { stores } from "../../store/stores";
-import { authorizedProcedure, baseProcedure, t } from "../trpc";
-import { CreateProjectRequestZ, editProjectZod } from "../../store";
-import { TRPCError } from "@trpc/server";
 import {
   serializeWork,
   serializeWorkToken,
+  serializeWorkTokenFull,
 } from "../../../../../packages/db-typeorm/src/serializable/works/serialize-work";
-import { normalizeMetadataUri } from "../../wasm/metadata";
+import { dataUrlToBuffer } from "../../base64/dataurl";
 import {
   deleteCid,
   getMetadataWorkId,
   uploadFileToPinata,
 } from "../../ipfs/pinata";
-import { dataUrlToBuffer } from "../../base64/dataurl";
-import { zodStarsAddress, zodStarsContractAddress } from "src/wasm/address";
-import cuid from "cuid";
-import { createPresignedUrl } from "src/upload/presignedUrl";
+import chainInfo from "../../stargaze/chainInfo";
+import { CreateProjectRequestZ, editProjectZod } from "../../store";
+import { stores } from "../../store/stores";
+import { normalizeMetadataUri } from "../../wasm/metadata";
+import { authorizedProcedure, baseProcedure, t } from "../trpc";
+import { TRPCError } from "@trpc/server";
+import mime from "mime-types";
 import {
   confirmCoverImageUpload,
   confirmUpload,
 } from "src/upload/confirm-upload";
-import mime from "mime-types";
-import chainInfo from "../../stargaze/chainInfo";
+import { createPresignedUrl } from "src/upload/presignedUrl";
+import { zodStarsAddress } from "src/wasm/address";
+import { z } from "zod";
 
 const createWork = authorizedProcedure
   .input(CreateProjectRequestZ)
@@ -98,6 +97,13 @@ const editWorkContracts = authorizedProcedure
       });
     }
 
+    if (
+      sg721CodeId === work.sg721CodeId &&
+      minterCodeId === work.minterCodeId
+    ) {
+      console.log("no change to contracts");
+      return serializeWork(work);
+    }
     const project = await stores().project.updateProject(input.id, {
       ...input,
       sg721CodeId,
@@ -106,6 +112,10 @@ const editWorkContracts = authorizedProcedure
     if (!project.ok) {
       throw new TRPCError({ code: "BAD_REQUEST" });
     }
+    //delete work tokens too in the case that the work was already minted then stop
+    //todo index the work tokens by contract id instead of work id
+    const deleteRes = await stores().project.deleteWorkTokens(input.id);
+    console.log("deleted existing work tokens", deleteRes);
     return serializeWork(project.value);
   });
 const getWorkById = baseProcedure
@@ -138,6 +148,26 @@ const getWorkBySlug = baseProcedure
       throw new TRPCError({ code: "NOT_FOUND" });
     }
     return serializeWork(project);
+  });
+
+const getWorkTokenByTokenId = baseProcedure
+  .input(
+    z.object({
+      workId: z.number(),
+      tokenId: z.number().int().positive(),
+    })
+  )
+
+  .query(async ({ input, ctx }) => {
+    const token = await stores().project.getToken({
+      workId: input.workId,
+      tokenId: input.tokenId.toString(),
+    });
+
+    if (!token) {
+      throw new TRPCError({ code: "NOT_FOUND" });
+    }
+    return serializeWorkToken(token);
   });
 
 const listWorks = baseProcedure
@@ -406,6 +436,29 @@ const deleteWork = authorizedProcedure
 
     return stores().project.deleteWork(work);
   });
+const tokenStatus = baseProcedure
+  .input(
+    z.object({
+      workId: z.number(),
+      take: z.number().int().positive().max(100).default(10),
+      skip: z.number().int().nonnegative().default(0),
+    })
+  )
+
+  .query(async ({ input, ctx }) => {
+    const work = await stores().project.getProject(input.workId);
+    if (!work) {
+      throw new TRPCError({ code: "NOT_FOUND" });
+    }
+
+    const { tokens, count } = await stores().project.listTokens({
+      work_id: input.workId.toString(),
+      take: input.take,
+      skip: input.skip,
+    });
+
+    return { tokens: tokens.map(serializeWorkTokenFull), count };
+  });
 
 export const workRouter = t.router({
   // Public
@@ -414,10 +467,11 @@ export const workRouter = t.router({
   editWorkContracts,
   getWorkById: getWorkById,
   getWorkBySlug,
+  getWorkTokenByTokenId: getWorkTokenByTokenId,
   listWorks: listWorks,
   workPreviewImg,
   uploadPreviewImg: uploadPreviewImg,
-  listAddressWorks,
+  listAddressWorks: listAddressWorks,
   workTokenCount: workTokenCount,
   lastMintedToken: lastMintedToken,
   uploadWorkGenerateUrl: uploadWorkGenerateUrl,
@@ -425,4 +479,5 @@ export const workRouter = t.router({
   confirmWorkUpload: confirmWorkUpload,
   confirmWorkCoverImageUpload: confirmWorkCoverImageUpload,
   deleteWork: deleteWork,
+  tokenStatus: tokenStatus,
 });

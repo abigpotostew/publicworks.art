@@ -9,8 +9,6 @@ import {
 import { serializeSignDoc } from "../../src/wasm/keplr/query";
 import { fromBase64 } from "@cosmjs/encoding";
 import { issueToCookie } from "../../src/auth/jwt";
-import wasmConfig from "../../src/wasm/config";
-import { store } from "next/dist/build/output/store";
 import { stores } from "../../src/store/stores";
 import { initializeIfNeeded } from "../../src/typeorm/datasource";
 import {

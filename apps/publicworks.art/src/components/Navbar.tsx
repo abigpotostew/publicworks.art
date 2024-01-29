@@ -1,21 +1,14 @@
 import { Button, ButtonGroup, Container, Nav, Navbar } from "react-bootstrap";
-
 import styles from "../../styles/Home.module.scss";
 import Link from "next/link";
-import { useCosmosWallet } from "./provider/CosmosWalletProvider";
-import config from "../wasm/config";
 import { ButtonPW } from "./button/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import SpinnerLoading from "src/components/loading/Loader";
-import { useWallet, WalletInfo } from "@stargazezone/client";
+import { useWallet } from "@stargazezone/client";
 import { FC } from "react";
-import { WalletContextValue } from "@stargazezone/client/react/wallet/WalletContext";
-import useUserContext from "src/context/user/useUserContext";
-import { useNameInfo, useProfileInfo } from "../hooks/sg-names";
+import { useProfileInfo } from "../hooks/sg-names";
 
 export const NavBar: FC = () => {
   const sgwallet = useWallet();
-  const { user } = useUserContext();
   const address = sgwallet?.wallet?.address;
   const nameInfo = useProfileInfo({ address });
   const username = nameInfo.walletName

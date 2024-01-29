@@ -1,37 +1,45 @@
-import { ReactElement, useState } from "react";
-import MainLayout from "../../../src/layout/MainLayout";
-import styles from "../../../styles/Work.module.scss";
-import { Container } from "react-bootstrap";
-import { LiveMedia } from "../../../src/components/media/LiveMedia";
-import { RowThinContainer } from "../../../src/components/layout/RowThinContainer";
+import { FieldControl } from "../../../src/components/control/FieldControl";
 import { RowSquareContainer } from "../../../src/components/layout/RowSquareContainer";
-import { NftMetadata } from "../../../src/hooks/useNftMetadata";
-import { getTokenMetadata, normalizeIpfsUri } from "../../../src/wasm/metadata";
-import Link from "next/link";
-import Head from "next/head";
-import { useTokenOwner } from "../../../src/hooks/useTokenOwner";
-import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/router";
-import { trpcNextPW } from "src/server/utils/trpc";
-import SpinnerLoading from "src/components/loading/Loader";
+import { RowThinContainer } from "../../../src/components/layout/RowThinContainer";
+import { LiveMedia } from "../../../src/components/media/LiveMedia";
 import { Attributes } from "../../../src/components/metadata/Attributes";
-import { GetStaticProps, InferGetStaticPropsType } from "next";
-import { initializeIfNeeded } from "../../../src/typeorm/datasource";
+import { StarsAddressName } from "../../../src/components/name/StarsAddressName";
+import { useTokenOwner } from "../../../src/hooks/useTokenOwner";
+import MainLayout from "../../../src/layout/MainLayout";
+import { cn } from "../../../src/lib/css/cs";
 import { stores } from "../../../src/store/stores";
+import { initializeIfNeeded } from "../../../src/typeorm/datasource";
+import {
+  getTokenMetadata,
+  normalizeIpfsCdnUri,
+  normalizeIpfsUri,
+  normalizeMetadataUri,
+} from "../../../src/wasm/metadata";
+import styles from "../../../styles/Work.module.scss";
+import { TokenEntity } from "@publicworks/db-typeorm/model/work.entity";
 import {
   serializeWork,
   serializeWorkToken,
+  TokenSerializable,
+  TokenSerializableWithMetadata,
 } from "@publicworks/db-typeorm/serializable";
-import { StarsAddressName } from "../../../src/components/name/StarsAddressName";
-import { FieldControl } from "../../../src/components/control/FieldControl";
-import { TokenEntity } from "@publicworks/db-typeorm/model/work.entity";
+import { useQuery } from "@tanstack/react-query";
+import { GetStaticProps, InferGetStaticPropsType } from "next";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React, { ReactElement, useMemo, useState } from "react";
+import { Container } from "react-bootstrap";
+import SpinnerLoading from "src/components/loading/Loader";
+import { trpcNextPW } from "src/server/utils/trpc";
+import Image from "next/image";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 
 export async function getStaticPaths() {
   console.log("getStaticPaths, token");
   await initializeIfNeeded();
   const out: { params: { slug: string; tokenId: string } }[] = [];
   let nextOffset: number | undefined = undefined;
-  const next: number | undefined = undefined;
   let tokens: TokenEntity[] = [];
   do {
     const res: { items: TokenEntity[]; nextOffset: number | undefined } =
@@ -76,10 +84,19 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const token = await stores().project.getToken({ workId: work.id, tokenId });
 
+  const tokenSerialized: TokenSerializable | null = token
+    ? {
+        ...serializeWorkToken(token),
+        imageUrl: token.imageUrl ? normalizeIpfsCdnUri(token.imageUrl) : "",
+        metadataUri: token.metadataUri
+          ? normalizeMetadataUri(token.metadataUri)
+          : "",
+      }
+    : null;
   return {
     props: {
       slug,
-      token: token ? serializeWorkToken(token) : null,
+      token: tokenSerialized,
       work: serializeWork(work),
       tokenId,
     },
@@ -91,27 +108,26 @@ export const getStaticProps: GetStaticProps = async (context) => {
 const WorkTokenPage = ({
   work,
   slug,
+  token: tokenIn,
   tokenId,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const router = useRouter();
-  // const { slug, tokenId } = router.query;
   const [notFound, setNotFound] = useState(false);
 
   const workQuery = trpcNextPW.works.getWorkBySlug.useQuery(
     { slug: slug?.toString() || "" },
     { enabled: !!slug }
   );
+
   const { data } = workQuery;
   work = data || work;
-
-  // workQuery?.data?.externalLink
 
   const tokenMetadata = useQuery(
     ["gettokenmetadata", slug, tokenId, work?.sg721],
     async () => {
       const sg721 = work?.sg721;
       if (!sg721) {
-        return;
+        throw new Error("No sg721");
       }
       if (
         !tokenId ||
@@ -119,25 +135,9 @@ const WorkTokenPage = ({
         !Number.isFinite(parseInt(tokenId))
       ) {
         setNotFound(true);
-        return;
+        return null;
       }
 
-      // let metadata: NftMetadata | null = null;
-      // const fetchMd = async () => {
-      //   try {
-      //     metadata = await getTokenMetadata(
-      //       sg721,
-      //       tokenId,
-      //       process.env.NEXT_PUBLIC_IPFS_GATEWAY
-      //     );
-      //   } catch (e) {
-      //     console.warn(`error fetching attempt 2 ${slug} ${tokenId}`, e);
-      //   }
-      // };
-      // await fetchMd();
-      // // console.log({ metadata });
-      //
-      // return metadata;
       try {
         return getTokenMetadata(
           sg721,
@@ -151,6 +151,38 @@ const WorkTokenPage = ({
     { enabled: !!work && !!slug && !!tokenId && !!work?.sg721 }
   );
 
+  type Token = {
+    image: string;
+    // imageCdn: string;
+    animationUrl: string;
+    description: string;
+    hash: string;
+  };
+
+  const token: Token | null = useMemo((): Token | null => {
+    const tokenCast = tokenIn as TokenSerializableWithMetadata | null;
+    if (tokenMetadata?.data) {
+      return {
+        image: normalizeIpfsCdnUri(tokenMetadata.data.image), //tokenMetadata.data.image,
+        animationUrl: tokenMetadata.data.animation_url || "",
+        description: tokenMetadata.data.description,
+        hash: tokenCast?.hash || "",
+        // imageCdn: tokenMetadata.data.imageCdn,
+      };
+    }
+    if (!tokenCast) {
+      return null;
+    }
+
+    return {
+      image: normalizeIpfsCdnUri(tokenCast.imageUrl || ""), //tokenCast.imageUrl || "",
+      // imageCdn: normalizeIpfsCdnUri(tokenCast.imageUrl || ""),
+      animationUrl: tokenCast.metadataUri || "",
+      description: work.description || "",
+      hash: tokenCast.hash,
+    };
+  }, [tokenMetadata?.data, tokenIn, work.description]);
+
   const errorMetadata = tokenMetadata.isError;
   const {
     loading: ownerLoading,
@@ -160,7 +192,9 @@ const WorkTokenPage = ({
 
   const notFoundActual =
     (!workQuery.isLoading && !workQuery.isSuccess && !workQuery.data) ||
+    (!tokenMetadata.isLoading && !token) ||
     notFound;
+
   return (
     <>
       <div>
@@ -184,6 +218,14 @@ const WorkTokenPage = ({
                 <div>Not Found</div>
               ) : tokenMetadata.isLoading ? (
                 <SpinnerLoading />
+              ) : token?.image &&
+                process.env.NEXT_PUBLIC_IMAGE_TOKENS === "true" ? (
+                <Image
+                  src={token.image}
+                  alt={"nft media"}
+                  width={500}
+                  height={500}
+                />
               ) : (
                 <LiveMedia
                   ipfsUrl={tokenMetadata?.data?.animation_url || ""}
@@ -198,12 +240,25 @@ const WorkTokenPage = ({
             className={`${styles.paddingTop} ${styles.workHeader}`}
           >
             <div className={styles.paddingTop}>
-              <div>
+              <div className={"d-inline-flex align-items-center"}>
                 <span className={styles.workTitle}>
                   {workQuery?.data?.name}
                 </span>
-                <span className={styles.workAuthor}>
-                  {" - " + workQuery?.data?.creator}
+                <span
+                  className={cn(
+                    styles.workAuthor,
+                    "px-3 d-inline-flex align-items-center"
+                  )}
+                >
+                  {!!workQuery?.data?.ownerAddress && (
+                    <>
+                      <span>By </span>
+                      <StarsAddressName
+                        address={workQuery?.data?.ownerAddress}
+                        className={"inline"}
+                      />
+                    </>
+                  )}
                 </span>
               </div>
               {process.env.NEXT_PUBLIC_TESTNET === "true" ? (
@@ -220,9 +275,9 @@ const WorkTokenPage = ({
               </div>
 
               <div
-                className={`${styles.workDescription} ${styles.displayLinebreak} ${styles.sectionBreak}`}
+                className={`${styles.displayLinebreak} ${styles.sectionBreak}`}
               >
-                {tokenMetadata?.data?.description}
+                {token?.description}
               </div>
               <div
                 className={`${styles.workAuthorLink} ${styles.sectionBreak}`}
@@ -252,6 +307,9 @@ const WorkTokenPage = ({
                   <StarsAddressName address={work.minter} noShorten={false} />
                 ) : null}
               </FieldControl>
+              <FieldControl name={"Hash"}>
+                {token?.hash ? <>{token?.hash}</> : null}
+              </FieldControl>
               <a
                 href={tokenMetadata?.data?.image}
                 className={"Token-link"}
@@ -267,6 +325,10 @@ const WorkTokenPage = ({
                 rel="noreferrer"
               >
                 Live
+                <span className={"text-decoration-none"}>
+                  {" "}
+                  <FontAwesomeIcon icon={faArrowUpRightFromSquare} width={16} />
+                </span>
               </a>
             </div>
             <div className={"mt-4"}>
