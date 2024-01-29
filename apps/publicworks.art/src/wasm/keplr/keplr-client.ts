@@ -4,6 +4,7 @@ import { Window } from "@keplr-wallet/types/build/window";
 import { addTestnetToKeplr } from "./keplr-testnet";
 import { GasPrice } from "cosmwasm";
 import { OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
+import { gasPrice } from "../../../@stargazezone/client/core/config/gas";
 
 export interface KeplrClient {
   offlineSigner: OfflineSigner | OfflineDirectSigner;
@@ -12,7 +13,7 @@ export interface KeplrClient {
 
 export const keplrClient = async (config: Config): Promise<KeplrClient> => {
   const prefix = "wasm";
-  const gasPrice = GasPrice.fromString("0.025ustars");
+  // const gasPrice = GasPrice.fromString("0.1ustars");
 
   // hack foo to wait for keplr to be available
   await new Promise((r) => setTimeout(r, 200));

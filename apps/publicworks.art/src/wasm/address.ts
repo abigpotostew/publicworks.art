@@ -7,10 +7,7 @@ export const shortenAddress = (address: string) => {
 // const compatiblePrefixes = ["osmo", "cosmos", "stars", "regen"];
 const compatiblePrefixes = ["stars"];
 
-export const zodStarsAddress = z
-  .string()
-  .length(44)
-  .refine((val) => isStarAddress(val));
+export const zodStarsAddress = z.string().refine((val) => isStarAddress(val));
 export const zodStarsContractAddress = z
   .string()
   .length(64)
