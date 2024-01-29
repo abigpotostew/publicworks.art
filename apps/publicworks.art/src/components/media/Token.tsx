@@ -15,8 +15,7 @@ export const Token = ({
   const metadata = useNftMetadata({ tokenId, sg721 });
 
   const imageUrl = metadata?.data?.image
-    ? metadata?.data?.image +
-      "?img-width=500&img-height=500&img-quality=80&fit=contain"
+    ? metadata?.data?.image + "_medium"
     : "/img/rendering-in-progress.png";
   return (
     <Card className={styles.workCardContainer}>

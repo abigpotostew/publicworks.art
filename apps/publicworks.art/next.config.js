@@ -27,6 +27,18 @@ const nextConfig = {
         port: "",
         pathname: "/ipfs/**",
       },
+      {
+        protocol: "https",
+        hostname: "testnetmetadata.publicworks.art",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "metadata.publicworks.art",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   async headers() {
