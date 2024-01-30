@@ -79,7 +79,7 @@ const MainLayout: FC<ILayout> = ({
       <Modal />
       <div className={styles.container}>
         <main className={styles.main}>{children}</main>
-        <Footer />
+        {/*<Footer />*/}
       </div>
       {/*</CosmosWalletProviderContext.Provider>*/}
     </div>

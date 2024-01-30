@@ -14,6 +14,7 @@ import { EditProjectRequest } from "src/store/project.types";
 import { isISODate } from "src/util/isISODate";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
+import { CreateLayout } from "./CreateLayout";
 
 // const formatInTimeZone = (date: Date, fmt: string, tz: string) =>
 //   format(utcToZonedTime(date, tz), fmt, { timeZone: tz });
@@ -240,470 +241,504 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   }, [formik.isValid, formik.dirty, props]);
 
   return (
-    <>
-      <h2>On Chain Configuration</h2>
-      {!!props.defaultValues?.minter && (
-        <Alert variant="info">
-          Your work is already instantiated on chain. Head over to{" "}
-          <Alert.Link>
-            <Link href={`/create/${props.defaultValues?.id}?stage=view`}>
-              Mint
-            </Link>
-          </Alert.Link>{" "}
-          to configure your work on chain.
-        </Alert>
-      )}
-      <>
-        <Form
-          onSubmit={(...a) => {
-            return formik.handleSubmit(...a);
-          }}
-          noValidate
-        >
-          <Form.Group className="mb-3" controlId="formMaxTokens">
-            <Form.Label>
-              Collection Size{" "}
-              <TooltipInfo>
-                Max number of NFTs that can be minted until sell out.
-              </TooltipInfo>
-            </Form.Label>
-            <Form.Control
-              onWheel={numberInputOnWheelPreventChange}
-              type={"number"}
-              value={formik.values.maxTokens}
-              onChange={formik.handleChange}
-              isValid={formik.touched.maxTokens && !formik.errors.maxTokens}
-              isInvalid={formik.touched.maxTokens && !!formik.errors.maxTokens}
-              name="maxTokens"
-            />
-
-            <Form.Control.Feedback type="invalid">
-              {formik.errors.maxTokens}
-            </Form.Control.Feedback>
-          </Form.Group>
-          {/*<Form.Group className="mb-3" controlId="formBasicCheckbox">*/}
-          {/*  <Form.Check type="checkbox" label="Check me out" />*/}
-          {/*</Form.Group>*/}
-          <Form.Group className="mb-3" controlId="formWorkStartTime">
-            <Form.Label>
-              Start Time <TooltipInfo>Public mint start time</TooltipInfo>
-            </Form.Label>
-            <Form.Control
-              type={"datetime-local"}
-              // defaultValue={defaultTime()}
-
-              // className={'form-input mt-1 block w-full'}
-              name="startDate"
-              onChange={formik.handleChange}
-              value={formik.values.startDate}
-              isValid={formik.touched.startDate && !formik.errors.startDate}
-              isInvalid={formik.touched.startDate && !!formik.errors.startDate}
-            />
-            <Form.Label>
-              {`${formatInUTC(parseISO(formik.values.startDate))} UTC`}
-            </Form.Label>
-
-            <Form.Control.Feedback type="invalid">
-              {formik.errors.startDate}
-            </Form.Control.Feedback>
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="priceStars">
-            <Form.Label>
-              {formik.values.isDutchAuction ? (
-                <>
-                  Dutch Auction Start Price in $Stars{" "}
-                  <TooltipInfo>Public mint price</TooltipInfo>
-                </>
-              ) : (
-                <>
-                  Price in $Stars{" "}
-                  <TooltipInfo>Dutch Auction start price</TooltipInfo>
-                </>
-              )}{" "}
-            </Form.Label>
-            <Form.Control
-              type="number"
-              onWheel={numberInputOnWheelPreventChange}
-              value={formik.values.priceStars}
-              name="priceStars"
-              onChange={formik.handleChange}
-              isValid={formik.touched.priceStars && !formik.errors.priceStars}
-              isInvalid={
-                formik.touched.priceStars && !!formik.errors.priceStars
-              }
-            />
-
-            <Form.Control.Feedback type="invalid">
-              {formik.errors.priceStars}
-            </Form.Control.Feedback>
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="formIsDutchAuction">
-            <Form.Label>
-              Dutch Auction{" "}
-              <TooltipInfo>
-                Dutch Auctions gradually lower the mint price over time.
-              </TooltipInfo>
-            </Form.Label>
-            <Form.Check
-              name="isDutchAuction"
-              type="checkbox"
-              checked={formik.values.isDutchAuction}
-              // value={formik.values.isDutchAuction?.toString()}
-              onChange={formik.handleChange}
-              isValid={
-                formik.touched.isDutchAuction && !formik.errors.isDutchAuction
-              }
-            />
-          </Form.Group>
-
-          <Collapse in={formik.values.isDutchAuction}>
-            <div>
-              <Form.Group className="mb-3" controlId="formDutchAuctionEndDate">
+    <div className={"tw-pb-24 tw-flex tw-justify-center"}>
+      <CreateLayout
+        codeCid={props.defaultValues?.codeCid}
+        hideLiveMedia={false}
+      >
+        <h2 className={"tw-pt-4 tw-px-4"}>On Chain Configuration</h2>
+        <div className={"tw-px-4 tw-pb-4"}>
+          {!!props.defaultValues?.minter && (
+            <Alert variant="info">
+              Your work is already instantiated on chain. Head over to{" "}
+              <Alert.Link>
+                <Link href={`/create/${props.defaultValues?.id}?stage=view`}>
+                  Mint
+                </Link>
+              </Alert.Link>{" "}
+              to configure your work on chain.
+            </Alert>
+          )}
+          <>
+            <Form
+              onSubmit={(...a) => {
+                return formik.handleSubmit(...a);
+              }}
+              noValidate
+            >
+              <Form.Group className="mb-3" controlId="formMaxTokens">
                 <Form.Label>
-                  End Time{" "}
+                  Collection Size{" "}
                   <TooltipInfo>
-                    When the Dutch Auction ends, the price will be fixed at the
-                    resting price. Tokens can still be minted after the auction
-                    ends.
+                    Max number of NFTs that can be minted until sell out.
                   </TooltipInfo>
+                </Form.Label>
+                <Form.Control
+                  onWheel={numberInputOnWheelPreventChange}
+                  type={"number"}
+                  value={formik.values.maxTokens}
+                  onChange={formik.handleChange}
+                  isValid={formik.touched.maxTokens && !formik.errors.maxTokens}
+                  isInvalid={
+                    formik.touched.maxTokens && !!formik.errors.maxTokens
+                  }
+                  name="maxTokens"
+                />
+
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.maxTokens}
+                </Form.Control.Feedback>
+              </Form.Group>
+              {/*<Form.Group className="mb-3" controlId="formBasicCheckbox">*/}
+              {/*  <Form.Check type="checkbox" label="Check me out" />*/}
+              {/*</Form.Group>*/}
+              <Form.Group className="mb-3" controlId="formWorkStartTime">
+                <Form.Label>
+                  Start Time <TooltipInfo>Public mint start time</TooltipInfo>
                 </Form.Label>
                 <Form.Control
                   type={"datetime-local"}
-                  name="dutchAuctionEndDate"
+                  // defaultValue={defaultTime()}
+
+                  // className={'form-input mt-1 block w-full'}
+                  name="startDate"
                   onChange={formik.handleChange}
-                  value={formik.values.dutchAuctionEndDate}
-                  isValid={
-                    formik.touched.dutchAuctionEndDate &&
-                    !formik.errors.dutchAuctionEndDate
-                  }
+                  value={formik.values.startDate}
+                  isValid={formik.touched.startDate && !formik.errors.startDate}
                   isInvalid={
-                    formik.touched.dutchAuctionEndDate &&
-                    !!formik.errors.dutchAuctionEndDate
+                    formik.touched.startDate && !!formik.errors.startDate
                   }
                 />
                 <Form.Label>
-                  {`${formatInUTC(
-                    parseISO(formik.values.dutchAuctionEndDate)
-                  )} UTC`}
+                  {`${formatInUTC(parseISO(formik.values.startDate))} UTC`}
                 </Form.Label>
 
                 <Form.Control.Feedback type="invalid">
-                  {formik.errors.dutchAuctionEndDate}
+                  {formik.errors.startDate}
                 </Form.Control.Feedback>
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="dutchAuctionEndPrice">
+              <Form.Group className="mb-3" controlId="priceStars">
                 <Form.Label>
-                  Resting Price in $Stars{" "}
-                  <TooltipInfo>
-                    Final resting price after the auction has finished.
-                  </TooltipInfo>
+                  {formik.values.isDutchAuction ? (
+                    <>
+                      Dutch Auction Start Price in $Stars{" "}
+                      <TooltipInfo>Public mint price</TooltipInfo>
+                    </>
+                  ) : (
+                    <>
+                      Price in $Stars{" "}
+                      <TooltipInfo>Dutch Auction start price</TooltipInfo>
+                    </>
+                  )}{" "}
                 </Form.Label>
                 <Form.Control
                   type="number"
                   onWheel={numberInputOnWheelPreventChange}
-                  value={formik.values.dutchAuctionEndPrice}
-                  name="dutchAuctionEndPrice"
+                  value={formik.values.priceStars}
+                  name="priceStars"
                   onChange={formik.handleChange}
                   isValid={
-                    formik.touched.dutchAuctionEndPrice &&
-                    !formik.errors.dutchAuctionEndPrice
+                    formik.touched.priceStars && !formik.errors.priceStars
                   }
                   isInvalid={
-                    formik.touched.dutchAuctionEndPrice &&
-                    !!formik.errors.dutchAuctionEndPrice
+                    formik.touched.priceStars && !!formik.errors.priceStars
                   }
                 />
 
                 <Form.Control.Feedback type="invalid">
-                  {formik.errors.dutchAuctionEndPrice}
+                  {formik.errors.priceStars}
                 </Form.Control.Feedback>
               </Form.Group>
 
-              <Form.Group
-                className="mb-3"
-                controlId="dutchAuctionDeclinePeriodSeconds"
-              >
+              <Form.Group className="mb-3" controlId="formIsDutchAuction">
                 <Form.Label>
-                  Price Drop Interval{" "}
+                  Dutch Auction{" "}
                   <TooltipInfo>
-                    The price will drop at this interval. 5 minutes is
-                    recommended (300 seconds) for collector convenience.
+                    Dutch Auctions gradually lower the mint price over time.
+                  </TooltipInfo>
+                </Form.Label>
+                <Form.Check
+                  name="isDutchAuction"
+                  type="checkbox"
+                  checked={formik.values.isDutchAuction}
+                  // value={formik.values.isDutchAuction?.toString()}
+                  onChange={formik.handleChange}
+                  isValid={
+                    formik.touched.isDutchAuction &&
+                    !formik.errors.isDutchAuction
+                  }
+                />
+              </Form.Group>
+
+              <Collapse in={formik.values.isDutchAuction}>
+                <div>
+                  <Form.Group
+                    className="mb-3"
+                    controlId="formDutchAuctionEndDate"
+                  >
+                    <Form.Label>
+                      End Time{" "}
+                      <TooltipInfo>
+                        When the Dutch Auction ends, the price will be fixed at
+                        the resting price. Tokens can still be minted after the
+                        auction ends.
+                      </TooltipInfo>
+                    </Form.Label>
+                    <Form.Control
+                      type={"datetime-local"}
+                      name="dutchAuctionEndDate"
+                      onChange={formik.handleChange}
+                      value={formik.values.dutchAuctionEndDate}
+                      isValid={
+                        formik.touched.dutchAuctionEndDate &&
+                        !formik.errors.dutchAuctionEndDate
+                      }
+                      isInvalid={
+                        formik.touched.dutchAuctionEndDate &&
+                        !!formik.errors.dutchAuctionEndDate
+                      }
+                    />
+                    <Form.Label>
+                      {`${formatInUTC(
+                        parseISO(formik.values.dutchAuctionEndDate)
+                      )} UTC`}
+                    </Form.Label>
+
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.dutchAuctionEndDate}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+
+                  <Form.Group className="mb-3" controlId="dutchAuctionEndPrice">
+                    <Form.Label>
+                      Resting Price in $Stars{" "}
+                      <TooltipInfo>
+                        Final resting price after the auction has finished.
+                      </TooltipInfo>
+                    </Form.Label>
+                    <Form.Control
+                      type="number"
+                      onWheel={numberInputOnWheelPreventChange}
+                      value={formik.values.dutchAuctionEndPrice}
+                      name="dutchAuctionEndPrice"
+                      onChange={formik.handleChange}
+                      isValid={
+                        formik.touched.dutchAuctionEndPrice &&
+                        !formik.errors.dutchAuctionEndPrice
+                      }
+                      isInvalid={
+                        formik.touched.dutchAuctionEndPrice &&
+                        !!formik.errors.dutchAuctionEndPrice
+                      }
+                    />
+
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.dutchAuctionEndPrice}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+
+                  <Form.Group
+                    className="mb-3"
+                    controlId="dutchAuctionDeclinePeriodSeconds"
+                  >
+                    <Form.Label>
+                      Price Drop Interval{" "}
+                      <TooltipInfo>
+                        The price will drop at this interval. 5 minutes is
+                        recommended (300 seconds) for collector convenience.
+                      </TooltipInfo>
+                    </Form.Label>
+                    <Form.Control
+                      type="number"
+                      onWheel={numberInputOnWheelPreventChange}
+                      value={formik.values.dutchAuctionDeclinePeriodSeconds}
+                      name="dutchAuctionDeclinePeriodSeconds"
+                      onChange={formik.handleChange}
+                      isValid={
+                        formik.touched.dutchAuctionDeclinePeriodSeconds &&
+                        !formik.errors.dutchAuctionDeclinePeriodSeconds
+                      }
+                      isInvalid={
+                        formik.touched.dutchAuctionDeclinePeriodSeconds &&
+                        !!formik.errors.dutchAuctionDeclinePeriodSeconds
+                      }
+                    />
+
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.dutchAuctionDeclinePeriodSeconds}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+
+                  <Form.Group
+                    className="mb-3"
+                    controlId="dutchAuctionDecayRate"
+                  >
+                    <Form.Label>
+                      Price Decay Rate{" "}
+                      <TooltipInfo>
+                        The auction price drops based on a decay rate. When
+                        above 0.5 the price drops quickly then gradually slows
+                        down. When under 0.5, the price drops slowly then
+                        gradually speeds up near auction end. When equal to 0.5
+                        the price drops linearly.
+                      </TooltipInfo>
+                    </Form.Label>
+                    <Form.Group>
+                      <Form.Control
+                        type="range"
+                        step="0.000001"
+                        min="0.000001"
+                        max={"0.999999"}
+                        onWheel={numberInputOnWheelPreventChange}
+                        value={formik.values.dutchAuctionDecayRate}
+                        name="dutchAuctionDecayRate"
+                        onChange={formik.handleChange}
+                        isValid={
+                          formik.touched.dutchAuctionDecayRate &&
+                          !formik.errors.dutchAuctionDecayRate
+                        }
+                        isInvalid={
+                          formik.touched.dutchAuctionDecayRate &&
+                          !!formik.errors.dutchAuctionDecayRate
+                        }
+                      />
+                      <Form.Text>
+                        {formik.values.dutchAuctionDecayRate}
+                      </Form.Text>
+                    </Form.Group>
+
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.dutchAuctionDecayRate}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>
+                      <Alert variant={"info"} className={"w-100"}>
+                        This graph depicts the price over the duration of the
+                        dutch auction. Elapsed time is a close estimate because
+                        actual time is based on the blockchain.
+                      </Alert>
+                    </Form.Label>
+
+                    {pricesOmitted && (
+                      <Form.Label>
+                        <Alert variant={"warning"}>
+                          Prices were omitted from the graph because the auction
+                          is either very long or the decline period is very
+                          short. You may want to adjust the auction settings to
+                          have fewer price drops for collector convenience.
+                        </Alert>
+                      </Form.Label>
+                    )}
+
+                    <DutchAuctionChart
+                      chartData={(res) => {
+                        setPricesOmitted(res.pricesOmitted);
+                      }}
+                      startPrice={formik.values.priceStars || 50}
+                      endPrice={formik.values.dutchAuctionEndPrice || 50}
+                      startTime={
+                        formik.values.startDate
+                          ? new Date(formik.values.startDate)
+                          : new Date()
+                      }
+                      endTime={
+                        formik.values.dutchAuctionEndDate
+                          ? new Date(formik.values.dutchAuctionEndDate)
+                          : new Date()
+                      }
+                      declinePeriodSeconds={
+                        formik.values.dutchAuctionDeclinePeriodSeconds || 300
+                      }
+                      decay={formik.values.dutchAuctionDecayRate || 0.92435}
+                    />
+                  </Form.Group>
+                </div>
+              </Collapse>
+
+              <Form.Group className="mb-3" controlId="formRoyaltyAddress">
+                <Form.Label>
+                  Royalty Address{" "}
+                  <TooltipInfo>
+                    Royalty payout address for secondary marketplace sales.
+                    Note: Mint proceeds go to the creator's address.
+                  </TooltipInfo>
+                </Form.Label>
+                <Form.Control
+                  name="royaltyAddress"
+                  onWheel={numberInputOnWheelPreventChange}
+                  type="text"
+                  value={formik.values.royaltyAddress}
+                  onChange={formik.handleChange}
+                  isValid={
+                    formik.touched.royaltyAddress &&
+                    !formik.errors.royaltyAddress
+                  }
+                  isInvalid={
+                    formik.touched.royaltyAddress &&
+                    !!formik.errors.royaltyAddress
+                  }
+                />
+
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.royaltyAddress}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="formRoyaltyPercent">
+                <Form.Label>
+                  Royalty Percent{" "}
+                  <TooltipInfo>
+                    Percentage of secondary sales that must payout to your
+                    royalty address.
                   </TooltipInfo>
                 </Form.Label>
                 <Form.Control
                   type="number"
-                  onWheel={numberInputOnWheelPreventChange}
-                  value={formik.values.dutchAuctionDeclinePeriodSeconds}
-                  name="dutchAuctionDeclinePeriodSeconds"
+                  value={formik.values.royaltyPercent}
+                  name="royaltyPercent"
                   onChange={formik.handleChange}
                   isValid={
-                    formik.touched.dutchAuctionDeclinePeriodSeconds &&
-                    !formik.errors.dutchAuctionDeclinePeriodSeconds
+                    formik.touched.royaltyPercent &&
+                    !formik.errors.royaltyPercent
                   }
                   isInvalid={
-                    formik.touched.dutchAuctionDeclinePeriodSeconds &&
-                    !!formik.errors.dutchAuctionDeclinePeriodSeconds
+                    formik.touched.royaltyPercent &&
+                    !!formik.errors.royaltyPercent
                   }
                 />
 
                 <Form.Control.Feedback type="invalid">
-                  {formik.errors.dutchAuctionDeclinePeriodSeconds}
+                  {formik.errors.royaltyPercent}
                 </Form.Control.Feedback>
               </Form.Group>
-
-              <Form.Group className="mb-3" controlId="dutchAuctionDecayRate">
+              <Form.Group className="mb-3" controlId="formSelector">
                 <Form.Label>
-                  Price Decay Rate{" "}
+                  Canvas Selector{" "}
                   <TooltipInfo>
-                    The auction price drops based on a decay rate. When above
-                    0.5 the price drops quickly then gradually slows down. When
-                    under 0.5, the price drops slowly then gradually speeds up
-                    near auction end. When equal to 0.5 the price drops
-                    linearly.
+                    CSS selector targetting your sketch. This is used to capture
+                    the preview image of your canvas.
                   </TooltipInfo>
                 </Form.Label>
-                <Form.Group>
-                  <Form.Control
-                    type="range"
-                    step="0.000001"
-                    min="0.000001"
-                    max={"0.999999"}
-                    onWheel={numberInputOnWheelPreventChange}
-                    value={formik.values.dutchAuctionDecayRate}
-                    name="dutchAuctionDecayRate"
-                    onChange={formik.handleChange}
-                    isValid={
-                      formik.touched.dutchAuctionDecayRate &&
-                      !formik.errors.dutchAuctionDecayRate
-                    }
-                    isInvalid={
-                      formik.touched.dutchAuctionDecayRate &&
-                      !!formik.errors.dutchAuctionDecayRate
-                    }
-                  />
-                  <Form.Text>{formik.values.dutchAuctionDecayRate}</Form.Text>
-                </Form.Group>
+                <Form.Control
+                  placeholder={"#sketch > canvas"}
+                  type="text"
+                  value={formik.values.selector}
+                  name="selector"
+                  onChange={formik.handleChange}
+                  isValid={formik.touched.selector && !formik.errors.selector}
+                  isInvalid={
+                    formik.touched.selector && !!formik.errors.selector
+                  }
+                />
 
                 <Form.Control.Feedback type="invalid">
-                  {formik.errors.dutchAuctionDecayRate}
+                  {formik.errors.selector}
                 </Form.Control.Feedback>
               </Form.Group>
-              <Form.Label>
-                <Alert variant={"info"}>
-                  This graph depicts the price over the duration of the dutch
-                  auction. Elapsed time is a close estimate because actual time
-                  is based on the blockchain.
-                </Alert>
-              </Form.Label>
-              {pricesOmitted && (
+              <Form.Group className="mb-3" controlId="formResolution">
                 <Form.Label>
-                  <Alert variant={"warning"}>
-                    Prices were omitted from the graph because the auction is
-                    either very long or the decline period is very short. You
-                    may want to adjust the auction settings to have fewer price
-                    drops for collector convenience.
-                  </Alert>
+                  <span>
+                    Image Preview Resolution{" "}
+                    <TooltipInfo>
+                      Dimensions of the NFT image in the format "width:height"
+                    </TooltipInfo>
+                  </span>
                 </Form.Label>
-              )}
-              <DutchAuctionChart
-                chartData={(res) => {
-                  setPricesOmitted(res.pricesOmitted);
-                }}
-                startPrice={formik.values.priceStars || 50}
-                endPrice={formik.values.dutchAuctionEndPrice || 50}
-                startTime={
-                  formik.values.startDate
-                    ? new Date(formik.values.startDate)
-                    : new Date()
-                }
-                endTime={
-                  formik.values.dutchAuctionEndDate
-                    ? new Date(formik.values.dutchAuctionEndDate)
-                    : new Date()
-                }
-                declinePeriodSeconds={
-                  formik.values.dutchAuctionDeclinePeriodSeconds || 300
-                }
-                decay={formik.values.dutchAuctionDecayRate || 0.92435}
-              />
-            </div>
-          </Collapse>
 
-          <Form.Group className="mb-3" controlId="formRoyaltyAddress">
-            <Form.Label>
-              Royalty Address{" "}
-              <TooltipInfo>
-                Royalty payout address for secondary marketplace sales. Note:
-                Mint proceeds go to the creator's address.
-              </TooltipInfo>
-            </Form.Label>
-            <Form.Control
-              name="royaltyAddress"
-              onWheel={numberInputOnWheelPreventChange}
-              type="text"
-              value={formik.values.royaltyAddress}
-              onChange={formik.handleChange}
-              isValid={
-                formik.touched.royaltyAddress && !formik.errors.royaltyAddress
-              }
-              isInvalid={
-                formik.touched.royaltyAddress && !!formik.errors.royaltyAddress
-              }
-            />
+                <Form.Control
+                  name="resolution"
+                  placeholder={"1080:1080"}
+                  type="text"
+                  value={formik.values.resolution}
+                  onChange={formik.handleChange}
+                  isValid={
+                    formik.touched.resolution && !formik.errors.resolution
+                  }
+                  isInvalid={
+                    formik.touched.resolution && !!formik.errors.resolution
+                  }
+                />
 
-            <Form.Control.Feedback type="invalid">
-              {formik.errors.royaltyAddress}
-            </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formRoyaltyPercent">
-            <Form.Label>
-              Royalty Percent{" "}
-              <TooltipInfo>
-                Percentage of secondary sales that must payout to your royalty
-                address.
-              </TooltipInfo>
-            </Form.Label>
-            <Form.Control
-              type="number"
-              value={formik.values.royaltyPercent}
-              name="royaltyPercent"
-              onChange={formik.handleChange}
-              isValid={
-                formik.touched.royaltyPercent && !formik.errors.royaltyPercent
-              }
-              isInvalid={
-                formik.touched.royaltyPercent && !!formik.errors.royaltyPercent
-              }
-            />
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.resolution}
+                </Form.Control.Feedback>
+              </Form.Group>
 
-            <Form.Control.Feedback type="invalid">
-              {formik.errors.royaltyPercent}
-            </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formSelector">
-            <Form.Label>
-              Canvas Selector{" "}
-              <TooltipInfo>
-                CSS selector targetting your sketch. This is used to capture the
-                preview image of your canvas.
-              </TooltipInfo>
-            </Form.Label>
-            <Form.Control
-              placeholder={"#sketch > canvas"}
-              type="text"
-              value={formik.values.selector}
-              name="selector"
-              onChange={formik.handleChange}
-              isValid={formik.touched.selector && !formik.errors.selector}
-              isInvalid={formik.touched.selector && !!formik.errors.selector}
-            />
+              <Form.Group className="mb-3" controlId="formLicense">
+                <Form.Label>
+                  <span>
+                    NFT License{" "}
+                    <TooltipInfo>
+                      Optional NFT License. This is used to display the license
+                      on the NFT and in the NFT metadata.
+                    </TooltipInfo>
+                  </span>
+                </Form.Label>
 
-            <Form.Control.Feedback type="invalid">
-              {formik.errors.selector}
-            </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formResolution">
-            <Form.Label>
-              <span>
-                Image Preview Resolution{" "}
-                <TooltipInfo>
-                  Dimensions of the NFT image in the format "width:height"
-                </TooltipInfo>
-              </span>
-            </Form.Label>
+                <Form.Control
+                  name="license"
+                  placeholder={"NFT License"}
+                  type="text"
+                  value={formik.values.license}
+                  onChange={formik.handleChange}
+                  isValid={formik.touched.license && !formik.errors.license}
+                  isInvalid={formik.touched.license && !!formik.errors.license}
+                />
 
-            <Form.Control
-              name="resolution"
-              placeholder={"1080:1080"}
-              type="text"
-              value={formik.values.resolution}
-              onChange={formik.handleChange}
-              isValid={formik.touched.resolution && !formik.errors.resolution}
-              isInvalid={
-                formik.touched.resolution && !!formik.errors.resolution
-              }
-            />
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.license}
+                </Form.Control.Feedback>
+              </Form.Group>
 
-            <Form.Control.Feedback type="invalid">
-              {formik.errors.resolution}
-            </Form.Control.Feedback>
-          </Form.Group>
+              {/*<Form.Group className="mb-3" controlId="formPixelRatio">*/}
+              {/*  <Form.Label>*/}
+              {/*    Image Preview Pixel Ratio{" "}*/}
+              {/*    <TooltipInfo>*/}
+              {/*      Pixel density to render the image preview*/}
+              {/*    </TooltipInfo>*/}
+              {/*  </Form.Label>*/}
+              {/*  <Form.Control*/}
+              {/*    type={"number"}*/}
+              {/*    placeholder={"1"}*/}
+              {/*    defaultValue={defaults.pixelRatio}*/}
+              {/*    min={"0"}*/}
+              {/*    max={"10"}*/}
+              {/*    name="project_pixel_ratio"*/}
+              {/*    onChange={(e) => setPixelRatio(parseFloat(e.target.value) || 1)}*/}
+              {/*  />*/}
+              {/*</Form.Group>*/}
+              {/*<Form.Group className="mb-3" controlId="formLicense">*/}
+              {/*  <Form.Label>License</Form.Label>*/}
+              {/*  <Form.Control*/}
+              {/*    type={"text"}*/}
+              {/*    defaultValue={defaults.license}*/}
+              {/*    placeholder={"CBE-NECR-HS"}*/}
+              {/*    name="project_license"*/}
+              {/*    onChange={(e) => setLicense(e.target.value)}*/}
+              {/*  />*/}
+              {/*</Form.Group>*/}
+              <Button variant="primary" type="submit">
+                Save
+              </Button>
+            </Form>
+          </>
 
-          <Form.Group className="mb-3" controlId="formLicense">
-            <Form.Label>
-              <span>
-                NFT License{" "}
-                <TooltipInfo>
-                  Optional NFT License. This is used to display the license on
-                  the NFT and in the NFT metadata.
-                </TooltipInfo>
-              </span>
-            </Form.Label>
-
-            <Form.Control
-              name="license"
-              placeholder={"NFT License"}
-              type="text"
-              value={formik.values.license}
-              onChange={formik.handleChange}
-              isValid={formik.touched.license && !formik.errors.license}
-              isInvalid={formik.touched.license && !!formik.errors.license}
-            />
-
-            <Form.Control.Feedback type="invalid">
-              {formik.errors.license}
-            </Form.Control.Feedback>
-          </Form.Group>
-
-          {/*<Form.Group className="mb-3" controlId="formPixelRatio">*/}
-          {/*  <Form.Label>*/}
-          {/*    Image Preview Pixel Ratio{" "}*/}
-          {/*    <TooltipInfo>*/}
-          {/*      Pixel density to render the image preview*/}
-          {/*    </TooltipInfo>*/}
-          {/*  </Form.Label>*/}
-          {/*  <Form.Control*/}
-          {/*    type={"number"}*/}
-          {/*    placeholder={"1"}*/}
-          {/*    defaultValue={defaults.pixelRatio}*/}
-          {/*    min={"0"}*/}
-          {/*    max={"10"}*/}
-          {/*    name="project_pixel_ratio"*/}
-          {/*    onChange={(e) => setPixelRatio(parseFloat(e.target.value) || 1)}*/}
-          {/*  />*/}
-          {/*</Form.Group>*/}
-          {/*<Form.Group className="mb-3" controlId="formLicense">*/}
-          {/*  <Form.Label>License</Form.Label>*/}
-          {/*  <Form.Control*/}
-          {/*    type={"text"}*/}
-          {/*    defaultValue={defaults.license}*/}
-          {/*    placeholder={"CBE-NECR-HS"}*/}
-          {/*    name="project_license"*/}
-          {/*    onChange={(e) => setLicense(e.target.value)}*/}
-          {/*  />*/}
-          {/*</Form.Group>*/}
-          <Button variant="primary" type="submit">
-            Save
-          </Button>
-        </Form>
-      </>
-
-      {/*<Form*/}
-      {/*  action={"/api/workUpload"}*/}
-      {/*  method={"post"}*/}
-      {/*  encType={"multipart/form-data"}*/}
-      {/*>*/}
-      {/*  <Form.Group controlId="formFile" className="mb-3">*/}
-      {/*    <Form.Label>Default file input example</Form.Label>*/}
-      {/*    <Form.Control type="file" />*/}
-      {/*  </Form.Group>*/}
-      {/*  <Button variant="primary" type="submit">*/}
-      {/*    Upload*/}
-      {/*  </Button>*/}
-      {/*</Form>*/}
-    </>
+          {/*<Form*/}
+          {/*  action={"/api/workUpload"}*/}
+          {/*  method={"post"}*/}
+          {/*  encType={"multipart/form-data"}*/}
+          {/*>*/}
+          {/*  <Form.Group controlId="formFile" className="mb-3">*/}
+          {/*    <Form.Label>Default file input example</Form.Label>*/}
+          {/*    <Form.Control type="file" />*/}
+          {/*  </Form.Group>*/}
+          {/*  <Button variant="primary" type="submit">*/}
+          {/*    Upload*/}
+          {/*  </Button>*/}
+          {/*</Form>*/}
+        </div>
+      </CreateLayout>
+    </div>
   );
 };

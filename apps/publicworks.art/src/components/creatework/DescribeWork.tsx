@@ -4,7 +4,7 @@ import { LiveMedia } from "../media/LiveMedia";
 import { TooltipInfo } from "../tooltip/TooltipInfo";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { useFormik } from "formik";
-import { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { BsArrowRepeat } from "react-icons/bs";
 import { generateTxHash } from "src/generateHash";
@@ -12,6 +12,9 @@ import { EditProjectRequest } from "src/store/project.types";
 import { normalizeMetadataUri } from "src/wasm/metadata";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
+import { RowThinContainer } from "../layout/RowThinContainer";
+import { CreateLayout } from "./CreateLayout";
+import { RowWideContainer } from "../layout/RowWideContainer";
 
 export interface CreateWorkProps {
   onCreateProject:
@@ -66,45 +69,16 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
     });
   }, [formik.isValid, formik.dirty, props]);
   return (
-    <>
-      <>
-        <>
-          <h2>Work Description</h2>
-
-          {defaults.codeCid && (
-            <div>
-              {defaults?.codeCid && (
-                <>
-                  <LiveMedia
-                    ipfsUrl={{
-                      cid: defaults.codeCid,
-                      hash,
-                    }}
-                    minHeight={500}
-                    style={{}}
-                  ></LiveMedia>
-                  <a onClick={onClickRefreshHash}>
-                    <FlexBox
-                      style={{
-                        justifyContent: "flex-start",
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    >
-                      <div>New Hash</div>
-                      <BsArrowRepeat style={{ marginLeft: ".5rem" }} />
-                    </FlexBox>
-                  </a>
-                </>
-              )}
-            </div>
-          )}
-          <Form
-            onSubmit={(...a) => {
-              return formik.handleSubmit(...a);
-            }}
-            noValidate
-          >
+    <div className={"tw-pb-24 tw-flex tw-justify-center"}>
+      <CreateLayout codeCid={defaults.codeCid} hideLiveMedia={false}>
+        <h2 className={"tw-pt-4 tw-px-4"}>Work Description</h2>
+        <Form
+          onSubmit={(...a) => {
+            return formik.handleSubmit(...a);
+          }}
+          noValidate
+        >
+          <div className={"tw-px-4 tw-pb-4"}>
             <Form.Group className="mt-3 mb-3" controlId="formWorkName">
               <Form.Label>
                 Name{" "}
@@ -264,9 +238,9 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
             <Button variant="primary" type="submit">
               Save
             </Button>
-          </Form>
-        </>
-      </>
-    </>
+          </div>
+        </Form>
+      </CreateLayout>
+    </div>
   );
 };

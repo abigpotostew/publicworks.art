@@ -9,12 +9,10 @@ import React, {
   useState,
 } from "react";
 import { Container, Placeholder } from "react-bootstrap";
-import { RowThinContainer } from "src/components/layout/RowThinContainer";
 import SpinnerLoading from "src/components/loading/Loader";
 import { TokenStatuses } from "src/store/types";
 import Table from "react-bootstrap/Table";
 import { useTokenStatus } from "../../../src/hooks/work/useTokenStatus";
-import { PaginationComp } from "../../../src/components/media/PagedGallery";
 import {
   PaginationPw,
   useChangePage,

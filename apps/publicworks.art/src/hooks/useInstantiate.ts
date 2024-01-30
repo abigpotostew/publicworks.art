@@ -327,6 +327,8 @@ export const useInstantiate = () => {
       work: WorkSerializable;
       useSimulatedGasFee?: boolean;
     }) => {
+      //todo login here
+      await login.mutateAsync();
       if (!sgwallet.wallet) return false;
 
       if (!work) return false;

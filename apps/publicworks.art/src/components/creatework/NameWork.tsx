@@ -16,6 +16,8 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
 import { NeedToLoginButton } from "../login/NeedToLoginButton";
 import useUserContext from "../../context/user/useUserContext";
+import { RowMediumContainer } from "../layout/RowMediumContainer";
+import { CreateLayout } from "./CreateLayout";
 
 const schema = z.object({
   name: z.string().min(3),
@@ -27,6 +29,7 @@ export interface CreateWorkProps {
     | ((req: Partial<EditProjectRequest>) => Promise<void>);
   defaultValues?: WorkSerializable;
   onUpload?: (files: File[]) => Promise<void> | void;
+  hideTitle?: boolean;
 }
 
 export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
@@ -35,16 +38,7 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
     name: props.defaultValues?.name || "",
     codeCid: props.defaultValues?.codeCid,
   };
-  const [projectName, setProjectName] = useState<string>(defaults.name);
-  const [hash, setHash] = useState<string>(generateTxHash());
   const { user } = useUserContext();
-  const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-    const req = {
-      name: projectName,
-    };
-    props.onCreateProject(req);
-  };
 
   const formik = useFormik({
     initialValues: defaults,
@@ -59,21 +53,23 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
     // validateOnMount: true,
   });
 
-  const onClickRefreshHash = useCallback(() => {
-    setHash(generateTxHash());
-  }, []);
-
   return (
-    <>
-      <>
-        <>
-          <Form
-            onSubmit={(...a) => {
-              return formik.handleSubmit(...a);
-            }}
-            noValidate
+    <div>
+      <Form
+        onSubmit={(...a) => {
+          return formik.handleSubmit(...a);
+        }}
+        noValidate
+      >
+        <div className={"tw-flex tw-justify-center"}>
+          <CreateLayout
+            codeCid={defaults.codeCid}
+            hideLiveMedia={!props.onUpload}
           >
-            <Form.Group className="mb-3" controlId="formWorkName">
+            {!props.hideTitle && (
+              <h2 className={"tw-pb-0 lg:tw-px-4 lg:tw-pt-4"}>Code Upload</h2>
+            )}
+            <Form.Group className="lg:tw-p-4" controlId="formWorkName">
               <Form.Label>
                 Name{" "}
                 <TooltipInfo>
@@ -94,65 +90,34 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               {/*  {"We'll never share your email with anyone else."}*/}
               {/*</Form.Text>*/}
             </Form.Group>
-
-            {/*divider*/}
-
+            <div className={"tw-px-4"}>
+              {!!user.data && (
+                <Button variant="primary" type="submit">
+                  Save
+                </Button>
+              )}
+            </div>
+            <div className={"tw-px-4 tw-py-4"}>
+              {!user.data && <NeedToLoginButton />}
+            </div>
             {props.onUpload && (
-              <RowWideContainer className={"mb-3"}>
-                <div className={"mt-3 mb-3"}>
-                  <h3>Upload your Work Zip</h3>
-                  <DropZone
-                    accept={"zip"}
-                    onUpload={async (files) =>
-                      props?.onUpload && props.onUpload(files)
-                    }
-                  >
-                    <FontAwesomeIcon icon={"upload"} width={16} /> Drag and drop
-                    your project zip file here, or click to upload
-                  </DropZone>
-                </div>
-                <div>
-                  {!defaults?.codeCid && (
-                    <>
-                      <div style={{ minHeight: 500 }}></div>
-                    </>
-                  )}
-                  {defaults?.codeCid && (
-                    <>
-                      <LiveMedia
-                        ipfsUrl={{ cid: defaults.codeCid, hash }}
-                        minHeight={500}
-                        style={{}}
-                      ></LiveMedia>
-                      <a onClick={onClickRefreshHash}>
-                        <FlexBox
-                          style={{
-                            justifyContent: "flex-start",
-                            flexDirection: "row",
-                            alignItems: "center",
-                          }}
-                        >
-                          <div>New Hash</div>
-                          <BsArrowRepeat style={{ marginLeft: ".5rem" }} />
-                        </FlexBox>
-                      </a>
-                    </>
-                  )}
-                </div>
-              </RowWideContainer>
+              <div className={"tw-px-4 tw-pb-4"}>
+                <p>Upload your Work Zip</p>
+                <DropZone
+                  accept={"zip"}
+                  onUpload={async (files) =>
+                    props?.onUpload && props.onUpload(files)
+                  }
+                >
+                  <FontAwesomeIcon icon={"upload"} width={16} /> Drag and drop
+                  your project zip file here, or click to upload
+                </DropZone>
+              </div>
             )}
-
-            {/*divider*/}
-
-            {!user.data && <NeedToLoginButton />}
-            {!!user.data && (
-              <Button variant="primary" type="submit">
-                Save
-              </Button>
-            )}
-          </Form>
-        </>
-      </>
-    </>
+          </CreateLayout>
+        </div>
+        {/*divider*/}
+      </Form>
+    </div>
   );
 };
