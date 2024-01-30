@@ -309,48 +309,16 @@ const EditWorkPage = () => {
         <>
           <FlexBoxCenter fluid={false} className={"tw-pb-24"}>
             {stage === "submit" && (
-              // <Container fluid={false}>
               <>
-                <FlexBoxCenter fluid={false}>
+                <div>
                   {work && (
                     <ConfirmConfig
                       work={work}
                       setUseSimulatedGasFee={setUseSimulatedGasFee}
+                      onInstantiate={onInstantiate}
                     />
                   )}
-                </FlexBoxCenter>
-                <div>
-                  {/*<Form.Check*/}
-                  {/*  type="switch"*/}
-                  {/*  id="custom-switch"*/}
-                  {/*  label="Check this switch"*/}
-                  {/*  value={useSimulatedGasFee.toString()}*/}
-                  {/*  onChange={() => setUseSimulatedGasFee(!useSimulatedGasFee)}*/}
-                  {/*/>*/}
-                  {
-                    <Button
-                      disabled={
-                        !sgwallet.wallet?.address ||
-                        instantiateMutation.isLoading
-                      }
-                      onClick={() => onInstantiate()}
-                      variant={"danger"}
-                    >
-                      {work && !work.sg721 && <span>Instantiate On Chain</span>}
-                      {work && work.sg721 && (
-                        <span>
-                          Instantiate + Replace Chain{" "}
-                          <TooltipInfo>
-                            Your contract is already deployed. Instantiating it
-                            again will replace the old instance on
-                            publicworks.art
-                          </TooltipInfo>
-                        </span>
-                      )}
-                    </Button>
-                  }
                 </div>
-
                 <NavButtons
                   onPrevClick={() => setStagePrevFrom("submit")}
                   onNextClick={
@@ -361,25 +329,17 @@ const EditWorkPage = () => {
               // </Container>
             )}
             {stage === "view" && work && (
-              // <Container fluid={false}>
               <>
                 <WorkOnChain
                   work={work}
                   minter={work.minter}
                   slug={work.slug}
                 />
-                <div className={"Margin-T-1"}>
-                  {
-                    <Button
-                      variant={"secondary"}
-                      onClick={() => setStagePrevFrom("view")}
-                    >
-                      Back
-                    </Button>
-                  }
-                </div>
+                <NavButtons
+                  onPrevClick={() => setStagePrevFrom("view")}
+                  onNextClick={undefined}
+                ></NavButtons>
               </>
-              // </Container>
             )}
 
             {stage === "text" && (
@@ -539,35 +499,6 @@ const EditWorkPage = () => {
                 )}
               </>
             )}
-
-            {/*{stage === "review" && (*/}
-            {/*  <>*/}
-            {/*    {getWorkQuery.isLoading && <SpinnerLoading></SpinnerLoading>}*/}
-            {/*    {getWorkQuery.error && <div>{getWorkQuery.error.message}</div>}*/}
-            {/*    {work && (*/}
-            {/*      <Container>*/}
-            {/*        <h2>Review</h2>*/}
-
-            {/*        <div>*/}
-            {/*          <NameWork*/}
-            {/*            onUpload={onUpload}*/}
-            {/*            onCreateProject={onCreateProject}*/}
-            {/*            defaultValues={work}*/}
-            {/*          />*/}
-            {/*          {!mutation.isLoading && mutation.error && (*/}
-            {/*            <div>{mutation.error.message}</div>*/}
-            {/*          )}*/}
-            {/*          {mutation.isSuccess && <div>Successfully saved</div>}*/}
-
-            {/*          <NavButtons*/}
-            {/*            onPrevClick={() => setStagePrevFrom("review")}*/}
-            {/*            onNextClick={() => setStageNextFrom("review")}*/}
-            {/*          ></NavButtons>*/}
-            {/*        </div>*/}
-            {/*      </Container>*/}
-            {/*    )}*/}
-            {/*  </>*/}
-            {/*)}*/}
           </FlexBoxCenter>
         </>
       </Container>

@@ -70,6 +70,7 @@ export const ChangePrice = ({ minter, work }: Props) => {
   const formik = useFormik({
     initialValues: defaults,
     onSubmit: async (values, { resetForm }) => {
+      console.log("hi here in submit", values);
       if (values.isDutchAuction && setDutchAuctionMutation) {
         //todo only allow this for new minters
 
@@ -134,7 +135,7 @@ export const ChangePrice = ({ minter, work }: Props) => {
 
   const isMinterVersion1 = work.minterCodeId === config.minterV1CodeId;
   console.log(
-    "isMinterVersion2",
+    "isMinterVersion1 ",
     isMinterVersion1,
     formik.dirty,
     formik.isSubmitting,

@@ -7,10 +7,16 @@ import { RowWideContainer } from "../layout/RowWideContainer";
 import { LiveMedia } from "../media/LiveMedia";
 import { generateTxHash } from "src/generateHash";
 import { BsArrowRepeat } from "react-icons/bs";
+import { CreateLayout } from "./CreateLayout";
+import { TooltipInfo } from "../tooltip";
+import { ButtonPW as Button } from "../button/Button";
+import { useWallet } from "../../../@stargazezone/client";
+import { useInstantiate } from "../../hooks/useInstantiate";
 
 interface ConfirmConfigProps {
   work: WorkSerializable;
   setUseSimulatedGasFee: (useSimulatedGasFee: boolean) => void;
+  onInstantiate: () => void;
 }
 
 export const ConfirmConfig: FC<ConfirmConfigProps> = (
@@ -56,69 +62,62 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
     sg721CodeId: null,
     minterCodeId: null,
   };
-  const [hash, setHash] = useState<string>(generateTxHash());
-  const onClickRefreshHash = useCallback(() => {
-    setHash(generateTxHash());
-  }, []);
+  const sgwallet = useWallet();
+  const { instantiateMutation } = useInstantiate();
 
   //https://react-bootstrap.netlify.app/forms/layout/#horizontal-form-label-sizing
   return (
-    <Container>
-      <h2>Confirm Collection Configuration</h2>
-      <>
-        <div>
-          <Container>
-            <RowWideContainer>
-              <LiveMedia
-                ipfsUrl={{
-                  cid: w.codeCid,
-                  hash,
-                }}
-                minHeight={500}
-                style={{ minWidth: 500 }}
-              ></LiveMedia>
-              <a onClick={onClickRefreshHash}>
-                <FlexBox
-                  style={{
-                    justifyContent: "flex-start",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <div>New Hash</div>
-                  <BsArrowRepeat style={{ marginLeft: ".5rem" }} />
-                </FlexBox>
-              </a>
-            </RowWideContainer>
-          </Container>
-        </div>
-        <br />
-        <hr />
-        <div>
-          {Object.keys(pairs)
-            .filter((k) => !!pairs[k as keyof WorkSerializable])
-            .map((k) => {
-              return (
-                <Row key={k}>
-                  <Form.Group>
-                    <Form.Label
-                      column="sm"
-                      lg={12}
-                      className={styles.labelTitle}
-                    >
-                      {pairs[k as keyof WorkSerializable]}
-                    </Form.Label>
-                    <Col>
-                      <Form.Label column="lg" size="sm">
+    <div className={"tw-pb-24 tw-flex tw-justify-center"}>
+      <CreateLayout codeCid={props.work.codeCid} hideLiveMedia={false}>
+        <h2 className={"tw-pt-4 tw-px-4"}>Confirm Collection Configuration</h2>
+        <>
+          <div className={"tw-p-4"}>
+            {Object.keys(pairs)
+              .filter((k) => !!pairs[k as keyof WorkSerializable])
+              .map((k) => {
+                return (
+                  <Row key={k}>
+                    <Form.Group>
+                      <Form.Label
+                        column="sm"
+                        lg={12}
+                        className={`${styles.labelTitle} tw-text-sm tw-text-gray-500`}
+                      >
+                        {pairs[k as keyof WorkSerializable]}
+                      </Form.Label>
+                      <Form.Label className={"tw-pt-0"} column="lg" size="sm">
                         {w[k as keyof WorkSerializable]?.toString()}
                       </Form.Label>
-                    </Col>
-                  </Form.Group>
-                </Row>
-              );
-            })}
-        </div>
-      </>
-    </Container>
+                    </Form.Group>
+                  </Row>
+                );
+              })}
+            <div>
+              <Button
+                disabled={
+                  !sgwallet.wallet?.address || instantiateMutation.isLoading
+                }
+                onClick={() => props.onInstantiate()}
+                variant={props.work.sg721 ? "danger" : "primary"}
+              >
+                {props.work && !props.work.sg721 && (
+                  <span>Instantiate On Chain</span>
+                )}
+                {props.work && props.work.sg721 && (
+                  <span>
+                    Instantiate + Replace Chain{" "}
+                    <TooltipInfo>
+                      Your contract is already deployed. Instantiating it again
+                      will replace the old instance on publicworks.art and
+                      remove all tokens
+                    </TooltipInfo>
+                  </span>
+                )}
+              </Button>
+            </div>
+          </div>
+        </>
+      </CreateLayout>
+    </div>
   );
 };

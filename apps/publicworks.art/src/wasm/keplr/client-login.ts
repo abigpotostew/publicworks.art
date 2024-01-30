@@ -12,7 +12,26 @@ import {
 
 export async function signMessageAndLoginIfNeeded(sg: StargazeClient) {
   const token = getToken();
-  if (!token) {
+  let needsTokenRefresh = false;
+  if (token) {
+    try {
+      const jwtString = token;
+      const parts = jwtString.split(".");
+      if (parts.length !== 3) {
+        throw new Error("Invalid JWT");
+      } else {
+        const body = JSON.parse(atob(parts[1]));
+        const exp = body.exp;
+        const epxiration = new Date(exp * 1000);
+        if (epxiration < new Date(Date.now() + 1000 * 5 * 60)) {
+          needsTokenRefresh = true;
+        }
+      }
+    } catch (e) {
+      needsTokenRefresh = true;
+    }
+  }
+  if (!token || needsTokenRefresh) {
     const otp = Math.floor(Math.random() * 100_000).toString();
     return signMessageAndLogin(otp, sg);
   }

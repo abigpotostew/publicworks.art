@@ -30,9 +30,9 @@ export const CreateLayout: FC<ICreateLayout> = ({
       >
         {children}
       </div>
-      <div className={"tw-ring-1 tw-ring-slate-100 tw-rounded-md tw-pt-4"}>
+      <div className={"tw-ring-1 tw-ring-slate-100 tw-rounded-md tw-pt-4 "}>
         {!hideLiveMedia && (
-          <div className={"mb-3"}>
+          <div className={"mb-3 tw-p-4"}>
             <div>
               {!codeCid && (
                 <>
