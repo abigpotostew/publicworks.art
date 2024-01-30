@@ -28,6 +28,7 @@ import { EditProjectRequest } from "src/store/project.types";
 import { onMutateLogin } from "src/trpc/onMutate";
 import { getToken } from "src/util/auth-token";
 import { useUploadWorkMutation } from "src/works/upload";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
 
 // export const getServerSideProps: GetServerSideProps = async (context) => {
 //   await initializeIfNeeded();
@@ -114,27 +115,31 @@ const NavButtons: FC<INavButtons> = ({
   // @ts-ignore
   return (
     // <Container fluid={true}>
-    <FlexBox>
-      {onPrevClick && (
-        <Button
-          variant={"outline-secondary"}
-          className={"me-2 mt-2"}
-          onClick={onPrevClick}
-        >
-          Prev
-        </Button>
-      )}
-      {onNextClick && (
-        <Button
-          variant={"outline-primary"}
-          className={"mt-2"}
-          disabled={nextDisabled}
-          onClick={onNextClick}
-        >
-          Next
-        </Button>
-      )}
-    </FlexBox>
+    <div
+      className={
+        "tw-bg-white tw-w-full tw-fixed tw-left-0 tw-bottom-0 tw-p-3 tw-border-solid tw-border-1 tw-border-slate-100"
+      }
+    >
+      <div className={"tw-flex tw-justify-center tw-items-center "}>
+        <ButtonGroup>
+          <Button
+            variant={"outline-secondary"}
+            className={" "}
+            onClick={onPrevClick || (() => undefined)}
+          >
+            Back
+          </Button>
+          <Button
+            variant={"outline-primary"}
+            className={""}
+            disabled={!onNextClick || nextDisabled}
+            onClick={onNextClick || (() => undefined)}
+          >
+            Next
+          </Button>
+        </ButtonGroup>
+      </div>
+    </div>
     // </Container>
   );
 };
@@ -301,7 +306,7 @@ const EditWorkPage = () => {
 
       <Container fluid={false}>
         <StepProgressBar items={steps}></StepProgressBar>
-        <RowThinContainer>
+        <>
           {stage === "submit" && (
             // <Container fluid={false}>
             <>
@@ -480,8 +485,7 @@ const EditWorkPage = () => {
               {work && (
                 // <Container fluid={false}>
                 <>
-                  <h2>Code Sandbox</h2>
-                  <FlexBoxCenter fluid={false}>
+                  <FlexBoxCenter fluid={false} className={"tw-pb-24"}>
                     <div>
                       <NameWork
                         onUpload={onUpload}
@@ -559,7 +563,7 @@ const EditWorkPage = () => {
           {/*    )}*/}
           {/*  </>*/}
           {/*)}*/}
-        </RowThinContainer>
+        </>
       </Container>
     </>
   );

@@ -53,7 +53,7 @@ export const LiveMedia: FC<LiveMediaParams> = (params: LiveMediaParams) => {
   }, [url, frame, setAppIsLoading]);
 
   return (
-    <>
+    <div className={"tw-w-full tw-aspect-square"}>
       {(appLoading.appIsLoading || appLoading.appIsLoading) && (
         <div>
           <SpinnerLoading />
@@ -72,12 +72,12 @@ export const LiveMedia: FC<LiveMediaParams> = (params: LiveMediaParams) => {
         src={url}
         width={"100%"}
         // onLoad={(e)=>{e.currentTarget.contentWindow?.focus()}}
-        style={{ ...(params.style || {}), minHeight: params.minHeight }}
+        style={{ ...(params.style || {}) }}
         title={"Live Media"}
         onLoad={() => {
           onIframeLoad();
         }}
       ></iframe>
-    </>
+    </div>
   );
 };

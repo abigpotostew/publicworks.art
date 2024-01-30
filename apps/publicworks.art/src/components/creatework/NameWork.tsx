@@ -16,6 +16,7 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
 import { NeedToLoginButton } from "../login/NeedToLoginButton";
 import useUserContext from "../../context/user/useUserContext";
+import { RowMediumContainer } from "../layout/RowMediumContainer";
 
 const schema = z.object({
   name: z.string().min(3),
@@ -27,6 +28,7 @@ export interface CreateWorkProps {
     | ((req: Partial<EditProjectRequest>) => Promise<void>);
   defaultValues?: WorkSerializable;
   onUpload?: (files: File[]) => Promise<void> | void;
+  hideTitle?: boolean;
 }
 
 export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
@@ -64,43 +66,61 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   }, []);
 
   return (
-    <>
-      <>
-        <>
-          <Form
-            onSubmit={(...a) => {
-              return formik.handleSubmit(...a);
-            }}
-            noValidate
+    <RowWideContainer>
+      <Form
+        onSubmit={(...a) => {
+          return formik.handleSubmit(...a);
+        }}
+        noValidate
+      >
+        <div className={"tw-flex tw-justify-center"}>
+          <div
+            className={
+              "tw-inline-grid tw-grid-cols-1 lg:tw-grid-cols-3 tw-gap-6"
+            }
           >
-            <Form.Group className="mb-3" controlId="formWorkName">
-              <Form.Label>
-                Name{" "}
-                <TooltipInfo>
-                  Your work name is highly visible, on and off chain. This can
-                  be changed later.
-                </TooltipInfo>
-              </Form.Label>
-              <Form.Control
-                type="text"
-                value={formik.values.name}
-                onChange={formik.handleChange}
-                placeholder="My Work"
-                name="name"
-                isValid={formik.touched.name && !formik.errors.name}
-                isInvalid={formik.touched.name && !!formik.errors.name}
-              />
-              {/*<Form.Text className="text-muted">*/}
-              {/*  {"We'll never share your email with anyone else."}*/}
-              {/*</Form.Text>*/}
-            </Form.Group>
-
-            {/*divider*/}
-
-            {props.onUpload && (
-              <RowWideContainer className={"mb-3"}>
-                <div className={"mt-3 mb-3"}>
-                  <h3>Upload your Work Zip</h3>
+            <div
+              className={
+                "tw-col-span-2 tw-ring-slate-100 lg:tw-ring-1 tw-rounded-md tw-bg-white tw-sm:rounded-lg"
+              }
+            >
+              {!props.hideTitle && (
+                <h2 className={"tw-pb-0 lg:tw-px-4 lg:tw-pt-4"}>Code Upload</h2>
+              )}
+              <Form.Group className="lg:tw-p-4" controlId="formWorkName">
+                <Form.Label>
+                  Name{" "}
+                  <TooltipInfo>
+                    Your work name is highly visible, on and off chain. This can
+                    be changed later.
+                  </TooltipInfo>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  value={formik.values.name}
+                  onChange={formik.handleChange}
+                  placeholder="My Work"
+                  name="name"
+                  isValid={formik.touched.name && !formik.errors.name}
+                  isInvalid={formik.touched.name && !!formik.errors.name}
+                />
+                {/*<Form.Text className="text-muted">*/}
+                {/*  {"We'll never share your email with anyone else."}*/}
+                {/*</Form.Text>*/}
+              </Form.Group>
+              <div className={"tw-px-4"}>
+                {!!user.data && (
+                  <Button variant="primary" type="submit">
+                    Save
+                  </Button>
+                )}
+              </div>
+              <div className={"tw-px-4 tw-py-4"}>
+                {!user.data && <NeedToLoginButton />}
+              </div>
+              {props.onUpload && (
+                <div className={"tw-px-4"}>
+                  <p>Upload your Work Zip</p>
                   <DropZone
                     accept={"zip"}
                     onUpload={async (files) =>
@@ -111,48 +131,46 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                     your project zip file here, or click to upload
                   </DropZone>
                 </div>
-                <div>
-                  {!defaults?.codeCid && (
-                    <>
-                      <div style={{ minHeight: 500 }}></div>
-                    </>
-                  )}
-                  {defaults?.codeCid && (
-                    <>
-                      <LiveMedia
-                        ipfsUrl={{ cid: defaults.codeCid, hash }}
-                        minHeight={500}
-                        style={{}}
-                      ></LiveMedia>
-                      <a onClick={onClickRefreshHash}>
-                        <FlexBox
-                          style={{
-                            justifyContent: "flex-start",
-                            flexDirection: "row",
-                            alignItems: "center",
-                          }}
-                        >
-                          <div>New Hash</div>
-                          <BsArrowRepeat style={{ marginLeft: ".5rem" }} />
-                        </FlexBox>
-                      </a>
-                    </>
-                  )}
-                </div>
-              </RowWideContainer>
-            )}
-
-            {/*divider*/}
-
-            {!user.data && <NeedToLoginButton />}
-            {!!user.data && (
-              <Button variant="primary" type="submit">
-                Save
-              </Button>
-            )}
-          </Form>
-        </>
-      </>
-    </>
+              )}
+            </div>
+            <div className={""}>
+              {props.onUpload && (
+                <RowWideContainer className={"mb-3 "}>
+                  <div>
+                    {!defaults?.codeCid && (
+                      <>
+                        <div style={{ minHeight: 500 }}></div>
+                      </>
+                    )}
+                    {defaults?.codeCid && (
+                      <>
+                        <LiveMedia
+                          ipfsUrl={{ cid: defaults.codeCid, hash }}
+                          minHeight={500}
+                          style={{}}
+                        ></LiveMedia>
+                        <a onClick={onClickRefreshHash}>
+                          <FlexBox
+                            style={{
+                              justifyContent: "flex-start",
+                              flexDirection: "row",
+                              alignItems: "center",
+                            }}
+                          >
+                            <div>New Hash</div>
+                            <BsArrowRepeat style={{ marginLeft: ".5rem" }} />
+                          </FlexBox>
+                        </a>
+                      </>
+                    )}
+                  </div>
+                </RowWideContainer>
+              )}
+            </div>
+          </div>
+        </div>
+        {/*divider*/}
+      </Form>
+    </RowWideContainer>
   );
 };
