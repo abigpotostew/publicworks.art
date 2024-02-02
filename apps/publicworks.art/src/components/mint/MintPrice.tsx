@@ -48,15 +48,11 @@ const DutchAuctionPriceInfo = ({
   const auctionBefore = beforeEndOfAuction && !afterStartOfAuction;
   const auctionOver = !beforeEndOfAuction;
   const auctionDuring = beforeEndOfAuction && afterStartOfAuction;
-
+  //todo handle sold out case better here
   const nextPriceChangeSeconds = Math.round(
     (fromTimestamp(da.next_price_timestamp).getTime() - new Date().getTime()) /
       1000
   );
-
-  // const activePrices = prices.findIndex((p) => p.time.getTime() > Date.now());
-  // const pricesToShow = prices.slice(activePrices, activePrices + 5);
-  // const labelsToShow = labels.slice(activePrices, activePrices + 5);
 
   return (
     <div className={className}>

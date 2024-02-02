@@ -289,20 +289,45 @@ async function instantiateNew(
     gasfee,
     { /*funds: NEW_COLLECTION_FEE,*/ admin: account }
   );
-  const wasmEvent = result.logs[0].events.find((e) => e.type === "wasm");
-  console.info(
-    "The `wasm` event emitted by the contract execution:",
-    wasmEvent
+  console.log("all instantiate result", result);
+  const instantiateEvents = result.events.filter(
+    (e) => e.type === "instantiate"
   );
-  if (wasmEvent === undefined) {
-    throw new Error("wasm didn't return");
+  if (instantiateEvents.length !== 2) {
+    throw new Error("not enough instantiate events emitted");
   }
+
+  let minterAddress = instantiateEvents[0].attributes.find(
+    (a) => a.key === "_contract_address"
+  )?.value;
+  let sg721Address = instantiateEvents[1].attributes.find(
+    (a) => a.key === "_contract_address"
+  )?.value;
+  if (!minterAddress || !sg721Address) {
+    const wasmEvents = result.events.filter((e) => e.type === "wasm");
+    if (instantiateEvents.length !== 2) {
+      throw new Error("not enough wasm events emitted");
+    }
+
+    minterAddress = wasmEvents[0].attributes.find(
+      (a) => a.key === "_contract_address"
+    )?.value;
+    sg721Address = wasmEvents[1].attributes.find(
+      (a) => a.key === "_contract_address"
+    )?.value;
+    if (!minterAddress || !sg721Address) {
+      throw new Error(
+        "failed to extract new contract address from events :( Please contact support"
+      );
+    }
+  }
+
   console.info("Add these contract addresses to config.js:");
-  console.info("minter contract address: ", wasmEvent.attributes[0]["value"]);
-  console.info("sg721 contract address: ", wasmEvent.attributes[5]["value"]);
+  console.info("minter contract address: ", minterAddress);
+  console.info("sg721 contract address: ", sg721Address);
   return {
-    sg721: wasmEvent.attributes[5]["value"],
-    minter: wasmEvent.attributes[0]["value"],
+    sg721: sg721Address,
+    minter: minterAddress,
   };
 }
 

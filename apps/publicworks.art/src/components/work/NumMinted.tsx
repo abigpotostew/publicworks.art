@@ -1,14 +1,15 @@
 import styles from "../../../styles/Work.module.scss";
 import { useCollectionSize } from "../../hooks/useCollectionSize";
-import { useNumMinted } from "../../hooks/useNumMinted";
-import SpinnerLoading from "../loading/Loader";
 import { FC } from "react";
 import * as React from "react";
 import { Card, Placeholder } from "react-bootstrap";
+import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
+import { useNumMintedOnChain } from "../../hooks/useNumMintedOnChain";
 
 interface NumMintedParams {
   slug: string;
   minter: string;
+  work: WorkSerializable;
 }
 
 export const NumMinted: FC<NumMintedParams> = (params: NumMintedParams) => {
@@ -16,7 +17,7 @@ export const NumMinted: FC<NumMintedParams> = (params: NumMintedParams) => {
     data: numMinted,
     error: numMintedError,
     isLoading: numMintedLoading,
-  } = useNumMinted(params.slug);
+  } = useNumMintedOnChain(params.minter);
   const {
     data: collectionSize,
     error: collectionSizeError,

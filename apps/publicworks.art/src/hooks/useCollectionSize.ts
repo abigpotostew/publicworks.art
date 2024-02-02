@@ -32,3 +32,6 @@ export const useCollectionSize = (
 
   return query;
 };
+
+//alias
+export const useNumberMinted = useCollectionSize;

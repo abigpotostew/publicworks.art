@@ -1,10 +1,10 @@
-import { useNumMinted } from "./useNumMinted";
 import { useCollectionSize } from "./useCollectionSize";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { useQuery } from "@tanstack/react-query";
+import { useNumMintedOnChain } from "./useNumMintedOnChain";
 
 export const useSoldOut = (work: WorkSerializable | null | undefined) => {
-  const numMintedQuery = useNumMinted(work?.slug);
+  const numMintedQuery = useNumMintedOnChain(work?.minter);
   const collectionSizeQuery = useCollectionSize(work?.minter);
   return useQuery(
     [

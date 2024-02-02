@@ -559,10 +559,10 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
 
               <Form.Group className="mb-3" controlId="formRoyaltyAddress">
                 <Form.Label>
-                  Royalty Address{" "}
+                  Primary and secondary sales payout address{" "}
                   <TooltipInfo>
-                    Royalty payout address for secondary marketplace sales.
-                    Note: Mint proceeds go to the creator's address.
+                    Royalty payout address for primary AND secondary marketplace
+                    sales. Accepts a split contract address.
                   </TooltipInfo>
                 </Form.Label>
                 <Form.Control

@@ -27,7 +27,7 @@ export const useNftMetadata = ({
   refresh,
 }: {
   sg721: string | undefined | null;
-  tokenId: string;
+  tokenId: string | undefined | null;
   refresh?: boolean;
 }) => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -47,9 +47,13 @@ export const useNftMetadata = ({
       sg721
         ? `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${sg721}/smart/${msgBase64}`
         : null,
+      tokenId,
     ],
     async () => {
       if (!sg721) {
+        return null;
+      }
+      if (!tokenId) {
         return null;
       }
       const res = await fetch(

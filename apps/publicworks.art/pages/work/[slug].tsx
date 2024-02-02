@@ -9,7 +9,6 @@ import { MintPrice } from "../../src/components/mint/MintPrice";
 import { StarsAddressName } from "../../src/components/name/StarsAddressName";
 import { NumMinted } from "../../src/components/work/NumMinted";
 import { useNftMetadata } from "../../src/hooks/useNftMetadata";
-import { useNumMinted } from "../../src/hooks/useNumMinted";
 import MainLayout from "../../src/layout/MainLayout";
 import { normalizeIpfsUri } from "../../src/wasm/metadata";
 import styles from "../../styles/Work.module.scss";
@@ -26,6 +25,7 @@ import { Button, Container } from "react-bootstrap";
 import { stores } from "src/store/stores";
 import { initializeIfNeeded } from "src/typeorm/datasource";
 import config from "src/wasm/config";
+import { useNumMintedOnChain } from "../../src/hooks/useNumMintedOnChain";
 
 export async function getStaticPaths() {
   console.log("getStaticPaths, works");
@@ -91,16 +91,15 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
     data: numMinted,
     error: numMintedError,
     isLoading: numMintedLoading,
-  } = useNumMinted(work?.slug);
+  } = useNumMintedOnChain(work?.minter, 2000);
 
-  const [previewTokenId, setPreviewTokenId] = useState("1");
+  const [previewTokenId, setPreviewTokenId] = useState<string | null>(null);
   useEffect(() => {
-    if (!numMinted) {
+    if (!numMinted || previewTokenId) {
       return;
     }
-
     setPreviewTokenId((Math.floor(Math.random() * numMinted) + 1).toString());
-  }, [numMinted]);
+  }, [previewTokenId, numMinted]);
 
   const metadata = useNftMetadata({
     sg721: work.sg721,
@@ -168,7 +167,11 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
                     />
                   </div>
                   {work.sg721 && work.minter ? (
-                    <NumMinted slug={work.slug} minter={work.minter} />
+                    <NumMinted
+                      work={work}
+                      slug={work.slug}
+                      minter={work.minter}
+                    />
                   ) : (
                     <div>Deploy your work to view</div>
                   )}

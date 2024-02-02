@@ -12,6 +12,10 @@ import { TooltipInfo } from "../tooltip";
 import { ButtonPW as Button } from "../button/Button";
 import { useWallet } from "../../../@stargazezone/client";
 import { useInstantiate } from "../../hooks/useInstantiate";
+import { z } from "zod";
+import { formatInTimeZone } from "date-fns-tz";
+import { format } from "date-fns";
+import { formatInUTC } from "./NftDetails2";
 
 interface ConfirmConfigProps {
   work: WorkSerializable;
@@ -19,6 +23,45 @@ interface ConfirmConfigProps {
   onInstantiate: () => void;
 }
 
+const isDateString = (date: string) => {
+  return z.string().datetime().safeParse(date).success;
+};
+const getDate = (date: string) => {
+  return new Date(date);
+};
+export const formatInLocalTimezone = (date: Date | null | undefined) => {
+  if (!date) {
+    return "-";
+  }
+  try {
+    const out = format(date, "LLLL d, yyyy kk:mm"); // 2014-10-25 06:46:20-04:00
+    return out;
+  } catch (e) {
+    return "-";
+  }
+};
+
+const ValueRender = ({
+  work,
+  k,
+}: {
+  work: WorkSerializable;
+  k: keyof WorkSerializable;
+}) => {
+  const value = work[k];
+  if (typeof value === "string" && isDateString(value)) {
+    const date = getDate(value);
+    return (
+      <>
+        <div className={"tw-flex tw-flex-col"}>
+          <span>{formatInLocalTimezone(date)}</span>
+          <span className={"tw-text-sm"}> ({formatInUTC(date)} UTC)</span>
+        </div>
+      </>
+    );
+  }
+  return <>{work[k]?.toString()}</>;
+};
 export const ConfirmConfig: FC<ConfirmConfigProps> = (
   props: ConfirmConfigProps
 ) => {
@@ -41,7 +84,7 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
     dutchAuctionEndPrice: whenDutchAuction("Dutch Auction End Price"),
     dutchAuctionDeclinePeriodSeconds: whenDutchAuction("Price Drop Interval"),
     dutchAuctionDecayRate: whenDutchAuction("Price Decay Rate"),
-    royaltyAddress: "Royalty Receiver",
+    royaltyAddress: "Primary and secondary sales payout address",
     royaltyPercent: "Royalty Percent",
     resolution: "Resolution",
     pixelRatio: "Pixel Ratio",
@@ -65,6 +108,7 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
   const sgwallet = useWallet();
   const { instantiateMutation } = useInstantiate();
 
+  console.log("work is ", w);
   //https://react-bootstrap.netlify.app/forms/layout/#horizontal-form-label-sizing
   return (
     <div className={"tw-pb-24 tw-flex tw-justify-center"}>
@@ -86,7 +130,7 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
                         {pairs[k as keyof WorkSerializable]}
                       </Form.Label>
                       <Form.Label className={"tw-pt-0"} column="lg" size="sm">
-                        {w[k as keyof WorkSerializable]?.toString()}
+                        <ValueRender work={w} k={k as keyof WorkSerializable} />
                       </Form.Label>
                     </Form.Group>
                   </Row>

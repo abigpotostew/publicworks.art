@@ -6,11 +6,11 @@ import stylesWork from "../../../styles/Work.module.scss";
 import { useRouter } from "next/router";
 import { isStarAddress, shortenAddress } from "../../wasm/address";
 import { StarsAddressName } from "../name/StarsAddressName";
-import { useNumMinted } from "../../hooks/useNumMinted";
 import { useCollectionSize } from "../../hooks/useCollectionSize";
 import React from "react";
 import Link from "next/link";
 import { cn } from "../../lib/css/cs";
+import { useNumMintedOnChain } from "../../hooks/useNumMintedOnChain";
 
 export const WorksGalleryComponent = ({
   work,
@@ -24,7 +24,7 @@ export const WorksGalleryComponent = ({
   });
   const w = work;
   const router = useRouter();
-  const numMinted = useNumMinted(work.slug);
+  const numMinted = useNumMintedOnChain(work.minter);
   const collectionSize = useCollectionSize(work.minter);
 
   let creatorName = w.creator;
