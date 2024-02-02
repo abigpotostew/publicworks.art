@@ -70,10 +70,8 @@ export const ChangePrice = ({ minter, work }: Props) => {
   const formik = useFormik({
     initialValues: defaults,
     onSubmit: async (values, { resetForm }) => {
-      console.log("hi here in submit", values);
       if (values.isDutchAuction && setDutchAuctionMutation) {
         //todo only allow this for new minters
-
         await setDutchAuctionMutation.mutateAsync({
           work,
           config: {
