@@ -6,7 +6,6 @@ import type { FC, ReactElement, ReactNode } from "react";
 import type { NextPage } from "next";
 import type { AppProps, NextWebVitalsMetric } from "next/app";
 
-import { SSRProvider } from "react-bootstrap";
 import { event, GoogleAnalytics } from "nextjs-google-analytics";
 import { queryClient, trpcNextPW } from "../src/server/utils/trpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -42,18 +41,16 @@ const MyApp: FC<AppPropsWithLayout> = ({
 }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout || ((page) => page);
   return (
-    <SSRProvider>
-      <StargazeProvider client={stargazeClient}>
-        <QueryClientProvider client={queryClient}>
-          <UserProvider>
-            <GoogleAnalytics trackPageViews />
-            <ToastContainer />
-            {getLayout(<Component {...pageProps} />)}
-            <Analytics />
-          </UserProvider>
-        </QueryClientProvider>
-      </StargazeProvider>
-    </SSRProvider>
+    <StargazeProvider client={stargazeClient}>
+      <QueryClientProvider client={queryClient}>
+        <UserProvider>
+          <GoogleAnalytics trackPageViews />
+          <ToastContainer />
+          {getLayout(<Component {...pageProps} />)}
+          <Analytics />
+        </UserProvider>
+      </QueryClientProvider>
+    </StargazeProvider>
   ) as ReactElement;
 };
 
