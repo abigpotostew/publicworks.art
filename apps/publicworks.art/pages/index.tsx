@@ -217,11 +217,15 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
                 gap: 10,
               }}
             >
-              <Link href={"https://twitter.com/stewbracken"}>
+              <Link href={"https://twitter.com/publicworksart_"}>
                 <Button variant={"secondary"}>Twitter</Button>
               </Link>
 
-              <Link href={"https://discord.gg/X6hSmrxdtW"}>
+              <Link
+                href={
+                  "https://discord.com/channels/755548171941445642/1109506526252642365"
+                }
+              >
                 <Button variant={"secondary"}>Discord</Button>
               </Link>
             </div>

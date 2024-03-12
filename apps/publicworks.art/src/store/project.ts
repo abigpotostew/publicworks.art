@@ -243,6 +243,7 @@ export class ProjectRepo {
       sg721: null,
       minter: null,
       description: request.description || "",
+      blurb: request.blurb || "",
       slug: convertToSlug(request.name),
       pixelRatio: null,
       selector: null,
