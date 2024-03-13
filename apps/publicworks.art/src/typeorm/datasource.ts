@@ -60,6 +60,7 @@ export const initializeDatasource = () => {
     // connectTimeout: 3 * 60 * 60 * 1000,
     connectTimeoutMS: 60 * 1000,
     migrations: [],
+    schema: "publicworks",
     // maxQueryExecutionTime: 1000,
   });
   return ds.initialize().then(() => {
