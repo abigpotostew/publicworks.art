@@ -36,11 +36,11 @@ export const initializeDatasource = () => {
   //console.log("ENTITIES: ", entities);
 
   const isLocalMysql =
-    process.env.DATABASE_URL === "postgres://127.0.0.1:3309/publicworks";
+    process.env.DATABASE_URL === "mysql://127.0.0.1:3309/publicworks";
   const ds = new DataSource({
-    // timezone: "Z",
-    type: "postgres",
-    port: 5432,
+    timezone: "Z",
+    type: "mysql",
+    port: isLocalMysql ? 3309 : 3306,
     url: process.env.DATABASE_URL,
     ssl: isLocalMysql
       ? false
@@ -55,12 +55,10 @@ export const initializeDatasource = () => {
       BlockheightEntity,
     ],
     logging: process.env.TYPEORM_LOGGING ? "all" : undefined,
-    // debug: process.env.TYPEORM_DEBUG === "true",
-    // acquireTimeout: 3 * 60 * 60 * 1000,
-    // connectTimeout: 3 * 60 * 60 * 1000,
-    connectTimeoutMS: 60 * 1000,
+    debug: process.env.TYPEORM_DEBUG === "true",
+    acquireTimeout: 3 * 60 * 60 * 1000,
+    connectTimeout: 3 * 60 * 60 * 1000,
     migrations: [],
-    schema: "publicworks",
     // maxQueryExecutionTime: 1000,
   });
   return ds.initialize().then(() => {

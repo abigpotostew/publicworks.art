@@ -46,7 +46,7 @@ export class WorkEntity extends AuditedEntity {
   @Column("text", { name: "blurb", nullable: false })
   blurb: string;
 
-  @Column("timestamptz", { name: "start_date", nullable: true })
+  @Column("datetime", { name: "start_date", nullable: true })
   startDate: Date | null;
 
   @Column("varchar", { name: "resolution", nullable: true, length: 64 })
