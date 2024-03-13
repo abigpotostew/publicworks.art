@@ -166,13 +166,12 @@ async function instantiateNew(
   if (!work.startDate) {
     throw new Error("incorrect start date");
   }
+  if (new Date(work.startDate) < new Date()) {
+    throw new Error("start date must be in the future");
+  }
   const startTime: Timestamp = (
     new Date(work.startDate).getTime() * 1_000_000
   ).toString();
-  // const startTime: Timestamp = (
-  //   (Date.now() + 10 * 1000) *
-  //   1_000_000
-  // ).toString();
 
   if (!work.priceStars) {
     throw new Error("price invalid");
@@ -180,6 +179,11 @@ async function instantiateNew(
   if (!work.coverImageCid) {
     throw new Error("missing cover image");
   }
+
+  if (!work.codeCid) {
+    throw new Error("missing code cid");
+  }
+
   let dutchAuctionConfig: DutchAuctionConfig | null = null;
   if (
     work.isDutchAuction &&
