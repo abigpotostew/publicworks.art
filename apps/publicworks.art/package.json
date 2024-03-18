@@ -13,6 +13,9 @@
     "cuid": "node -e 'console.log(require(\"cuid\")())'"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.533.0",
+    "dynamodb-onetable": "^2.7.1",
+    "uuidv7": "^0.6.3",
     "cuid": "3.0.0",
     "@cosmjs/amino": "^0.32.2",
     "@cosmjs/cosmwasm-stargate": "^0.32.2",

@@ -78,7 +78,7 @@ const editWorkContracts = authorizedProcedure
     //fetch version on chain
     const fetchCodeId = async (address: string) => {
       try {
-        const url = `${chainInfo.rest}/cosmwasm/wasm/v1/contract/${address}`;
+        const url = `${chainInfo().rest}/cosmwasm/wasm/v1/contract/${address}`;
         const response = await fetch(url);
         const data = await response.json();
         return parseInt(data.contract_info.code_id);
@@ -113,9 +113,9 @@ const editWorkContracts = authorizedProcedure
       throw new TRPCError({ code: "BAD_REQUEST" });
     }
     //delete work tokens too in the case that the work was already minted then stop
-    //todo index the work tokens by contract id instead of work id
-    const deleteRes = await stores().project.deleteWorkTokens(input.id);
-    console.log("deleted existing work tokens", deleteRes);
+    //todo stew
+    // const deleteRes = await stores().project.deleteWorkTokens(input.id);
+    // console.log("deleted existing work tokens", deleteRes);
     return serializeWork(project.value);
   });
 const getWorkById = baseProcedure
@@ -252,10 +252,12 @@ const workPreviewImg = baseProcedure
     if (project?.coverImageCid) {
       return normalizeMetadataUri("ipfs://" + project.coverImageCid);
     }
-    const preview = await stores().project.getProjectPreviewImage(input.workId);
+    const preview = await stores().project.getProjectPreviewImage(
+      input.workId.toString()
+    );
 
     if (!preview || !preview.imageUrl) {
-      throw new TRPCError({ code: "NOT_FOUND" });
+      return null;
     }
     return normalizeMetadataUri(preview.imageUrl);
   });
@@ -379,7 +381,9 @@ const uploadWorkCoverImageGenerateUrl = authorizedProcedure
   )
 
   .mutation(async ({ input, ctx }) => {
-    const work = await stores().project.getProject(input.workId);
+    const work = await stores().project.getProjectForId(
+      input.workId.toString()
+    );
     if (!work || work.owner.id !== ctx.user.id) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
@@ -411,7 +415,9 @@ const confirmWorkCoverImageUpload = authorizedProcedure
   )
 
   .mutation(async ({ input, ctx }) => {
-    const work = await stores().project.getProject(input.workId);
+    const work = await stores().project.getProjectForId(
+      input.workId.toString()
+    );
     if (!work || work.owner.id !== ctx.user.id) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
@@ -429,7 +435,9 @@ const deleteWork = authorizedProcedure
   )
 
   .mutation(async ({ input, ctx }) => {
-    const work = await stores().project.getProject(input.workId);
+    const work = await stores().project.getProjectForId(
+      input.workId.toString()
+    );
     if (!work || work.owner.id !== ctx.user.id) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
@@ -446,18 +454,21 @@ const tokenStatus = baseProcedure
   )
 
   .query(async ({ input, ctx }) => {
-    const work = await stores().project.getProject(input.workId);
+    const work = await stores().project.getProjectForId(
+      input.workId.toString()
+    );
     if (!work) {
       throw new TRPCError({ code: "NOT_FOUND" });
     }
 
-    const { tokens, count } = await stores().project.listTokens({
-      work_id: input.workId.toString(),
-      take: input.take,
-      skip: input.skip,
+    const { items, nextOffset } = await stores().project.getProjectTokens2({
+      workId: input.workId,
+      limit: input.take,
+      publishedState: "PUBLISHED",
     });
 
-    return { tokens: tokens.map(serializeWorkTokenFull), count };
+    //todo stew the count needs to be removed from the FE
+    return { tokens: items.map(serializeWorkTokenFull), count: items.length };
   });
 
 export const workRouter = t.router({
@@ -469,7 +480,7 @@ export const workRouter = t.router({
   getWorkBySlug,
   getWorkTokenByTokenId: getWorkTokenByTokenId,
   listWorks: listWorks,
-  workPreviewImg,
+  workPreviewImg: workPreviewImg,
   uploadPreviewImg: uploadPreviewImg,
   listAddressWorks: listAddressWorks,
   workTokenCount: workTokenCount,

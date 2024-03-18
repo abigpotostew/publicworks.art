@@ -1,9 +1,14 @@
-import { dataSource } from "../typeorm/datasource";
-import { UserEntity } from "./model";
 import cuid from "cuid";
 import { EditUserRequest } from "src/store/user.types";
+import { UserEntity } from "@publicworks/db-typeorm/model/user.entity";
+import { dataSource } from "../../typeorm/datasource";
+export interface UserRepoI {
+  getUser(address: string): Promise<UserEntity | null>;
 
-export class UserRepo {
+  createIfNeeded(address: string): Promise<UserEntity | null>;
+  // editUser(userId: string, req: Partial<EditUserRequest>): Promise<void>;
+}
+export class UserRepo implements UserRepoI {
   async getUser(address: string): Promise<UserEntity | null> {
     return dataSource().getRepository(UserEntity).findOne({
       where: { address },

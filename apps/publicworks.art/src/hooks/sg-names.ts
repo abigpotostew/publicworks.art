@@ -17,10 +17,14 @@ export function useWalletName(address: string) {
       const encoded = base64Encode({ name: { address } });
       console.log(
         "fetching wallet name",
-        `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${chainInfo.nameCollectionContract}/smart/${encoded}`
+        `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${
+          chainInfo().nameCollectionContract
+        }/smart/${encoded}`
       );
       const response = await fetch(
-        `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${chainInfo.nameCollectionContract}/smart/${encoded}`
+        `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${
+          chainInfo().nameCollectionContract
+        }/smart/${encoded}`
       );
       if (!response.ok) {
         return "";
@@ -48,7 +52,9 @@ export function useNameInfo(name: string) {
     const encoded = base64Encode({ nft_info: { token_id: name } });
     try {
       const response = await fetch(
-        `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${chainInfo.nameCollectionContract}/smart/${encoded}`
+        `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${
+          chainInfo().nameCollectionContract
+        }/smart/${encoded}`
       );
       if (!response.ok) {
         return "";

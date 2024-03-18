@@ -190,7 +190,7 @@ const WorkStatusPage = () => {
                               <Link href={liveUrl(token.hash)}>Live</Link>
                               {" • "}
                               <Link
-                                href={chainInfo.explorerUrlToTx.replace(
+                                href={chainInfo().explorerUrlToTx.replace(
                                   "{txHash}",
                                   token.tx_hash
                                 )}

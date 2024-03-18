@@ -19,9 +19,16 @@ export const WorksGalleryComponent = ({
   work: WorkSerializable;
   className?: string;
 }) => {
-  const query = trpcNextPW.works.workPreviewImg.useQuery({
-    workId: work.id,
-  });
+  const query = trpcNextPW.works.workPreviewImg.useQuery(
+    {
+      workId: work.id,
+    },
+    {
+      refetchOnWindowFocus: false,
+      refetchInterval: false,
+      refetchOnReconnect: false,
+    }
+  );
   const w = work;
   const router = useRouter();
   const numMinted = useNumMintedOnChain(work.minter);

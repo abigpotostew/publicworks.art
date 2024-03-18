@@ -143,11 +143,11 @@ const signLoginMessageWithArbitrary: SigningStrategy<
   if (!keplr) {
     throw new Error("Keplr not installed");
   }
-  const key = await keplr.getKey(chainInfo.chainId);
+  const key = await keplr.getKey(chainInfo().chainId);
   const userAddress = key.bech32Address;
 
   const signature = await keplr.signArbitrary(
-    chainInfo.chainId,
+    chainInfo().chainId,
     userAddress,
     JSON.stringify(buildMessage(otp))
   );

@@ -138,12 +138,12 @@ export class TokenEntity extends AuditedEntity {
   work_id: string;
 
   @Column("bigint", { name: "blockheight", nullable: false })
-  blockheight: string;
+  blockHeight: string;
 
   @Column("text", { name: "tx_hash", nullable: false })
-  tx_hash: string;
+  txHash: string;
   @Column("text", { name: "tx_memo", nullable: false })
-  tx_memo: string;
+  txMemo: string;
 
   @ManyToOne(() => WorkEntity, (r) => r.tokens)
   @JoinColumn({ name: "work_id" })

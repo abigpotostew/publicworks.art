@@ -55,7 +55,7 @@ export default async function handler(
     const data = JSON.stringify(buildMessage(otp));
     // https://github.com/wgwz/simple-express-keplr-passport/pull/2
     verified = verifyADR36Amino(
-      chainInfo.bech32Config.bech32PrefixAccAddr,
+      chainInfo().bech32Config.bech32PrefixAccAddr,
       address,
       data,
       decodedPubKey,

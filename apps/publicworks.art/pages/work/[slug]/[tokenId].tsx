@@ -39,26 +39,38 @@ export async function getStaticPaths() {
   console.log("getStaticPaths, token");
   await initializeIfNeeded();
   const out: { params: { slug: string; tokenId: string } }[] = [];
-  let nextOffset: number | undefined = undefined;
-  let tokens: TokenEntity[] = [];
-  do {
-    const res: { items: TokenEntity[]; nextOffset: number | undefined } =
-      await stores().project.getTokens({
+  let i = 0;
+  const getPublishedTokens = async () => {
+    const works = await stores().project.getProjects({
+      limit: 500,
+      offset: 0,
+      publishedState: "PUBLISHED",
+      includeHidden: false,
+    });
+
+    for (const work of works.items) {
+      const tokens = await stores().project.getProjectTokens2({
+        workId: work.id,
         limit: 500,
-        offset: nextOffset ? nextOffset : 0,
+        offset: 0,
         publishedState: "PUBLISHED",
-        includeHidden: true,
       });
-    nextOffset = res.nextOffset;
-    tokens = res.items;
-    out.push(
-      ...tokens.map((s) => {
-        return { params: { slug: s.work.slug, tokenId: s.token_id } };
-      })
-    );
-    console.log("getStaticPaths, token, nextOffset", nextOffset);
-  } while (nextOffset);
-  // const static = [work];
+
+      out.push(
+        ...tokens.items.map((s) => {
+          return { params: { slug: s.work.slug, tokenId: s.token_id } };
+        })
+      );
+      if (out.length >= 500) {
+        return;
+      }
+      i++;
+    }
+    return out;
+  };
+  await getPublishedTokens();
+  console.log("getProjectTokens, make", i, "calls");
+
   console.log("getStaticPaths, token, done");
   return {
     paths: out,
