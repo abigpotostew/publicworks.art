@@ -1,5 +1,5 @@
-import { FC, ReactElement, useCallback, useMemo, useState } from "react";
-import { Container, Toast } from "react-bootstrap";
+import React, { FC, ReactElement, useCallback, useMemo, useState } from "react";
+import { Container, Dropdown, Toast } from "react-bootstrap";
 import MainLayout from "../../src/layout/MainLayout";
 import SpinnerLoading from "../../src/components/loading/Loader";
 import { trpcNextPW } from "../../src/server/utils/trpc";
@@ -46,8 +46,9 @@ export const UserWorks: FC<UserWorksProps> = (props: UserWorksProps) => {
 
   // const [pageNumber, setPageNumber] = useState(0);
   const utils = trpcNextPW.useContext();
-  const limit = 5;
-  const [page, setPage] = useState<WorkSerializable[]>([]);
+  const [take, setTake] = useState(5);
+  const limit = take;
+  // const [page, setPage] = useState<WorkSerializable[]>([]);
 
   const queryInput = useMemo(
     () => ({
@@ -63,25 +64,41 @@ export const UserWorks: FC<UserWorksProps> = (props: UserWorksProps) => {
     queryInput,
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
+      getPreviousPageParam: (lastPage) => lastPage.nextCursor,
       initialCursor: undefined, // <-- optional you can pass an initialCursor
     }
   );
+
+  const [page, setPage] = useState(0);
+
   const nextPage = useCallback(async () => {
     await userWorksPage.fetchNextPage();
+    setPage((prev) => prev + 1);
   }, [userWorksPage.fetchNextPage]);
   const prevPage = useCallback(async () => {
-    await userWorksPage.fetchPreviousPage();
+    setPage((prev) => prev - 1);
   }, [userWorksPage.fetchPreviousPage]);
+  const pageData = userWorksPage.data?.pages?.length
+    ? userWorksPage.data?.pages[page]
+    : undefined;
 
-  const hasMore = userWorksPage.hasNextPage;
-  const hasPrevious = userWorksPage.hasPreviousPage;
+  const hasMore = !!pageData?.nextCursor;
+  const hasPrevious = page > 0;
 
-  const hasItems = !!page?.length;
-  const pageItems: WorkSerializable[] = hasItems && page ? page : [];
+  const hasItems = !!pageData?.items.length;
+  const pageItems = pageData?.items ?? [];
+
+  // hasItems && page ? page : [];
   const onRowChanged = useCallback(() => {
     userWorksPage.refetch();
     utils.works.listAddressWorks.invalidate();
   }, [utils, userWorksPage, queryInput]);
+  userWorksPage.data?.pageParams;
+  console.log("userWorksPage", {
+    userWorksPage,
+    hasItems,
+    datra: userWorksPage.data,
+  });
   return (
     <div>
       <h2 className={"mt-2"}>Works</h2>
@@ -99,19 +116,55 @@ export const UserWorks: FC<UserWorksProps> = (props: UserWorksProps) => {
       {userWorksPage.isSuccess && hasItems && (
         <div>
           <div className={"mt-3"}>
-            <ButtonPW
-              onClick={() => prevPage()}
-              disabled={!hasPrevious || userWorksPage.isLoading}
-            >
-              {userWorksPage.isLoading ? "Loading..." : "Previous"}
-            </ButtonPW>
-            <ButtonPW
-              className={"ms-2"}
-              onClick={() => nextPage()}
-              disabled={!hasMore || userWorksPage.isLoading}
-            >
-              {userWorksPage.isLoading ? "Loading more..." : "Next"}
-            </ButtonPW>
+            <div className={"tw-flex tw-flex-row tw-gap-1"}>
+              <ButtonPW
+                variant={"outline-secondary"}
+                onClick={() => prevPage()}
+                disabled={
+                  !hasPrevious ||
+                  userWorksPage.isLoading ||
+                  userWorksPage.isFetchingNextPage ||
+                  userWorksPage.isFetchingPreviousPage
+                }
+              >
+                {"Previous"}
+              </ButtonPW>
+              <ButtonPW
+                variant={"outline-secondary"}
+                onClick={() => nextPage()}
+                disabled={
+                  !hasMore ||
+                  userWorksPage.isLoading ||
+                  userWorksPage.isFetchingNextPage ||
+                  userWorksPage.isFetchingPreviousPage
+                }
+              >
+                {"Next"}
+              </ButtonPW>
+              <Dropdown>
+                <Dropdown.Toggle
+                  variant="outline-secondary"
+                  id="dropdown-basic"
+                >
+                  {take}
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item eventKey={"10"} onClick={() => setTake(5)}>
+                    5
+                  </Dropdown.Item>
+                  <Dropdown.Item eventKey={"10"} onClick={() => setTake(10)}>
+                    10
+                  </Dropdown.Item>
+                  <Dropdown.Item eventKey={"25"} onClick={() => setTake(25)}>
+                    25
+                  </Dropdown.Item>
+                  <Dropdown.Item eventKey={"100"} onClick={() => setTake(100)}>
+                    100
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
           </div>
           <div className={"mt-3"}></div>
         </div>

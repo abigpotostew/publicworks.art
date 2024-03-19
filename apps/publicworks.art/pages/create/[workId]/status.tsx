@@ -8,7 +8,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { Container, Placeholder } from "react-bootstrap";
+import { ButtonGroup, Container, Dropdown, Placeholder } from "react-bootstrap";
 import SpinnerLoading from "src/components/loading/Loader";
 import { TokenStatuses } from "src/store/types";
 import Table from "react-bootstrap/Table";
@@ -26,6 +26,8 @@ import { relativeTimeFromDates } from "../../../src/util/date-fmt/format";
 import { RowWideContainer } from "../../../src/components/layout/RowWideContainer";
 import chainInfo from "../../../src/stargaze/chainInfo";
 import config from "../../../src/wasm/config";
+import { ButtonPW } from "../../../src/components/button/Button";
+import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 
 const mapStatus = (
   status: number
@@ -65,33 +67,48 @@ const mapStatus = (
 
 const WorkStatusPage = () => {
   const router = useRouter();
-  const { workId: workIdIn } = router.query;
+  const { workId: workIdIn, page: pageIn } = router.query;
   const workId = workIdIn?.toString() || "";
   const workQuery = useGetWorkById(workId);
   const [take, setTake] = useState(10);
-  const [skip, setSkip] = useState(0);
-  const tokens = useTokenStatus({ workId: parseInt(workId), take, skip });
+  // const [skip, setSkip] = useState(0);
+  const tokens = useTokenStatus({
+    workId: parseInt(workId),
+    take,
+    cursor: pageIn?.toString(),
+  });
 
-  const setPage = useCallback(
-    (page: number) => {
-      setSkip((page - 1) * take);
-    },
-    [take]
-  );
-  const countTokens = tokens.data?.count ?? 0;
-  const countPages = Math.ceil(countTokens / take);
-  const { changePage, page, isReady } = useChangePage(
-    `/create/${workId}/status`,
-    countPages,
-    setPage
-  );
+  const [page, setPage] = useState(0);
 
-  useEffect(() => {
-    const newSkip = (page - 1) * take;
-    setSkip(newSkip);
-  }, [take, skip, page]);
+  const nextPage = useCallback(async () => {
+    await tokens.fetchNextPage();
+    setPage((prev) => prev + 1);
+  }, [tokens.fetchNextPage]);
+  const prevPage = useCallback(async () => {
+    setPage((prev) => prev - 1);
+  }, [tokens.fetchPreviousPage]);
+  const pageData = tokens.data?.pages?.length
+    ? tokens.data?.pages[page]
+    : undefined;
+
+  const hasMore = !!pageData?.nextCursor;
+  const hasPrevious = page > 0;
+
+  const hasItems = !!pageData?.items.length;
+  const pageItems = pageData?.items ?? [];
+  // const { changePage, page, isReady } = useChangePage(
+  //   `/create/${workId}/status`,
+  //   countPages,
+  //   setPage
+  // );
+
+  // useEffect(() => {
+  //   const newSkip = (page - 1) * take;
+  //   setSkip(newSkip);
+  // }, [take, skip, page]);
 
   // isReady = true;
+  const isReady = router.isReady;
   const workIsLoading = workQuery.isLoading;
   const tokensIsLoading = !isReady || tokens.isLoading;
 
@@ -151,7 +168,7 @@ const WorkStatusPage = () => {
                   <Table striped bordered hover>
                     <TableHeader />
                     <tbody>
-                      {tokens.data?.tokens.map((token) => {
+                      {pageItems.map((token) => {
                         return (
                           <tr key={token.token_id}>
                             <td>
@@ -209,12 +226,68 @@ const WorkStatusPage = () => {
                       })}
                     </tbody>
                   </Table>
-                  <PaginationPw
-                    page={page}
-                    countPages={countPages}
-                    changePage={changePage}
-                    pageSize={take}
-                  />
+                  {/*<PaginationPw*/}
+                  {/*  page={page}*/}
+                  {/*  countPages={countPages}*/}
+                  {/*  changePage={changePage}*/}
+                  {/*  pageSize={take}*/}
+                  {/*/>*/}
+
+                  <div className={"tw-flex tw-flex-row tw-gap-1"}>
+                    <ButtonPW
+                      variant={"outline-secondary"}
+                      onClick={() => prevPage()}
+                      disabled={
+                        !hasPrevious ||
+                        tokens.isLoading ||
+                        tokens.isFetchingNextPage ||
+                        tokens.isFetchingPreviousPage
+                      }
+                    >
+                      {"Previous"}
+                    </ButtonPW>
+                    <ButtonPW
+                      variant={"outline-secondary"}
+                      onClick={() => nextPage()}
+                      disabled={
+                        !hasMore ||
+                        tokens.isLoading ||
+                        tokens.isFetchingNextPage ||
+                        tokens.isFetchingPreviousPage
+                      }
+                    >
+                      {"Next"}
+                    </ButtonPW>
+                    <Dropdown>
+                      <Dropdown.Toggle
+                        variant="outline-secondary"
+                        id="dropdown-basic"
+                      >
+                        {take}
+                      </Dropdown.Toggle>
+
+                      <Dropdown.Menu>
+                        <Dropdown.Item
+                          eventKey={"10"}
+                          onClick={() => setTake(10)}
+                        >
+                          10
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          eventKey={"25"}
+                          onClick={() => setTake(25)}
+                        >
+                          25
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          eventKey={"100"}
+                          onClick={() => setTake(100)}
+                        >
+                          100
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </div>
                 </>
               )}
             </>

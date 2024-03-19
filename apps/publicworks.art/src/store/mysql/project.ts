@@ -95,7 +95,7 @@ export class ProjectRepo implements ProjectRepositoryI {
     offset?: string | number | undefined;
     // "PUBLISHED" | "UNPUBLISHED" | "ALL"
     publishedState: string | null;
-  }): Promise<{ items: TokenEntity[]; nextOffset: number | undefined }> {
+  }): Promise<{ items: TokenEntity[]; nextOffset: string | undefined }> {
     offset =
       typeof offset === "undefined" ? 0 : parseInt(offset.toString()) || 0;
     const where:
@@ -124,7 +124,7 @@ export class ProjectRepo implements ProjectRepositoryI {
     }
     return {
       items,
-      nextOffset,
+      nextOffset: nextOffset?.toString(),
     };
   }
 

@@ -28,6 +28,8 @@ const mapToken = (token: WorkTokenEntityDdb): TokenEntity => {
   out.txHash = token.txHash;
   out.txMemo = token.txMemo ?? "";
   out.hashInput = token.hashInput;
+  out.createdDate = token.created;
+  out.updatedDate = token.updated;
   return out;
 };
 const mapWork = (work: WorkEntityDdb): WorkEntity => {
@@ -391,6 +393,7 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
   }): Promise<{
     items: TokenEntity[];
     nextOffset: string | number | undefined;
+    prevCursor: string | number | undefined;
   }> {
     if (typeof offset === "number") {
       throw new Error("offset should be a string for ddb");
@@ -400,7 +403,7 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
       workId
     );
     if (!project || !project.sg721) {
-      return { items: [], nextOffset: undefined };
+      return { items: [], nextOffset: undefined, prevCursor: undefined };
     }
     const data = await this.repository.getProjectTokens(
       chainInfo().chainId,
@@ -413,6 +416,7 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
     return {
       items: data.items.map(mapToken),
       nextOffset: data.next,
+      prevCursor: data.prev,
     };
   }
 

@@ -92,7 +92,8 @@ export interface ProjectRepositoryI extends IndexerStoreI {
     publishedState: "PUBLISHED" | "UNPUBLISHED" | "ALL" | null;
   }): Promise<{
     items: TokenEntity[];
-    nextOffset: string | number | undefined;
+    nextOffset: string | undefined;
+    prevCursor: string | undefined;
   }>;
 
   getToken({

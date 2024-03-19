@@ -448,8 +448,8 @@ const tokenStatus = baseProcedure
   .input(
     z.object({
       workId: z.number(),
+      cursor: z.string().nullish(),
       take: z.number().int().positive().max(100).default(10),
-      skip: z.number().int().nonnegative().default(0),
     })
   )
 
@@ -461,14 +461,20 @@ const tokenStatus = baseProcedure
       throw new TRPCError({ code: "NOT_FOUND" });
     }
 
-    const { items, nextOffset } = await stores().project.getProjectTokens2({
-      workId: input.workId,
-      limit: input.take,
-      publishedState: "PUBLISHED",
-    });
+    const { items, nextOffset, prevCursor } =
+      await stores().project.getProjectTokens2({
+        workId: input.workId,
+        limit: input.take,
+        offset: input.cursor ?? undefined,
+        publishedState: "PUBLISHED",
+      });
 
     //todo stew the count needs to be removed from the FE
-    return { tokens: items.map(serializeWorkTokenFull), count: items.length };
+    return {
+      items: items.map(serializeWorkTokenFull),
+      nextCursor: nextOffset,
+      prevCursor: prevCursor,
+    };
   });
 
 export const workRouter = t.router({
