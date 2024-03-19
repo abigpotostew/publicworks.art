@@ -13,14 +13,14 @@ interface Props {
 const useGetTokenCookie = () => {
   const sgwallet = useWallet();
   const address = sgwallet.wallet?.address;
-  return useQuery(
-    ["gettoken", address],
-    async () => {
+  return useQuery({
+    queryKey: ["gettoken", address],
+    queryFn: async () => {
       if (!address) return "";
       return getToken() || "";
     },
-    { enabled: !!address }
-  );
+    enabled: !!address,
+  });
 };
 
 export const UserProvider: FC<Props> = ({ children }: Props) => {

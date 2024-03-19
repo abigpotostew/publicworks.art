@@ -16,30 +16,32 @@ export const useClientLoginMutation = () => {
   const sgclient = useStargazeClient();
   const toast = useToast();
   const utils = trpcNextPW.useContext();
-  const claimUserAccountMutation = useMutation(async () => {
-    const wallet = await sgwallet.login();
-    if (!wallet?.address || !sgclient.client) {
-      console.log("no wallet or client. Cannot login");
-      return;
-    }
-    const ok = await signMessageAndLoginIfNeeded(sgclient.client);
+  const claimUserAccountMutation = useMutation({
+    mutationFn: async () => {
+      const wallet = await sgwallet.login();
+      if (!wallet?.address || !sgclient.client) {
+        console.log("no wallet or client. Cannot login");
+        return;
+      }
+      const ok = await signMessageAndLoginIfNeeded(sgclient.client);
 
-    if (ok === false) {
-      toast.error("Unauthorized");
-    } else if (ok === true) {
-      toast.success("Logged in!");
-    } else {
-      // already logged in
-      return;
-    }
-    // await utils.users.getUser.invalidate();
-    await Promise.all([
-      utils.users.invalidate(),
-      queryClient.invalidateQueries({ queryKey: ["gettoken"] }),
-    ]);
+      if (ok === false) {
+        toast.error("Unauthorized");
+      } else if (ok === true) {
+        toast.success("Logged in!");
+      } else {
+        // already logged in
+        return;
+      }
+      // await utils.users.getUser.invalidate();
+      await Promise.all([
+        utils.users.invalidate(),
+        queryClient.invalidateQueries({ queryKey: ["gettoken"] }),
+      ]);
 
-    console.log("invalidate users");
-    // utils.users.getUser.invalidate({ address: wallet?.address });
+      console.log("invalidate users");
+      // utils.users.getUser.invalidate({ address: wallet?.address });
+    },
   });
   return claimUserAccountMutation;
 };

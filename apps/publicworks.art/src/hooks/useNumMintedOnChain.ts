@@ -8,11 +8,11 @@ export const useNumMintedOnChain = (
 ) => {
   const collectionSize = useCollectionSize(minter);
 
-  const mintableNumberTokens = useQuery(
-    [
+  const mintableNumberTokens = useQuery({
+    queryKey: [
       `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${minter}/smart/eyJtaW50YWJsZV9udW1fdG9rZW5zIjp7fX0K`,
     ],
-    async () => {
+    queryFn: async () => {
       if (!minter) {
         return 0;
       }
@@ -30,12 +30,17 @@ export const useNumMintedOnChain = (
       const json = await res.json();
       return (json?.data?.count as number | null) || 0;
     },
-    { refetchInterval: refreshInterval, enabled: !!minter }
-  );
+    refetchInterval: refreshInterval,
+    enabled: !!minter,
+  });
 
-  return useQuery(
-    ["useNumMintedOnChain", mintableNumberTokens.data, collectionSize.data],
-    async () => {
+  return useQuery({
+    queryKey: [
+      "useNumMintedOnChain",
+      mintableNumberTokens.data,
+      collectionSize.data,
+    ],
+    queryFn: async () => {
       if (typeof mintableNumberTokens.data !== "number") {
         return 0;
       }
@@ -44,10 +49,8 @@ export const useNumMintedOnChain = (
       }
       return collectionSize.data - mintableNumberTokens.data;
     },
-    {
-      enabled:
-        typeof mintableNumberTokens.data === "number" &&
-        typeof collectionSize.data === "number",
-    }
-  );
+    enabled:
+      typeof mintableNumberTokens.data === "number" &&
+      typeof collectionSize.data === "number",
+  });
 };

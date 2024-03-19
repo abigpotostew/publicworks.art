@@ -9,7 +9,7 @@ import {
 } from "../model/ddb";
 import { TokenStatuses } from "../types";
 import { createId } from "../uuid";
-import { DddTable } from "./ddb-schema";
+import { DddTable, isConditionFailedError } from "./ddb-schema";
 
 export enum EntityDdbError {
   NotFound,
@@ -80,12 +80,7 @@ export class RepositoryDdb extends DddTable {
       return Ok(out);
     } catch (e) {
       console.log("error creating work", e);
-      if (
-        typeof e === "object" &&
-        !!e &&
-        "code" in e &&
-        e.code === "ConditionalCheckFailedException"
-      ) {
+      if (isConditionFailedError(e)) {
         return Err(EntityDdbError.AlreadyExists);
       }
       throw e;
@@ -101,12 +96,7 @@ export class RepositoryDdb extends DddTable {
       });
       return Ok<WorkTokenEntityDdb, EntityDdbError>(out);
     } catch (e) {
-      if (
-        typeof e === "object" &&
-        !!e &&
-        "code" in e &&
-        e.code === "ConditionalCheckFailedException"
-      ) {
+      if (isConditionFailedError(e)) {
         return Err(EntityDdbError.AlreadyExists);
       }
       throw e;

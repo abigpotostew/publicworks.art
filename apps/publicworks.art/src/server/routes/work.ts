@@ -174,7 +174,7 @@ const listWorks = baseProcedure
   .input(
     z.object({
       limit: z.number().min(1).max(100).default(10),
-      cursor: z.number().min(0).max(10000).nullish(),
+      cursor: z.string().nullish(),
       publishedState: z
         .string()
         .optional()

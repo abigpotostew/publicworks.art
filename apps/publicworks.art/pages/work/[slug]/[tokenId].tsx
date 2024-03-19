@@ -134,9 +134,9 @@ const WorkTokenPage = ({
   const { data } = workQuery;
   work = data || work;
 
-  const tokenMetadata = useQuery(
-    ["gettokenmetadata", slug, tokenId, work?.sg721],
-    async () => {
+  const tokenMetadata = useQuery({
+    queryKey: ["gettokenmetadata", slug, tokenId, work?.sg721],
+    queryFn: async () => {
       const sg721 = work?.sg721;
       if (!sg721) {
         throw new Error("No sg721");
@@ -160,8 +160,8 @@ const WorkTokenPage = ({
         return null;
       }
     },
-    { enabled: !!work && !!slug && !!tokenId && !!work?.sg721 }
-  );
+    enabled: !!work && !!slug && !!tokenId && !!work?.sg721,
+  });
 
   type Token = {
     image: string;

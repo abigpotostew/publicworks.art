@@ -207,7 +207,7 @@ const ProfilePage = () => {
                 onSubmit={onSubmitEdit}
               />
             )}
-            {editMode && editUserMutation.isLoading && <SpinnerLoading />}
+            {editMode && editUserMutation.isPending && <SpinnerLoading />}
             {!editMode && !!userQuery.isSuccess && (
               <UserWorks user={userQuery.data} />
             )}

@@ -38,7 +38,7 @@ function EditButtonDropdown({ work }: { work: WorkSerializable }) {
           disabled={!!work.sg721}
           onClick={() => ModalStore.open("DeleteWorkModal", { work })}
         >
-          Delete
+          <label>Delete</label>
         </Dropdown.Item>
         {/*<Dropdown.Item href="#/action-2">Another action</Dropdown.Item>*/}
         {/*<Dropdown.Item href="#/action-3">Something else</Dropdown.Item>*/}
@@ -61,26 +61,25 @@ export const WorkRow: FC<Props> = ({ work, onChange }: Props) => {
   const login = useClientLoginMutation();
 
   const editWorkMutation = trpcNextPW.works.editWork.useMutation();
-  const setHiddenMutation = useMutation(
-    async (hidden: boolean) => {
+  const setHiddenMutation = useMutation({
+    mutationFn: async ({ hidden }: { hidden: boolean }) => {
       await login.mutateAsync();
       console.log("setting hidden to", hidden);
       await editWorkMutation.mutateAsync({ id: work.id, hidden });
     },
-    {
-      onSuccess: () => {
-        try {
-          console.log("invalidating work");
-          onChange();
-        } catch (e) {
-          console.log("error invalidating", e);
-        }
-      },
-    }
-  );
+
+    onSuccess: () => {
+      try {
+        console.log("invalidating work");
+        onChange();
+      } catch (e) {
+        console.log("error invalidating", e);
+      }
+    },
+  });
 
   const onHide = (hidden: boolean) => {
-    setHiddenMutation.mutate(hidden);
+    setHiddenMutation.mutate({ hidden });
   };
 
   return (
@@ -109,8 +108,10 @@ export const WorkRow: FC<Props> = ({ work, onChange }: Props) => {
         <div className={"mt-1"}>
           <FlexBox>
             <div className={"fs-7"}>
-              {numMinted.isLoading ? <SpinnerLoading /> : numMinted.data} /{" "}
-              {collectionSize} Minted
+              <>
+                {numMinted.isLoading ? <SpinnerLoading /> : numMinted.data} /{" "}
+                {collectionSize} Minted
+              </>
             </div>
             <div className={"fs-7 ms-2"}>
               Last Mint:{" "}
@@ -130,7 +131,7 @@ export const WorkRow: FC<Props> = ({ work, onChange }: Props) => {
               id="custom-switch"
               label="Hidden"
               defaultChecked={!!work.hidden}
-              disabled={!user.data || setHiddenMutation.isLoading}
+              disabled={!user.data || setHiddenMutation.isPending}
               onChange={(e) => {
                 onHide(e.target.checked);
               }}

@@ -1,5 +1,4 @@
 import React, { FC, ReactNode, useCallback, useState } from "react";
-import { RowWideContainer } from "../layout/RowWideContainer";
 import { LiveMedia } from "../media/LiveMedia";
 import { FlexBox } from "../layout/FlexBoxCenter";
 import { BsArrowRepeat } from "react-icons/bs";
@@ -11,6 +10,7 @@ interface ICreateLayout {
   codeCid?: string;
   hideLiveMedia?: boolean;
 }
+
 export const CreateLayout: FC<ICreateLayout> = ({
   hideLiveMedia,
   codeCid,

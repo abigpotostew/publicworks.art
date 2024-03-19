@@ -36,7 +36,9 @@ export function useWalletName(address: string) {
       return "";
     }
   };
-  return useReactQuery(key, fetcher, {
+  return useReactQuery({
+    queryKey: key,
+    queryFn: fetcher,
     retry: false,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
@@ -66,7 +68,7 @@ export function useNameInfo(name: string) {
     }
   };
 
-  return useReactQuery(key, fetcher);
+  return useReactQuery({ queryKey: key, queryFn: fetcher });
 }
 
 // export function useNameOwner(name: string) {

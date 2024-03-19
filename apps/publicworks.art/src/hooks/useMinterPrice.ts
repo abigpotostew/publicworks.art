@@ -72,9 +72,10 @@ export const fetchMinterPrice = async (
 export const useMinterPrice = ({ minter }: { minter?: string | null }) => {
   const [auctionLive, setAuctionLive] = useState(false);
 
-  return useQuery(
-    [`get-minter-price-${config.restEndpoint}-${minter}`],
-    async (): Promise<PriceResponse | null> => {
+  return useQuery({
+    queryKey: [`get-minter-price`, config.restEndpoint, minter],
+    queryFn: async (a): Promise<PriceResponse | null> => {
+      const [, , minter] = a.queryKey;
       if (!minter) {
         return null;
       }
@@ -87,10 +88,8 @@ export const useMinterPrice = ({ minter }: { minter?: string | null }) => {
       }
       return out;
     },
-    {
-      refetchInterval: auctionLive ? 1000 : 1000 * 10,
-      refetchOnWindowFocus: true,
-      enabled: !!minter,
-    }
-  );
+    refetchInterval: auctionLive ? 1000 : 1000 * 10,
+    refetchOnWindowFocus: true,
+    enabled: !!minter,
+  });
 };

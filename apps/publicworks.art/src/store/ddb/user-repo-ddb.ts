@@ -1,7 +1,7 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { createId } from "../uuid";
 import { UserEntityDdb } from "../model";
-import { DddTable } from "./ddb-schema";
+import { DddTable, isConditionFailedError } from "./ddb-schema";
 
 export class UserRepoDdb extends DddTable {
   constructor(name: string, client: DynamoDBClient) {
@@ -16,12 +16,7 @@ export class UserRepoDdb extends DddTable {
         chainId,
       });
     } catch (e) {
-      if (
-        typeof e === "object" &&
-        !!e &&
-        "code" in e &&
-        e.code === "ConditionalCheckFailedException"
-      ) {
+      if (isConditionFailedError(e)) {
         return this.getUser(chainId, address);
       }
       console.log("createIfNeeded unexpected error", e);

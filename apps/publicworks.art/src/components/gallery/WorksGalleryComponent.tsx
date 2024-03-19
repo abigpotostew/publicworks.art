@@ -50,7 +50,7 @@ export const WorksGalleryComponent = ({
           "rounded-1 rounded-top button tw-overflow-hidden"
         )}
         variant="top"
-        src={query.isSuccess ? query.data : ""}
+        src={query.isSuccess ? query.data ?? undefined : ""}
       />
       <Card.ImgOverlay className={`p-0 `}>
         <Link

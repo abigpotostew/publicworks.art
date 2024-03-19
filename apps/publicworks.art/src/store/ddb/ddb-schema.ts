@@ -274,7 +274,7 @@ export const MySchema = {
     timestamps: true,
   },
 };
-const schemaHelper = (table: Table<typeof MySchema>) => {
+export const schemaHelper = (table: Table<typeof MySchema>) => {
   type WorkType = Entity<typeof MySchema.models.Work>;
   type WorkTokenType = Entity<typeof MySchema.models.WorkToken>;
   type IdCounterType = Entity<typeof MySchema.models.IdCounter>;
@@ -314,3 +314,12 @@ export abstract class DddTable {
     this.models = schemaHelper(this.table);
   }
 }
+export interface OneTableError extends Error {
+  code: string;
+}
+
+export const isConditionFailedError = (e: any): e is OneTableError => {
+  return (
+    (e as unknown as OneTableError)?.code === "ConditionalCheckFailedException"
+  );
+};

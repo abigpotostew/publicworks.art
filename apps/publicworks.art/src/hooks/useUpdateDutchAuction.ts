@@ -1,13 +1,11 @@
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Timestamp } from "@stargazezone/types/contracts/sg721/shared-types";
-import { trpcNextPW } from "../server/utils/trpc";
 import { useMutation } from "@tanstack/react-query";
 import { toStars } from "src/wasm/address";
 import { Coin, useWallet } from "@stargazezone/client";
 import useStargazeClient from "@stargazezone/client/react/client/useStargazeClient";
 import { useToast } from "src/hooks/useToast";
-import { useClientLoginMutation } from "./useClientLoginMutation";
 
 export const createCoin = (amount: number): Coin => {
   return {
@@ -116,13 +114,12 @@ async function setDutchAuction(
 }
 
 export const useSetDutchAuction = () => {
-  const utils = trpcNextPW.useContext();
   const sgwallet = useWallet();
   const client = useStargazeClient();
   const toast = useToast();
 
-  const mutation = useMutation(
-    async (opts: {
+  const mutation = useMutation({
+    mutationFn: async (opts: {
       work: WorkSerializable;
       config: SetUpdateDutchAuctionMsg;
     }): Promise<boolean> => {
@@ -159,8 +156,8 @@ export const useSetDutchAuction = () => {
       //   id: work.id,
       // });
       return true;
-    }
-  );
+    },
+  });
 
   return mutation;
 };

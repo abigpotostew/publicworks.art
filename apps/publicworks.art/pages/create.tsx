@@ -69,7 +69,7 @@ const CreatePage = () => {
             {testnetComponent}
             <NameWork onCreateProject={onCreateProject} hideTitle={true} />
 
-            {mutation.isLoading && <SpinnerLoading />}
+            {mutation.isPending && <SpinnerLoading />}
             {mutation.error && <p>{mutation.error.message}</p>}
           </RowThinContainer>
         </Container>

@@ -243,7 +243,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   return (
     <div className={"tw-pb-24 tw-flex tw-justify-center"}>
       <CreateLayout
-        codeCid={props.defaultValues?.codeCid}
+        codeCid={props.defaultValues?.codeCid ?? undefined}
         hideLiveMedia={false}
       >
         <h2 className={"tw-pt-4 tw-px-4"}>On Chain Configuration</h2>

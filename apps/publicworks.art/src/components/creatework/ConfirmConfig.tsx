@@ -1,19 +1,13 @@
-import { FC, useCallback, useState } from "react";
+import { FC } from "react";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
-import { Col, Container, Form, Row } from "react-bootstrap";
+import { Form, Row } from "react-bootstrap";
 import styles from "./ConfirmConfig.module.css";
-import { FlexBox } from "../layout/FlexBoxCenter";
-import { RowWideContainer } from "../layout/RowWideContainer";
-import { LiveMedia } from "../media/LiveMedia";
-import { generateTxHash } from "src/generateHash";
-import { BsArrowRepeat } from "react-icons/bs";
 import { CreateLayout } from "./CreateLayout";
 import { TooltipInfo } from "../tooltip";
 import { ButtonPW as Button } from "../button/Button";
 import { useWallet } from "../../../@stargazezone/client";
 import { useInstantiate } from "../../hooks/useInstantiate";
 import { z } from "zod";
-import { formatInTimeZone } from "date-fns-tz";
 import { format } from "date-fns";
 import { formatInUTC } from "./NftDetails2";
 
@@ -112,7 +106,10 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
   //https://react-bootstrap.netlify.app/forms/layout/#horizontal-form-label-sizing
   return (
     <div className={"tw-pb-24 tw-flex tw-justify-center"}>
-      <CreateLayout codeCid={props.work.codeCid} hideLiveMedia={false}>
+      <CreateLayout
+        codeCid={props.work.codeCid ?? undefined}
+        hideLiveMedia={false}
+      >
         <h2 className={"tw-pt-4 tw-px-4"}>Confirm Collection Configuration</h2>
         <>
           <div className={"tw-p-4"}>
@@ -139,7 +136,7 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
             <div>
               <Button
                 disabled={
-                  !sgwallet.wallet?.address || instantiateMutation.isLoading
+                  !sgwallet.wallet?.address || instantiateMutation.isPending
                 }
                 onClick={() => props.onInstantiate()}
                 variant={props.work.sg721 ? "danger" : "primary"}

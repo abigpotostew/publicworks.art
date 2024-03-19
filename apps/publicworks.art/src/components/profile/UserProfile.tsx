@@ -14,7 +14,9 @@ export const UserProfile: FC<Props> = ({ user }: Props) => {
   const sgwallet = useWallet();
   const useName = useProfileInfo({ address: sgwallet.wallet?.address });
   //name: 'twitter', value: 'stewbracken', verified: null
-  const twitterRecord = useName?.textRecords?.find((r) => r.name === "twitter");
+  const twitterRecord = useName?.textRecords?.find(
+    (r: any) => r.name === "twitter"
+  );
   return (
     <>
       <Row>
@@ -32,11 +34,13 @@ export const UserProfile: FC<Props> = ({ user }: Props) => {
               column="md"
               size="sm"
             >
-              {useName.isLoading && "Loading..."}
-              {!useName.isLoading &&
-                useName.walletName &&
-                useName.walletName + ".stars"}
-              {!useName.isLoading && !useName.walletName && "No Name"}
+              <>
+                {useName.isLoading && "Loading..."}
+                {!useName.isLoading &&
+                  useName.walletName &&
+                  useName.walletName + ".stars"}
+                {!useName.isLoading && !useName.walletName && "No Name"}
+              </>
             </Form.Label>
           </Col>
         </Form.Group>

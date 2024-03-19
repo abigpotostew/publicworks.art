@@ -155,12 +155,12 @@ export class ProjectRepo implements ProjectRepositoryI {
   }: {
     address: string;
     limit: number;
-    offset?: number | undefined;
+    offset?: string | number | undefined;
     // "PUBLISHED" | "UNPUBLISHED" | "ALL"
     publishedState: string | null;
     direction: "ASC" | "DESC";
-  }): Promise<{ items: WorkEntity[]; nextOffset: number | undefined }> {
-    offset = offset || 0;
+  }): Promise<{ items: WorkEntity[]; nextOffset: string | undefined }> {
+    offset = parseInt(offset?.toString() ?? "0") || 0;
     const where: FindOptionsWhere<WorkEntity>[] | FindOptionsWhere<WorkEntity> =
       {};
     if (publishedState === "PUBLISHED") {
@@ -185,7 +185,7 @@ export class ProjectRepo implements ProjectRepositoryI {
     }
     return {
       items,
-      nextOffset,
+      nextOffset: nextOffset?.toString(),
     };
   }
 

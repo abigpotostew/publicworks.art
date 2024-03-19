@@ -32,11 +32,11 @@ export const useTokenOwner = ({
   //   { refreshInterval: 1000 * 60 * 3 }
   // );
 
-  const { data, error } = useQuery(
-    [
+  const { data, error } = useQuery({
+    queryKey: [
       `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${sg721}/smart/${msgBase64}`,
     ],
-    async () => {
+    queryFn: async () => {
       if (!sg721 || !tokenId) {
         return null;
       }
@@ -53,8 +53,9 @@ export const useTokenOwner = ({
       }
       return res.json();
     },
-    { refetchInterval: 1000 * 60 * 3, enabled: !!sg721 }
-  );
+    refetchInterval: 1000 * 60 * 3,
+    enabled: !!sg721,
+  });
 
   return {
     owner: (data?.data?.owner as string | null) || "N/A",

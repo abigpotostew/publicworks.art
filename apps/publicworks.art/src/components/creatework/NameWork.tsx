@@ -1,12 +1,7 @@
-import React, { FC, FormEventHandler, useCallback, useState } from "react";
+import React, { FC } from "react";
 import { Form } from "react-bootstrap";
 import { EditProjectRequest } from "../../store/project.types";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
-import { RowWideContainer } from "../layout/RowWideContainer";
-import { LiveMedia } from "../media/LiveMedia";
-import { generateTxHash } from "../../generateHash";
-import { BsArrowRepeat } from "react-icons/bs";
-import { FlexBox } from "../layout/FlexBoxCenter";
 import { DropZone } from "../DropZone";
 import { ButtonPW as Button } from "../button/Button";
 import { TooltipInfo } from "src/components/tooltip/TooltipInfo";
@@ -16,7 +11,6 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
 import { NeedToLoginButton } from "../login/NeedToLoginButton";
 import useUserContext from "../../context/user/useUserContext";
-import { RowMediumContainer } from "../layout/RowMediumContainer";
 import { CreateLayout } from "./CreateLayout";
 
 const schema = z.object({
@@ -63,7 +57,7 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
       >
         <div className={"tw-flex tw-justify-center"}>
           <CreateLayout
-            codeCid={defaults.codeCid}
+            codeCid={defaults.codeCid ?? undefined}
             hideLiveMedia={!props.onUpload}
           >
             {!props.hideTitle && (
