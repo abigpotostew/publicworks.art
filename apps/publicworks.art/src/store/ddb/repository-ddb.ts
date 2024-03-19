@@ -429,7 +429,6 @@ export class RepositoryDdb extends DddTable {
       chainId: work.chainId,
       id: work.id,
       ...updates,
-      //todo test if this works
       publishStatus: typeof updates.sg721 === "string" ? 1 : undefined,
     };
     return this.models.Work.update(props, {

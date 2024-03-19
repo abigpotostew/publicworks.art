@@ -17,6 +17,7 @@ export function useWalletName(address: string) {
       const encoded = base64Encode({ name: { address } });
       console.log(
         "fetching wallet name",
+        address,
         `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${
           chainInfo().nameCollectionContract
         }/smart/${encoded}`
@@ -63,7 +64,7 @@ export function useNameInfo(name: string) {
       }
       return (await response.json())?.data as NftInfoResponseForMetadata | "";
     } catch (e) {
-      console.error(e);
+      console.error("usenameinfo", e);
       return "";
     }
   };

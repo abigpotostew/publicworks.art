@@ -98,7 +98,7 @@ const WorksPage = () => {
                     return page.items
                       .map((w) => {
                         return (
-                          <Col>
+                          <Col key={w.id}>
                             <WorksGalleryComponent
                               key={(page.items[0]?.id || index) + w.id}
                               work={w}

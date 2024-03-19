@@ -101,10 +101,6 @@ export const MySchema = {
       dutchAuctionDecayRate: { type: Number, required: false },
 
       gsi1_pk: { type: String, value: "User:${ownerId}" },
-      //this doesn't work
-      // gsi1ChainId: { type: String, value: 'chain:${chainId}', map: 'gsi1_sk.chainId' },
-      // gsi1StartDate: { type: String, value: 'startDate:${startDate}', map: 'gsi1_sk.startDate' },
-      // gsi1Id: { type: String, value: '${_type}:${id}', map: 'gsi1_sk.id' },
       //todo use attribute packing https://www.sensedeep.com/blog/posts/2021/attribute-packing.html
       gsi1_sk: {
         type: String,
@@ -112,27 +108,19 @@ export const MySchema = {
         hidden: false,
       },
       //todo move this to gsi
-      // lsi1: { type: String, value: 'workslug:${slug}', required: true },
       gsi3_pk: { type: String, value: "Chain:${chainId}" },
       gsi3_sk: {
         type: String,
         value: "workslug:${slug}",
       },
       //todo move this to gsi
-      // lsi2: { type: String, value: 'worksg721:${sg721}' },
       gsi4_pk: { type: String, value: "Chain:${chainId}" },
       gsi4_sk: {
         type: String,
         value: "worksg721:${sg721}",
       },
 
-      //todo move this to gsi
-      // lsi3: {
-      //   type: String,
-      //   value: 'hidden:${hidden}#startDate:${startDate}#${_type}:${id:18:0}',
-      //   hidden: false,
-      // },
-
+      // fyi these packed attributes don't update unless I provide all the fields. ie, if updating only hidden, the packed attributes don't update. need to rpovider chainId, hidden, and publishStatus
       gsi2_pk: {
         type: String,
         value:
@@ -318,7 +306,7 @@ export abstract class DddTable {
       name: name ?? process.env.DYNAMODB_TABLE_NAME ?? "publicworks",
       schema: MySchema,
       partial: true,
-      logger: true,
+      logger: false,
     });
     this.models = schemaHelper(this.table);
   }
