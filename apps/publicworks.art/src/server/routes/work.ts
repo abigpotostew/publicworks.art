@@ -39,7 +39,7 @@ const createWork = authorizedProcedure
     return serializeWork(project.value);
   });
 const editWork = authorizedProcedure
-  .input(editProjectZod)
+  .input(editProjectZod.omit({ sg721: true, minter: true }))
 
   .mutation(async ({ input, ctx }) => {
     const user = ctx?.user;
@@ -51,7 +51,11 @@ const editWork = authorizedProcedure
       throw new TRPCError({ code: "NOT_FOUND" });
     }
 
-    const project = await stores().project.updateProject(input.id, input);
+    const project = await stores().project.updateProject(input.id, {
+      ...input,
+      hidden: input.hidden === undefined ? work.hidden : input.hidden,
+      startDate: (work.startDate || new Date(0)).toISOString(),
+    });
     if (!project.ok) {
       throw new TRPCError({ code: "BAD_REQUEST" });
     }
@@ -99,15 +103,19 @@ const editWorkContracts = authorizedProcedure
 
     if (
       sg721CodeId === work.sg721CodeId &&
-      minterCodeId === work.minterCodeId
+      minterCodeId === work.minterCodeId &&
+      input.sg721 === work.sg721 &&
+      input.minter === work.minter
     ) {
       console.log("no change to contracts");
       return serializeWork(work);
     }
     const project = await stores().project.updateProject(input.id, {
       ...input,
+      hidden: work.hidden,
       sg721CodeId,
       minterCodeId,
+      startDate: (work.startDate || new Date(0)).toISOString(),
     });
     if (!project.ok) {
       throw new TRPCError({ code: "BAD_REQUEST" });
@@ -318,6 +326,8 @@ const uploadPreviewImg = authorizedProcedure
     console.log("finished uploading");
     const response = await stores().project.updateProject(work.id, {
       coverImageCid,
+      hidden: work.hidden,
+      startDate: (work.startDate || new Date(0)).toISOString(),
     });
     if (!response.ok) {
       throw response.error;
@@ -356,7 +366,7 @@ const confirmWorkUpload = authorizedProcedure
   .input(
     z.object({
       workId: z.number(),
-      uploadId: z.string().cuid(),
+      uploadId: z.string().uuid(),
     })
   )
 
@@ -410,7 +420,7 @@ const confirmWorkCoverImageUpload = authorizedProcedure
   .input(
     z.object({
       workId: z.number(),
-      uploadId: z.string().cuid(),
+      uploadId: z.string().uuid(),
     })
   )
 
@@ -461,26 +471,24 @@ const tokenStatus = baseProcedure
       throw new TRPCError({ code: "NOT_FOUND" });
     }
 
-    const { items, nextOffset, prevCursor } =
-      await stores().project.getProjectTokens2({
-        workId: input.workId,
-        limit: input.take,
-        offset: input.cursor ?? undefined,
-        publishedState: "PUBLISHED",
-      });
+    const { items, nextOffset } = await stores().project.getProjectTokens2({
+      workId: input.workId,
+      limit: input.take,
+      offset: input.cursor ?? undefined,
+      publishedState: "PUBLISHED",
+    });
 
     //todo stew the count needs to be removed from the FE
     return {
       items: items.map(serializeWorkTokenFull),
       nextCursor: nextOffset,
-      prevCursor: prevCursor,
     };
   });
 
 export const workRouter = t.router({
   // Public
   createWork: createWork,
-  editWork,
+  editWork: editWork,
   editWorkContracts,
   getWorkById: getWorkById,
   getWorkBySlug,

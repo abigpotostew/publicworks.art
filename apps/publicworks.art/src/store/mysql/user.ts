@@ -2,6 +2,7 @@ import cuid from "cuid";
 import { EditUserRequest } from "src/store/user.types";
 import { UserEntity } from "@publicworks/db-typeorm/model/user.entity";
 import { dataSource } from "../../typeorm/datasource";
+import { createId } from "../uuid";
 export interface UserRepoI {
   getUser(address: string): Promise<UserEntity | null>;
 
@@ -24,7 +25,7 @@ export class UserRepo implements UserRepoI {
     const user = new UserEntity();
     user.address = address;
     user.name = address;
-    user.id = cuid();
+    user.id = createId();
 
     const query = dataSource()
       .createQueryBuilder()

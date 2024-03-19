@@ -93,7 +93,6 @@ export interface ProjectRepositoryI extends IndexerStoreI {
   }): Promise<{
     items: TokenEntity[];
     nextOffset: string | undefined;
-    prevCursor: string | undefined;
   }>;
 
   getToken({
@@ -130,7 +129,8 @@ export interface ProjectRepositoryI extends IndexerStoreI {
 
   updateProject(
     id: number,
-    request: Partial<FullEditProjectRequest>
+    request: Partial<FullEditProjectRequest> &
+      Required<Pick<FullEditProjectRequest, "hidden" | "startDate">>
   ): Promise<Result<WorkEntity>>;
   deleteWork({ id }: { id: number }): Promise<boolean>;
 

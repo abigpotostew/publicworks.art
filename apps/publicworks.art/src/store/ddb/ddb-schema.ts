@@ -109,6 +109,7 @@ export const MySchema = {
       gsi1_sk: {
         type: String,
         value: "Chain:${chainId}#startDate:${startDate}#${_type}:${id:18:0}",
+        hidden: false,
       },
       //todo move this to gsi
       // lsi1: { type: String, value: 'workslug:${slug}', required: true },
@@ -136,6 +137,7 @@ export const MySchema = {
         type: String,
         value:
           "Chain:${chainId}#hidden:${hidden}#publishStatus:${publishStatus}",
+        hidden: false,
       },
       gsi2_sk: {
         type: String,
@@ -217,6 +219,13 @@ export const MySchema = {
       id: { type: String, required: true },
       address: { type: String, required: true },
       name: { type: String, required: false },
+
+      uniqueId: {
+        type: String,
+        required: true,
+        value: "${chainId}:${address}",
+        unique: true,
+      },
 
       lsi1: { type: String, value: "useraddr:${address}" },
       gsi1_pk: { type: String, value: "Chain:${chainId}" },
@@ -318,8 +327,10 @@ export interface OneTableError extends Error {
   code: string;
 }
 
+const uniqueError = "UniqueError";
+const conditionalCheckError = "ConditionalCheckFailedException";
 export const isConditionFailedError = (e: any): e is OneTableError => {
-  return (
-    (e as unknown as OneTableError)?.code === "ConditionalCheckFailedException"
+  return [uniqueError, conditionalCheckError].includes(
+    (e as unknown as OneTableError)?.code
   );
 };

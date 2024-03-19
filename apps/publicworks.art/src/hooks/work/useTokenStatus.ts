@@ -14,12 +14,6 @@ export const useTokenStatus = ({
     {
       getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) =>
         lastPage.nextCursor,
-      // getPreviousPageParam: (
-      //   firstPage,
-      //   allPages,
-      //   firstPageParam,
-      //   allPageParams
-      // ) => firstPage.nextCursor,
       initialCursor: cursor, // <-- optional you can pass an initialCursor
       refetchInterval: 10000,
       enabled: !!workId,

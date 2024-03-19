@@ -146,11 +146,10 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
                 )}
                 {props.work && props.work.sg721 && (
                   <span>
-                    Instantiate + Replace Chain{" "}
+                    Create New Collection{" "}
                     <TooltipInfo>
                       Your contract is already deployed. Instantiating it again
-                      will replace the old instance on publicworks.art and
-                      remove all tokens
+                      will create a new collection on chain!
                     </TooltipInfo>
                   </span>
                 )}

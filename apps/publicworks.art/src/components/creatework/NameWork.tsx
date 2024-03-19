@@ -3,7 +3,7 @@ import { Form } from "react-bootstrap";
 import { EditProjectRequest } from "../../store/project.types";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { DropZone } from "../DropZone";
-import { ButtonPW as Button } from "../button/Button";
+import { ButtonPW, ButtonPW as Button } from "../button/Button";
 import { TooltipInfo } from "src/components/tooltip/TooltipInfo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useFormik } from "formik";
@@ -103,8 +103,14 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                     props?.onUpload && props.onUpload(files)
                   }
                 >
-                  <FontAwesomeIcon icon={"upload"} width={16} /> Drag and drop
-                  your project zip file here, or click to upload
+                  <div
+                    className={"tw-flex tw-flex-row tw-items-center tw-gap-4"}
+                  >
+                    <ButtonPW variant={"outline-primary"}>
+                      <FontAwesomeIcon icon={"upload"} width={16} /> Upload
+                    </ButtonPW>
+                    Drag and drop your project zip file here, or click to upload
+                  </div>
                 </DropZone>
               </div>
             )}

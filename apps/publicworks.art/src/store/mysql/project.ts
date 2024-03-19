@@ -271,7 +271,8 @@ export class ProjectRepo implements ProjectRepositoryI {
 
   async updateProject(
     id: number,
-    request: Partial<FullEditProjectRequest>
+    request: Partial<FullEditProjectRequest> &
+      Pick<FullEditProjectRequest, "hidden" | "startDate">
   ): Promise<Result<WorkEntity>> {
     let toUpdate: Partial<WorkEntity> = new WorkEntity();
     toUpdate = {
@@ -335,7 +336,7 @@ export class ProjectRepo implements ProjectRepositoryI {
   async saveUploadId(work: WorkEntity, filename: string) {
     //WorkUploadFile
     const item = new WorkUploadFile();
-    item.id = cuid();
+    item.id = createId();
     item.work = work;
     item.filename = filename;
     return await dataSource().getRepository(WorkUploadFile).save(item);

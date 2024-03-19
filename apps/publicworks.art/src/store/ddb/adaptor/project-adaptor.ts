@@ -41,7 +41,7 @@ const mapWork = (work: WorkEntityDdb): WorkEntity => {
   out.hidden = work.hidden === 1;
   out.owner = {
     id: work.ownerId,
-    address: "",
+    address: work.ownerAddress,
     name: "",
     ownedWorks: [],
     createdDate: new Date(0),
@@ -392,8 +392,7 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
     publishedState: string | null;
   }): Promise<{
     items: TokenEntity[];
-    nextOffset: string | number | undefined;
-    prevCursor: string | number | undefined;
+    nextOffset: string | undefined;
   }> {
     if (typeof offset === "number") {
       throw new Error("offset should be a string for ddb");
@@ -403,7 +402,7 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
       workId
     );
     if (!project || !project.sg721) {
-      return { items: [], nextOffset: undefined, prevCursor: undefined };
+      return { items: [], nextOffset: undefined };
     }
     const data = await this.repository.getProjectTokens(
       chainInfo().chainId,
@@ -416,7 +415,6 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
     return {
       items: data.items.map(mapToken),
       nextOffset: data.next,
-      prevCursor: data.prev,
     };
   }
 
@@ -519,7 +517,8 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
 
   async updateProject(
     id: number,
-    request: Partial<FullEditProjectRequest>
+    request: Partial<FullEditProjectRequest> &
+      Pick<FullEditProjectRequest, "hidden" | "startDate">
   ): Promise<Result<WorkEntity>> {
     //
     const res = await this.repository.updateWorkPartial(
@@ -565,6 +564,7 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
   }
   getProject(idIn: string | number): Promise<WorkEntity | null> {
     const id = typeof idIn === "string" ? parseInt(idIn) : idIn;
+    //todo join the owner user here?
     return this.repository
       .getProjectForId(chainInfo().chainId, id)
       .then((x) => (x ? mapWork(x) : null));
@@ -577,7 +577,7 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
     const out = await this.repository.createWork({
       ...request,
       ownerId: owner.id,
-      creator: "creator", //todo stew
+      creator: owner.address,
       slug: convertToSlug(request.name),
       hidden: 0,
       isDutchAuction: false,
@@ -585,7 +585,7 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
       description: request.description ?? "",
       blurb: request.blurb ?? "",
       maxTokens: request.maxTokens ?? 0,
-      startDate: request.startDate ? new Date(request.startDate) : new Date(0),
+      startDate: request.startDate ? new Date(request.startDate) : new Date(),
       ownerAddress: owner.address,
     });
     if (!out.ok) {

@@ -29,9 +29,6 @@ export class UserRepoDdb extends DddTable {
     chainId: string,
     address: string
   ): Promise<UserEntityDdb | undefined> {
-    return this.models.User.get(
-      { gsi1_pk: `Chain:${chainId}`, gsi1_sk: `useraddr:${address}` },
-      { index: "gsi1" }
-    );
+    return this.models.User.get({ chainId, address }, { index: "gsi1" });
   }
 }

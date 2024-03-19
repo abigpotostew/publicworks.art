@@ -425,18 +425,16 @@ export class RepositoryDdb extends DddTable {
       >
     >
   ): Promise<WorkEntityDdb> {
-    return this.models.Work.update(
-      {
-        chainId: work.chainId,
-        id: work.id,
-        ...updates,
-        //todo test if this works
-        publishStatus: typeof updates.sg721 === "string" ? 1 : undefined,
-      },
-      {
-        partial: true,
-      }
-    );
+    const props = {
+      chainId: work.chainId,
+      id: work.id,
+      ...updates,
+      //todo test if this works
+      publishStatus: typeof updates.sg721 === "string" ? 1 : undefined,
+    };
+    return this.models.Work.update(props, {
+      partial: true,
+    });
   }
   updatePartial(
     token: Pick<WorkTokenEntityDdb, "chainId" | "workId" | "tokenId">,
