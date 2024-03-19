@@ -33,29 +33,17 @@ interface UserWorksProps {
   user: UserSerializable;
 }
 
-const useCursorPagination = () => {
-  const [pageNumber, setPageNumber] = useState(0);
-  const nextPage = useCallback(() => {
-    setPageNumber((prev) => prev + 1);
-  }, []);
-};
-
 export const UserWorks: FC<UserWorksProps> = (props: UserWorksProps) => {
   const router = useRouter();
-  const pageNumber = parseInt(router.query?.pageNumber?.toString() || "0") || 0;
-  const setPageNumber = useCallback(
-    async (pageNumber: number) => {
-      console.log("setPageNumber", pageNumber);
-      await router.push(`/profile?pageNumber=${pageNumber}`);
-    },
-    [pageNumber]
-  );
-  const nextPage = useCallback(async () => {
-    await setPageNumber(pageNumber + 1);
-  }, [pageNumber, setPageNumber]);
-  const prevPage = useCallback(async () => {
-    await setPageNumber(pageNumber - 1);
-  }, [pageNumber, setPageNumber]);
+  // const pageNumber = parseInt(router.query?.pageNumber?.toString() || "0") || 0;
+  // const setPageNumber = useCallback(
+  //   async (pageNumber: number) => {
+  //     console.log("setPageNumber", pageNumber);
+  //     await router.push(`/profile?pageNumber=${pageNumber}`);
+  //   },
+  //   [pageNumber]
+  // );
+
   // const [pageNumber, setPageNumber] = useState(0);
   const utils = trpcNextPW.useContext();
   const limit = 5;
@@ -67,37 +55,32 @@ export const UserWorks: FC<UserWorksProps> = (props: UserWorksProps) => {
       limit,
       address: props.user.address,
       direction: "DESC",
-      cursor: pageNumber * limit,
+      // cursor: pageNumber * limit,
     }),
-    [pageNumber, props.user.address, limit]
+    [props.user.address, limit]
   );
-  const userWorksPage = trpcNextPW.works.listAddressWorks.useQuery(queryInput, {
-    onSettled: (data, error) => {
-      if (data) {
-        setPage(data.items);
-      }
-    },
-  });
+  const userWorksPage = trpcNextPW.works.listAddressWorks.useInfiniteQuery(
+    queryInput,
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+      initialCursor: undefined, // <-- optional you can pass an initialCursor
+    }
+  );
+  const nextPage = useCallback(async () => {
+    await userWorksPage.fetchNextPage();
+  }, [userWorksPage.fetchNextPage]);
+  const prevPage = useCallback(async () => {
+    await userWorksPage.fetchPreviousPage();
+  }, [userWorksPage.fetchPreviousPage]);
 
-  const hasMore = userWorksPage.data?.nextCursor ? true : false;
-  const hasPrevious = pageNumber > 0;
-  // const nextPage = useCallback(() => {
-  //   if (hasMore) {
-  //     nextPage();
-  //   }
-  // }, [hasMore]);
-  // const prevPage = useCallback(() => {
-  //   if (hasPrevious) {
-  //     prevPage();
-  //     setPageNumber((prev) => prev - 1);
-  //   }
-  // }, [hasPrevious]);
+  const hasMore = userWorksPage.hasNextPage;
+  const hasPrevious = userWorksPage.hasPreviousPage;
 
   const hasItems = !!page?.length;
   const pageItems: WorkSerializable[] = hasItems && page ? page : [];
   const onRowChanged = useCallback(() => {
     userWorksPage.refetch();
-    utils.works.listAddressWorks.invalidate(queryInput);
+    utils.works.listAddressWorks.invalidate();
   }, [utils, userWorksPage, queryInput]);
   return (
     <div>
