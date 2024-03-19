@@ -1,7 +1,7 @@
-import { DddTable } from "./repository-ddb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { createId } from "../uuid";
 import { UserEntityDdb } from "../model";
+import { DddTable } from "./ddb-schema";
 
 export class UserRepoDdb extends DddTable {
   constructor(name: string, client: DynamoDBClient) {
@@ -34,6 +34,9 @@ export class UserRepoDdb extends DddTable {
     chainId: string,
     address: string
   ): Promise<UserEntityDdb | undefined> {
-    return this.models.User.get({ chainId, address }, { index: "gs1" });
+    return this.models.User.get(
+      { gsi1_pk: `Chain:${chainId}`, gsi1_sk: `useraddr:${address}` },
+      { index: "gsi1" }
+    );
   }
 }

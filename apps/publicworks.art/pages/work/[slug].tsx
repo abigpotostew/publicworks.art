@@ -32,7 +32,7 @@ export async function getStaticPaths() {
   await initializeIfNeeded();
   const { items: works } = await stores().project.getProjects({
     limit: 500,
-    offset: 0,
+
     publishedState: "PUBLISHED",
     includeHidden: true,
   });

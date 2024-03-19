@@ -33,4 +33,5 @@ export interface WorkEntityDdb extends AuditedEntityDDb {
   dutchAuctionDeclinePeriodSeconds?: number | undefined;
   dutchAuctionDecayRate?: number | undefined;
   ownerId: string;
+  ownerAddress: string;
 }

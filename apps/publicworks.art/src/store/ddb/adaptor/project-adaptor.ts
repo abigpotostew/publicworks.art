@@ -14,6 +14,7 @@ import { UserEntity, WorkEntityDdb, WorkTokenEntityDdb } from "../../model";
 import { TokenStatuses } from "../../types";
 import { convertToSlug } from "../../mysql";
 import chainInfo from "src/stargaze/chainInfo";
+import { UserRepoDdb } from "../user-repo-ddb";
 
 const mapToken = (token: WorkTokenEntityDdb): TokenEntity => {
   const out = new TokenEntity();
@@ -74,7 +75,10 @@ const mapWork = (work: WorkEntityDdb): WorkEntity => {
 };
 
 export class RepositoryDbbAdaptor implements ProjectRepositoryI {
-  constructor(private repository: RepositoryDdb) {}
+  constructor(
+    private repository: RepositoryDdb,
+    private userRepo: UserRepoDdb
+  ) {}
 
   async getAllTokensWithStatus(
     status: TokenStatuses,
@@ -272,7 +276,7 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
     );
   }
 
-  getAccountProjects({
+  async getAccountProjects({
     address,
     limit,
     offset,
@@ -281,11 +285,32 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
   }: {
     address: string;
     limit: number;
-    offset?: number | undefined;
+    offset?: string | number | undefined;
     publishedState?: string | null;
     direction: "ASC" | "DESC";
-  }): Promise<{ items: WorkEntity[]; nextOffset: number | undefined }> {
-    return Promise.resolve({ items: [], nextOffset: undefined });
+  }): Promise<{ items: WorkEntity[]; nextOffset: string | undefined }> {
+    if (typeof offset == "number") {
+      throw new Error("offset should be a string for ddb");
+    }
+    const owner = await this.userRepo.getUser(chainInfo().chainId, address);
+    if (!owner) {
+      console.log("getAccountProjects no owner", address);
+      return Promise.resolve({ items: [], nextOffset: undefined });
+    }
+    //todo this isn't returning anything
+    const data = await this.repository.findProjectsForOwner(
+      chainInfo().chainId,
+      owner.id,
+      {
+        limit,
+        next: offset,
+        direction: direction.toLowerCase() === "desc" ? "desc" : "asc",
+      }
+    );
+    return {
+      items: data.items.map(mapWork),
+      nextOffset: data.next,
+    };
   }
 
   async getProjectPreviewImage(id: string): Promise<TokenEntity | null> {
@@ -557,6 +582,7 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
       blurb: request.blurb ?? "",
       maxTokens: request.maxTokens ?? 0,
       startDate: request.startDate ? new Date(request.startDate) : new Date(0),
+      ownerAddress: owner.address,
     });
     if (!out.ok) {
       return Err(new Error("createWork failed"));

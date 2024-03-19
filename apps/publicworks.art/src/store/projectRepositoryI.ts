@@ -111,11 +111,10 @@ export interface ProjectRepositoryI extends IndexerStoreI {
   }: {
     address: string;
     limit: number;
-    offset?: number | undefined;
-    // "PUBLISHED" | "UNPUBLISHED" | "ALL"
+    offset?: string | number | undefined;
     publishedState?: string | null;
     direction: "ASC" | "DESC";
-  }): Promise<{ items: WorkEntity[]; nextOffset: number | undefined }>;
+  }): Promise<{ items: WorkEntity[]; nextOffset: string | undefined }>;
 
   getTokenCount(slug: string): Promise<number>;
 

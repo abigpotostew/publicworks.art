@@ -33,6 +33,13 @@ interface UserWorksProps {
   user: UserSerializable;
 }
 
+const useCursorPagination = () => {
+  const [pageNumber, setPageNumber] = useState(0);
+  const nextPage = useCallback(() => {
+    setPageNumber((prev) => prev + 1);
+  }, []);
+};
+
 export const UserWorks: FC<UserWorksProps> = (props: UserWorksProps) => {
   const router = useRouter();
   const pageNumber = parseInt(router.query?.pageNumber?.toString() || "0") || 0;

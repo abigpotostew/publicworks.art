@@ -27,10 +27,14 @@ export const stores = (): Stores => {
   if (!tableName) {
     throw new Error("DDB_TABLE_NAME is not set");
   }
-
+  const userStore = new UserRepoDdb(tableName, client);
+  const user = new UserRepoDdbAdaptor(userStore);
   const storesNew: Stores = {
-    project: new RepositoryDbbAdaptor(new RepositoryDdb(tableName, client)),
-    user: new UserRepoDdbAdaptor(new UserRepoDdb(tableName, client)),
+    project: new RepositoryDbbAdaptor(
+      new RepositoryDdb(tableName, client),
+      userStore
+    ),
+    user: user,
     indexer: new IndexerRepoDdbAdaptor(new IndexerRepoDdb(tableName, client)),
   };
   storesInternal = storesNew;

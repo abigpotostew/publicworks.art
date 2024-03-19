@@ -1,6 +1,6 @@
-import { DddTable } from "./repository-ddb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { BlockheightEntity } from "@publicworks/db-typeorm/model/blockheight.entity";
+import { DddTable } from "./ddb-schema";
 
 export class IndexerRepoDdb extends DddTable {
   constructor(name: string, client: DynamoDBClient) {
