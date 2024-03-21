@@ -8,7 +8,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { ButtonGroup, Container, Dropdown, Placeholder } from "react-bootstrap";
+import { Container, Placeholder } from "react-bootstrap";
 import SpinnerLoading from "src/components/loading/Loader";
 import { TokenStatuses } from "src/store/types";
 import Table from "react-bootstrap/Table";
@@ -26,9 +26,6 @@ import { relativeTimeFromDates } from "../../../src/util/date-fmt/format";
 import { RowWideContainer } from "../../../src/components/layout/RowWideContainer";
 import chainInfo from "../../../src/stargaze/chainInfo";
 import config from "../../../src/wasm/config";
-import { ButtonPW } from "../../../src/components/button/Button";
-import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
-import { useLastMintedToken } from "../../../src/hooks/useLastMintedToken";
 
 const mapStatus = (
   status: number
@@ -68,70 +65,37 @@ const mapStatus = (
 
 const WorkStatusPage = () => {
   const router = useRouter();
-  const { workId: workIdIn, page: pageIn } = router.query;
+  const { workId: workIdIn } = router.query;
   const workId = workIdIn?.toString() || "";
   const workQuery = useGetWorkById(workId);
-  const [take, setTake] = useState(2);
+  const [take, setTake] = useState(10);
   const [skip, setSkip] = useState(0);
-  const countQuery = useLastMintedToken(workQuery.data?.slug, 10000);
-  const pageNumeric = pageIn ? parseInt(pageIn.toString()) : 1;
-  const currentCursor = pageIn ? pageNumeric : undefined;
-
   const tokens = useTokenStatus({
     workId: parseInt(workId),
     take,
-    cursor: currentCursor?.toString(),
+    cursor: skip,
   });
 
-  //for use with infinite scroll
-  const [dataIndex, setDataIndex] = useState(0);
-
   const setPage = useCallback(
-    async (page: number | ((prev: number) => number)) => {
-      let pageOut: number | undefined = undefined;
-      if (typeof page === "function") {
-        pageOut = page(pageNumeric);
-      } else {
-        pageOut = page;
-      }
-      await router.push(`/create/${workId}/status?page=${pageOut}`, undefined, {
-        shallow: true,
-      });
+    (page: number) => {
+      setSkip((page - 1) * take);
     },
-    [router, workId, pageNumeric]
+    [take]
+  );
+  const countTokens = tokens.data?.count ?? 0;
+  const countPages = Math.ceil(countTokens / take);
+  const { changePage, page, isReady } = useChangePage(
+    `/create/${workId}/status`,
+    countPages,
+    setPage
   );
 
-  const nextPage = useCallback(async () => {
-    await tokens.fetchNextPage();
-    setDataIndex((prev) => prev + 1);
-    setPage((prev) => prev + 1);
-  }, [tokens.fetchNextPage]);
-  const prevPage = useCallback(async () => {
-    setPage((prev) => prev - 1);
-    setDataIndex((prev) => prev - 1);
-  }, [tokens.fetchPreviousPage]);
-  const pageData = tokens.data?.pages?.length
-    ? tokens.data?.pages[dataIndex]
-    : undefined;
-
-  const hasMore = !!pageData?.nextCursor;
-  const hasPrevious = dataIndex > 0;
-
-  const hasItems = !!pageData?.items.length;
-  const pageItems = pageData?.items ?? [];
-  // const { changePage, dataIndex, isReady } = useChangePage(
-  //   `/create/${workId}/status`,
-  //   countPages,
-  //   setPage
-  // );
-
-  // useEffect(() => {
-  //   const newSkip = (dataIndex - 1) * take;
-  //   setSkip(newSkip);
-  // }, [take, skip, dataIndex]);
+  useEffect(() => {
+    const newSkip = (page - 1) * take;
+    setSkip(newSkip);
+  }, [take, skip, page]);
 
   // isReady = true;
-  const isReady = router.isReady;
   const workIsLoading = workQuery.isLoading;
   const tokensIsLoading = !isReady || tokens.isLoading;
 
@@ -185,13 +149,27 @@ const WorkStatusPage = () => {
           {!workIsLoading && !workQuery.data ? <h5>Work not found</h5> : null}
           {!!workQuery.data && (
             <>
-              <h4>{workQuery.data?.name}</h4>
+              <div
+                className={
+                  "tw-flex tw-flex-col md:tw-flex-row md:tw-justify-between"
+                }
+              >
+                <h4>{workQuery.data?.name}</h4>
+                <PaginationPw
+                  page={page}
+                  countPages={countPages}
+                  changePage={changePage}
+                  pageSize={take}
+                  setPageSize={setTake}
+                  countItems={[10, 25, 100]}
+                />
+              </div>
               {!tokensIsLoading && (
                 <>
                   <Table striped bordered hover>
                     <TableHeader />
                     <tbody>
-                      {pageItems.map((token) => {
+                      {tokens.data?.items.map((token) => {
                         return (
                           <tr key={token.token_id}>
                             <td>
@@ -249,68 +227,6 @@ const WorkStatusPage = () => {
                       })}
                     </tbody>
                   </Table>
-                  {/*<PaginationPw*/}
-                  {/*  dataIndex={dataIndex}*/}
-                  {/*  countPages={countPages}*/}
-                  {/*  changePage={changePage}*/}
-                  {/*  pageSize={take}*/}
-                  {/*/>*/}
-
-                  <div className={"tw-flex tw-flex-row tw-gap-1"}>
-                    <ButtonPW
-                      variant={"outline-secondary"}
-                      onClick={() => prevPage()}
-                      disabled={
-                        !hasPrevious ||
-                        tokens.isLoading ||
-                        tokens.isFetchingNextPage ||
-                        tokens.isFetchingPreviousPage
-                      }
-                    >
-                      {"Previous"}
-                    </ButtonPW>
-                    <ButtonPW
-                      variant={"outline-secondary"}
-                      onClick={() => nextPage()}
-                      disabled={
-                        !hasMore ||
-                        tokens.isLoading ||
-                        tokens.isFetchingNextPage ||
-                        tokens.isFetchingPreviousPage
-                      }
-                    >
-                      {"Next"}
-                    </ButtonPW>
-                    <Dropdown>
-                      <Dropdown.Toggle
-                        variant="outline-secondary"
-                        id="dropdown-basic"
-                      >
-                        {take}
-                      </Dropdown.Toggle>
-
-                      <Dropdown.Menu>
-                        <Dropdown.Item
-                          eventKey={"10"}
-                          onClick={() => setTake(10)}
-                        >
-                          10
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          eventKey={"25"}
-                          onClick={() => setTake(25)}
-                        >
-                          25
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          eventKey={"100"}
-                          onClick={() => setTake(100)}
-                        >
-                          100
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </div>
                 </>
               )}
             </>

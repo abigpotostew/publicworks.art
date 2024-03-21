@@ -7,14 +7,11 @@ export const useTokenStatus = ({
 }: {
   workId: number | null | undefined;
   take: number;
-  cursor: string | null | undefined;
+  cursor: number | null | undefined;
 }) => {
-  return trpcNextPW.works.tokenStatus.useInfiniteQuery(
-    { workId: workId as number, take },
+  return trpcNextPW.works.tokenStatus.useQuery(
+    { workId: workId as number, take, cursor: cursor?.toString() },
     {
-      getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) =>
-        lastPage.nextCursor,
-      initialCursor: cursor, // <-- optional you can pass an initialCursor
       refetchInterval: 10000,
       enabled: !!workId,
     }

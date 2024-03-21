@@ -1,5 +1,5 @@
 import { PagesToRender } from "../../hooks/usePagination";
-import { Pagination } from "react-bootstrap";
+import { Dropdown, Pagination } from "react-bootstrap";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 
@@ -8,11 +8,15 @@ export const PaginationPw = ({
   changePage,
   pageSize,
   countPages,
+  countItems,
+  setPageSize,
 }: {
   page: number;
   changePage: (n: number) => void;
   countPages: number;
   pageSize: number;
+  countItems?: number[];
+  setPageSize?: (n: number) => void;
 }) => {
   const lastPage = countPages;
 
@@ -30,32 +34,62 @@ export const PaginationPw = ({
   }, [page, lastPage]);
 
   return (
-    <Pagination>
-      <Pagination.First disabled={page === 1} onClick={() => changePage(1)} />
-      <Pagination.Prev
-        disabled={page === 1}
-        onClick={() => changePage(page - 1)}
-      />
-      {pagesToRender.ellipsisStart && <Pagination.Ellipsis />}
-      {pagesToRender.pagesToRender.map((pageN: number) => (
-        <Pagination.Item
-          key={pageN}
-          active={pageN === page}
-          onClick={() => changePage(pageN)}
-        >
-          {pageN}
-        </Pagination.Item>
-      ))}
-      {pagesToRender.ellipsisEnd && <Pagination.Ellipsis />}
-      <Pagination.Next
-        disabled={page === lastPage}
-        onClick={() => changePage(page + 1)}
-      />
-      <Pagination.Last
-        disabled={page === lastPage}
-        onClick={() => changePage(lastPage)}
-      />
-    </Pagination>
+    <div className={"tw-flex tw-flex-row tw-gap-1"}>
+      <Pagination>
+        <Pagination.First disabled={page === 1} onClick={() => changePage(1)} />
+        <Pagination.Prev
+          disabled={page === 1}
+          onClick={() => changePage(page - 1)}
+        />
+        {pagesToRender.ellipsisStart && <Pagination.Ellipsis />}
+        {pagesToRender.pagesToRender.map((pageN: number) => (
+          <Pagination.Item
+            key={pageN}
+            active={pageN === page}
+            onClick={() => changePage(pageN)}
+          >
+            {pageN}
+          </Pagination.Item>
+        ))}
+        {pagesToRender.ellipsisEnd && <Pagination.Ellipsis />}
+        <Pagination.Next
+          disabled={page === lastPage}
+          onClick={() => changePage(page + 1)}
+        />
+        <Pagination.Last
+          disabled={page === lastPage}
+          onClick={() => changePage(lastPage)}
+        />
+      </Pagination>
+      <>
+        {!!countItems && (
+          <Dropdown>
+            <Dropdown.Toggle variant="outline-secondary" id="dropdown-basic">
+              {pageSize}
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              {countItems?.map((item) => (
+                <Dropdown.Item
+                  key={item}
+                  eventKey={item.toString()}
+                  onClick={() => setPageSize?.(item)}
+                >{`${item}`}</Dropdown.Item>
+              ))}
+              {/*<Dropdown.Item eventKey={"10"} onClick={() => setPageSize?.(10)}>*/}
+              {/*  10*/}
+              {/*</Dropdown.Item>*/}
+              {/*<Dropdown.Item eventKey={"25"} onClick={() => setPageSize?.(25)}>*/}
+              {/*  25*/}
+              {/*</Dropdown.Item>*/}
+              {/*<Dropdown.Item eventKey={"100"} onClick={() => setPageSize?.(100)}>*/}
+              {/*  100*/}
+              {/*</Dropdown.Item>*/}
+            </Dropdown.Menu>
+          </Dropdown>
+        )}
+      </>
+    </div>
   );
 };
 

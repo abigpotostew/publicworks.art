@@ -476,17 +476,21 @@ const tokenStatus = baseProcedure
       throw new TRPCError({ code: "NOT_FOUND" });
     }
 
-    const { items, nextOffset } = await stores().project.getProjectTokens2({
-      workId: input.workId,
-      limit: input.take,
-      offset: input.cursor ?? undefined,
-      publishedState: "PUBLISHED",
-    });
+    const [{ items, nextOffset }, token] = await Promise.all([
+      stores().project.getProjectTokens2({
+        workId: input.workId,
+        limit: input.take,
+        offset: input.cursor ?? undefined,
+        publishedState: "PUBLISHED",
+      }),
+      stores().project.lastMintedToken(work.slug),
+    ]);
 
     //todo stew the count needs to be removed from the FE
     return {
       items: items.map(serializeWorkTokenFull),
       nextCursor: nextOffset,
+      count: token?.token_id ? parseInt(token.token_id) : 0,
     };
   });
 
