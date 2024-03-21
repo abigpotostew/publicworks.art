@@ -150,27 +150,6 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
     return mapWork(res);
   }
 
-  async getProjectTokens(
-    projectId: string,
-    limit?: number
-  ): Promise<TokenEntity[]> {
-    const project = await this.repository.getProjectForId(
-      chainInfo().chainId,
-      parseInt(projectId)
-    );
-    if (!project?.sg721) {
-      return [];
-    }
-    const tokens = await this.repository.getProjectTokens(
-      chainInfo().chainId,
-      project?.sg721,
-      {
-        limit,
-      }
-    );
-    return tokens.items.map(mapToken);
-  }
-
   async getProjectTokensWithStatus(
     projectId: string,
     status: TokenStatuses,
@@ -392,10 +371,15 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
     publishedState: string | null;
   }): Promise<{
     items: TokenEntity[];
-    nextOffset: string | undefined;
+    nextOffset: string | number | undefined;
   }> {
     if (typeof offset === "number") {
       throw new Error("offset should be a string for ddb");
+    }
+    const offsetParsed =
+      typeof offset === "string" ? parseInt(offset) : undefined;
+    if (offsetParsed && isNaN(offsetParsed)) {
+      throw new Error("offset should be a number or string for ddb");
     }
     const project = await this.repository.getProjectForId(
       chainInfo().chainId,
@@ -409,12 +393,12 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
       project.sg721,
       {
         limit,
-        next: offset,
+        next: offsetParsed,
       }
     );
     return {
       items: data.items.map(mapToken),
-      nextOffset: data.next,
+      nextOffset: data.next?.toString(),
     };
   }
 

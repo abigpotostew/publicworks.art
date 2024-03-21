@@ -324,28 +324,29 @@ export class RepositoryDdb extends DddTable {
     {
       limit,
       direction = "asc",
-      next,
-    }: {
-      limit?: number;
-      direction?: Direction;
-      next?: string;
-    } = {}
-  ): Promise<{
-    items: WorkTokenEntityDdb[];
-    next: string | undefined;
-    prev: string | undefined;
-  }> {
+      next, //next should be a token id to start with for this query
+    }: { limit?: number; direction?: Direction; next?: number } = {}
+  ): Promise<{ items: WorkTokenEntityDdb[]; next: number | undefined }> {
+    limit = (limit ?? 10) + 1;
+    const hasNext = next !== undefined;
     const out = await this.models.WorkToken.find(
       {
         pk: `Chain:${chainId}#sg721:${sg721}`,
-        sk: { begins_with: `WorkToken:` },
+        sk: hasNext
+          ? { ">=": `WorkToken:${next.toString().padStart(18, "0")}` }
+          : undefined,
       },
-      { limit, reverse: direction === "desc", next: this.deserializeNext(next) }
+      {
+        log: false,
+        limit,
+        reverse: direction === "desc" /*, next: this.deserializeNext(next) */,
+      }
     );
+    const nextToken =
+      out.length > limit - 1 ? out[limit - 1].tokenId : undefined;
     return {
-      items: out,
-      next: this.serializeNext(out.next),
-      prev: this.serializeNext(out.prev),
+      items: out.slice(0, limit - 1),
+      next: nextToken,
     };
   }
 

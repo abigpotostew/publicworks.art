@@ -1,4 +1,3 @@
-import cuid from "cuid";
 import { WorkEntity } from "src/store/model";
 import { Storage } from "@google-cloud/storage";
 import { createId } from "../store/uuid";

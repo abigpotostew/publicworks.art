@@ -42,8 +42,7 @@ export async function getStaticPaths() {
   let i = 0;
   const getPublishedTokens = async () => {
     const works = await stores().project.getProjects({
-      limit: 500,
-      offset: 0,
+      limit: 100,
       publishedState: "PUBLISHED",
       includeHidden: false,
     });
@@ -52,13 +51,12 @@ export async function getStaticPaths() {
       const tokens = await stores().project.getProjectTokens2({
         workId: work.id,
         limit: 500,
-        offset: 0,
         publishedState: "PUBLISHED",
       });
 
       out.push(
         ...tokens.items.map((s) => {
-          return { params: { slug: s.work.slug, tokenId: s.token_id } };
+          return { params: { slug: work.slug, tokenId: s.token_id } };
         })
       );
       if (out.length >= 500) {

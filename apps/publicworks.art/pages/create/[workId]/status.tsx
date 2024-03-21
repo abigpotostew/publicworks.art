@@ -28,6 +28,7 @@ import chainInfo from "../../../src/stargaze/chainInfo";
 import config from "../../../src/wasm/config";
 import { ButtonPW } from "../../../src/components/button/Button";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
+import { useLastMintedToken } from "../../../src/hooks/useLastMintedToken";
 
 const mapStatus = (
   status: number
@@ -70,42 +71,64 @@ const WorkStatusPage = () => {
   const { workId: workIdIn, page: pageIn } = router.query;
   const workId = workIdIn?.toString() || "";
   const workQuery = useGetWorkById(workId);
-  const [take, setTake] = useState(10);
-  // const [skip, setSkip] = useState(0);
+  const [take, setTake] = useState(2);
+  const [skip, setSkip] = useState(0);
+  const countQuery = useLastMintedToken(workQuery.data?.slug, 10000);
+  const pageNumeric = pageIn ? parseInt(pageIn.toString()) : 1;
+  const currentCursor = pageIn ? pageNumeric : undefined;
+
   const tokens = useTokenStatus({
     workId: parseInt(workId),
     take,
-    cursor: pageIn?.toString(),
+    cursor: currentCursor?.toString(),
   });
 
-  const [page, setPage] = useState(0);
+  //for use with infinite scroll
+  const [dataIndex, setDataIndex] = useState(0);
+
+  const setPage = useCallback(
+    async (page: number | ((prev: number) => number)) => {
+      let pageOut: number | undefined = undefined;
+      if (typeof page === "function") {
+        pageOut = page(pageNumeric);
+      } else {
+        pageOut = page;
+      }
+      await router.push(`/create/${workId}/status?page=${pageOut}`, undefined, {
+        shallow: true,
+      });
+    },
+    [router, workId, pageNumeric]
+  );
 
   const nextPage = useCallback(async () => {
     await tokens.fetchNextPage();
+    setDataIndex((prev) => prev + 1);
     setPage((prev) => prev + 1);
   }, [tokens.fetchNextPage]);
   const prevPage = useCallback(async () => {
     setPage((prev) => prev - 1);
+    setDataIndex((prev) => prev - 1);
   }, [tokens.fetchPreviousPage]);
   const pageData = tokens.data?.pages?.length
-    ? tokens.data?.pages[page]
+    ? tokens.data?.pages[dataIndex]
     : undefined;
 
   const hasMore = !!pageData?.nextCursor;
-  const hasPrevious = page > 0;
+  const hasPrevious = dataIndex > 0;
 
   const hasItems = !!pageData?.items.length;
   const pageItems = pageData?.items ?? [];
-  // const { changePage, page, isReady } = useChangePage(
+  // const { changePage, dataIndex, isReady } = useChangePage(
   //   `/create/${workId}/status`,
   //   countPages,
   //   setPage
   // );
 
   // useEffect(() => {
-  //   const newSkip = (page - 1) * take;
+  //   const newSkip = (dataIndex - 1) * take;
   //   setSkip(newSkip);
-  // }, [take, skip, page]);
+  // }, [take, skip, dataIndex]);
 
   // isReady = true;
   const isReady = router.isReady;
@@ -227,7 +250,7 @@ const WorkStatusPage = () => {
                     </tbody>
                   </Table>
                   {/*<PaginationPw*/}
-                  {/*  page={page}*/}
+                  {/*  dataIndex={dataIndex}*/}
                   {/*  countPages={countPages}*/}
                   {/*  changePage={changePage}*/}
                   {/*  pageSize={take}*/}

@@ -1,4 +1,3 @@
-import cuid from "cuid";
 import { EditUserRequest } from "src/store/user.types";
 import { UserEntity } from "@publicworks/db-typeorm/model/user.entity";
 import { dataSource } from "../../typeorm/datasource";

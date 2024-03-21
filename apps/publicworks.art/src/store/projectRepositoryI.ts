@@ -3,9 +3,6 @@ import { TokenStatuses } from "./types";
 import { IndexerStoreI } from "./indexerStoreI";
 import { Ok, Result } from "src/util/result";
 import { CreateProjectRequest, FullEditProjectRequest } from "./project.types";
-import cuid from "cuid";
-import { dataSource } from "../typeorm/datasource";
-import { convertToSlug } from "./mysql";
 
 export interface ProjectRepositoryI extends IndexerStoreI {
   getAllTokensWithStatus(
@@ -18,13 +15,6 @@ export interface ProjectRepositoryI extends IndexerStoreI {
     status: TokenStatuses,
     limit?: number
   ): Promise<TokenEntity[]>;
-
-  /**
-   * @deprecated
-   * @param projectId
-   * @param limit
-   */
-  getProjectTokens(projectId: string, limit?: number): Promise<TokenEntity[]>;
 
   getProjectForSg721(sg721: string): Promise<WorkEntity | null>;
 
@@ -83,16 +73,16 @@ export interface ProjectRepositoryI extends IndexerStoreI {
     workId,
     limit,
     offset,
-    publishedState,
+    publishedState = "PUBLISHED",
   }: {
     workId: number;
     limit: number;
     offset?: string | number | undefined;
     // "PUBLISHED" | "UNPUBLISHED" | "ALL"
-    publishedState: "PUBLISHED" | "UNPUBLISHED" | "ALL" | null;
+    publishedState: string | null;
   }): Promise<{
     items: TokenEntity[];
-    nextOffset: string | undefined;
+    nextOffset: string | number | undefined;
   }>;
 
   getToken({

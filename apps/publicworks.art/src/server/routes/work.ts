@@ -451,7 +451,12 @@ const deleteWork = authorizedProcedure
     if (!work || work.owner.id !== ctx.user.id) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
-
+    if (work.sg721) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "cannot delete published worked",
+      });
+    }
     return stores().project.deleteWork(work);
   });
 const tokenStatus = baseProcedure

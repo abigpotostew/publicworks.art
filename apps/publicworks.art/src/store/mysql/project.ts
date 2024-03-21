@@ -10,7 +10,6 @@ import {
 } from "../model";
 import { IsNull, Not } from "typeorm";
 import { FindOptionsWhere } from "typeorm/find-options/FindOptionsWhere";
-import cuid from "cuid";
 import { ProjectRepositoryI } from "../projectRepositoryI";
 import { TokenStatuses } from "../types";
 import { createId } from "../uuid";
@@ -528,10 +527,6 @@ export class ProjectRepo implements ProjectRepositoryI {
         },
       });
     return work;
-  }
-
-  getProjectTokens(projectId: string, limit?: number): Promise<TokenEntity[]> {
-    return Promise.resolve([]);
   }
 
   async getProjectTokensWithStatus(

@@ -8,7 +8,7 @@ export const MySchema = {
     primary: { hash: "pk", sort: "sk" },
     gsi1: { hash: "gsi1_pk", sort: "gsi1_sk", project: "all" },
     gsi2: { hash: "gsi2_pk", sort: "gsi2_sk", project: "all" },
-    gsi3: { hash: "gsi3_pk", sort: "gsi3_sk", project: "all" },
+    gsi3: { hash: "gsi3_pk", sort: "gsi3_sk", project: "all" }, //work slug
     gsi4: { hash: "gsi4_pk", sort: "gsi4_sk", project: "all" },
     lsi1: { sort: "lsi1", type: "local" }, //string
     lsi2: { sort: "lsi2", type: "local" }, //string
@@ -306,7 +306,7 @@ export abstract class DddTable {
       name: name ?? process.env.DYNAMODB_TABLE_NAME ?? "publicworks",
       schema: MySchema,
       partial: true,
-      logger: false,
+      logger: process.env.DDB_LOGGING_ENABLED === "true",
     });
     this.models = schemaHelper(this.table);
   }
