@@ -113,7 +113,7 @@ export const MySchema = {
         type: String,
         value: "workslug:${slug}",
       },
-      //todo move this to gsi
+
       gsi4_pk: { type: String, value: "Chain:${chainId}" },
       gsi4_sk: {
         type: String,
@@ -171,10 +171,18 @@ export const MySchema = {
       txMemo: { type: String, required: false },
       hashInput: { type: String, required: true },
 
-      // lsi1: { type: String, value: 'tstatus:${status:8:0}' },
+      //access the work's token, filtered by status
+      lsi1: { type: String, value: "tstatus:${status:8:0}" },
 
       gsi1_pk: { type: String, value: "Chain:${chainId}#tstatus:${status}" },
       gsi1_sk: {
+        type: String,
+        value: "${_type}:#sg721:${sg721}#${tokenId:18:0}",
+      },
+
+      // get all work tokens across different contracts
+      gsi2_pk: { type: String, value: "Chain:${chainId}#Work:${workId:18:0}" },
+      gsi2_sk: {
         type: String,
         value: "${_type}:#sg721:${sg721}#${tokenId:18:0}",
       },

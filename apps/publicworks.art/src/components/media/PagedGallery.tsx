@@ -70,19 +70,6 @@ export const PagedGallery: FC<Props> = ({
       shallow: true,
       scroll: false,
     });
-    // router.push(
-    //   {
-    //     pathname: `./${slug}`,
-    //     query: { page: newPage.toString() },
-    //     // search: { page: page.toString() },
-    //   },
-    //   {
-    //     pathname: `./${slug}`,
-    //     query: { page: newPage.toString() },
-    //   },
-    //   { scroll: false }
-    // );
-    // setPage(newPage);
 
     // update whatever
     // window.scrollTo(0, 0);
