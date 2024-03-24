@@ -41,7 +41,7 @@ export class WorkEntity extends AuditedEntity {
   description: string;
 
   @Column("text", { name: "description_additional" })
-  additionalDescription: string | null;
+  descriptionAdditional: string | null;
 
   @Column("text", { name: "blurb", nullable: false })
   blurb: string;

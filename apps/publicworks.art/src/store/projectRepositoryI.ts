@@ -73,7 +73,7 @@ export interface ProjectRepositoryI extends IndexerStoreI {
     workId,
     limit,
     offset,
-    publishedState = "PUBLISHED",
+    publishedState,
   }: {
     workId: number;
     limit: number;
