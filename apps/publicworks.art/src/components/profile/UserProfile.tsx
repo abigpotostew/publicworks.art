@@ -6,6 +6,7 @@ import { WorkSerializable } from "../../../../../packages/db-typeorm/src/seriali
 import { useStargazeClient, useWallet } from "../../../@stargazezone/client";
 import { useProfileInfo } from "../../hooks/sg-names";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 
 interface Props {
   user: UserSerializable;
@@ -21,13 +22,6 @@ export const UserProfile: FC<Props> = ({ user }: Props) => {
     <>
       <Row>
         <Form.Group>
-          <Form.Label
-            column="sm"
-            lg={12}
-            // className={styles.labelTitle}
-          >
-            Stars Name
-          </Form.Label>
           <Col>
             <Form.Label
               // @ts-ignore
@@ -47,35 +41,32 @@ export const UserProfile: FC<Props> = ({ user }: Props) => {
       </Row>
 
       <Row>
-        <Form.Group>
+        <Form.Label
+          column="sm"
+          lg={12}
+          // className={styles.labelTitle}
+        ></Form.Label>
+        <Col>
           <Form.Label
-            column="sm"
-            lg={12}
-            // className={styles.labelTitle}
+            // @ts-ignore
+            column="md"
+            size="sm"
+            className={"tw-mt-0"}
           >
-            Twitter
+            {useName.isLoading && "Loading..."}
+            {!useName.isLoading && twitterRecord?.value && (
+              <>
+                <span>
+                  <FontAwesomeIcon icon={faTwitter} width={16} height={16} /> @
+                  {twitterRecord.value}
+                  {twitterRecord.verified ? (
+                    <FontAwesomeIcon icon={"certificate"} />
+                  ) : null}{" "}
+                </span>
+              </>
+            )}
           </Form.Label>
-          <Col>
-            <Form.Label
-              // @ts-ignore
-              column="md"
-              size="sm"
-            >
-              {useName.isLoading && "Loading..."}
-              {!useName.isLoading && twitterRecord?.value && (
-                <>
-                  <span>
-                    {twitterRecord.verified ? (
-                      <FontAwesomeIcon icon={"certificate"} />
-                    ) : null}{" "}
-                    @{twitterRecord.value}
-                  </span>
-                </>
-              )}
-              {!useName.isLoading && !twitterRecord?.value && "-"}
-            </Form.Label>
-          </Col>
-        </Form.Group>
+        </Col>
       </Row>
     </>
   );

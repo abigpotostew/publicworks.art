@@ -68,7 +68,7 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                 Name{" "}
                 <TooltipInfo>
                   Your work name is highly visible, on and off chain. This can
-                  be changed later.
+                  be changed later but not after deploying on chain.
                 </TooltipInfo>
               </Form.Label>
               <Form.Control
