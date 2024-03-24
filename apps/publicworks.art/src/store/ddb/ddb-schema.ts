@@ -1,6 +1,14 @@
 import { Entity, Table } from "dynamodb-onetable";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 
+export const uuidRegex = new RegExp(
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
+);
+export const sha256Regex = new RegExp(/^0|[A-F0-9]{64}$/);
+export const ipfsCidRegex = new RegExp(
+  /^(Qm[1-9A-HJ-NP-Za-km-z]{44,}|b[A-Za-z2-7]{58,}|B[A-Z2-7]{58,}|z[1-9A-HJ-NP-Za-km-z]{48,}|F[0-9A-F]{50,})$/
+);
+
 export const MySchema = {
   format: "onetable:1.1.0",
   version: "0.0.1",
@@ -8,8 +16,9 @@ export const MySchema = {
     primary: { hash: "pk", sort: "sk" },
     gsi1: { hash: "gsi1_pk", sort: "gsi1_sk", project: "all" },
     gsi2: { hash: "gsi2_pk", sort: "gsi2_sk", project: "all" },
-    gsi3: { hash: "gsi3_pk", sort: "gsi3_sk", project: "all" }, //work slug
+    gsi3: { hash: "gsi3_pk", sort: "gsi3_sk", project: "all" },
     gsi4: { hash: "gsi4_pk", sort: "gsi4_sk", project: "all" },
+    gsi5: { hash: "gsi5_pk", sort: "gsi5_sk", project: "all" },
     lsi1: { sort: "lsi1", type: "local" }, //string
     lsi2: { sort: "lsi2", type: "local" }, //string
     lsi3: { sort: "lsi3", type: "local" }, //string
@@ -68,22 +77,33 @@ export const MySchema = {
         required:
           true /*generate: 'ulid', validate: /^[0123456789ABCDEFGHJKMNPQRSTVWXYZ]{26}$/i */,
       },
+      //todo validate some fields
       name: { type: String, required: true },
 
       slug: { type: String, required: true, unique: true },
       startDate: { type: Date, required: true, timestamp: true },
       hidden: { type: Number, default: 0, required: true },
-      ownerId: { type: String, required: true },
+      ownerId: { type: String, required: true, validate: uuidRegex },
       ownerAddress: { type: String, required: true },
-      coverImageCid: { type: String, required: false },
+      coverImageCid: {
+        type: String,
+        required: false,
+        validate: ipfsCidRegex,
+      },
       creator: { type: String, required: true },
-      codeCid: { type: String, required: false },
+      codeCid: { type: String, required: false /*, validate: ipfsCidRegex */ },
       sg721: { type: String, required: false },
       minter: { type: String, required: false },
       publishStatus: { type: Number, required: true },
       description: { type: String, required: true, default: "" },
+      descriptionAdditional: { type: String, required: false },
       blurb: { type: String, required: true, default: "" },
-      resolution: { type: String, required: true, default: "1080:1080" },
+      resolution: {
+        type: String,
+        required: true,
+        default: "1080:1080",
+        validate: /^[0-9]+:[0-9]+$/,
+      },
       selector: { type: String, required: true, default: "canvas" },
       license: { type: String, required: false },
       externalLink: { type: String, required: false },
@@ -101,13 +121,26 @@ export const MySchema = {
       dutchAuctionDecayRate: { type: Number, required: false },
 
       gsi1_pk: { type: String, value: "User:${ownerId}" },
+      //this doesn't work
+      // gsi1ChainId: { type: String, value: 'chain:${chainId}', map: 'gsi1_sk.chainId' },
+      // gsi1StartDate: { type: String, value: 'startDate:${startDate}', map: 'gsi1_sk.startDate' },
+      // gsi1Id: { type: String, value: '${_type}:${id}', map: 'gsi1_sk.id' },
       //todo use attribute packing https://www.sensedeep.com/blog/posts/2021/attribute-packing.html
       gsi1_sk: {
         type: String,
         value: "Chain:${chainId}#startDate:${startDate}#${_type}:${id:18:0}",
-        hidden: false,
       },
-      //todo move this to gsi
+
+      gsi2_pk: {
+        type: String,
+        value:
+          "Chain:${chainId}#hidden:${hidden}#publishStatus:${publishStatus}",
+      },
+      gsi2_sk: {
+        type: String,
+        value: "startDate:${startDate}#${_type}:${id:18:0}",
+      },
+
       gsi3_pk: { type: String, value: "Chain:${chainId}" },
       gsi3_sk: {
         type: String,
@@ -120,16 +153,10 @@ export const MySchema = {
         value: "worksg721:${sg721}",
       },
 
-      // fyi these packed attributes don't update unless I provide all the fields. ie, if updating only hidden, the packed attributes don't update. need to rpovider chainId, hidden, and publishStatus
-      gsi2_pk: {
+      gsi5_pk: { type: String, value: "Chain:${chainId}" },
+      gsi5_sk: {
         type: String,
-        value:
-          "Chain:${chainId}#hidden:${hidden}#publishStatus:${publishStatus}",
-        hidden: false,
-      },
-      gsi2_sk: {
-        type: String,
-        value: "startDate:${startDate}#${_type}:${id:18:0}",
+        value: "${_type}:${id:18:0}",
       },
 
       created: {
@@ -146,8 +173,6 @@ export const MySchema = {
         timestamp: true,
         hidden: false,
       },
-      // status: {type: String, default: 'active'},
-      // zip: {type: String},
     },
     WorkToken: {
       pk: {
@@ -162,27 +187,19 @@ export const MySchema = {
         required: true,
       },
       tokenId: { type: Number, required: true },
-      hash: { type: String, required: true },
+      hash: { type: String, required: true, validate: sha256Regex },
       status: { type: String, required: true },
       imageUrl: { type: String, required: false },
       metadataUrl: { type: String, required: false },
       blockHeight: { type: String, required: true },
-      txHash: { type: String, required: true },
+      txHash: { type: String, required: true, validate: sha256Regex },
       txMemo: { type: String, required: false },
       hashInput: { type: String, required: true },
 
-      //access the work's token, filtered by status
       lsi1: { type: String, value: "tstatus:${status:8:0}" },
 
       gsi1_pk: { type: String, value: "Chain:${chainId}#tstatus:${status}" },
       gsi1_sk: {
-        type: String,
-        value: "${_type}:#sg721:${sg721}#${tokenId:18:0}",
-      },
-
-      // get all work tokens across different contracts
-      gsi2_pk: { type: String, value: "Chain:${chainId}#Work:${workId:18:0}" },
-      gsi2_sk: {
         type: String,
         value: "${_type}:#sg721:${sg721}#${tokenId:18:0}",
       },
@@ -208,14 +225,12 @@ export const MySchema = {
         required: true,
         hidden: false,
       },
-      // pk: { type: String, value: 'Chain:${chainId}' },
       pk: { type: String, value: "${_type}:${id}" },
       sk: { type: String, value: "${_type}:" },
       // generated.
       id: { type: String, required: true },
       address: { type: String, required: true },
       name: { type: String, required: false },
-
       uniqueId: {
         type: String,
         required: true,
@@ -223,7 +238,7 @@ export const MySchema = {
         unique: true,
       },
 
-      lsi1: { type: String, value: "useraddr:${address}" },
+      // lsi1: { type: String, value: 'useraddr:${address}' },
       gsi1_pk: { type: String, value: "Chain:${chainId}" },
       gsi1_sk: { type: String, value: "useraddr:${address}" },
 
@@ -256,7 +271,7 @@ export const MySchema = {
       filename: { type: String, required: true },
 
       gs1pk: { type: String, value: "Chain:${chainId}" },
-      gs1sk: { type: String, value: "Work:${workId:18:0}" },
+      gs1sk: { type: String, value: "WorkUploadFile#Work:${workId:18:0}" },
 
       created: {
         type: Date,

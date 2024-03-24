@@ -14,6 +14,7 @@ export interface WorkEntityDdb extends AuditedEntityDDb {
   sg721?: string | undefined;
   minter?: string | undefined;
   description: string;
+  descriptionAdditional?: string | undefined;
   blurb: string;
   startDate: Date;
   resolution: string;

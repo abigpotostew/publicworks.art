@@ -51,20 +51,21 @@ export const UserProfile: FC<Props> = ({ user }: Props) => {
             // @ts-ignore
             column="md"
             size="sm"
-            className={"tw-mt-0"}
           >
-            {useName.isLoading && "Loading..."}
-            {!useName.isLoading && twitterRecord?.value && (
-              <>
-                <span>
-                  <FontAwesomeIcon icon={faTwitter} width={16} height={16} /> @
-                  {twitterRecord.value}
-                  {twitterRecord.verified ? (
-                    <FontAwesomeIcon icon={"certificate"} />
-                  ) : null}{" "}
-                </span>
-              </>
-            )}
+            <>
+              {useName.isLoading && "Loading..."}
+              {!useName.isLoading && twitterRecord?.value && (
+                <>
+                  <span>
+                    <FontAwesomeIcon icon={faTwitter} width={16} height={16} />{" "}
+                    @{twitterRecord.value}
+                    {twitterRecord.verified ? (
+                      <FontAwesomeIcon icon={"certificate"} />
+                    ) : null}{" "}
+                  </span>
+                </>
+              )}
+            </>
           </Form.Label>
         </Col>
       </Row>

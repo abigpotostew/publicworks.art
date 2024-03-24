@@ -53,6 +53,7 @@ const mapWork = (work: WorkEntityDdb): WorkEntity => {
   out.sg721 = work.sg721 ?? null;
   out.minter = work.minter ?? null;
   out.description = work.description;
+  out.additionalDescription = work.descriptionAdditional ?? null;
   out.blurb = work.blurb;
   out.resolution = work.resolution ?? null;
   out.selector = work.selector ?? null;
@@ -521,6 +522,10 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
           ? new Date(request.dutchAuctionEndDate)
           : undefined,
         coverImageCid: request.coverImageCid ?? undefined,
+        descriptionAdditional:
+          typeof request.additionalDescription === "undefined"
+            ? undefined
+            : request.additionalDescription ?? undefined,
       }
     );
     return Ok(mapWork(res));
