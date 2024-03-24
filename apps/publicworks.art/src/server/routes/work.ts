@@ -51,10 +51,13 @@ const editWork = authorizedProcedure
       throw new TRPCError({ code: "NOT_FOUND" });
     }
 
+    const startDate = input.startDate
+      ? new Date(input.startDate)
+      : work.startDate ?? new Date(0);
     const project = await stores().project.updateProject(input.id, {
       ...input,
       hidden: input.hidden === undefined ? work.hidden : input.hidden,
-      startDate: (work.startDate || new Date(0)).toISOString(),
+      startDate: startDate.toISOString(),
     });
     if (!project.ok) {
       throw new TRPCError({ code: "BAD_REQUEST" });

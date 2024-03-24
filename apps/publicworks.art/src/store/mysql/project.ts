@@ -279,7 +279,7 @@ export class ProjectRepo implements ProjectRepositoryI {
       blurb: request.blurb,
       maxTokens: request.maxTokens,
       description: request.description,
-      descriptionAdditional: request.additionalDescription,
+      additionalDescription: request.additionalDescription,
       creator: request.creator,
       royaltyPercent: request.royaltyPercent,
       royaltyAddress: request.royaltyAddress,

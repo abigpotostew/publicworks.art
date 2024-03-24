@@ -53,7 +53,7 @@ const mapWork = (work: WorkEntityDdb): WorkEntity => {
   out.sg721 = work.sg721 ?? null;
   out.minter = work.minter ?? null;
   out.description = work.description;
-  out.descriptionAdditional = work.descriptionAdditional ?? null;
+  out.additionalDescription = work.descriptionAdditional ?? null;
   out.blurb = work.blurb;
   out.resolution = work.resolution ?? null;
   out.selector = work.selector ?? null;
