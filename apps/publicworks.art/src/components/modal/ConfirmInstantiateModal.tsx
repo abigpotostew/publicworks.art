@@ -12,7 +12,7 @@ interface ConfirmInstantiateModalI {
   instantiatePending: boolean;
   onConfirm: () => void;
   open: boolean;
-  setOpen: boolean;
+  setOpen: (isOpen: boolean) => void;
 }
 
 //todo close this after it's done
