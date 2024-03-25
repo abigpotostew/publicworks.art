@@ -23,13 +23,11 @@ import { useRouter } from "next/router";
 import { ReactElement, useEffect, useState } from "react";
 import { Button, Container } from "react-bootstrap";
 import { stores } from "src/store/stores";
-import { initializeIfNeeded } from "src/typeorm/datasource";
 import config from "src/wasm/config";
 import { useNumMintedOnChain } from "../../src/hooks/useNumMintedOnChain";
 
 export async function getStaticPaths() {
   console.log("getStaticPaths, works");
-  await initializeIfNeeded();
   const { items: works } = await stores().project.getProjects({
     limit: 500,
 
@@ -53,7 +51,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
       notFound: true,
     };
   }
-  await initializeIfNeeded();
   const work = await stores().project.getProjectBySlug(slug);
   // if (slug !== "helio") {
   //   return {

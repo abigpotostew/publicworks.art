@@ -6,6 +6,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { useWallet } from "../../../@stargazezone/client";
 import { Button } from "react-bootstrap";
 import { TooltipInfo } from "../tooltip";
+import chainInfo from "../../stargaze/chainInfo";
 
 interface ConfirmInstantiateModalI {
   work: WorkSerializable;
@@ -28,21 +29,37 @@ export const ConfirmInstantiateModal: FC<ConfirmInstantiateModalI> = ({
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <Button
-          disabled={!sgwallet.wallet?.address || instantiatePending}
-          variant={work.sg721 ? "danger" : "primary"}
-        >
-          {work && !work.sg721 && <span>Instantiate On Chain</span>}
-          {work && work.sg721 && (
-            <span>
-              Create New Collection{" "}
-              <TooltipInfo>
-                Your contract is already deployed. Instantiating it again will
-                create a new collection on chain!
-              </TooltipInfo>
-            </span>
+        <div className={"tw-flex tw-flex-row tw-gap-2 tw-items-center"}>
+          <Button
+            disabled={
+              !sgwallet.wallet?.address ||
+              instantiatePending ||
+              (!!work.sg721 && !chainInfo().testnet)
+            }
+            variant={work.sg721 ? "danger" : "primary"}
+          >
+            {!!work && !work.sg721 && <span>Publish On Chain</span>}
+
+            {!!work && !!work.sg721 && chainInfo().testnet && (
+              <span>
+                Create New Collection{" "}
+                <TooltipInfo>
+                  Your contract is already deployed. Instantiating it again will
+                  create a copy of your collection on stargaze.
+                </TooltipInfo>
+              </span>
+            )}
+            {!!work && !!work.sg721 && !chainInfo().testnet && (
+              <span>Publish On Chain</span>
+            )}
+          </Button>
+          {!!work && !!work.sg721 && !chainInfo().testnet && (
+            <TooltipInfo>
+              Your collection is already deployed so it cannot be published
+              again. But you can update the price on the next step.
+            </TooltipInfo>
           )}
-        </Button>
+        </div>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay
@@ -60,18 +77,19 @@ export const ConfirmInstantiateModal: FC<ConfirmInstantiateModalI> = ({
               "tw-relative tw-transform tw-overflow-hidden tw-rounded-lg tw-bg-white tw-px-4 tw-pb-4 tw-pt-5 tw-text-left tw-shadow-xl tw-transition-all sm:tw-my-8 tw-w-full  sm:tw-max-w-lg sm:tw-p-6"
             }
           >
-            <Dialog.Title>Deploy contract</Dialog.Title>
+            <Dialog.Title>Publish collection</Dialog.Title>
             <Dialog.Description>
-              {!!work.sg721 ? (
+              {work.sg721 ? (
                 <>
                   Your collection is already deployed. Deploying again will
                   replace the existing collection on this site, but will also
-                  still exist on chain. This is not recommended on mainnet.
+                  still exist on chain. This is not possible on mainnet but is
+                  provided as a convenience for testnet.
                 </>
               ) : null}
               {!work.sg721 ? (
                 <>
-                  Are you sure you want to deploy your work on chain? Most
+                  Are you sure you want to publish your work on chain? Most
                   parameters are not configurable after this action. You can
                   only change price. Verify all details are correct before
                   confirming.

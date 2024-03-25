@@ -14,7 +14,6 @@ import { LogoHeader } from "src/components/logo/LogoHeader";
 import { RowMediumContainer } from "src/components/layout/RowMediumContainer";
 import { trpcNextPW } from "src/server/utils/trpc";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
-import { initializeIfNeeded } from "src/typeorm/datasource";
 import { appRouter } from "src/server/routes/_app";
 import { Context } from "src/server/context";
 import superjson from "superjson";
@@ -43,8 +42,6 @@ function GroupDivider() {
 }
 
 export async function getStaticProps(context: GetStaticPropsContext) {
-  await initializeIfNeeded();
-
   const ssg = await createServerSideHelpers({
     router: appRouter,
     ctx: {} as Context,

@@ -1,14 +1,10 @@
 import React, { ReactElement } from "react";
 import MainLayout from "../src/layout/MainLayout";
-import { Col, Container, Placeholder } from "react-bootstrap";
+import { Col, Container } from "react-bootstrap";
 import stylesSpacing from "../styles/Spacing.module.scss";
 import { trpcNextPW } from "../src/server/utils/trpc";
-import SpinnerLoading from "../src/components/loading/Loader";
 import { ButtonPW } from "src/components/button/Button";
-import { RowThinContainer } from "src/components/layout/RowThinContainer";
 import { GetStaticPropsContext } from "next";
-import { initializeIfNeeded } from "src/typeorm/datasource";
-import { GalleryComponent } from "src/components/gallery/GalleryComponent";
 import { appRouter } from "src/server/routes/_app";
 import { Context } from "src/server/context";
 import superjson from "superjson";
@@ -18,7 +14,6 @@ import { PlaceholderCard } from "../src/components/placeholder/PlaceholderCard";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 
 export async function getStaticProps(context: GetStaticPropsContext) {
-  await initializeIfNeeded();
   const ssg = await createServerSideHelpers({
     router: appRouter,
     ctx: {} as Context,

@@ -8,7 +8,6 @@ import { useTokenOwner } from "../../../src/hooks/useTokenOwner";
 import MainLayout from "../../../src/layout/MainLayout";
 import { cn } from "../../../src/lib/css/cs";
 import { stores } from "../../../src/store/stores";
-import { initializeIfNeeded } from "../../../src/typeorm/datasource";
 import {
   getTokenMetadata,
   normalizeIpfsCdnUri,
@@ -16,7 +15,6 @@ import {
   normalizeMetadataUri,
 } from "../../../src/wasm/metadata";
 import styles from "../../../styles/Work.module.scss";
-import { TokenEntity } from "@publicworks/db-typeorm/model/work.entity";
 import {
   serializeWork,
   serializeWorkToken,
@@ -37,7 +35,6 @@ import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 
 export async function getStaticPaths() {
   console.log("getStaticPaths, token");
-  await initializeIfNeeded();
   const out: { params: { slug: string; tokenId: string } }[] = [];
   let i = 0;
   const getPublishedTokens = async () => {
@@ -77,7 +74,6 @@ export async function getStaticPaths() {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  await initializeIfNeeded();
   const slug = context.params?.slug;
   const tokenId = context.params?.tokenId;
   if (typeof slug !== "string" || typeof tokenId !== "string") {

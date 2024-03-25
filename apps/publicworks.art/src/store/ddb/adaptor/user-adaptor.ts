@@ -1,8 +1,8 @@
 import { UserEntity } from "@publicworks/db-typeorm/model/user.entity";
-import { UserRepoI } from "../../mysql";
 import chainInfo from "../../../stargaze/chainInfo";
 import { UserRepoDdb } from "../user-repo-ddb";
 import { UserEntityDdb } from "../../model";
+import { UserRepoI } from "../../user.types";
 
 export const mapUser = (res: UserEntityDdb): UserEntity => {
   return {

@@ -12,9 +12,9 @@ import {
 } from "@publicworks/db-typeorm/model/work.entity";
 import { UserEntity, WorkEntityDdb, WorkTokenEntityDdb } from "../../model";
 import { TokenStatuses } from "../../types";
-import { convertToSlug } from "../../mysql";
 import chainInfo from "src/stargaze/chainInfo";
 import { UserRepoDdb } from "../user-repo-ddb";
+import { convertToSlug } from "../../../util/slug";
 
 const mapToken = (token: WorkTokenEntityDdb): TokenEntity => {
   const out = new TokenEntity();
