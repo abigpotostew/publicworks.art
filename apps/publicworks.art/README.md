@@ -32,3 +32,6 @@ design inspiration:
 - a home for generative art in the cosmos
 
 
+
+# todo
+ - now that i'm using dynamo db, i should switch to using edge lambdas for the apis on the webapp

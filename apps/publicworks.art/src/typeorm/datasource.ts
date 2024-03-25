@@ -17,6 +17,7 @@ export const dataSource = () => {
 
 let initializingPromise: Promise<void> | undefined = undefined;
 export const initializeIfNeeded = () => {
+  return Promise.resolve();
   if (MysqlDataSource) {
     return Promise.resolve();
   }

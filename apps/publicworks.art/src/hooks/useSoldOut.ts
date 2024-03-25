@@ -6,8 +6,8 @@ import { useNumMintedOnChain } from "./useNumMintedOnChain";
 export const useSoldOut = (work: WorkSerializable | null | undefined) => {
   const numMintedQuery = useNumMintedOnChain(work?.minter);
   const collectionSizeQuery = useCollectionSize(work?.minter);
-  return useQuery(
-    [
+  return useQuery({
+    queryKey: [
       "soldOut",
       work?.slug,
       numMintedQuery.data,
@@ -15,11 +15,11 @@ export const useSoldOut = (work: WorkSerializable | null | undefined) => {
       collectionSizeQuery.dataUpdatedAt,
       collectionSizeQuery.data,
     ],
-    async () => {
+    queryFn: async () => {
       if (!numMintedQuery.data || !collectionSizeQuery.data) {
         return false;
       }
       return numMintedQuery.data >= collectionSizeQuery.data;
-    }
-  );
+    },
+  });
 };

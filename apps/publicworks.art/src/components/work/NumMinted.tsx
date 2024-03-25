@@ -34,22 +34,24 @@ export const NumMinted: FC<NumMintedParams> = (params: NumMintedParams) => {
   // collSizeLoading = true;
   return (
     <span className={styles.workAuthor}>
-      {numMintedLoading ? (
-        <Placeholder animation="glow">
-          <Placeholder className={"d-inline-block Width-3"} />
-        </Placeholder>
-      ) : (
-        numMintedText
-      )}
-      {" of "}
-      {collSizeLoading ? (
-        <Placeholder animation="glow">
-          <Placeholder className={"d-inline-block Width-3"} />
-        </Placeholder>
-      ) : (
-        collectionSizeText
-      )}
-      {" minted"}
+      <>
+        {numMintedLoading ? (
+          <Placeholder animation="glow">
+            <Placeholder className={"d-inline-block Width-3"} />
+          </Placeholder>
+        ) : (
+          numMintedText
+        )}
+        {" of "}
+        {collSizeLoading ? (
+          <Placeholder animation="glow">
+            <Placeholder className={"d-inline-block Width-3"} />
+          </Placeholder>
+        ) : (
+          collectionSizeText
+        )}
+        {" minted"}
+      </>
     </span>
   );
 };

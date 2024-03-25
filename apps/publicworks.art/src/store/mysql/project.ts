@@ -1,19 +1,27 @@
-import { Ok, Result } from "../util/result";
-import { CreateProjectRequest, FullEditProjectRequest } from "./project.types";
-import { dataSource } from "../typeorm/datasource";
-import { TokenEntity, UserEntity, WorkEntity, WorkUploadFile } from "./model";
+import { Ok, Result } from "../../util/result";
+import { CreateProjectRequest, FullEditProjectRequest } from "../project.types";
+import { dataSource } from "../../typeorm/datasource";
+import {
+  BlockheightEntity,
+  TokenEntity,
+  UserEntity,
+  WorkEntity,
+  WorkUploadFile,
+} from "../model";
 import { IsNull, Not } from "typeorm";
 import { FindOptionsWhere } from "typeorm/find-options/FindOptionsWhere";
-import cuid from "cuid";
+import { ProjectRepositoryI } from "../projectRepositoryI";
+import { TokenStatuses } from "../types";
+import { createId } from "../uuid";
 
-export class ProjectRepo {
-  async getProjectPreviewImage(id: number): Promise<TokenEntity | null> {
+export class ProjectRepo implements ProjectRepositoryI {
+  async getProjectPreviewImage(id: string): Promise<TokenEntity | null> {
     const res = await dataSource()
       .getRepository(TokenEntity)
       .findOne({
         where: {
           work: {
-            id,
+            id: parseInt(id),
           },
           imageUrl: Not(IsNull()),
         },
@@ -32,13 +40,16 @@ export class ProjectRepo {
     order,
   }: {
     limit: number;
-    offset?: number | undefined;
+    offset?: string | number | undefined;
     // "PUBLISHED" | "UNPUBLISHED" | "ALL"
     publishedState: string | null;
     includeHidden: boolean;
     order?: "desc" | "asc";
-  }): Promise<{ items: WorkEntity[]; nextOffset: number | undefined }> {
+  }): Promise<{ items: WorkEntity[]; nextOffset: string | undefined }> {
     order = order || "desc";
+    if (typeof offset === "string") {
+      offset = parseInt(offset);
+    }
     offset = offset || 0;
     const where: FindOptionsWhere<WorkEntity>[] | FindOptionsWhere<WorkEntity> =
       {};
@@ -68,26 +79,29 @@ export class ProjectRepo {
     }
     return {
       items,
-      nextOffset,
+      nextOffset: nextOffset?.toString(),
     };
   }
 
-  async getTokens({
+  async getProjectTokens2({
+    workId,
     limit,
     offset,
     publishedState = "PUBLISHED",
-    includeHidden,
   }: {
+    workId: number;
     limit: number;
-    offset?: number | undefined;
+    offset?: string | number | undefined;
     // "PUBLISHED" | "UNPUBLISHED" | "ALL"
     publishedState: string | null;
-    includeHidden: boolean;
-  }): Promise<{ items: TokenEntity[]; nextOffset: number | undefined }> {
-    offset = offset || 0;
+  }): Promise<{ items: TokenEntity[]; nextOffset: string | undefined }> {
+    offset =
+      typeof offset === "undefined" ? 0 : parseInt(offset.toString()) || 0;
     const where:
       | FindOptionsWhere<TokenEntity>[]
-      | FindOptionsWhere<TokenEntity> = {};
+      | FindOptionsWhere<TokenEntity> = {
+      work_id: workId.toString(),
+    };
 
     if (publishedState === "PUBLISHED") {
       where.work = { sg721: Not(IsNull()) };
@@ -109,7 +123,7 @@ export class ProjectRepo {
     }
     return {
       items,
-      nextOffset,
+      nextOffset: nextOffset?.toString(),
     };
   }
 
@@ -140,12 +154,12 @@ export class ProjectRepo {
   }: {
     address: string;
     limit: number;
-    offset?: number | undefined;
+    offset?: string | number | undefined;
     // "PUBLISHED" | "UNPUBLISHED" | "ALL"
     publishedState: string | null;
     direction: "ASC" | "DESC";
-  }): Promise<{ items: WorkEntity[]; nextOffset: number | undefined }> {
-    offset = offset || 0;
+  }): Promise<{ items: WorkEntity[]; nextOffset: string | undefined }> {
+    offset = parseInt(offset?.toString() ?? "0") || 0;
     const where: FindOptionsWhere<WorkEntity>[] | FindOptionsWhere<WorkEntity> =
       {};
     if (publishedState === "PUBLISHED") {
@@ -170,19 +184,8 @@ export class ProjectRepo {
     }
     return {
       items,
-      nextOffset,
+      nextOffset: nextOffset?.toString(),
     };
-  }
-
-  async getProject(id: number): Promise<WorkEntity | null> {
-    return dataSource()
-      .getRepository(WorkEntity)
-      .findOne({
-        where: {
-          id: id,
-        },
-        relations: ["owner"],
-      });
   }
 
   async getProjectBySlug(slug: string): Promise<WorkEntity | null> {
@@ -264,9 +267,11 @@ export class ProjectRepo {
     });
     return Ok(result.affected ?? 0);
   }
+
   async updateProject(
     id: number,
-    request: Partial<FullEditProjectRequest>
+    request: Partial<FullEditProjectRequest> &
+      Pick<FullEditProjectRequest, "hidden" | "startDate">
   ): Promise<Result<WorkEntity>> {
     let toUpdate: Partial<WorkEntity> = new WorkEntity();
     toUpdate = {
@@ -278,7 +283,7 @@ export class ProjectRepo {
       creator: request.creator,
       royaltyPercent: request.royaltyPercent,
       royaltyAddress: request.royaltyAddress,
-      startDate: request.startDate ? new Date(request.startDate) : undefined,
+      startDate: request.startDate ? new Date(request.startDate) : null,
       codeCid: request.codeCid,
       externalLink: request.externalLink,
       hidden: request.hidden,
@@ -299,7 +304,7 @@ export class ProjectRepo {
       isDutchAuction: request.isDutchAuction,
       dutchAuctionEndDate: request.dutchAuctionEndDate
         ? new Date(request.dutchAuctionEndDate)
-        : undefined,
+        : null,
       dutchAuctionEndPrice: request.dutchAuctionEndPrice,
       dutchAuctionDecayRate: request.dutchAuctionDecayRate,
       dutchAuctionDeclinePeriodSeconds:
@@ -330,7 +335,7 @@ export class ProjectRepo {
   async saveUploadId(work: WorkEntity, filename: string) {
     //WorkUploadFile
     const item = new WorkUploadFile();
-    item.id = cuid();
+    item.id = createId();
     item.work = work;
     item.filename = filename;
     return await dataSource().getRepository(WorkUploadFile).save(item);
@@ -386,6 +391,267 @@ export class ProjectRepo {
         skip,
       });
     return { tokens, count };
+  }
+
+  async createWorkToken(token: TokenEntity, sg721: string): Promise<boolean> {
+    //todo
+    return true;
+  }
+
+  getAllTokensWithStatus(
+    status: TokenStatuses,
+    limit?: number
+  ): Promise<TokenEntity[]> {
+    return Promise.resolve([]);
+  }
+
+  getFinalizingTokens(): Promise<TokenEntity[]> {
+    return Promise.resolve([]);
+  }
+
+  async getLastSweptHeight() {
+    const pollHeight = await dataSource()
+      .getRepository(BlockheightEntity)
+      .findOne({
+        where: {
+          name: "last_swept_height",
+        },
+      });
+    return pollHeight
+      ? { height: BigInt(pollHeight.height), updatedAt: pollHeight.updatedDate }
+      : { height: BigInt(0), updatedAt: new Date(0) };
+  }
+
+  async getProjectAndTokenById(
+    projectId: string,
+    tokenId: string
+  ): Promise<{ project: WorkEntity; token: TokenEntity } | null> {
+    const res = await dataSource()
+      .getRepository(TokenEntity)
+      .findOne({
+        where: {
+          token_id: tokenId,
+          work: {
+            id: parseInt(projectId),
+          },
+        },
+        relations: ["work"],
+        select: {
+          id: true,
+          createdDate: true,
+          hash: true,
+          token_id: true,
+          status: true,
+          imageUrl: true,
+          metadataUri: true,
+          blockHeight: true,
+          txHash: true,
+          txMemo: true,
+          hashInput: true,
+          work: {
+            id: true,
+            name: true,
+            codeCid: true,
+            creator: true,
+            description: true,
+            resolution: true,
+            selector: true,
+            pixelRatio: true,
+            license: true,
+            royaltyAddress: true,
+            sg721CodeId: true,
+            minterCodeId: true,
+            sg721: true,
+            minter: true,
+            slug: true,
+            blurb: true,
+            externalLink: true,
+            maxTokens: true,
+            priceStars: true,
+          },
+        },
+      });
+    if (!res) {
+      return null;
+    }
+    return { project: res.work, token: res };
+  }
+
+  async getProjectForId(id: string): Promise<WorkEntity | null> {
+    const work = await dataSource()
+      .getRepository(WorkEntity)
+      .findOne({
+        where: {
+          id: parseInt(id),
+        },
+        select: {
+          id: true,
+          name: true,
+          creator: true,
+          description: true,
+          resolution: true,
+          selector: true,
+          pixelRatio: true,
+          license: true,
+          royaltyAddress: true,
+          sg721CodeId: true,
+          minterCodeId: true,
+          sg721: true,
+          minter: true,
+        },
+      });
+    return work;
+  }
+
+  async getProjectForSg721(sg721: string): Promise<WorkEntity | null> {
+    const work = await dataSource()
+      .getRepository(WorkEntity)
+      .findOne({
+        where: {
+          sg721,
+        },
+        select: {
+          id: true,
+          name: true,
+          creator: true,
+          description: true,
+          resolution: true,
+          selector: true,
+          pixelRatio: true,
+          license: true,
+          royaltyAddress: true,
+          sg721CodeId: true,
+          minterCodeId: true,
+          sg721: true,
+          minter: true,
+        },
+      });
+    return work;
+  }
+
+  async getProjectTokensWithStatus(
+    projectId: string,
+    status: TokenStatuses,
+    limit?: number
+  ): Promise<TokenEntity[]> {
+    const out = await dataSource()
+      .getRepository(TokenEntity)
+      .find({
+        where: {
+          status: status,
+          work: {
+            id: parseInt(projectId),
+            sg721: Not(IsNull()),
+          },
+        },
+        take: limit || 100,
+        order: {
+          createdDate: "ASC",
+        },
+        relations: ["work"],
+        select: {
+          id: true,
+          createdDate: true,
+          hash: true,
+          token_id: true,
+          status: true,
+          imageUrl: true,
+          metadataUri: true,
+          blockHeight: true,
+          txHash: true,
+          txMemo: true,
+          hashInput: true,
+          work: {
+            id: true,
+            name: true,
+            creator: true,
+            description: true,
+            resolution: true,
+            selector: true,
+            pixelRatio: true,
+            license: true,
+            royaltyAddress: true,
+            sg721CodeId: true,
+            minterCodeId: true,
+            sg721: true,
+            minter: true,
+          },
+        },
+      });
+    return out;
+  }
+
+  async setCurrentPollHeightHeight(height: bigint): Promise<void> {
+    return;
+  }
+
+  async setLastSweptHeight(height: bigint) {
+    const pollHeight = await dataSource()
+      .getRepository(BlockheightEntity)
+      .findOne({
+        where: {
+          name: "last_swept_height",
+        },
+      });
+    if (!pollHeight) {
+      await dataSource().getRepository(BlockheightEntity).insert({
+        name: "last_swept_height",
+        height: height.toString(),
+        id: createId(),
+      });
+    } else {
+      //update
+      await dataSource().getRepository(BlockheightEntity).save({
+        id: pollHeight.id,
+        height: height.toString(),
+        updatedDate: new Date(),
+      });
+    }
+  }
+
+  async setTokenFinalMetadata(
+    work: Pick<WorkEntity, "id">,
+    token: TokenEntity,
+    metadata_uri: string
+  ) {
+    return this.updatePartial(work, token, { metadataUri: metadata_uri });
+  }
+
+  async setTokenImage(
+    work: Pick<WorkEntity, "id">,
+    token: TokenEntity,
+    image_url: string
+  ) {
+    return this.updatePartial(work, token, { imageUrl: image_url });
+  }
+
+  async setTokenStatus(
+    work: Pick<WorkEntity, "id">,
+    token: TokenEntity,
+    status: TokenStatuses
+  ) {
+    return this.updatePartial(work, token, { status });
+  }
+
+  async updatePartial(
+    work: Pick<WorkEntity, "id">,
+    token: TokenEntity,
+    updates: Partial<TokenEntity>
+  ) {
+    const res = await dataSource().getRepository(TokenEntity).update(
+      {
+        id: token.id,
+      },
+      updates
+    );
+    if (!res.affected || res.affected === 0) {
+      throw new Error("token not found");
+    }
+  }
+
+  getProject(id: string | number): Promise<WorkEntity | null> {
+    //todo this should join the work owner as well
+    return this.getProjectForId(id.toString());
   }
 }
 

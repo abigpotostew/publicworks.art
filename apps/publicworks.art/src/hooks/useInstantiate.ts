@@ -152,6 +152,10 @@ async function instantiateNew(
   //   throw new Error("Image link is not valid. Must be IPFS or http(s)");
   // }
 
+  if (work.maxTokens === null || work.maxTokens === undefined) {
+    throw new Error("maxTokens must be defined");
+  }
+
   if (work.maxTokens > 10_000) {
     throw new Error("Too many tokens");
   }
@@ -204,7 +208,7 @@ async function instantiateNew(
   const subdomain = config.testnet ? "testnetmetadata" : "metadata";
   const tempMsg: InstantiateMsg = {
     base_token_uri: `https://${subdomain}.publicworks.art/${work.id}`,
-    num_tokens: work.maxTokens,
+    num_tokens: work.maxTokens ?? 0,
     sg721_code_id: config.sg721CodeId,
     sg721_instantiate_msg: {
       name: work.name,
@@ -348,8 +352,8 @@ export const useInstantiate = () => {
     },
   });
 
-  const instantiateMutation = useMutation(
-    async ({
+  const instantiateMutation = useMutation({
+    mutationFn: async ({
       work,
       useSimulatedGasFee,
     }: {
@@ -392,8 +396,8 @@ export const useInstantiate = () => {
         id: work.id,
       });
       return true;
-    }
-  );
+    },
+  });
 
   return { instantiateMutation };
 };

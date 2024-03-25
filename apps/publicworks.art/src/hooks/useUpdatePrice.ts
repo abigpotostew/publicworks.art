@@ -64,8 +64,8 @@ export const useSetPrice = () => {
   const client = useStargazeClient();
   const toast = useToast();
 
-  const mutation = useMutation(
-    async (opts: {
+  const mutation = useMutation({
+    mutationFn: async (opts: {
       work: WorkSerializable;
       config: SetUpdatePriceMsg;
     }): Promise<ExecuteResult> => {
@@ -95,8 +95,8 @@ export const useSetPrice = () => {
         );
         throw e;
       }
-    }
-  );
+    },
+  });
 
   return mutation;
 };

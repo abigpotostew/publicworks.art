@@ -26,13 +26,15 @@ const getLastSweptBlock = baseProcedure
       | undefined;
     const blockTimestamp =
       latestBlockJson.block?.header?.time || new Date(0).toISOString();
-    const lastSweptBlockHeight = parseInt(lastSweptBlock?.height || "0");
+    const lastSweptBlockHeight = parseInt(
+      lastSweptBlock.height.toString() || "0"
+    );
     const latestBlockHeight = parseInt(heightString || "0");
     return {
       diff: latestBlockHeight - lastSweptBlockHeight,
       lastSweptBlock: {
         height: lastSweptBlockHeight,
-        timestamp: lastSweptBlock.updatedDate.toISOString(),
+        timestamp: lastSweptBlock.updatedAt.toISOString(),
       },
       latestBlockHeight: {
         height: latestBlockHeight,

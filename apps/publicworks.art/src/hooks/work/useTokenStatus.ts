@@ -3,14 +3,14 @@ import { trpcNextPW } from "../../server/utils/trpc";
 export const useTokenStatus = ({
   workId,
   take,
-  skip,
+  cursor,
 }: {
   workId: number | null | undefined;
   take: number;
-  skip: number;
+  cursor: number | null | undefined;
 }) => {
   return trpcNextPW.works.tokenStatus.useQuery(
-    { workId: workId as number, take, skip },
+    { workId: workId as number, take, cursor: cursor?.toString() },
     {
       refetchInterval: 10000,
       enabled: !!workId,

@@ -1,12 +1,12 @@
 import { ChainInfos, ChainInfoWithExplorer } from "src/stargaze/config";
 
-let chainInfo: ChainInfoWithExplorer;
-switch (process?.env?.NEXT_PUBLIC_TESTNET) {
-  case "true":
-    chainInfo = ChainInfos[3];
-    break;
-  default:
-    chainInfo = ChainInfos[1];
-}
+const chainInfo = (): ChainInfoWithExplorer => {
+  switch (process?.env?.NEXT_PUBLIC_TESTNET) {
+    case "true":
+      return ChainInfos[3];
+    default:
+      return ChainInfos[1];
+  }
+};
 
 export default chainInfo;

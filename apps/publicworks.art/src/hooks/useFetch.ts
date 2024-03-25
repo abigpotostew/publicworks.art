@@ -11,9 +11,9 @@ const useFetch = (
     "queryKey" | "queryFn" | "initialData"
   > & { initialData?: () => undefined }
 ) => {
-  const query = useQuery(
-    [url],
-    async () => {
+  const query = useQuery({
+    queryKey: [url],
+    queryFn: async () => {
       const res = await fetch(url);
       if (!res.ok) {
         throw new Error(
@@ -22,7 +22,7 @@ const useFetch = (
       }
       return (await res.json()) as JsonType;
     },
-    options
-  );
+    ...options,
+  });
   return query;
 };

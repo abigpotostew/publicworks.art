@@ -230,6 +230,7 @@ const EditWorkPage = () => {
 
   const onUpload = onUploadMutation.mutate;
 
+  // this ought to be moved down
   const { instantiateMutation } = useInstantiate();
   const [useSimulatedGasFee, setUseSimulatedGasFee] = useState<boolean>(false);
 
@@ -238,7 +239,6 @@ const EditWorkPage = () => {
     if (!work) return;
     const success = await instantiateMutation.mutateAsync({ work });
     if (!success) return;
-    console.log("instantiate and showing confettie");
     toast.success("Successfully instantiated!");
     setShowConfetti(true);
   }, [work, instantiateMutation, toast, useSimulatedGasFee]);
@@ -308,6 +308,7 @@ const EditWorkPage = () => {
                       work={work}
                       setUseSimulatedGasFee={setUseSimulatedGasFee}
                       onInstantiate={onInstantiate}
+                      instantiatePending={instantiateMutation.isPending}
                     />
                   )}
                 </div>
@@ -365,7 +366,7 @@ const EditWorkPage = () => {
                       onCreateProject={onCreateProject}
                       defaultValues={work}
                     />
-                    {!mutation.isLoading && mutation.error && (
+                    {!mutation.isPending && mutation.error && (
                       <div>{mutation.error.message}</div>
                     )}
                     {/*{mutation.isSuccess && <div>Successfully saved</div>}*/}
@@ -392,7 +393,7 @@ const EditWorkPage = () => {
                           defaultValues={work}
                           formValid={setFormState}
                         />
-                        {!mutation.isLoading && mutation.error && (
+                        {!mutation.isPending && mutation.error && (
                           <div>{mutation.error.message}</div>
                         )}
                         {/*{mutation.isSuccess && <div>Successfully saved</div>}*/}
@@ -451,14 +452,14 @@ const EditWorkPage = () => {
                         defaultValues={work}
                       />
                       <>
-                        {onUploadMutation.isLoading && (
+                        {onUploadMutation.isPending && (
                           <div>
                             Uploading... <SpinnerLoading />
                           </div>
                         )}
                       </>
                       <>
-                        {!onUploadMutation.isLoading &&
+                        {!onUploadMutation.isPending &&
                           onUploadMutation.isSuccess && (
                             <div className={"mt-2"}>
                               Successfully uploaded code!
@@ -467,7 +468,7 @@ const EditWorkPage = () => {
                       </>
                       <>
                         {" "}
-                        {!onUploadMutation.isLoading &&
+                        {!onUploadMutation.isPending &&
                           onUploadMutation.error && (
                             <div>
                               {(onUploadMutation?.error as any)?.message}
@@ -475,7 +476,7 @@ const EditWorkPage = () => {
                           )}
                       </>
                       <>
-                        {!mutation.isLoading && mutation.error && (
+                        {!mutation.isPending && mutation.error && (
                           <div>{mutation.error.message}</div>
                         )}
                       </>

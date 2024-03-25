@@ -30,7 +30,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
       includeHidden: false,
     });
     const works = await ssg.works.listWorks.fetch({
-      limit: 100,
+      limit: 10,
       includeHidden: false,
     });
     await Promise.all(
@@ -52,7 +52,7 @@ const WorksPage = () => {
   const [page, setPage] = React.useState(0);
   const query = trpcNextPW.works.listWorks.useInfiniteQuery(
     {
-      limit: 100,
+      limit: 10,
       includeHidden: false,
     },
     {
@@ -98,7 +98,7 @@ const WorksPage = () => {
                     return page.items
                       .map((w) => {
                         return (
-                          <Col>
+                          <Col key={w.id}>
                             <WorksGalleryComponent
                               key={(page.items[0]?.id || index) + w.id}
                               work={w}

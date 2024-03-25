@@ -19,9 +19,16 @@ export const WorksGalleryComponent = ({
   work: WorkSerializable;
   className?: string;
 }) => {
-  const query = trpcNextPW.works.workPreviewImg.useQuery({
-    workId: work.id,
-  });
+  const query = trpcNextPW.works.workPreviewImg.useQuery(
+    {
+      workId: work.id,
+    },
+    {
+      refetchOnWindowFocus: false,
+      refetchInterval: false,
+      refetchOnReconnect: false,
+    }
+  );
   const w = work;
   const router = useRouter();
   const numMinted = useNumMintedOnChain(work.minter);
@@ -43,7 +50,7 @@ export const WorksGalleryComponent = ({
           "rounded-1 rounded-top button tw-overflow-hidden"
         )}
         variant="top"
-        src={query.isSuccess ? query.data : ""}
+        src={query.isSuccess ? query.data ?? undefined : ""}
       />
       <Card.ImgOverlay className={`p-0 `}>
         <Link

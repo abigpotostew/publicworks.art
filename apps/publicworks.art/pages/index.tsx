@@ -95,7 +95,6 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
       refetchOnMount: false,
       refetchOnReconnect: false,
       refetchIntervalInBackground: false,
-      keepPreviousData: true,
     }
   );
 

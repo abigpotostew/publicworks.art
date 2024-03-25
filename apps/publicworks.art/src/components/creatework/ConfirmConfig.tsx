@@ -1,26 +1,22 @@
 import { FC, useCallback, useState } from "react";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
-import { Col, Container, Form, Row } from "react-bootstrap";
+import { Form, Row } from "react-bootstrap";
 import styles from "./ConfirmConfig.module.css";
-import { FlexBox } from "../layout/FlexBoxCenter";
-import { RowWideContainer } from "../layout/RowWideContainer";
-import { LiveMedia } from "../media/LiveMedia";
-import { generateTxHash } from "src/generateHash";
-import { BsArrowRepeat } from "react-icons/bs";
 import { CreateLayout } from "./CreateLayout";
 import { TooltipInfo } from "../tooltip";
 import { ButtonPW as Button } from "../button/Button";
 import { useWallet } from "../../../@stargazezone/client";
 import { useInstantiate } from "../../hooks/useInstantiate";
 import { z } from "zod";
-import { formatInTimeZone } from "date-fns-tz";
 import { format } from "date-fns";
 import { formatInUTC } from "./NftDetails2";
+import { ConfirmInstantiateModal } from "../modal/ConfirmInstantiateModal";
 
 interface ConfirmConfigProps {
   work: WorkSerializable;
   setUseSimulatedGasFee: (useSimulatedGasFee: boolean) => void;
   onInstantiate: () => void;
+  instantiatePending: boolean;
 }
 
 const isDateString = (date: string) => {
@@ -106,13 +102,27 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
     minterCodeId: null,
   };
   const sgwallet = useWallet();
-  const { instantiateMutation } = useInstantiate();
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const instantiatePending = props.instantiatePending;
+  const setOpen = useCallback(
+    (isOpen: boolean) => {
+      if (instantiatePending) {
+        return;
+      }
+      setModalOpen(isOpen);
+    },
+    [instantiatePending]
+  );
 
   console.log("work is ", w);
   //https://react-bootstrap.netlify.app/forms/layout/#horizontal-form-label-sizing
   return (
     <div className={"tw-pb-24 tw-flex tw-justify-center"}>
-      <CreateLayout codeCid={props.work.codeCid} hideLiveMedia={false}>
+      <CreateLayout
+        codeCid={props.work.codeCid ?? undefined}
+        hideLiveMedia={false}
+      >
         <h2 className={"tw-pt-4 tw-px-4"}>Confirm Collection Configuration</h2>
         <>
           <div className={"tw-p-4"}>
@@ -137,27 +147,31 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
                 );
               })}
             <div>
-              <Button
-                disabled={
-                  !sgwallet.wallet?.address || instantiateMutation.isLoading
-                }
-                onClick={() => props.onInstantiate()}
-                variant={props.work.sg721 ? "danger" : "primary"}
-              >
-                {props.work && !props.work.sg721 && (
-                  <span>Instantiate On Chain</span>
-                )}
-                {props.work && props.work.sg721 && (
-                  <span>
-                    Instantiate + Replace Chain{" "}
-                    <TooltipInfo>
-                      Your contract is already deployed. Instantiating it again
-                      will replace the old instance on publicworks.art and
-                      remove all tokens
-                    </TooltipInfo>
-                  </span>
-                )}
-              </Button>
+              <ConfirmInstantiateModal
+                work={props.work}
+                onConfirm={() => props.onInstantiate()}
+                instantiatePending={props.instantiatePending}
+                open={modalOpen}
+                setOpen={setOpen}
+              />
+              {/*<Button*/}
+              {/*  disabled={!sgwallet.wallet?.address || props.instantiatePending}*/}
+              {/*  onClick={() => props.onInstantiate()}*/}
+              {/*  variant={props.work.sg721 ? "danger" : "primary"}*/}
+              {/*>*/}
+              {/*  {props.work && !props.work.sg721 && (*/}
+              {/*    <span>Instantiate On Chain</span>*/}
+              {/*  )}*/}
+              {/*  {props.work && props.work.sg721 && (*/}
+              {/*    <span>*/}
+              {/*      Create New Collection{" "}*/}
+              {/*      <TooltipInfo>*/}
+              {/*        Your contract is already deployed. Instantiating it again*/}
+              {/*        will create a new collection on chain!*/}
+              {/*      </TooltipInfo>*/}
+              {/*    </span>*/}
+              {/*  )}*/}
+              {/*</Button>*/}
             </div>
           </div>
         </>

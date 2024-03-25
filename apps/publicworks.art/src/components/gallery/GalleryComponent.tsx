@@ -41,7 +41,7 @@ export const GalleryComponent = ({
       <Card.Img
         className={styles.workCardImage}
         variant="top"
-        src={query.isSuccess ? query.data : ""}
+        src={query.isSuccess ? query.data ?? undefined : ""}
       />
       <Card.Body>
         <Card.Title className={stylesWork.workSmallTitle}>{w.name}</Card.Title>

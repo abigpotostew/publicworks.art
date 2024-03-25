@@ -243,14 +243,15 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   return (
     <div className={"tw-pb-24 tw-flex tw-justify-center"}>
       <CreateLayout
-        codeCid={props.defaultValues?.codeCid}
+        codeCid={props.defaultValues?.codeCid ?? undefined}
         hideLiveMedia={false}
       >
         <h2 className={"tw-pt-4 tw-px-4"}>On Chain Configuration</h2>
         <div className={"tw-px-4 tw-pb-4"}>
           {!!props.defaultValues?.minter && (
             <Alert variant="info">
-              Your work is already instantiated on chain. Head over to{" "}
+              Your work is already instantiated on chain. Changes here will not
+              affect you deployed collection. Head over to{" "}
               <Alert.Link>
                 <Link href={`/create/${props.defaultValues?.id}?stage=view`}>
                   Mint

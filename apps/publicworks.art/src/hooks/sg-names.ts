@@ -17,10 +17,15 @@ export function useWalletName(address: string) {
       const encoded = base64Encode({ name: { address } });
       console.log(
         "fetching wallet name",
-        `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${chainInfo.nameCollectionContract}/smart/${encoded}`
+        address,
+        `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${
+          chainInfo().nameCollectionContract
+        }/smart/${encoded}`
       );
       const response = await fetch(
-        `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${chainInfo.nameCollectionContract}/smart/${encoded}`
+        `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${
+          chainInfo().nameCollectionContract
+        }/smart/${encoded}`
       );
       if (!response.ok) {
         return "";
@@ -32,7 +37,9 @@ export function useWalletName(address: string) {
       return "";
     }
   };
-  return useReactQuery(key, fetcher, {
+  return useReactQuery({
+    queryKey: key,
+    queryFn: fetcher,
     retry: false,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
@@ -48,19 +55,21 @@ export function useNameInfo(name: string) {
     const encoded = base64Encode({ nft_info: { token_id: name } });
     try {
       const response = await fetch(
-        `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${chainInfo.nameCollectionContract}/smart/${encoded}`
+        `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${
+          chainInfo().nameCollectionContract
+        }/smart/${encoded}`
       );
       if (!response.ok) {
         return "";
       }
       return (await response.json())?.data as NftInfoResponseForMetadata | "";
     } catch (e) {
-      console.error(e);
+      console.error("usenameinfo", e);
       return "";
     }
   };
 
-  return useReactQuery(key, fetcher);
+  return useReactQuery({ queryKey: key, queryFn: fetcher });
 }
 
 // export function useNameOwner(name: string) {

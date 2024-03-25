@@ -27,15 +27,16 @@ const editUser = authorizedProcedure
     if (!user) {
       throw new TRPCError({ code: "NOT_FOUND" });
     }
-    try {
-      await stores().user.editUser(user.id, input);
-
-      return serializeUser(user);
-    } catch (e) {
-      if ((e as Error).message?.includes("users_name_uniq")) {
-        throw new TRPCError({ code: "BAD_REQUEST", message: "username taken" });
-      }
-    }
+    throw new TRPCError({ code: "NOT_IMPLEMENTED" });
+    // try {
+    //   // await stores().user.editUser(user.id, input);
+    //   throw new Error("not implemented");
+    //   return serializeUser(user);
+    // } catch (e) {
+    //   if ((e as Error).message?.includes("users_name_uniq")) {
+    //     throw new TRPCError({ code: "BAD_REQUEST", message: "username taken" });
+    //   }
+    // }
   });
 
 export const userRouter = t.router({

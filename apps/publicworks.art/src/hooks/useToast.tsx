@@ -55,7 +55,7 @@ export const useToast = (): UseToastTypes => {
         progress: undefined,
         onClick: () => {
           window.open(
-            chainInfo.explorerUrlToTx.replace("{txHash}", txHash),
+            chainInfo().explorerUrlToTx.replace("{txHash}", txHash),
             "_blank"
           );
         },

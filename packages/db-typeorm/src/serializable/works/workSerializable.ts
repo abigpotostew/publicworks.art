@@ -5,39 +5,39 @@ import { normalizeMetadataUri } from "@publicworks/publicworks.art/src/wasm/meta
 
 export const workZod = z.object({
   id: z.number(),
-  codeCid: z.string(),
+  codeCid: z.string().nullish(),
   name: z.string(),
   creator: z.string(),
   slug: z.string(),
-  sg721: z.string().nullable(),
-  minter: z.string().nullable(),
-  sg721CodeId: z.number().nullable(),
-  minterCodeId: z.number().nullable(),
+  sg721: z.string().nullish(),
+  minter: z.string().nullish(),
+  sg721CodeId: z.number().nullish(),
+  minterCodeId: z.number().nullish(),
 
   description: z.string(),
-  additionalDescription: z.string().optional().nullable(),
+  additionalDescription: z.string().optional().nullish(),
   blurb: z.string(),
   startDate: z
     .date()
-    .nullable()
+    .nullish()
     .optional()
     .transform((d) => d?.toISOString() || null),
 
   resolution: z
     .string()
     .regex(/^\d+:\d+$/)
-    .nullable(),
+    .nullish(),
 
-  selector: z.string().nullable(),
-  license: z.string().max(1000).nullable(),
+  selector: z.string().nullish(),
+  license: z.string().max(1000).nullish(),
 
-  pixelRatio: z.number().nullable(),
-  maxTokens: z.number(),
-  priceStars: z.number().nullable(),
-  royaltyPercent: z.number().nullable().optional(),
-  royaltyAddress: z.string().nullable().optional(),
-  coverImageCid: z.string().nullable().optional(),
-  externalLink: z.string().nullable().optional(),
+  pixelRatio: z.number().nullish(),
+  maxTokens: z.number().nullish(),
+  priceStars: z.number().nullish(),
+  royaltyPercent: z.number().nullish().optional(),
+  royaltyAddress: z.string().nullish().optional(),
+  coverImageCid: z.string().nullish().optional(),
+  externalLink: z.string().nullish().optional(),
 
   createdDate: z.date().transform((d) => d.toISOString()),
   updatedDate: z.date().transform((d) => d.toISOString()),

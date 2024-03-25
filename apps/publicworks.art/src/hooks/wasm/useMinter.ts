@@ -6,9 +6,9 @@ import { Nullish } from "@publicworks/shared-utils/types";
 export const useMinter = (minter: Nullish<string>) => {
   const client = useStargazeClient();
   // console.log("minterResponse pizza useMinter", minter);
-  return useQuery(
-    ["get-minter-", minter, client],
-    async () => {
+  return useQuery({
+    queryKey: ["get-minter-", minter, client],
+    queryFn: async () => {
       // console.log("minterResponse pizza prefetching");
       if (!client.client?.cosmwasmClient || !minter) {
         // console.log(
@@ -27,6 +27,6 @@ export const useMinter = (minter: Nullish<string>) => {
       // console.log("minterResponse pizza after", minterResponse);
       return minterResponse;
     },
-    { enabled: !!minter }
-  );
+    enabled: !!minter,
+  });
 };

@@ -5,11 +5,11 @@ export const useCollectionSize = (
   minter: string | undefined | null,
   refreshInterval?: number
 ) => {
-  const query = useQuery(
-    [
+  const query = useQuery({
+    queryKey: [
       `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${minter}/smart/eyJjb25maWciOnt9fQ==`,
     ],
-    async () => {
+    queryFn: async () => {
       if (!minter) {
         return 0;
       }
@@ -27,8 +27,9 @@ export const useCollectionSize = (
       const json = await res.json();
       return (json?.data?.num_tokens as number | null) || 0;
     },
-    { refetchInterval: refreshInterval, enabled: !!minter }
-  );
+    refetchInterval: refreshInterval,
+    enabled: !!minter,
+  });
 
   return query;
 };
