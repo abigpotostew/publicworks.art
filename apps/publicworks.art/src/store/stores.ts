@@ -1,4 +1,3 @@
-import { UserRepoI } from "./mysql/user";
 import { ProjectRepositoryI } from "./projectRepositoryI";
 import {
   IndexerRepoDdb,
@@ -10,6 +9,7 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { UserRepoDdb } from "./ddb/user-repo-ddb";
 import { UserRepoDdbAdaptor } from "./ddb/adaptor/user-adaptor";
 import { IndexerStoreI } from "./indexerStoreI";
+import { UserRepoI } from "./user.types";
 
 type Stores = {
   project: ProjectRepositoryI;

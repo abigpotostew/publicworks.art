@@ -1,7 +1,4 @@
 import { z } from "zod";
-import { isISODate } from "@publicworks/publicworks.art/src/util/isISODate";
-import { Column } from "typeorm";
-import { normalizeMetadataUri } from "@publicworks/publicworks.art/src/wasm/metadata";
 
 export const workZod = z.object({
   id: z.number(),

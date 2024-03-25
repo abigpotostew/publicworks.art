@@ -31,7 +31,6 @@ import { useUploadWorkMutation } from "src/works/upload";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 
 // export const getServerSideProps: GetServerSideProps = async (context) => {
-//   await initializeIfNeeded();
 //   const workId = context.params?.workId;
 //   if (!workId || typeof workId !== "string") {
 //     return {
