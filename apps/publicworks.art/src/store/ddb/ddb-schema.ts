@@ -20,10 +20,6 @@ export const MySchema = {
     gsi4: { hash: "gsi4_pk", sort: "gsi4_sk", project: "all" },
     gsi5: { hash: "gsi5_pk", sort: "gsi5_sk", project: "all" },
     lsi1: { sort: "lsi1", type: "local" }, //string
-    lsi2: { sort: "lsi2", type: "local" }, //string
-    lsi3: { sort: "lsi3", type: "local" }, //string
-    lsi4: { sort: "lsi4", type: "local" }, //number
-    lsi5: { sort: "lsi5", type: "local" },
   },
   models: {
     IdCounter: {

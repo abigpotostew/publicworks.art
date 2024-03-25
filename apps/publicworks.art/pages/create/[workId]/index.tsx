@@ -238,7 +238,6 @@ const EditWorkPage = () => {
     if (!work) return;
     const success = await instantiateMutation.mutateAsync({ work });
     if (!success) return;
-    console.log("instantiate and showing confettie");
     toast.success("Successfully instantiated!");
     setShowConfetti(true);
   }, [work, instantiateMutation, toast, useSimulatedGasFee]);
@@ -308,6 +307,7 @@ const EditWorkPage = () => {
                       work={work}
                       setUseSimulatedGasFee={setUseSimulatedGasFee}
                       onInstantiate={onInstantiate}
+                      instantiatePending={instantiateMutation.isPending}
                     />
                   )}
                 </div>

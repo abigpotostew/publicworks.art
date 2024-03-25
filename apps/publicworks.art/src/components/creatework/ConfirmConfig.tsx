@@ -10,11 +10,13 @@ import { useInstantiate } from "../../hooks/useInstantiate";
 import { z } from "zod";
 import { format } from "date-fns";
 import { formatInUTC } from "./NftDetails2";
+import { ConfirmInstantiateModal } from "../modal/ConfirmInstantiateModal";
 
 interface ConfirmConfigProps {
   work: WorkSerializable;
   setUseSimulatedGasFee: (useSimulatedGasFee: boolean) => void;
   onInstantiate: () => void;
+  instantiatePending: boolean;
 }
 
 const isDateString = (date: string) => {
@@ -100,7 +102,6 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
     minterCodeId: null,
   };
   const sgwallet = useWallet();
-  const { instantiateMutation } = useInstantiate();
 
   console.log("work is ", w);
   //https://react-bootstrap.netlify.app/forms/layout/#horizontal-form-label-sizing
@@ -134,26 +135,29 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
                 );
               })}
             <div>
-              <Button
-                disabled={
-                  !sgwallet.wallet?.address || instantiateMutation.isPending
-                }
-                onClick={() => props.onInstantiate()}
-                variant={props.work.sg721 ? "danger" : "primary"}
-              >
-                {props.work && !props.work.sg721 && (
-                  <span>Instantiate On Chain</span>
-                )}
-                {props.work && props.work.sg721 && (
-                  <span>
-                    Create New Collection{" "}
-                    <TooltipInfo>
-                      Your contract is already deployed. Instantiating it again
-                      will create a new collection on chain!
-                    </TooltipInfo>
-                  </span>
-                )}
-              </Button>
+              <ConfirmInstantiateModal
+                work={props.work}
+                onConfirm={() => props.onInstantiate()}
+                instantiatePending={props.instantiatePending}
+              />
+              {/*<Button*/}
+              {/*  disabled={!sgwallet.wallet?.address || props.instantiatePending}*/}
+              {/*  onClick={() => props.onInstantiate()}*/}
+              {/*  variant={props.work.sg721 ? "danger" : "primary"}*/}
+              {/*>*/}
+              {/*  {props.work && !props.work.sg721 && (*/}
+              {/*    <span>Instantiate On Chain</span>*/}
+              {/*  )}*/}
+              {/*  {props.work && props.work.sg721 && (*/}
+              {/*    <span>*/}
+              {/*      Create New Collection{" "}*/}
+              {/*      <TooltipInfo>*/}
+              {/*        Your contract is already deployed. Instantiating it again*/}
+              {/*        will create a new collection on chain!*/}
+              {/*      </TooltipInfo>*/}
+              {/*    </span>*/}
+              {/*  )}*/}
+              {/*</Button>*/}
             </div>
           </div>
         </>
