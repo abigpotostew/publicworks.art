@@ -92,28 +92,34 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
                   </Row>
                 );
               })}
-            <div>
+            <div className={"tw-flex tw-flex-row tw-gap-2 tw-items-center"}>
               <Button
                 disabled={
-                  !sgwallet.wallet?.address || instantiateMutation.isLoading
+                  !!props.work.sg721 ||
+                  !sgwallet.wallet?.address ||
+                  instantiateMutation.isLoading
                 }
                 onClick={() => props.onInstantiate()}
                 variant={props.work.sg721 ? "danger" : "primary"}
               >
-                {props.work && !props.work.sg721 && (
-                  <span>Instantiate On Chain</span>
-                )}
-                {props.work && props.work.sg721 && (
-                  <span>
-                    Instantiate + Replace Chain{" "}
-                    <TooltipInfo>
-                      Your contract is already deployed. Instantiating it again
-                      will replace the old instance on publicworks.art and
-                      remove all tokens
-                    </TooltipInfo>
-                  </span>
+                {props.work && (
+                  <>
+                    <span>Publish On Chain</span>{" "}
+                  </>
                 )}
               </Button>
+              {!props.work.sg721 && (
+                <TooltipInfo>
+                  Many configurations cannot be changed after publish. Please
+                  review your configuration carefully before publishing.
+                </TooltipInfo>
+              )}
+              {!!props.work.sg721 && (
+                <TooltipInfo>
+                  Your collection is already published on chain. But you can
+                  change the price on the next step.
+                </TooltipInfo>
+              )}
             </div>
           </div>
         </>
