@@ -253,7 +253,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               Your work is already instantiated on chain. Changes here will not
               affect you deployed collection. Head over to{" "}
               <Alert.Link>
-                <Link href={`/create/${props.defaultValues?.id}?stage=view`}>
+                <Link href={`/create/${props.defaultValues?.id}?step=view`}>
                   Mint
                 </Link>
               </Alert.Link>{" "}

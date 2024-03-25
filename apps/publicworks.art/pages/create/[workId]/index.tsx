@@ -60,7 +60,7 @@ const stages = [
   "text",
   "nft_detail",
   "cover_image",
-  "submit",
+  "publish",
   "view",
 ] as const;
 type Stage = (typeof stages)[number];
@@ -75,7 +75,7 @@ const stageContinuationCondition: Record<Stage, (keyof WorkSerializable)[]> = {
     "resolution",
   ],
   cover_image: ["coverImageCid"],
-  submit: ["minter"],
+  publish: ["minter"],
   view: ["minter"],
 };
 
@@ -92,8 +92,8 @@ const stageMd = {
   cover_image: {
     label: "Image",
   },
-  submit: {
-    label: "Submit",
+  publish: {
+    label: "Publish",
   },
   view: {
     label: "Mint",
@@ -159,14 +159,14 @@ const EditWorkPage = () => {
   const sgwallet = useWallet();
 
   const login = useClientLoginMutation();
-  const { stage: stageQp } = router.query;
+  const stageQp = router.query.step?.toString();
   const [stage, setStageState] = useState<Stage | null>(null);
-  // useUserRequired("/create/" + workIdIn + "?stage=" + stageQp);
-  const redirectUrl = "/create/" + workIdIn + "?stage=" + stageQp;
+  // useUserRequired("/create/" + workIdIn + "?step=" + stageQp);
+  const redirectUrl = "/create/" + workIdIn + "?step=" + stageQp;
   useEffect(() => {
-    const stage = stages.find((s) => s === router.query?.stage?.toString());
+    const stage = stages.find((s) => s === stageQp);
     setStageState(stage || stages[0]);
-  }, [router]);
+  }, [stageQp]);
   const setStage = (newStage: Stage) => {
     setFormValid(false);
     setShowConfetti(false);
@@ -177,7 +177,7 @@ const EditWorkPage = () => {
       pathname,
       query: {
         ...query,
-        stage: newStage,
+        step: newStage,
       },
     });
   };
@@ -299,7 +299,7 @@ const EditWorkPage = () => {
         <StepProgressBar items={steps}></StepProgressBar>
         <>
           <FlexBoxCenter fluid={false} className={"tw-pb-24"}>
-            {stage === "submit" && (
+            {stage === "publish" && (
               <>
                 <div>
                   {work && (
@@ -312,9 +312,9 @@ const EditWorkPage = () => {
                   )}
                 </div>
                 <NavButtons
-                  onPrevClick={() => setStagePrevFrom("submit")}
+                  onPrevClick={() => setStagePrevFrom("publish")}
                   onNextClick={
-                    work?.sg721 ? () => setStageNextFrom("submit") : undefined
+                    work?.sg721 ? () => setStageNextFrom("publish") : undefined
                   }
                 ></NavButtons>
               </>
