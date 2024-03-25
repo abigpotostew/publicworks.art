@@ -11,24 +11,19 @@ interface ConfirmInstantiateModalI {
   work: WorkSerializable;
   instantiatePending: boolean;
   onConfirm: () => void;
+  open: boolean;
+  setOpen: boolean;
 }
 
+//todo close this after it's done
 export const ConfirmInstantiateModal: FC<ConfirmInstantiateModalI> = ({
   work,
   instantiatePending,
   onConfirm,
+  open,
+  setOpen,
 }) => {
   const sgwallet = useWallet();
-  const [open, setOpenState] = React.useState(false);
-  const setOpen = useCallback(
-    (isOpen: boolean) => {
-      if (instantiatePending) {
-        return;
-      }
-      setOpenState(isOpen);
-    },
-    [instantiatePending]
-  );
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
@@ -70,8 +65,8 @@ export const ConfirmInstantiateModal: FC<ConfirmInstantiateModalI> = ({
               {!!work.sg721 ? (
                 <>
                   Your collection is already deployed. Deploying again will
-                  replace the existing collection on this site, but the existing
-                  collection will still exist on chain. This is not recommended.
+                  replace the existing collection on this site, but will also
+                  still exist on chain. This is not recommended on mainnet.
                 </>
               ) : null}
               {!work.sg721 ? (

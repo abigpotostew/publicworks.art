@@ -230,6 +230,7 @@ const EditWorkPage = () => {
 
   const onUpload = onUploadMutation.mutate;
 
+  // this ought to be moved down
   const { instantiateMutation } = useInstantiate();
   const [useSimulatedGasFee, setUseSimulatedGasFee] = useState<boolean>(false);
 

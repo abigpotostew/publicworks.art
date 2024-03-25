@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useCallback, useState } from "react";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { Form, Row } from "react-bootstrap";
 import styles from "./ConfirmConfig.module.css";
@@ -103,6 +103,18 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
   };
   const sgwallet = useWallet();
 
+  const [modalOpen, setModalOpen] = useState(false);
+  const instantiatePending = props.instantiatePending;
+  const setOpen = useCallback(
+    (isOpen: boolean) => {
+      if (instantiatePending) {
+        return;
+      }
+      setModalOpen(isOpen);
+    },
+    [instantiatePending]
+  );
+
   console.log("work is ", w);
   //https://react-bootstrap.netlify.app/forms/layout/#horizontal-form-label-sizing
   return (
@@ -139,6 +151,8 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
                 work={props.work}
                 onConfirm={() => props.onInstantiate()}
                 instantiatePending={props.instantiatePending}
+                open={modalOpen}
+                setOpen={setOpen}
               />
               {/*<Button*/}
               {/*  disabled={!sgwallet.wallet?.address || props.instantiatePending}*/}
