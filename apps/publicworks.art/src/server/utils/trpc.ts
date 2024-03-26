@@ -1,10 +1,9 @@
-import { httpBatchLink, httpLink, loggerLink } from "@trpc/client";
+import { httpLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import { NextPageContext } from "next";
 import superjson from "superjson";
-import { appRouter, AppRouter } from "../routes/_app";
-import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
-import { getToken } from "../../util/auth-token";
+import { AppRouter } from "../routes/_app";
+import { QueryCache, QueryClient } from "@tanstack/react-query";
 // ℹ️ Type-only import:
 // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-8.html#type-only-imports-and-export
 

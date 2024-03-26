@@ -9,7 +9,7 @@ import type { AppProps, NextWebVitalsMetric } from "next/app";
 import { SSRProvider } from "react-bootstrap";
 import { event, GoogleAnalytics } from "nextjs-google-analytics";
 import { queryClient, trpcNextPW } from "../src/server/utils/trpc";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import "../src/icon/icons";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

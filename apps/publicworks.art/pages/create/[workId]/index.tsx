@@ -8,7 +8,7 @@ import { useStargazeClient, useWallet } from "@stargazezone/client";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { FC, ReactElement, useCallback, useEffect, useState } from "react";
-import { Container, Form } from "react-bootstrap";
+import { Alert, Container, Form } from "react-bootstrap";
 import { ConfettiScreen } from "src/components/celebration/ConfettiScreen";
 import { ConfirmConfig } from "src/components/creatework/ConfirmConfig";
 import { DescribeWork } from "src/components/creatework/DescribeWork";
@@ -29,6 +29,8 @@ import { onMutateLogin } from "src/trpc/onMutate";
 import { getToken } from "src/util/auth-token";
 import { useUploadWorkMutation } from "src/works/upload";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Link from "next/link";
+import config from "src/wasm/config";
 
 // export const getServerSideProps: GetServerSideProps = async (context) => {
 //   await initializeIfNeeded();
@@ -296,7 +298,15 @@ const EditWorkPage = () => {
   //     toast.errorLoginModal();
   //   }
   // }, [workId, hasToken, toast]);
-
+  const testnetComponent = config.testnet ? null : (
+    <Alert variant={"warning"}>
+      Test your collection on{" "}
+      <Link href={"https://testnet.publicworks.art/create"}>
+        testnet.publicworks.art
+      </Link>{" "}
+      before publishing here on mainnet.
+    </Alert>
+  );
   return (
     <>
       <Head>
@@ -305,6 +315,7 @@ const EditWorkPage = () => {
       {showConfetti && <ConfettiScreen />}
 
       <Container fluid={false}>
+        {testnetComponent}
         <StepProgressBar items={steps}></StepProgressBar>
         <>
           <FlexBoxCenter fluid={false} className={"tw-pb-24"}>
