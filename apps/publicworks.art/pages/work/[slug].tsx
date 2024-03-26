@@ -236,14 +236,13 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
               <></>
             )}
 
-            {/*{numMinted === 0 && <SpinnerLoading />}*/}
-            {numMinted && !work.sg721 && (
+            {!!numMinted && !work.sg721 && (
               <div>
                 <span>No NFTs minted</span>
               </div>
             )}
 
-            {numMinted && !!work.sg721 && (
+            {!!numMinted && !!work.sg721 && (
               <PagedGallery
                 slug={work.slug}
                 sg721={work.sg721}
