@@ -27,7 +27,7 @@ export const useNftMetadata = ({
   refresh,
 }: {
   sg721: string | undefined | null;
-  tokenId: string;
+  tokenId: string | undefined | null;
   refresh?: boolean;
 }) => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -49,7 +49,7 @@ export const useNftMetadata = ({
         : null,
     ],
     async () => {
-      if (!sg721) {
+      if (!sg721 || !tokenId) {
         return null;
       }
       const res = await fetch(
@@ -77,7 +77,7 @@ export const useNftMetadata = ({
       }
     },
     {
-      enabled: !!sg721,
+      enabled: !!sg721 && !!tokenId,
       refetchOnMount: !!refresh,
       refetchOnWindowFocus: !!refresh,
       refetchOnReconnect: !!refresh,

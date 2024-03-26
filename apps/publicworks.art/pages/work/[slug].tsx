@@ -93,7 +93,7 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
     isLoading: numMintedLoading,
   } = useNumMinted(work?.slug);
 
-  const [previewTokenId, setPreviewTokenId] = useState("1");
+  const [previewTokenId, setPreviewTokenId] = useState<string | null>(null);
   useEffect(() => {
     if (!numMinted) {
       return;
@@ -137,7 +137,11 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
               )}
             </div>
             <div className={" mt-2 text-end fw-light fst-italic"}>
-              <Link href={`/work/${work.slug}/${previewTokenId}`}>
+              <Link
+                href={
+                  previewTokenId ? `/work/${work.slug}/${previewTokenId}` : "#"
+                }
+              >
                 <span className={""}>
                   {metadata.data ? (
                     <>Showing #{previewTokenId}</>
