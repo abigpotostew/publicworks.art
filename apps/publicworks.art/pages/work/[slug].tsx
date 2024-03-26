@@ -133,7 +133,11 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
               )}
             </div>
             <div className={" mt-2 text-end fw-light fst-italic"}>
-              <Link href={`/work/${work.slug}/${previewTokenId}`}>
+              <Link
+                href={
+                  previewTokenId ? `/work/${work.slug}/${previewTokenId}` : "#"
+                }
+              >
                 <span className={""}>
                   {metadata.data ? (
                     <>Showing #{previewTokenId}</>

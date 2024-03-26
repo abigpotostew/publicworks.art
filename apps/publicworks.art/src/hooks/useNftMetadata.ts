@@ -1,5 +1,5 @@
 import config from "../wasm/config";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { fetchTokenUriInfo, normalizeMetadataUri } from "../wasm/metadata";
 import { useQuery } from "@tanstack/react-query";
 
@@ -50,10 +50,7 @@ export const useNftMetadata = ({
       tokenId,
     ],
     queryFn: async () => {
-      if (!sg721) {
-        return null;
-      }
-      if (!tokenId) {
+      if (!sg721 || !tokenId) {
         return null;
       }
       const res = await fetch(
@@ -81,7 +78,7 @@ export const useNftMetadata = ({
       }
     },
 
-    enabled: !!sg721,
+    enabled: !!sg721&&!!tokenId,
     refetchOnMount: !!refresh,
     refetchOnWindowFocus: !!refresh,
     refetchOnReconnect: !!refresh,
