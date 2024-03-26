@@ -14,20 +14,13 @@ import { Decimal } from "@stargazezone/types/contracts/minter/instantiate_msg";
 import { Coin } from "@stargazezone/types/contracts/minter/shared-types";
 import { Timestamp } from "@stargazezone/types/contracts/sg721/shared-types";
 import { useMutation } from "@tanstack/react-query";
-import {
-  calculateFee,
-  coins,
-  Decimal as CosmWasmDecimal,
-  GasPrice,
-} from "cosmwasm";
+import { coins } from "cosmwasm";
 import { useToast } from "src/hooks/useToast";
 import { toStars } from "src/wasm/address";
 import useStargazeClient from "@stargazezone/client/react/client/useStargazeClient";
-import {
-  MsgExecuteContract,
-  MsgInstantiateContract,
-} from "cosmjs-types/cosmwasm/wasm/v1/tx";
+import { MsgInstantiateContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
 import { toUtf8 } from "@cosmjs/encoding";
+import { reportSentryException } from "../reporting/report-sentry";
 
 function formatRoyaltyInfo(
   royaltyPaymentAddress: null | string,
@@ -289,6 +282,7 @@ async function instantiateNew(
   }
   const gasfee = useSimulatedGasFee ? gasUsed : "auto";
   console.log("gasfee", gasfee);
+
   const result = await signer.instantiate(
     account,
     config.minterCodeId,
@@ -301,42 +295,47 @@ async function instantiateNew(
   const instantiateEvents = result.events.filter(
     (e) => e.type === "instantiate"
   );
-  if (instantiateEvents.length !== 2) {
-    throw new Error("not enough instantiate events emitted");
-  }
-
-  let minterAddress = instantiateEvents[0].attributes.find(
-    (a) => a.key === "_contract_address"
-  )?.value;
-  let sg721Address = instantiateEvents[1].attributes.find(
-    (a) => a.key === "_contract_address"
-  )?.value;
-  if (!minterAddress || !sg721Address) {
-    const wasmEvents = result.events.filter((e) => e.type === "wasm");
+  try {
     if (instantiateEvents.length !== 2) {
-      throw new Error("not enough wasm events emitted");
+      throw new Error("not enough instantiate events emitted");
     }
 
-    minterAddress = wasmEvents[0].attributes.find(
+    let minterAddress = instantiateEvents[0].attributes.find(
       (a) => a.key === "_contract_address"
     )?.value;
-    sg721Address = wasmEvents[1].attributes.find(
+    let sg721Address = instantiateEvents[1].attributes.find(
       (a) => a.key === "_contract_address"
     )?.value;
     if (!minterAddress || !sg721Address) {
-      throw new Error(
-        "failed to extract new contract address from events :( Please contact support"
-      );
-    }
-  }
+      const wasmEvents = result.events.filter((e) => e.type === "wasm");
+      if (instantiateEvents.length !== 2) {
+        throw new Error("not enough wasm events emitted");
+      }
 
-  console.info("Add these contract addresses to config.js:");
-  console.info("minter contract address: ", minterAddress);
-  console.info("sg721 contract address: ", sg721Address);
-  return {
-    sg721: sg721Address,
-    minter: minterAddress,
-  };
+      minterAddress = wasmEvents[0].attributes.find(
+        (a) => a.key === "_contract_address"
+      )?.value;
+      sg721Address = wasmEvents[1].attributes.find(
+        (a) => a.key === "_contract_address"
+      )?.value;
+      if (!minterAddress || !sg721Address) {
+        throw new Error(
+          "failed to extract new contract address from events :( Please contact support"
+        );
+      }
+    }
+
+    console.info("Add these contract addresses to config.js:");
+    console.info("minter contract address: ", minterAddress);
+    console.info("sg721 contract address: ", sg721Address);
+    return {
+      sg721: sg721Address,
+      minter: minterAddress,
+    };
+  } catch (e) {
+    reportSentryException(e, "failed to extract contract address from events");
+    throw e;
+  }
 }
 
 export const useInstantiate = () => {
