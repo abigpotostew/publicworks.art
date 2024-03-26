@@ -3,10 +3,7 @@ import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { Form, Row } from "react-bootstrap";
 import styles from "./ConfirmConfig.module.css";
 import { CreateLayout } from "./CreateLayout";
-import { TooltipInfo } from "../tooltip";
-import { ButtonPW as Button } from "../button/Button";
 import { useWallet } from "../../../@stargazezone/client";
-import { useInstantiate } from "../../hooks/useInstantiate";
 import { z } from "zod";
 import { format } from "date-fns";
 import { formatInUTC } from "./NftDetails2";
@@ -17,6 +14,8 @@ interface ConfirmConfigProps {
   setUseSimulatedGasFee: (useSimulatedGasFee: boolean) => void;
   onInstantiate: () => void;
   instantiatePending: boolean;
+  publishModalOpen: boolean;
+  onPublishOpen: (isOpen: boolean) => void;
 }
 
 const isDateString = (date: string) => {
@@ -103,7 +102,9 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
   };
   const sgwallet = useWallet();
 
-  const [modalOpen, setModalOpen] = useState(false);
+  // const [modalOpen, setModalOpen] = useState(false);
+  const modalOpen = props.publishModalOpen;
+  const setModalOpen = props.onPublishOpen;
   const instantiatePending = props.instantiatePending;
   const setOpen = useCallback(
     (isOpen: boolean) => {
@@ -115,7 +116,7 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
     [instantiatePending]
   );
 
-  console.log("work is ", w);
+  // console.log("work is ", w);
   //https://react-bootstrap.netlify.app/forms/layout/#horizontal-form-label-sizing
   return (
     <div className={"tw-pb-24 tw-flex tw-justify-center"}>

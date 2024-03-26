@@ -48,6 +48,7 @@ export const issueToCookie = (
   const token = issue(account);
   const cookies = new Cookies(req, res);
   cookies.set(pwTokenName, token, {
+    path: "/",
     maxAge: 604_800_000, //7 days
     sameSite: "strict",
     httpOnly: false,

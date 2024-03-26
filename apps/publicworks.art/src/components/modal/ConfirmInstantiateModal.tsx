@@ -16,7 +16,6 @@ interface ConfirmInstantiateModalI {
   setOpen: (isOpen: boolean) => void;
 }
 
-//todo close this after it's done
 export const ConfirmInstantiateModal: FC<ConfirmInstantiateModalI> = ({
   work,
   instantiatePending,

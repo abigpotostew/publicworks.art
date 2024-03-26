@@ -235,6 +235,11 @@ const EditWorkPage = () => {
   const { instantiateMutation } = useInstantiate();
   const [useSimulatedGasFee, setUseSimulatedGasFee] = useState<boolean>(false);
 
+  const [publishModalOpen, setPublishModalOpen] = useState(false);
+  const onPublishModalOpen = useCallback((isOpen: boolean) => {
+    setPublishModalOpen(isOpen);
+  }, []);
+
   const onInstantiate = useCallback(async () => {
     //confetti
     if (!work) return;
@@ -242,6 +247,7 @@ const EditWorkPage = () => {
     if (!success) return;
     toast.success("Successfully instantiated!");
     setShowConfetti(true);
+    setPublishModalOpen(false);
   }, [work, instantiateMutation, toast, useSimulatedGasFee]);
 
   const createStep = (stageEnum: Stage): Step => {
@@ -289,6 +295,7 @@ const EditWorkPage = () => {
   //     toast.errorLoginModal();
   //   }
   // }, [workId, hasToken, toast]);
+
   const testnetComponent = config.testnet ? null : (
     <Alert variant={"warning"}>
       Test your collection on{" "}
@@ -319,6 +326,8 @@ const EditWorkPage = () => {
                       setUseSimulatedGasFee={setUseSimulatedGasFee}
                       onInstantiate={onInstantiate}
                       instantiatePending={instantiateMutation.isPending}
+                      onPublishOpen={onPublishModalOpen}
+                      publishModalOpen={publishModalOpen}
                     />
                   )}
                 </div>
