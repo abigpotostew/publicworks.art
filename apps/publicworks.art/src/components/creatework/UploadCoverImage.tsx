@@ -38,60 +38,69 @@ export const UploadCoverImage: FC<CreateWorkProps> = (
   const toast = useToast();
   const login = useClientLoginMutation();
 
-  const onUploadMutation = useMutation(async (files: File[]) => {
-    //onUpload
-    const mime = files[0].type;
-    const acceptedMime = [
-      "image/png",
-      "image/gif",
-      "image/jpeg",
-      "image/svg+xml",
-    ];
-    if (!acceptedMime.includes(mime)) {
-      throw new Error("Unsupported mime: " + mime);
-    }
-    const contentSize = files[0].size;
-    const id = props?.defaultValues?.id;
-    if (!id) {
-      throw new Error("missing id");
-    }
-    console.log("presignedUrlMutation", {
-      workId: id,
-      contentType: mime,
-      contentSize,
-    });
-
-    await login.mutateAsync();
-    const uploadTmp = await presignedUrlMutation.mutateAsync({
-      workId: id,
-      contentType: mime,
-      contentSize,
-    });
-    if (!uploadTmp.ok) {
-      const msg =
-        "Something went wrong while uploading the cover image, try again.";
-      toast.error(msg);
-      throw new Error(msg);
-    }
-    console.log("uploading", id, files, utils, uploadTmp.url, uploadTmp.method);
-    await login.mutateAsync();
-    await onWorkUploadNew(id, files, utils, uploadTmp.url, uploadTmp.method);
-    try {
-      // console.log("pizza finished confirmWorkUploadFileMutation");
-      await login.mutateAsync();
-      await confirmWorkUploadFileMutation.mutateAsync({
+  const onUploadMutation = useMutation({
+    mutationFn: async (files: File[]) => {
+      //onUpload
+      const mime = files[0].type;
+      const acceptedMime = [
+        "image/png",
+        "image/gif",
+        "image/jpeg",
+        "image/svg+xml",
+      ];
+      if (!acceptedMime.includes(mime)) {
+        throw new Error("Unsupported mime: " + mime);
+      }
+      const contentSize = files[0].size;
+      const id = props?.defaultValues?.id;
+      if (!id) {
+        throw new Error("missing id");
+      }
+      console.log("presignedUrlMutation", {
         workId: id,
-        uploadId: uploadTmp.uploadId,
+        contentType: mime,
+        contentSize,
       });
-    } catch (e) {
-      const msg =
-        "Something went wrong. Failed to save cover image to IPFS. Try again.";
-      console.error(msg, e);
-      toast.error(msg);
-      throw new Error(msg);
-    } finally {
-      utils.works.getWorkById.invalidate({ id });
-    }
+
+      await login.mutateAsync();
+      const uploadTmp = await presignedUrlMutation.mutateAsync({
+        workId: id,
+        contentType: mime,
+        contentSize,
+      });
+      if (!uploadTmp.ok) {
+        const msg =
+          "Something went wrong while uploading the cover image, try again.";
+        toast.error(msg);
+        throw new Error(msg);
+      }
+      console.log(
+        "uploading",
+        id,
+        files,
+        utils,
+        uploadTmp.url,
+        uploadTmp.method
+      );
+      await login.mutateAsync();
+      await onWorkUploadNew(id, files, utils, uploadTmp.url, uploadTmp.method);
+      try {
+        // console.log("pizza finished confirmWorkUploadFileMutation");
+        await login.mutateAsync();
+        await confirmWorkUploadFileMutation.mutateAsync({
+          workId: id,
+          uploadId: uploadTmp.uploadId,
+        });
+      } catch (e) {
+        const msg =
+          "Something went wrong. Failed to save cover image to IPFS. Try again.";
+        console.error(msg, e);
+        toast.error(msg);
+        throw new Error(msg);
+      } finally {
+        utils.works.getWorkById.invalidate({ id });
+      }
+    },
   });
 
   const onUpload = async (files: File[]) => {
@@ -117,7 +126,7 @@ export const UploadCoverImage: FC<CreateWorkProps> = (
           >
             Drag 'n' drop your image here, or click to select a file. 15mb max.
           </DropZone>
-          {onUploadMutation.isLoading && <SpinnerLoading></SpinnerLoading>}
+          {onUploadMutation.isPending && <SpinnerLoading></SpinnerLoading>}
           {onUploadMutation.isSuccess && "Success!"}
         </div>
         {defaults.coverImageCid && (

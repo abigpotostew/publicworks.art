@@ -70,7 +70,11 @@ const WorkStatusPage = () => {
   const workQuery = useGetWorkById(workId);
   const [take, setTake] = useState(10);
   const [skip, setSkip] = useState(0);
-  const tokens = useTokenStatus({ workId: parseInt(workId), take, skip });
+  const tokens = useTokenStatus({
+    workId: parseInt(workId),
+    take,
+    cursor: skip,
+  });
 
   const setPage = useCallback(
     (page: number) => {
@@ -145,13 +149,27 @@ const WorkStatusPage = () => {
           {!workIsLoading && !workQuery.data ? <h5>Work not found</h5> : null}
           {!!workQuery.data && (
             <>
-              <h4>{workQuery.data?.name}</h4>
+              <div
+                className={
+                  "tw-flex tw-flex-col md:tw-flex-row md:tw-justify-between"
+                }
+              >
+                <h4>{workQuery.data?.name}</h4>
+                <PaginationPw
+                  page={page}
+                  countPages={countPages}
+                  changePage={changePage}
+                  pageSize={take}
+                  setPageSize={setTake}
+                  countItems={[10, 25, 100]}
+                />
+              </div>
               {!tokensIsLoading && (
                 <>
                   <Table striped bordered hover>
                     <TableHeader />
                     <tbody>
-                      {tokens.data?.tokens.map((token) => {
+                      {tokens.data?.items.map((token) => {
                         return (
                           <tr key={token.token_id}>
                             <td>
@@ -190,7 +208,7 @@ const WorkStatusPage = () => {
                               <Link href={liveUrl(token.hash)}>Live</Link>
                               {" • "}
                               <Link
-                                href={chainInfo.explorerUrlToTx.replace(
+                                href={chainInfo().explorerUrlToTx.replace(
                                   "{txHash}",
                                   token.tx_hash
                                 )}
@@ -209,12 +227,6 @@ const WorkStatusPage = () => {
                       })}
                     </tbody>
                   </Table>
-                  <PaginationPw
-                    page={page}
-                    countPages={countPages}
-                    changePage={changePage}
-                    pageSize={take}
-                  />
                 </>
               )}
             </>

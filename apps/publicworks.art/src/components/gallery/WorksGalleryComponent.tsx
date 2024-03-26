@@ -6,11 +6,11 @@ import stylesWork from "../../../styles/Work.module.scss";
 import { useRouter } from "next/router";
 import { isStarAddress, shortenAddress } from "../../wasm/address";
 import { StarsAddressName } from "../name/StarsAddressName";
-import { useNumMinted } from "../../hooks/useNumMinted";
 import { useCollectionSize } from "../../hooks/useCollectionSize";
 import React from "react";
 import Link from "next/link";
 import { cn } from "../../lib/css/cs";
+import { useNumMintedOnChain } from "../../hooks/useNumMintedOnChain";
 
 export const WorksGalleryComponent = ({
   work,
@@ -19,12 +19,19 @@ export const WorksGalleryComponent = ({
   work: WorkSerializable;
   className?: string;
 }) => {
-  const query = trpcNextPW.works.workPreviewImg.useQuery({
-    workId: work.id,
-  });
+  const query = trpcNextPW.works.workPreviewImg.useQuery(
+    {
+      workId: work.id,
+    },
+    {
+      refetchOnWindowFocus: false,
+      refetchInterval: false,
+      refetchOnReconnect: false,
+    }
+  );
   const w = work;
   const router = useRouter();
-  const numMinted = useNumMinted(work.slug);
+  const numMinted = useNumMintedOnChain(work.minter);
   const collectionSize = useCollectionSize(work.minter);
 
   let creatorName = w.creator;
@@ -43,7 +50,7 @@ export const WorksGalleryComponent = ({
           "rounded-1 rounded-top button tw-overflow-hidden"
         )}
         variant="top"
-        src={query.isSuccess ? query.data : ""}
+        src={query.isSuccess ? query.data ?? undefined : ""}
       />
       <Card.ImgOverlay className={`p-0 `}>
         <Link

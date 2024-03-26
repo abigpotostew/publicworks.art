@@ -14,20 +14,13 @@ import { Decimal } from "@stargazezone/types/contracts/minter/instantiate_msg";
 import { Coin } from "@stargazezone/types/contracts/minter/shared-types";
 import { Timestamp } from "@stargazezone/types/contracts/sg721/shared-types";
 import { useMutation } from "@tanstack/react-query";
-import {
-  calculateFee,
-  coins,
-  Decimal as CosmWasmDecimal,
-  GasPrice,
-} from "cosmwasm";
+import { coins } from "cosmwasm";
 import { useToast } from "src/hooks/useToast";
 import { toStars } from "src/wasm/address";
 import useStargazeClient from "@stargazezone/client/react/client/useStargazeClient";
-import {
-  MsgExecuteContract,
-  MsgInstantiateContract,
-} from "cosmjs-types/cosmwasm/wasm/v1/tx";
+import { MsgInstantiateContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
 import { toUtf8 } from "@cosmjs/encoding";
+import { reportSentryException } from "../reporting/report-sentry";
 
 function formatRoyaltyInfo(
   royaltyPaymentAddress: null | string,
@@ -152,6 +145,10 @@ async function instantiateNew(
   //   throw new Error("Image link is not valid. Must be IPFS or http(s)");
   // }
 
+  if (work.maxTokens === null || work.maxTokens === undefined) {
+    throw new Error("maxTokens must be defined");
+  }
+
   if (work.maxTokens > 10_000) {
     throw new Error("Too many tokens");
   }
@@ -166,13 +163,12 @@ async function instantiateNew(
   if (!work.startDate) {
     throw new Error("incorrect start date");
   }
+  if (new Date(work.startDate) < new Date()) {
+    throw new Error("start date must be in the future");
+  }
   const startTime: Timestamp = (
     new Date(work.startDate).getTime() * 1_000_000
   ).toString();
-  // const startTime: Timestamp = (
-  //   (Date.now() + 10 * 1000) *
-  //   1_000_000
-  // ).toString();
 
   if (!work.priceStars) {
     throw new Error("price invalid");
@@ -180,6 +176,11 @@ async function instantiateNew(
   if (!work.coverImageCid) {
     throw new Error("missing cover image");
   }
+
+  if (!work.codeCid) {
+    throw new Error("missing code cid");
+  }
+
   let dutchAuctionConfig: DutchAuctionConfig | null = null;
   if (
     work.isDutchAuction &&
@@ -200,7 +201,7 @@ async function instantiateNew(
   const subdomain = config.testnet ? "testnetmetadata" : "metadata";
   const tempMsg: InstantiateMsg = {
     base_token_uri: `https://${subdomain}.publicworks.art/${work.id}`,
-    num_tokens: work.maxTokens,
+    num_tokens: work.maxTokens ?? 0,
     sg721_code_id: config.sg721CodeId,
     sg721_instantiate_msg: {
       name: work.name,
@@ -281,6 +282,7 @@ async function instantiateNew(
   }
   const gasfee = useSimulatedGasFee ? gasUsed : "auto";
   console.log("gasfee", gasfee);
+
   const result = await signer.instantiate(
     account,
     config.minterCodeId,
@@ -289,21 +291,51 @@ async function instantiateNew(
     gasfee,
     { /*funds: NEW_COLLECTION_FEE,*/ admin: account }
   );
-  const wasmEvent = result.logs[0].events.find((e) => e.type === "wasm");
-  console.info(
-    "The `wasm` event emitted by the contract execution:",
-    wasmEvent
+  console.log("all instantiate result", result);
+  const instantiateEvents = result.events.filter(
+    (e) => e.type === "instantiate"
   );
-  if (wasmEvent === undefined) {
-    throw new Error("wasm didn't return");
+  try {
+    if (instantiateEvents.length !== 2) {
+      throw new Error("not enough instantiate events emitted");
+    }
+
+    let minterAddress = instantiateEvents[0].attributes.find(
+      (a) => a.key === "_contract_address"
+    )?.value;
+    let sg721Address = instantiateEvents[1].attributes.find(
+      (a) => a.key === "_contract_address"
+    )?.value;
+    if (!minterAddress || !sg721Address) {
+      const wasmEvents = result.events.filter((e) => e.type === "wasm");
+      if (instantiateEvents.length !== 2) {
+        throw new Error("not enough wasm events emitted");
+      }
+
+      minterAddress = wasmEvents[0].attributes.find(
+        (a) => a.key === "_contract_address"
+      )?.value;
+      sg721Address = wasmEvents[1].attributes.find(
+        (a) => a.key === "_contract_address"
+      )?.value;
+      if (!minterAddress || !sg721Address) {
+        throw new Error(
+          "failed to extract new contract address from events :( Please contact support"
+        );
+      }
+    }
+
+    console.info("Add these contract addresses to config.js:");
+    console.info("minter contract address: ", minterAddress);
+    console.info("sg721 contract address: ", sg721Address);
+    return {
+      sg721: sg721Address,
+      minter: minterAddress,
+    };
+  } catch (e) {
+    reportSentryException(e, "failed to extract contract address from events");
+    throw e;
   }
-  console.info("Add these contract addresses to config.js:");
-  console.info("minter contract address: ", wasmEvent.attributes[0]["value"]);
-  console.info("sg721 contract address: ", wasmEvent.attributes[5]["value"]);
-  return {
-    sg721: wasmEvent.attributes[5]["value"],
-    minter: wasmEvent.attributes[0]["value"],
-  };
 }
 
 export const useInstantiate = () => {
@@ -319,8 +351,8 @@ export const useInstantiate = () => {
     },
   });
 
-  const instantiateMutation = useMutation(
-    async ({
+  const instantiateMutation = useMutation({
+    mutationFn: async ({
       work,
       useSimulatedGasFee,
     }: {
@@ -363,8 +395,8 @@ export const useInstantiate = () => {
         id: work.id,
       });
       return true;
-    }
-  );
+    },
+  });
 
   return { instantiateMutation };
 };

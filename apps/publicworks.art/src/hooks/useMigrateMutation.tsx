@@ -27,22 +27,28 @@ export const useMigrateMutation = () => {
   const sgwallet = useWallet();
   const { client } = useStargazeClient();
   const toast = useToast();
-  const mutation = useMutation(async (params: MigrateParams) => {
-    try {
-      if (!sgwallet.wallet) return;
+  const mutation = useMutation({
+    mutationFn: async (params: MigrateParams) => {
+      try {
+        if (!sgwallet.wallet) return;
 
-      if (!client) {
-        throw new Error("missing sg client");
+        if (!client) {
+          throw new Error("missing sg client");
+        }
+        const signingClient = await client.connectSigningClient();
+        if (!signingClient) {
+          throw new Error("Couldn't connect client");
+        }
+        const out = await migrate(
+          signingClient,
+          sgwallet.wallet.address,
+          params
+        );
+        toast.txHash("migrate", out.transactionHash);
+      } catch (e) {
+        toast.error("failed to migrate: " + (e as unknown as any).message);
       }
-      const signingClient = await client.connectSigningClient();
-      if (!signingClient) {
-        throw new Error("Couldn't connect client");
-      }
-      const out = await migrate(signingClient, sgwallet.wallet.address, params);
-      toast.txHash("migrate", out.transactionHash);
-    } catch (e) {
-      toast.error("failed to migrate: " + (e as unknown as any).message);
-    }
+    },
   });
   return mutation;
 };

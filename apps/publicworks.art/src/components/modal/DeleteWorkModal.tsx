@@ -12,12 +12,14 @@ export const DeleteWorkModal = () => {
   const work = ModalStore.state.data?.work;
   const login = useClientLoginMutation();
   const deleteWork = trpcNextPW.works.deleteWork.useMutation();
-  const deleteWorkAndClose = useMutation(async () => {
-    if (work?.id) {
-      await login.mutateAsync();
-      await deleteWork.mutateAsync({ workId: work?.id });
-    }
-    ModalStore.close();
+  const deleteWorkAndClose = useMutation({
+    mutationFn: async () => {
+      if (work?.id) {
+        await login.mutateAsync();
+        await deleteWork.mutateAsync({ workId: work?.id });
+      }
+      ModalStore.close();
+    },
   });
 
   return (
@@ -31,17 +33,17 @@ export const DeleteWorkModal = () => {
       <Modal.Footer>
         <Button
           variant="secondary"
-          disabled={deleteWork.isLoading}
+          disabled={deleteWork.isPending}
           onClick={() => ModalStore.close()}
         >
           Close
         </Button>
         <Button
           variant="danger"
-          disabled={deleteWork.isLoading}
+          disabled={deleteWork.isPending}
           onClick={() => deleteWorkAndClose.mutate()}
         >
-          Delete {deleteWork.isLoading ? <SpinnerLoading /> : ""}
+          Delete {deleteWork.isPending ? <SpinnerLoading /> : ""}
         </Button>
       </Modal.Footer>
     </div>

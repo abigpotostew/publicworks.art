@@ -10,7 +10,7 @@ interface ModalData {
 
 interface State {
   open: boolean;
-  view?: "DeleteWorkModal" | "LoginModal";
+  view?: "DeleteWorkModal" | "LoginModal" | "ConfirmInstantiate";
 
   data?: ModalData;
 }

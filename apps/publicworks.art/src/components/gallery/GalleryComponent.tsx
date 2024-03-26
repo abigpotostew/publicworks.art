@@ -6,8 +6,8 @@ import stylesWork from "../../../styles/Work.module.scss";
 import { useRouter } from "next/router";
 import { isStarAddress, shortenAddress } from "../../wasm/address";
 import { StarsAddressName } from "../name/StarsAddressName";
-import { useNumMinted } from "../../hooks/useNumMinted";
 import { useCollectionSize } from "../../hooks/useCollectionSize";
+import { useNumMintedOnChain } from "../../hooks/useNumMintedOnChain";
 
 export const GalleryComponent = ({
   work,
@@ -21,7 +21,7 @@ export const GalleryComponent = ({
   });
   const w = work;
   const router = useRouter();
-  const numMinted = useNumMinted(work.slug);
+  const numMinted = useNumMintedOnChain(work.minter);
   const collectionSize = useCollectionSize(work.minter);
 
   let creatorName = w.creator;
@@ -41,7 +41,7 @@ export const GalleryComponent = ({
       <Card.Img
         className={styles.workCardImage}
         variant="top"
-        src={query.isSuccess ? query.data : ""}
+        src={query.isSuccess ? query.data ?? undefined : ""}
       />
       <Card.Body>
         <Card.Title className={stylesWork.workSmallTitle}>{w.name}</Card.Title>

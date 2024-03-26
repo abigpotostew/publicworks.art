@@ -37,47 +37,49 @@ export const useUploadWorkMutation = (workId: number | null | undefined) => {
     trpcNextPW.works.confirmWorkUpload.useMutation();
   const login = useClientLoginMutation();
 
-  const onUploadMutation = useMutation(async (files: File[]) => {
-    if (!workId) {
-      const msg = "work id not defined";
-      toast.error(msg);
-      throw new Error(msg);
-    }
-    const contentSize = files[0].size;
+  const onUploadMutation = useMutation({
+    mutationFn: async (files: File[]) => {
+      if (!workId) {
+        const msg = "work id not defined";
+        toast.error(msg);
+        throw new Error(msg);
+      }
+      const contentSize = files[0].size;
 
-    await login.mutateAsync();
-    const uploadTmp = await onWorkUploadFileMutation.mutateAsync({
-      workId: workId,
-      contentSize,
-    });
-
-    if (!uploadTmp.ok) {
-      const msg =
-        "Something went wrong while uploading the code work, try again.";
-      toast.error(msg);
-      throw new Error(msg);
-    }
-    await onWorkUploadNew(
-      workId,
-      files,
-      utils,
-      uploadTmp.url,
-      uploadTmp.method
-    );
-    try {
       await login.mutateAsync();
-      await confirmWorkUploadFileMutation.mutateAsync({
-        workId,
-        uploadId: uploadTmp.uploadId,
+      const uploadTmp = await onWorkUploadFileMutation.mutateAsync({
+        workId: workId,
+        contentSize,
       });
-    } catch (e) {
-      const msg =
-        "Something went wrong. Failed to save work to IPFS. Try again.";
-      console.error(msg, e);
-      toast.error(msg);
-      throw new Error(msg);
-    }
-    utils.works.getWorkById.invalidate({ id: workId });
+
+      if (!uploadTmp.ok) {
+        const msg =
+          "Something went wrong while uploading the code work, try again.";
+        toast.error(msg);
+        throw new Error(msg);
+      }
+      await onWorkUploadNew(
+        workId,
+        files,
+        utils,
+        uploadTmp.url,
+        uploadTmp.method
+      );
+      try {
+        await login.mutateAsync();
+        await confirmWorkUploadFileMutation.mutateAsync({
+          workId,
+          uploadId: uploadTmp.uploadId,
+        });
+      } catch (e) {
+        const msg =
+          "Something went wrong. Failed to save work to IPFS. Try again.";
+        console.error(msg, e);
+        toast.error(msg);
+        throw new Error(msg);
+      }
+      utils.works.getWorkById.invalidate({ id: workId });
+    },
   });
   return onUploadMutation;
 };

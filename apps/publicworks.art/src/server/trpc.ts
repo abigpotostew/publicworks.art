@@ -4,7 +4,6 @@ import { stores } from "../store/stores";
 import { Context } from "./context";
 import superjson from "superjson";
 import { NextApiRequest, NextApiResponse } from "next";
-import { initializeIfNeeded } from "../typeorm/datasource";
 
 export const t = initTRPC.context<Context>().create({
   transformer: superjson,
@@ -71,7 +70,7 @@ function createAuthorizedMiddleware() {
 
 export const baseProcedure = t.procedure.use(
   t.middleware(async ({ ctx, next }) => {
-    await initializeIfNeeded();
+    //db initialization
     return next({ ctx });
   })
 );

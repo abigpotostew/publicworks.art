@@ -33,7 +33,6 @@ import Link from "next/link";
 import config from "src/wasm/config";
 
 // export const getServerSideProps: GetServerSideProps = async (context) => {
-//   await initializeIfNeeded();
 //   const workId = context.params?.workId;
 //   if (!workId || typeof workId !== "string") {
 //     return {
@@ -63,7 +62,7 @@ const stages = [
   "text",
   "nft_detail",
   "cover_image",
-  "submit",
+  "publish",
   "view",
 ] as const;
 type Stage = (typeof stages)[number];
@@ -78,7 +77,7 @@ const stageContinuationCondition: Record<Stage, (keyof WorkSerializable)[]> = {
     "resolution",
   ],
   cover_image: ["coverImageCid"],
-  submit: ["minter"],
+  publish: ["minter"],
   view: ["minter"],
 };
 
@@ -95,8 +94,8 @@ const stageMd = {
   cover_image: {
     label: "Image",
   },
-  submit: {
-    label: "Submit",
+  publish: {
+    label: "Publish",
   },
   view: {
     label: "Mint",
@@ -162,14 +161,14 @@ const EditWorkPage = () => {
   const sgwallet = useWallet();
 
   const login = useClientLoginMutation();
-  const { stage: stageQp } = router.query;
+  const stageQp = router.query.step?.toString();
   const [stage, setStageState] = useState<Stage | null>(null);
-  // useUserRequired("/create/" + workIdIn + "?stage=" + stageQp);
-  const redirectUrl = "/create/" + workIdIn + "?stage=" + stageQp;
+  // useUserRequired("/create/" + workIdIn + "?step=" + stageQp);
+  const redirectUrl = "/create/" + workIdIn + "?step=" + stageQp;
   useEffect(() => {
-    const stage = stages.find((s) => s === router.query?.stage?.toString());
+    const stage = stages.find((s) => s === stageQp);
     setStageState(stage || stages[0]);
-  }, [router]);
+  }, [stageQp]);
   const setStage = (newStage: Stage) => {
     setFormValid(false);
     setShowConfetti(false);
@@ -180,7 +179,7 @@ const EditWorkPage = () => {
       pathname,
       query: {
         ...query,
-        stage: newStage,
+        step: newStage,
       },
     });
   };
@@ -232,17 +231,23 @@ const EditWorkPage = () => {
 
   const onUpload = onUploadMutation.mutate;
 
+  // this ought to be moved down
   const { instantiateMutation } = useInstantiate();
   const [useSimulatedGasFee, setUseSimulatedGasFee] = useState<boolean>(false);
+
+  const [publishModalOpen, setPublishModalOpen] = useState(false);
+  const onPublishModalOpen = useCallback((isOpen: boolean) => {
+    setPublishModalOpen(isOpen);
+  }, []);
 
   const onInstantiate = useCallback(async () => {
     //confetti
     if (!work) return;
     const success = await instantiateMutation.mutateAsync({ work });
     if (!success) return;
-    console.log("instantiate and showing confettie");
     toast.success("Successfully instantiated!");
     setShowConfetti(true);
+    setPublishModalOpen(false);
   }, [work, instantiateMutation, toast, useSimulatedGasFee]);
 
   const createStep = (stageEnum: Stage): Step => {
@@ -281,14 +286,6 @@ const EditWorkPage = () => {
   const canMoveToNext =
     canOperate && formTouched ? mutation.isSuccess && formValid : formValid;
 
-  console.log("canMoveToNext", {
-    canMoveToNext,
-    canOperate,
-    formTouched,
-    isSuccess: mutation.isSuccess,
-    formValid,
-  });
-
   const steps = stages.map((s) => {
     return createStep(s);
   });
@@ -298,6 +295,7 @@ const EditWorkPage = () => {
   //     toast.errorLoginModal();
   //   }
   // }, [workId, hasToken, toast]);
+
   const testnetComponent = config.testnet ? null : (
     <Alert variant={"warning"}>
       Test your collection on{" "}
@@ -319,7 +317,7 @@ const EditWorkPage = () => {
         <StepProgressBar items={steps}></StepProgressBar>
         <>
           <FlexBoxCenter fluid={false} className={"tw-pb-24"}>
-            {stage === "submit" && (
+            {stage === "publish" && (
               <>
                 <div>
                   {work && (
@@ -327,13 +325,16 @@ const EditWorkPage = () => {
                       work={work}
                       setUseSimulatedGasFee={setUseSimulatedGasFee}
                       onInstantiate={onInstantiate}
+                      instantiatePending={instantiateMutation.isPending}
+                      onPublishOpen={onPublishModalOpen}
+                      publishModalOpen={publishModalOpen}
                     />
                   )}
                 </div>
                 <NavButtons
-                  onPrevClick={() => setStagePrevFrom("submit")}
+                  onPrevClick={() => setStagePrevFrom("publish")}
                   onNextClick={
-                    work?.sg721 ? () => setStageNextFrom("submit") : undefined
+                    work?.sg721 ? () => setStageNextFrom("publish") : undefined
                   }
                 ></NavButtons>
               </>
@@ -384,7 +385,7 @@ const EditWorkPage = () => {
                       onCreateProject={onCreateProject}
                       defaultValues={work}
                     />
-                    {!mutation.isLoading && mutation.error && (
+                    {!mutation.isPending && mutation.error && (
                       <div>{mutation.error.message}</div>
                     )}
                     {/*{mutation.isSuccess && <div>Successfully saved</div>}*/}
@@ -411,7 +412,7 @@ const EditWorkPage = () => {
                           defaultValues={work}
                           formValid={setFormState}
                         />
-                        {!mutation.isLoading && mutation.error && (
+                        {!mutation.isPending && mutation.error && (
                           <div>{mutation.error.message}</div>
                         )}
                         {/*{mutation.isSuccess && <div>Successfully saved</div>}*/}
@@ -470,14 +471,14 @@ const EditWorkPage = () => {
                         defaultValues={work}
                       />
                       <>
-                        {onUploadMutation.isLoading && (
+                        {onUploadMutation.isPending && (
                           <div>
                             Uploading... <SpinnerLoading />
                           </div>
                         )}
                       </>
                       <>
-                        {!onUploadMutation.isLoading &&
+                        {!onUploadMutation.isPending &&
                           onUploadMutation.isSuccess && (
                             <div className={"mt-2"}>
                               Successfully uploaded code!
@@ -486,7 +487,7 @@ const EditWorkPage = () => {
                       </>
                       <>
                         {" "}
-                        {!onUploadMutation.isLoading &&
+                        {!onUploadMutation.isPending &&
                           onUploadMutation.error && (
                             <div>
                               {(onUploadMutation?.error as any)?.message}
@@ -494,7 +495,7 @@ const EditWorkPage = () => {
                           )}
                       </>
                       <>
-                        {!mutation.isLoading && mutation.error && (
+                        {!mutation.isPending && mutation.error && (
                           <div>{mutation.error.message}</div>
                         )}
                       </>

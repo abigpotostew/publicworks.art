@@ -22,7 +22,8 @@ export const PagedGallery: FC<Props> = ({
     Number.isFinite(parseInt(router.query.page))
       ? parseInt(router.query.page)
       : 1;
-  const [page, setPage] = useState<number>(pageIn);
+  const page = pageIn;
+  // const [page, setPage] = useState<number>(pageIn);
 
   const limit = 9;
 
@@ -65,19 +66,10 @@ export const PagedGallery: FC<Props> = ({
 
   const changePage = (page: number) => {
     const newPage = Math.max(pages[0], Math.min(page, pages[pages.length - 1]));
-    router.push(
-      {
-        pathname: `./${slug}`,
-        query: { page: newPage.toString() },
-        // search: { page: page.toString() },
-      },
-      {
-        pathname: `./${slug}`,
-        query: { page: newPage.toString() },
-      },
-      { scroll: false }
-    );
-    setPage(newPage);
+    router.push(`/work/${slug}?page=${newPage}`, undefined, {
+      shallow: true,
+      scroll: false,
+    });
 
     // update whatever
     // window.scrollTo(0, 0);

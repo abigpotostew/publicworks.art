@@ -4,7 +4,7 @@ export const emptyTrpcQueryResult = <T>(): UseTRPCQueryResult<T, any> => {
   return {
     isLoadingError: false,
     isRefetchError: false,
-    status: "loading",
+    status: "pending",
     isSuccess: false,
     isError: false,
     data: undefined,

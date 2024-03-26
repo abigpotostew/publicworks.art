@@ -9,6 +9,7 @@ import {
   SignArbitraryVerification,
   SignatureVerify,
 } from "src/wasm/keplr/strategies";
+import * as Sentry from "@sentry/browser";
 
 export async function signMessageAndLoginIfNeeded(sg: StargazeClient) {
   const token = getToken();
@@ -33,7 +34,9 @@ export async function signMessageAndLoginIfNeeded(sg: StargazeClient) {
   }
   if (!token || needsTokenRefresh) {
     const otp = Math.floor(Math.random() * 100_000).toString();
-    return signMessageAndLogin(otp, sg);
+    const signedResult = signMessageAndLogin(otp, sg);
+    Sentry.setUser({ address: sg.wallet.address, chainId: sg.wallet.chainId });
+    return signedResult;
   }
   return null;
 }
@@ -143,11 +146,11 @@ const signLoginMessageWithArbitrary: SigningStrategy<
   if (!keplr) {
     throw new Error("Keplr not installed");
   }
-  const key = await keplr.getKey(chainInfo.chainId);
+  const key = await keplr.getKey(chainInfo().chainId);
   const userAddress = key.bech32Address;
 
   const signature = await keplr.signArbitrary(
-    chainInfo.chainId,
+    chainInfo().chainId,
     userAddress,
     JSON.stringify(buildMessage(otp))
   );

@@ -16,7 +16,7 @@ import {
   fromTimestamp,
   useSetDutchAuction,
 } from "../../hooks/useUpdateDutchAuction";
-import { Alert, Collapse, Form } from "react-bootstrap";
+import { Alert, Collapse, Form, InputGroup } from "react-bootstrap";
 import { TooltipInfo } from "../tooltip";
 import { parseISO } from "date-fns";
 import { DutchAuctionChart } from "../dutch-action-chart/DutchAuctionChart";
@@ -70,10 +70,8 @@ export const ChangePrice = ({ minter, work }: Props) => {
   const formik = useFormik({
     initialValues: defaults,
     onSubmit: async (values, { resetForm }) => {
-      console.log("hi here in submit", values);
       if (values.isDutchAuction && setDutchAuctionMutation) {
         //todo only allow this for new minters
-
         await setDutchAuctionMutation.mutateAsync({
           work,
           config: {
@@ -349,10 +347,10 @@ export const ChangePrice = ({ minter, work }: Props) => {
                   auction end. When equal to 0.5 the price drops linearly.
                 </TooltipInfo>
               </Form.Label>
-              <Form.Group>
+              <InputGroup>
                 <Form.Control
                   type="range"
-                  step="0.000001"
+                  step="0.0001"
                   min="0.000001"
                   max={"0.999999"}
                   onWheel={numberInputOnWheelPreventChange}
@@ -368,8 +366,29 @@ export const ChangePrice = ({ minter, work }: Props) => {
                     !!formik.errors.dutchAuctionDecayRate
                   }
                 />
-                <Form.Text>{formik.values.dutchAuctionDecayRate}</Form.Text>
-              </Form.Group>
+                <Form.Control
+                  className={""}
+                  type="number"
+                  min="0.0"
+                  step="0.0001"
+                  max={"1.0"}
+                  onWheel={numberInputOnWheelPreventChange}
+                  value={formik.values.dutchAuctionDecayRate}
+                  name="dutchAuctionDecayRate"
+                  onChange={formik.handleChange}
+                  isValid={
+                    formik.touched.dutchAuctionDecayRate &&
+                    !formik.errors.dutchAuctionDecayRate
+                  }
+                  isInvalid={
+                    formik.touched.dutchAuctionDecayRate &&
+                    !!formik.errors.dutchAuctionDecayRate
+                  }
+                />
+                {/*<InputGroup.Text className={"tw-w-25"}>*/}
+                {/*  {formik.values.dutchAuctionDecayRate}*/}
+                {/*</InputGroup.Text>*/}
+              </InputGroup>
 
               <Form.Control.Feedback type="invalid">
                 {formik.errors.dutchAuctionDecayRate}

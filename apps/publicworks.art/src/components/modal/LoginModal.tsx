@@ -10,9 +10,11 @@ import { useClientLoginMutation } from "../../hooks/useClientLoginMutation";
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export const LoginModal = () => {
   const login = useClientLoginMutation();
-  const loginAndClose = useMutation(async () => {
-    await login.mutateAsync();
-    ModalStore.close();
+  const loginAndClose = useMutation({
+    mutationFn: async () => {
+      await login.mutateAsync();
+      ModalStore.close();
+    },
   });
   return (
     <div>
@@ -26,10 +28,10 @@ export const LoginModal = () => {
       <Modal.Footer>
         <Button
           variant="primary"
-          disabled={loginAndClose.isLoading}
+          disabled={loginAndClose.isPending}
           onClick={() => loginAndClose.mutate()}
         >
-          Login {loginAndClose.isLoading ? <SpinnerLoading /> : ""}
+          Login {loginAndClose.isPending ? <SpinnerLoading /> : ""}
         </Button>
       </Modal.Footer>
     </div>

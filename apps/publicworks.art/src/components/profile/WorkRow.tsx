@@ -1,32 +1,24 @@
 // @flow
 import * as React from "react";
-import { WorkSerializable } from "../../../../../packages/db-typeorm/src/serializable/works/workSerializable";
 import { FC } from "react";
+import { WorkSerializable } from "../../../../../packages/db-typeorm/src/serializable/works/workSerializable";
 import Link from "next/link";
 import { FlexBox } from "../layout/FlexBoxCenter";
-import { Pill } from "../content/Pill";
 import { PillSmall } from "../content/PillSmall";
 import styles from "./UserProfile.module.scss";
-import { useNumMinted } from "../../hooks/useNumMinted";
 import SpinnerLoading from "../loading/Loader";
-import {
-  ButtonGroup,
-  Col,
-  Container,
-  Dropdown,
-  Form,
-  Row,
-  SplitButton,
-} from "react-bootstrap";
+import { ButtonGroup, Dropdown, Form } from "react-bootstrap";
 import { useLastMintedToken } from "../../hooks/useLastMintedToken";
 import { relativeTimeFromDates } from "../../util/date-fmt/format";
-import { ButtonPW, ButtonPWFRef } from "../button/Button";
+import { ButtonPWFRef } from "../button/Button";
 import { trpcNextPW } from "../../server/utils/trpc";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidateWork } from "../../hooks/work/useInvalidateWork";
 import useUserContext from "../../context/user/useUserContext";
 import ModalStore from "../../modal/ModalStore";
 import { useClientLoginMutation } from "src/hooks/useClientLoginMutation";
+import { useNumMintedOnChain } from "../../hooks/useNumMintedOnChain";
+
 interface Props {
   work: WorkSerializable;
   onChange: () => void;
@@ -46,7 +38,7 @@ function EditButtonDropdown({ work }: { work: WorkSerializable }) {
           disabled={!!work.sg721}
           onClick={() => ModalStore.open("DeleteWorkModal", { work })}
         >
-          Delete
+          <label>Delete</label>
         </Dropdown.Item>
         {/*<Dropdown.Item href="#/action-2">Another action</Dropdown.Item>*/}
         {/*<Dropdown.Item href="#/action-3">Something else</Dropdown.Item>*/}
@@ -56,7 +48,7 @@ function EditButtonDropdown({ work }: { work: WorkSerializable }) {
 }
 
 export const WorkRow: FC<Props> = ({ work, onChange }: Props) => {
-  const numMinted = useNumMinted(work.slug);
+  const numMinted = useNumMintedOnChain(work.minter);
   const lastMintedToken = useLastMintedToken(work.slug);
   const { user } = useUserContext();
   const collectionSize = work.maxTokens;
@@ -69,26 +61,25 @@ export const WorkRow: FC<Props> = ({ work, onChange }: Props) => {
   const login = useClientLoginMutation();
 
   const editWorkMutation = trpcNextPW.works.editWork.useMutation();
-  const setHiddenMutation = useMutation(
-    async (hidden: boolean) => {
+  const setHiddenMutation = useMutation({
+    mutationFn: async ({ hidden }: { hidden: boolean }) => {
       await login.mutateAsync();
       console.log("setting hidden to", hidden);
       await editWorkMutation.mutateAsync({ id: work.id, hidden });
     },
-    {
-      onSuccess: () => {
-        try {
-          console.log("invalidating work");
-          onChange();
-        } catch (e) {
-          console.log("error invalidating", e);
-        }
-      },
-    }
-  );
+
+    onSuccess: () => {
+      try {
+        console.log("invalidating work");
+        onChange();
+      } catch (e) {
+        console.log("error invalidating", e);
+      }
+    },
+  });
 
   const onHide = (hidden: boolean) => {
-    setHiddenMutation.mutate(hidden);
+    setHiddenMutation.mutate({ hidden });
   };
 
   return (
@@ -117,8 +108,10 @@ export const WorkRow: FC<Props> = ({ work, onChange }: Props) => {
         <div className={"mt-1"}>
           <FlexBox>
             <div className={"fs-7"}>
-              {numMinted.isLoading ? <SpinnerLoading /> : numMinted.data} /{" "}
-              {collectionSize} Minted
+              <>
+                {numMinted.isLoading ? <SpinnerLoading /> : numMinted.data} /{" "}
+                {collectionSize} Minted
+              </>
             </div>
             <div className={"fs-7 ms-2"}>
               Last Mint:{" "}
@@ -138,7 +131,7 @@ export const WorkRow: FC<Props> = ({ work, onChange }: Props) => {
               id="custom-switch"
               label="Hidden"
               defaultChecked={!!work.hidden}
-              disabled={!user.data || setHiddenMutation.isLoading}
+              disabled={!user.data || setHiddenMutation.isPending}
               onChange={(e) => {
                 onHide(e.target.checked);
               }}

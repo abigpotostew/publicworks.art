@@ -1,14 +1,9 @@
-import React, { FC, FormEventHandler, useCallback, useState } from "react";
+import React, { FC } from "react";
 import { Form } from "react-bootstrap";
 import { EditProjectRequest } from "../../store/project.types";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
-import { RowWideContainer } from "../layout/RowWideContainer";
-import { LiveMedia } from "../media/LiveMedia";
-import { generateTxHash } from "../../generateHash";
-import { BsArrowRepeat } from "react-icons/bs";
-import { FlexBox } from "../layout/FlexBoxCenter";
 import { DropZone } from "../DropZone";
-import { ButtonPW as Button } from "../button/Button";
+import { ButtonPW, ButtonPW as Button } from "../button/Button";
 import { TooltipInfo } from "src/components/tooltip/TooltipInfo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useFormik } from "formik";
@@ -16,7 +11,6 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
 import { NeedToLoginButton } from "../login/NeedToLoginButton";
 import useUserContext from "../../context/user/useUserContext";
-import { RowMediumContainer } from "../layout/RowMediumContainer";
 import { CreateLayout } from "./CreateLayout";
 
 const schema = z.object({
@@ -63,7 +57,7 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
       >
         <div className={"tw-flex tw-justify-center"}>
           <CreateLayout
-            codeCid={defaults.codeCid}
+            codeCid={defaults.codeCid ?? undefined}
             hideLiveMedia={!props.onUpload}
           >
             {!props.hideTitle && (
@@ -74,7 +68,7 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                 Name{" "}
                 <TooltipInfo>
                   Your work name is highly visible, on and off chain. This can
-                  be changed later.
+                  be changed later but not after deploying on chain.
                 </TooltipInfo>
               </Form.Label>
               <Form.Control
@@ -109,8 +103,14 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                     props?.onUpload && props.onUpload(files)
                   }
                 >
-                  <FontAwesomeIcon icon={"upload"} width={16} /> Drag and drop
-                  your project zip file here, or click to upload
+                  <div
+                    className={"tw-flex tw-flex-row tw-items-center tw-gap-4"}
+                  >
+                    <ButtonPW variant={"outline-primary"}>
+                      <FontAwesomeIcon icon={"upload"} width={16} /> Upload
+                    </ButtonPW>
+                    Drag and drop your project zip file here, or click to upload
+                  </div>
                 </DropZone>
               </div>
             )}

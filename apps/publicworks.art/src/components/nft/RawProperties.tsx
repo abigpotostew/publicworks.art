@@ -1,12 +1,12 @@
 import { RawTokenProperties } from "src/types/Sandbox";
-import React, { FC, Fragment } from "react";
-import { Pill } from "src/components/content/Pill";
-import { Row } from "react-bootstrap";
+import React, { FC } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { validAttributes } from "@publicworks/shared-utils/attributes";
+
 interface Props {
   properties: RawTokenProperties;
 }
+
 export const RawProperties: FC<RawTokenProperties> = (
   props: RawTokenProperties
 ) => {

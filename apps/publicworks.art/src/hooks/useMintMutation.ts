@@ -69,8 +69,8 @@ export const useMintMutation = () => {
   const client = useStargazeClient();
   const toast = useToast();
 
-  const mutation = useMutation(
-    async (opts: {
+  const mutation = useMutation({
+    mutationFn: async (opts: {
       minter: string;
       price: string;
       quantity: number;
@@ -101,8 +101,8 @@ export const useMintMutation = () => {
         );
         throw e;
       }
-    }
-  );
+    },
+  });
 
   return mutation;
 };

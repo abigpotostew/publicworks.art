@@ -39,7 +39,7 @@ const createWork = authorizedProcedure
     return serializeWork(project.value);
   });
 const editWork = authorizedProcedure
-  .input(editProjectZod)
+  .input(editProjectZod.omit({ sg721: true, minter: true }))
 
   .mutation(async ({ input, ctx }) => {
     const user = ctx?.user;
@@ -51,7 +51,14 @@ const editWork = authorizedProcedure
       throw new TRPCError({ code: "NOT_FOUND" });
     }
 
-    const project = await stores().project.updateProject(input.id, input);
+    const startDate = input.startDate
+      ? new Date(input.startDate)
+      : work.startDate ?? new Date(0);
+    const project = await stores().project.updateProject(input.id, {
+      ...input,
+      hidden: input.hidden === undefined ? work.hidden : input.hidden,
+      startDate: startDate.toISOString(),
+    });
     if (!project.ok) {
       throw new TRPCError({ code: "BAD_REQUEST" });
     }
@@ -78,7 +85,7 @@ const editWorkContracts = authorizedProcedure
     //fetch version on chain
     const fetchCodeId = async (address: string) => {
       try {
-        const url = `${chainInfo.rest}/cosmwasm/wasm/v1/contract/${address}`;
+        const url = `${chainInfo().rest}/cosmwasm/wasm/v1/contract/${address}`;
         const response = await fetch(url);
         const data = await response.json();
         return parseInt(data.contract_info.code_id);
@@ -99,23 +106,27 @@ const editWorkContracts = authorizedProcedure
 
     if (
       sg721CodeId === work.sg721CodeId &&
-      minterCodeId === work.minterCodeId
+      minterCodeId === work.minterCodeId &&
+      input.sg721 === work.sg721 &&
+      input.minter === work.minter
     ) {
       console.log("no change to contracts");
       return serializeWork(work);
     }
     const project = await stores().project.updateProject(input.id, {
       ...input,
+      hidden: work.hidden,
       sg721CodeId,
       minterCodeId,
+      startDate: (work.startDate || new Date(0)).toISOString(),
     });
     if (!project.ok) {
       throw new TRPCError({ code: "BAD_REQUEST" });
     }
     //delete work tokens too in the case that the work was already minted then stop
-    //todo index the work tokens by contract id instead of work id
-    const deleteRes = await stores().project.deleteWorkTokens(input.id);
-    console.log("deleted existing work tokens", deleteRes);
+    //todo stew
+    // const deleteRes = await stores().project.deleteWorkTokens(input.id);
+    // console.log("deleted existing work tokens", deleteRes);
     return serializeWork(project.value);
   });
 const getWorkById = baseProcedure
@@ -174,7 +185,7 @@ const listWorks = baseProcedure
   .input(
     z.object({
       limit: z.number().min(1).max(100).default(10),
-      cursor: z.number().min(0).max(10000).nullish(),
+      cursor: z.string().nullish(),
       publishedState: z
         .string()
         .optional()
@@ -213,7 +224,7 @@ const listAddressWorks = baseProcedure
     z.object({
       address: zodStarsAddress,
       limit: z.number().min(1).max(100).default(10),
-      cursor: z.number().min(0).max(10000).nullish(),
+      cursor: z.string().nullish(),
       publishedState: z
         .string()
         .optional()
@@ -252,10 +263,12 @@ const workPreviewImg = baseProcedure
     if (project?.coverImageCid) {
       return normalizeMetadataUri("ipfs://" + project.coverImageCid);
     }
-    const preview = await stores().project.getProjectPreviewImage(input.workId);
+    const preview = await stores().project.getProjectPreviewImage(
+      input.workId.toString()
+    );
 
     if (!preview || !preview.imageUrl) {
-      throw new TRPCError({ code: "NOT_FOUND" });
+      return null;
     }
     return normalizeMetadataUri(preview.imageUrl);
   });
@@ -316,6 +329,8 @@ const uploadPreviewImg = authorizedProcedure
     console.log("finished uploading");
     const response = await stores().project.updateProject(work.id, {
       coverImageCid,
+      hidden: work.hidden,
+      startDate: (work.startDate || new Date(0)).toISOString(),
     });
     if (!response.ok) {
       throw response.error;
@@ -354,7 +369,7 @@ const confirmWorkUpload = authorizedProcedure
   .input(
     z.object({
       workId: z.number(),
-      uploadId: z.string().cuid(),
+      uploadId: z.string().uuid(),
     })
   )
 
@@ -379,7 +394,9 @@ const uploadWorkCoverImageGenerateUrl = authorizedProcedure
   )
 
   .mutation(async ({ input, ctx }) => {
-    const work = await stores().project.getProject(input.workId);
+    const work = await stores().project.getProjectForId(
+      input.workId.toString()
+    );
     if (!work || work.owner.id !== ctx.user.id) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
@@ -406,12 +423,14 @@ const confirmWorkCoverImageUpload = authorizedProcedure
   .input(
     z.object({
       workId: z.number(),
-      uploadId: z.string().cuid(),
+      uploadId: z.string().uuid(),
     })
   )
 
   .mutation(async ({ input, ctx }) => {
-    const work = await stores().project.getProject(input.workId);
+    const work = await stores().project.getProjectForId(
+      input.workId.toString()
+    );
     if (!work || work.owner.id !== ctx.user.id) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
@@ -429,47 +448,65 @@ const deleteWork = authorizedProcedure
   )
 
   .mutation(async ({ input, ctx }) => {
-    const work = await stores().project.getProject(input.workId);
+    const work = await stores().project.getProjectForId(
+      input.workId.toString()
+    );
     if (!work || work.owner.id !== ctx.user.id) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
-
+    if (work.sg721) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "cannot delete published worked",
+      });
+    }
     return stores().project.deleteWork(work);
   });
 const tokenStatus = baseProcedure
   .input(
     z.object({
       workId: z.number(),
+      cursor: z.string().nullish(),
       take: z.number().int().positive().max(100).default(10),
-      skip: z.number().int().nonnegative().default(0),
     })
   )
 
   .query(async ({ input, ctx }) => {
-    const work = await stores().project.getProject(input.workId);
+    const work = await stores().project.getProjectForId(
+      input.workId.toString()
+    );
     if (!work) {
       throw new TRPCError({ code: "NOT_FOUND" });
     }
 
-    const { tokens, count } = await stores().project.listTokens({
-      work_id: input.workId.toString(),
-      take: input.take,
-      skip: input.skip,
-    });
+    const [{ items, nextOffset }, token] = await Promise.all([
+      stores().project.getProjectTokens2({
+        workId: input.workId,
+        limit: input.take,
+        offset: input.cursor ?? undefined,
+        publishedState: "PUBLISHED",
+      }),
+      stores().project.lastMintedToken(work.slug),
+    ]);
 
-    return { tokens: tokens.map(serializeWorkTokenFull), count };
+    //todo stew the count needs to be removed from the FE
+    return {
+      items: items.map(serializeWorkTokenFull),
+      nextCursor: nextOffset,
+      count: token?.token_id ? parseInt(token.token_id) : 0,
+    };
   });
 
 export const workRouter = t.router({
   // Public
   createWork: createWork,
-  editWork,
+  editWork: editWork,
   editWorkContracts,
   getWorkById: getWorkById,
   getWorkBySlug,
   getWorkTokenByTokenId: getWorkTokenByTokenId,
   listWorks: listWorks,
-  workPreviewImg,
+  workPreviewImg: workPreviewImg,
   uploadPreviewImg: uploadPreviewImg,
   listAddressWorks: listAddressWorks,
   workTokenCount: workTokenCount,
