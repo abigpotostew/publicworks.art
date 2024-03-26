@@ -77,7 +77,7 @@ export const useNftMetadata = ({
       }
     },
     {
-      enabled: !!sg721 && !!tokenId,
+      enabled: !!sg721,
       refetchOnMount: !!refresh,
       refetchOnWindowFocus: !!refresh,
       refetchOnReconnect: !!refresh,
