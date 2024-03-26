@@ -57,15 +57,15 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
   const [changePriceVisible, setChangePriceVisible] = useState<boolean>(false);
   const migrateMutate = useMigrateMutation();
   const login = useClientLoginMutation();
-  const migrateMutationClient = useMutation(
-    async ({ minter }: { minter?: string | null }) => {
+  const migrateMutationClient = useMutation({
+    mutationFn: async ({ minter }: { minter?: string | null }) => {
       if (!minter) {
         return;
       }
       await login.mutateAsync();
       await migrateMutate.mutateAsync({ minter });
-    }
-  );
+    },
+  });
 
   const getMinterQuery = useMinter(minter);
   const defaults = {
@@ -81,20 +81,22 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
     validationSchema: toFormikValidationSchema(schema),
   });
   const { mutation: airdropMutationOnChain } = useMintAirdrop();
-  const airdropMutation = useMutation(async (addressList: string) => {
-    if (!minter || !slug) {
-      throw new Error("missing minter address");
-    }
-    const addresses = addressList
-      .split(",")
-      .map((a) => a.trim())
-      .filter((a) => isStarAddress(a));
-    console.log("airdropping to addresses", addresses);
-    await airdropMutationOnChain.mutateAsync({
-      recipients: addresses,
-      minter,
-      slug: slug,
-    });
+  const airdropMutation = useMutation({
+    mutationFn: async (addressList: string) => {
+      if (!minter || !slug) {
+        throw new Error("missing minter address");
+      }
+      const addresses = addressList
+        .split(",")
+        .map((a) => a.trim())
+        .filter((a) => isStarAddress(a));
+      console.log("airdropping to addresses", addresses);
+      await airdropMutationOnChain.mutateAsync({
+        recipients: addresses,
+        minter,
+        slug: slug,
+      });
+    },
   });
   mutateAidrop = airdropMutation.mutate;
 
@@ -117,7 +119,7 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
 
   return (
     <div className={"tw-pb-24 tw-flex tw-justify-center"}>
-      <CreateLayout codeCid={work?.codeCid} hideLiveMedia={false}>
+      <CreateLayout codeCid={work?.codeCid ?? undefined} hideLiveMedia={false}>
         <div className={"tw-p-4"}>
           <FlexBox>
             <ButtonPW
@@ -191,7 +193,7 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
                   <Button variant="info" type="submit" className={"Margin-T-1"}>
                     Airdrop!
                   </Button>
-                  {airdropMutation.isLoading && <SpinnerLoading />}
+                  {airdropMutation.isPending && <SpinnerLoading />}
                 </Form.Group>
               </Form>
             </Collapse>
@@ -230,7 +232,7 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
               }
               className={"Margin-T-1"}
             >
-              Migrate to V2! {migrateMutationClient.isLoading && <GrowingDot />}
+              Migrate to V2! {migrateMutationClient.isPending && <GrowingDot />}
             </Button>
           )}
         </div>

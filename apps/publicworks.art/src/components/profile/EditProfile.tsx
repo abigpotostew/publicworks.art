@@ -42,29 +42,33 @@ export const EditProfile: FC<EditProfileProps> = (props: EditProfileProps) => {
           }}
           noValidate
         >
-          <Form.Group className="mb-3" controlId="formName">
-            <Form.Label>
-              Username{" "}
-              <TooltipInfo>User name displayed on publicworks.art</TooltipInfo>
-            </Form.Label>
-            <Form.Control
-              value={formik.values.name}
-              onChange={formik.handleChange}
-              isValid={formik.touched.name && !formik.errors.name}
-              isInvalid={formik.touched.name && !!formik.errors.name}
-              name="name"
-            />
-            <Form.Control.Feedback type={"valid"}>
-              Looks good!
-            </Form.Control.Feedback>
-            <Form.Control.Feedback type="invalid">
-              {formik.errors.name}
-            </Form.Control.Feedback>
-          </Form.Group>
+          <>
+            <Form.Group className="mb-3" controlId="formName">
+              <Form.Label>
+                Username{" "}
+                <TooltipInfo>
+                  User name displayed on publicworks.art
+                </TooltipInfo>
+              </Form.Label>
+              <Form.Control
+                value={formik.values.name}
+                onChange={formik.handleChange}
+                isValid={formik.touched.name && !formik.errors.name}
+                isInvalid={formik.touched.name && !!formik.errors.name}
+                name="name"
+              />
+              <Form.Control.Feedback type={"valid"}>
+                Looks good!
+              </Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">
+                {formik.errors.name}
+              </Form.Control.Feedback>
+            </Form.Group>
 
-          <Button variant="primary" type="submit">
-            Save
-          </Button>
+            <Button variant="primary" type="submit">
+              Save
+            </Button>
+          </>
         </Form>
       </>
     </>

@@ -101,9 +101,9 @@ export const queryClient = new QueryClient({
 //     console.log("cache", event.type, event.query);
 // });
 export const trpcNextPW = createTRPCNext<AppRouter, SSRContext>({
+  transformer: superjson, // <-- add this
   config({ ctx }) {
     return {
-      transformer: superjson,
       links: [
         // httpBatchLink({
         //   /**
@@ -118,6 +118,7 @@ export const trpcNextPW = createTRPCNext<AppRouter, SSRContext>({
            * @link https://trpc.io/docs/ssr
            **/
           url: `${getBaseUrl()}/api/trpc`,
+          transformer: superjson,
         }),
       ],
       /**

@@ -13,6 +13,7 @@ import {
   PointElement,
   TimeSeriesScale,
 } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useEffect, useState } from "react";
 import { Bar, Line } from "react-chartjs-2";
 import {
@@ -30,6 +31,7 @@ ChartJS.register(
   Tooltip,
   Legend,
   TimeSeriesScale
+  // ChartDataLabels
 );
 
 type Props = {
@@ -107,6 +109,15 @@ export const DutchAuctionChart = ({
         legend: {
           display: false,
         },
+        datalabels: {
+          display: prices.length <= 40,
+          anchor: "end",
+          align: "top",
+          formatter: Math.round,
+          font: {
+            // weight: "bold",
+          },
+        },
       },
     };
     setOptions(opts2);
@@ -139,6 +150,7 @@ export const DutchAuctionChart = ({
             className={"w-100"}
             options={options}
             data={data}
+            plugins={[ChartDataLabels]}
           />
         </div>
       )}

@@ -19,5 +19,10 @@ export const serializeWorkToken = (entity: TokenEntity): TokenSerializable => {
 export const serializeWorkTokenFull = (
   entity: TokenEntity
 ): TokenFullSerializable => {
-  return tokenFullZod.parse(entity);
+  return tokenFullZod.parse({
+    ...entity,
+    blockheight: entity.blockHeight,
+    tx_hash: entity.txHash,
+    tx_memo: entity.txMemo,
+  });
 };

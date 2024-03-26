@@ -39,5 +39,6 @@ build/
 
 .env
 .env.*
+**/.turbo
 
 apps/publicworks.art/.sentryclirc

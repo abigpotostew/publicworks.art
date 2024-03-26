@@ -8,7 +8,6 @@ import { useTokenOwner } from "../../../src/hooks/useTokenOwner";
 import MainLayout from "../../../src/layout/MainLayout";
 import { cn } from "../../../src/lib/css/cs";
 import { stores } from "../../../src/store/stores";
-import { initializeIfNeeded } from "../../../src/typeorm/datasource";
 import {
   getTokenMetadata,
   normalizeIpfsCdnUri,
@@ -16,7 +15,6 @@ import {
   normalizeMetadataUri,
 } from "../../../src/wasm/metadata";
 import styles from "../../../styles/Work.module.scss";
-import { TokenEntity } from "@publicworks/db-typeorm/model/work.entity";
 import {
   serializeWork,
   serializeWorkToken,
@@ -37,28 +35,37 @@ import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 
 export async function getStaticPaths() {
   console.log("getStaticPaths, token");
-  await initializeIfNeeded();
   const out: { params: { slug: string; tokenId: string } }[] = [];
-  let nextOffset: number | undefined = undefined;
-  let tokens: TokenEntity[] = [];
-  do {
-    const res: { items: TokenEntity[]; nextOffset: number | undefined } =
-      await stores().project.getTokens({
+  let i = 0;
+  const getPublishedTokens = async () => {
+    const works = await stores().project.getProjects({
+      limit: 100,
+      publishedState: "PUBLISHED",
+      includeHidden: false,
+    });
+
+    for (const work of works.items) {
+      const tokens = await stores().project.getProjectTokens2({
+        workId: work.id,
         limit: 500,
-        offset: nextOffset ? nextOffset : 0,
         publishedState: "PUBLISHED",
-        includeHidden: true,
       });
-    nextOffset = res.nextOffset;
-    tokens = res.items;
-    out.push(
-      ...tokens.map((s) => {
-        return { params: { slug: s.work.slug, tokenId: s.token_id } };
-      })
-    );
-    console.log("getStaticPaths, token, nextOffset", nextOffset);
-  } while (nextOffset);
-  // const static = [work];
+
+      out.push(
+        ...tokens.items.map((s) => {
+          return { params: { slug: work.slug, tokenId: s.token_id } };
+        })
+      );
+      if (out.length >= 500) {
+        return;
+      }
+      i++;
+    }
+    return out;
+  };
+  await getPublishedTokens();
+  console.log("getProjectTokens, make", i, "calls");
+
   console.log("getStaticPaths, token, done");
   return {
     paths: out,
@@ -67,7 +74,6 @@ export async function getStaticPaths() {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  await initializeIfNeeded();
   const slug = context.params?.slug;
   const tokenId = context.params?.tokenId;
   if (typeof slug !== "string" || typeof tokenId !== "string") {
@@ -122,9 +128,9 @@ const WorkTokenPage = ({
   const { data } = workQuery;
   work = data || work;
 
-  const tokenMetadata = useQuery(
-    ["gettokenmetadata", slug, tokenId, work?.sg721],
-    async () => {
+  const tokenMetadata = useQuery({
+    queryKey: ["gettokenmetadata", slug, tokenId, work?.sg721],
+    queryFn: async () => {
       const sg721 = work?.sg721;
       if (!sg721) {
         throw new Error("No sg721");
@@ -148,8 +154,8 @@ const WorkTokenPage = ({
         return null;
       }
     },
-    { enabled: !!work && !!slug && !!tokenId && !!work?.sg721 }
-  );
+    enabled: !!work && !!slug && !!tokenId && !!work?.sg721,
+  });
 
   type Token = {
     image: string;

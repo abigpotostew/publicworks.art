@@ -1,6 +1,6 @@
-import cuid from "cuid";
 import { WorkEntity } from "src/store/model";
 import { Storage } from "@google-cloud/storage";
+import { createId } from "../store/uuid";
 
 export const getBucket = () => {
   if (!process.env.GCP_CREDENTIALS) {
@@ -21,7 +21,7 @@ export const createPresignedUrl = async (
   directory = "",
   contentSize?: number
 ) => {
-  const id = cuid();
+  const id = createId();
   const extension = contentType.split("/")[1];
   const filename = `${work.id}${
     directory ? "/" + directory : ""

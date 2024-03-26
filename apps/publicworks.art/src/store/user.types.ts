@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { UserEntity } from "@publicworks/db-typeorm/model/user.entity";
 
 export const usernameRegex = /^[a-zA-Z0-9-_]{3,15}$/;
 
@@ -22,3 +23,11 @@ export const EditUserRequestZ = z.object({
 });
 
 export type EditUserRequest = z.infer<typeof EditUserRequestZ>;
+
+export interface UserRepoI {
+  getUser(address: string): Promise<UserEntity | null>;
+
+  createIfNeeded(address: string): Promise<UserEntity | null>;
+
+  // editUser(userId: string, req: Partial<EditUserRequest>): Promise<void>;
+}

@@ -10,7 +10,6 @@ import { serializeSignDoc } from "../../src/wasm/keplr/query";
 import { fromBase64 } from "@cosmjs/encoding";
 import { issueToCookie } from "../../src/auth/jwt";
 import { stores } from "../../src/store/stores";
-import { initializeIfNeeded } from "../../src/typeorm/datasource";
 import {
   SignAminoVerification,
   SignArbitraryVerification,
@@ -24,7 +23,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  await initializeIfNeeded();
   if (req.method !== "POST") {
     res.status(404).json({ message: "not found" });
     return;
@@ -55,7 +53,7 @@ export default async function handler(
     const data = JSON.stringify(buildMessage(otp));
     // https://github.com/wgwz/simple-express-keplr-passport/pull/2
     verified = verifyADR36Amino(
-      chainInfo.bech32Config.bech32PrefixAccAddr,
+      chainInfo().bech32Config.bech32PrefixAccAddr,
       address,
       data,
       decodedPubKey,

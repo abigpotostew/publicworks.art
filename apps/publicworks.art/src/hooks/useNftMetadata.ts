@@ -1,5 +1,5 @@
 import config from "../wasm/config";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { fetchTokenUriInfo, normalizeMetadataUri } from "../wasm/metadata";
 import { useQuery } from "@tanstack/react-query";
 
@@ -42,13 +42,14 @@ export const useNftMetadata = ({
     [tokenId]
   );
 
-  const query = useQuery(
-    [
+  const query = useQuery({
+    queryKey: [
       sg721
         ? `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${sg721}/smart/${msgBase64}`
         : null,
+      tokenId,
     ],
-    async () => {
+    queryFn: async () => {
       if (!sg721 || !tokenId) {
         return null;
       }
@@ -76,13 +77,12 @@ export const useNftMetadata = ({
         setErrorFetch(e);
       }
     },
-    {
-      enabled: !!sg721,
-      refetchOnMount: !!refresh,
-      refetchOnWindowFocus: !!refresh,
-      refetchOnReconnect: !!refresh,
-    }
-  );
+
+    enabled: !!sg721&&!!tokenId,
+    refetchOnMount: !!refresh,
+    refetchOnWindowFocus: !!refresh,
+    refetchOnReconnect: !!refresh,
+  });
 
   // useEffect(() => {
   //   if (error) {

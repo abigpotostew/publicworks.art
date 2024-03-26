@@ -116,8 +116,8 @@ export const useMintAirdrop = () => {
   const client = useStargazeClient();
   const toast = useToast();
 
-  const mutation = useMutation(
-    async ({
+  const mutation = useMutation({
+    mutationFn: async ({
       recipients,
       minter,
       slug,
@@ -154,8 +154,8 @@ export const useMintAirdrop = () => {
       }
 
       return;
-    }
-  );
+    },
+  });
 
   return { mutation };
 };

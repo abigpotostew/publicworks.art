@@ -1,6 +1,6 @@
 import { trpcNextPW } from "src/server/utils/trpc";
 
-export const useNumMinted = (
+export const useNumMintedDb = (
   slug: string | null | undefined,
   refreshInterval: number | undefined = 10000
 ) => {

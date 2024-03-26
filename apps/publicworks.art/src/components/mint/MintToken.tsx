@@ -42,13 +42,13 @@ export const MintToken = ({ work }: Props) => {
   const loading =
     soldOutQuery.isLoading ||
     minterQuery.isLoading ||
-    mintMutation.isLoading ||
+    mintMutation.isPending ||
     minterPrice.isLoading;
   const mintDisabled =
     isSoldOut ||
     loading ||
     !work?.minter ||
-    mintMutation.isLoading ||
+    mintMutation.isPending ||
     !minterPrice.data ||
     !hasStarted;
 
@@ -118,7 +118,7 @@ export const MintToken = ({ work }: Props) => {
                 >
                   Mint
                   <>
-                    {mintMutation.isLoading ? (
+                    {mintMutation.isPending ? (
                       <>
                         {" "}
                         <span

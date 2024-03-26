@@ -1,20 +1,14 @@
 import { ButtonPW as Button } from "../button/Button";
-import { FlexBox } from "../layout/FlexBoxCenter";
-import { LiveMedia } from "../media/LiveMedia";
 import { TooltipInfo } from "../tooltip/TooltipInfo";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { useFormik } from "formik";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
-import { BsArrowRepeat } from "react-icons/bs";
 import { generateTxHash } from "src/generateHash";
 import { EditProjectRequest } from "src/store/project.types";
-import { normalizeMetadataUri } from "src/wasm/metadata";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
-import { RowThinContainer } from "../layout/RowThinContainer";
 import { CreateLayout } from "./CreateLayout";
-import { RowWideContainer } from "../layout/RowWideContainer";
 
 export interface CreateWorkProps {
   onCreateProject:
@@ -70,7 +64,10 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   }, [formik.isValid, formik.dirty, props]);
   return (
     <div className={"tw-pb-24 tw-flex tw-justify-center"}>
-      <CreateLayout codeCid={defaults.codeCid} hideLiveMedia={false}>
+      <CreateLayout
+        codeCid={defaults.codeCid ?? undefined}
+        hideLiveMedia={false}
+      >
         <h2 className={"tw-pt-4 tw-px-4"}>Work Description</h2>
         <Form
           onSubmit={(...a) => {

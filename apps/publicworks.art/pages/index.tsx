@@ -14,7 +14,6 @@ import { LogoHeader } from "src/components/logo/LogoHeader";
 import { RowMediumContainer } from "src/components/layout/RowMediumContainer";
 import { trpcNextPW } from "src/server/utils/trpc";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
-import { initializeIfNeeded } from "src/typeorm/datasource";
 import { appRouter } from "src/server/routes/_app";
 import { Context } from "src/server/context";
 import superjson from "superjson";
@@ -43,8 +42,6 @@ function GroupDivider() {
 }
 
 export async function getStaticProps(context: GetStaticPropsContext) {
-  await initializeIfNeeded();
-
   const ssg = await createServerSideHelpers({
     router: appRouter,
     ctx: {} as Context,
@@ -96,7 +93,6 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
       refetchOnMount: false,
       refetchOnReconnect: false,
       refetchIntervalInBackground: false,
-      keepPreviousData: true,
     }
   );
 
@@ -218,11 +214,15 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
                 gap: 10,
               }}
             >
-              <Link href={"https://twitter.com/stewbracken"}>
+              <Link href={"https://twitter.com/publicworksart_"}>
                 <Button variant={"secondary"}>Twitter</Button>
               </Link>
 
-              <Link href={"https://discord.gg/X6hSmrxdtW"}>
+              <Link
+                href={
+                  "https://discord.com/channels/755548171941445642/1109506526252642365"
+                }
+              >
                 <Button variant={"secondary"}>Discord</Button>
               </Link>
             </div>

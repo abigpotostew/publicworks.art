@@ -243,16 +243,17 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   return (
     <div className={"tw-pb-24 tw-flex tw-justify-center"}>
       <CreateLayout
-        codeCid={props.defaultValues?.codeCid}
+        codeCid={props.defaultValues?.codeCid ?? undefined}
         hideLiveMedia={false}
       >
         <h2 className={"tw-pt-4 tw-px-4"}>On Chain Configuration</h2>
         <div className={"tw-px-4 tw-pb-4"}>
           {!!props.defaultValues?.minter && (
             <Alert variant="info">
-              Your work is already instantiated on chain. Head over to{" "}
+              Your work is already instantiated on chain. Changes here will not
+              affect you deployed collection. Head over to{" "}
               <Alert.Link>
-                <Link href={`/create/${props.defaultValues?.id}?stage=view`}>
+                <Link href={`/create/${props.defaultValues?.id}?step=view`}>
                   Mint
                 </Link>
               </Alert.Link>{" "}
@@ -559,10 +560,10 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
 
               <Form.Group className="mb-3" controlId="formRoyaltyAddress">
                 <Form.Label>
-                  Royalty Address{" "}
+                  Primary and secondary sales payout address{" "}
                   <TooltipInfo>
-                    Royalty payout address for secondary marketplace sales.
-                    Note: Mint proceeds go to the creator's address.
+                    Royalty payout address for primary AND secondary marketplace
+                    sales. Accepts a split contract address.
                   </TooltipInfo>
                 </Form.Label>
                 <Form.Control

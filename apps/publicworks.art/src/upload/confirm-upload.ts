@@ -59,6 +59,8 @@ export const confirmUpload = async (uploadId: string, work: WorkEntity) => {
 
   const updateRes = await stores().project.updateProject(work.id, {
     codeCid: cid,
+    hidden: work.hidden,
+    startDate: (work.startDate || new Date(0)).toISOString(),
   });
 
   // if (updateRes.ok) {
@@ -109,6 +111,8 @@ export const confirmCoverImageUpload = async (
 
   const updateRes = await stores().project.updateProject(work.id, {
     coverImageCid: newCid,
+    hidden: work.hidden,
+    startDate: (work.startDate || new Date(0)).toISOString(),
   });
 
   // if (updateRes.ok) {

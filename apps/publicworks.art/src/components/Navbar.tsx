@@ -31,6 +31,7 @@ export const NavBar: FC = () => {
             <Nav.Link href="/about">About</Nav.Link>
             <Nav.Link href="/docs">Docs</Nav.Link>
             <Nav.Link href="/blog">Blog</Nav.Link>
+            <Nav.Link href="/status">Status</Nav.Link>
           </Nav>
         </Navbar.Collapse>
 

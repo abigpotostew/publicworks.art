@@ -16,7 +16,7 @@ import {
   faXmark,
   faArrowUpRightFromSquare,
 } from "@fortawesome/free-solid-svg-icons";
-
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 /**
  * Add icons here to the library then use them in react:
  * `<FontAwesomeIcon icon={"minus"} width={18} />`
@@ -33,5 +33,6 @@ library.add(
   faCheck,
   faCopy,
   faXmark,
-  faArrowUpRightFromSquare
+  faArrowUpRightFromSquare,
+  faTwitter
 );

@@ -5,6 +5,7 @@ export interface ChainInfoWithExplorer extends ChainInfo {
   // Formed as "https://explorer.com/{txHash}"
   explorerUrlToTx: string;
   nameCollectionContract: string;
+  testnet: boolean;
 }
 
 export const ChainInfos: ChainInfoWithExplorer[] = [
@@ -45,6 +46,7 @@ export const ChainInfos: ChainInfoWithExplorer[] = [
     ],
     features: ["stargate", "ibc-transfer"],
     explorerUrlToTx: "https://www.mintscan.io/stargaze/txs/{txHash}",
+    testnet: true,
   },
   {
     rpc: "https://rpc.stargaze-apis.com/",
@@ -84,6 +86,7 @@ export const ChainInfos: ChainInfoWithExplorer[] = [
     ],
     features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
     explorerUrlToTx: "https://www.mintscan.io/stargaze/txs/{txHash}",
+    testnet: false,
   },
   {
     rpc: "https://rpc.devnet.publicawesome.dev/",
@@ -122,6 +125,7 @@ export const ChainInfos: ChainInfoWithExplorer[] = [
     ],
     features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
     explorerUrlToTx: "https://www.mintscan.io/stargaze/txs/{txHash}",
+    testnet: true,
   },
   {
     rpc: "https://rpc.elgafar-1.stargaze-apis.com/",
@@ -162,6 +166,7 @@ export const ChainInfos: ChainInfoWithExplorer[] = [
     features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
     explorerUrlToTx:
       "https://stargaze-testnet-explorer.pages.dev/stargaze/tx/{txHash}",
+    testnet: true,
   },
   {
     rpc: "https://rpc-osmosis.keplr.app",
@@ -209,6 +214,7 @@ export const ChainInfos: ChainInfoWithExplorer[] = [
     ],
     features: ["stargate", "ibc-transfer"],
     explorerUrlToTx: "https://www.mintscan.io/osmosis/txs/{txHash}",
+    testnet: false,
   },
   {
     rpc: "https://rpc-cosmoshub.keplr.app",
@@ -249,5 +255,6 @@ export const ChainInfos: ChainInfoWithExplorer[] = [
     ],
     features: ["stargate", "ibc-transfer"],
     explorerUrlToTx: "https://www.mintscan.io/cosmos/txs/{txHash}",
+    testnet: false,
   },
 ];
