@@ -26,10 +26,12 @@ export async function getStaticProps(context: GetStaticPropsContext) {
   });
   const prefetch = async () => {
     await ssg.works.listWorks.prefetchInfinite({
+      order: "desc",
       limit: 100,
       includeHidden: false,
     });
     const works = await ssg.works.listWorks.fetch({
+      order: "desc",
       limit: 100,
       includeHidden: false,
     });
@@ -52,6 +54,7 @@ const WorksPage = () => {
   const [page, setPage] = React.useState(0);
   const query = trpcNextPW.works.listWorks.useInfiniteQuery(
     {
+      order: "desc",
       limit: 100,
       includeHidden: false,
     },
