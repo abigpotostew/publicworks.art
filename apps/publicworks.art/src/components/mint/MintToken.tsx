@@ -30,13 +30,7 @@ export const MintToken = ({ work }: Props) => {
   const hasStarted = minterQuery.data?.config?.start_time
     ? fromTimestamp(minterQuery.data?.config?.start_time).getTime() < Date.now()
     : false;
-  // console.log(
-  //   "pizza minterQuery.data?.config?.start_time",
-  //   minterQuery.data?.config?.start_time,
-  //   minterQuery.data?.config?.start_time &&
-  //     fromTimestamp(minterQuery.data?.config?.start_time).getTime(),
-  //   hasStarted
-  // );
+  //todo stew show the duration until start time
 
   const isSoldOut = soldOutQuery.data === true;
   const loading =
@@ -91,7 +85,7 @@ export const MintToken = ({ work }: Props) => {
               </Form.Label>
               <div className={"col-sm-2"}>
                 <Form.Control
-                  disabled={isSoldOut}
+                  disabled={props.isSubmitting || mintDisabled || isSoldOut}
                   type="number"
                   step="1"
                   min="1"

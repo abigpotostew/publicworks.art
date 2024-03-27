@@ -4,14 +4,14 @@ Progress Notes:
 - Login-- need to separate the connect wallet with the login with token flow
 
 todo:
-- remove the user required redirect-- change it to an error message
-- add start date and more validations on the confirm page
+- [x] remove the user required redirect-- change it to an error message
+- [x] add start date and more validations on the confirm page
 - prettify the confirm page
 - need to differentiate user with token with just address
 - skeleton loaders
 - upload directly to ipfs instead of nft.storage
-- add dutch auction support
-- documentation
+- [x] add dutch auction support
+- documentation in notion
 
 - Add additional description to the edit flow
 - add a button to open to fullscreen!
@@ -25,14 +25,14 @@ todo:
 - only show the live media on create on first page.
 - Allow collector exploration (random hash)
 - [x] load images from the gcp storage (requires making the image bucket public)
-- give user option to show live view or static image
+- give creator option to show live view or static image
 - [x] a page for users to see the status of a mint (ie progress in the render pipeline)
 
 - performance:
   - use edge functions for most things
 
 visual bugs:
-- homepage feature works
+- [x] homepage feature works sizing is weird
 
 
 # todo
