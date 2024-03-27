@@ -177,8 +177,8 @@ $pw-width: 18px;
 
 
 
-$headings-font-family:"Advent Pro";
-$font-family-base:"Roboto+Flex";
+$headings-font-family: var(--font-title);
+$font-family-base: var(--font-body);
 
 :export {
   pw-bg-color:$pw-bg-color;

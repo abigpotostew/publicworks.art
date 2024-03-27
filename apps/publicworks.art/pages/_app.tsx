@@ -1,6 +1,4 @@
 // import "bootstrap/dist/css/bootstrap.min.css";
-import "../styles/globals.scss";
-import "../styles/bootstrap-theme/theme-dark.scss";
 
 import type { FC, ReactElement, ReactNode } from "react";
 import type { NextPage } from "next";
@@ -16,6 +14,7 @@ import { StargazeProvider } from "@stargazezone/client";
 import stargazeClient from "src/stargaze/stargaze";
 import { UserProvider } from "src/context/user/UserProvider";
 import { Analytics } from "@vercel/analytics/react";
+import { Advent_Pro, Roboto_Flex } from "next/font/google";
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -24,6 +23,21 @@ export type NextPageWithLayout = NextPage & {
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
+
+const robotoFlex = Roboto_Flex({
+  weight: "variable",
+  subsets: ["latin"],
+  variable: "--font-body",
+});
+
+const adventPro = Advent_Pro({
+  weight: "variable",
+  subsets: ["latin"],
+  variable: "--font-title",
+});
+
+import "../styles/globals.scss";
+import "../styles/bootstrap-theme/theme-dark.scss";
 
 export function reportWebVitals(metric: NextWebVitalsMetric) {
   const { id, name, label, value } = metric;
@@ -41,16 +55,20 @@ const MyApp: FC<AppPropsWithLayout> = ({
 }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout || ((page) => page);
   return (
-    <StargazeProvider client={stargazeClient}>
-      <QueryClientProvider client={queryClient}>
-        <UserProvider>
-          <GoogleAnalytics trackPageViews />
-          <ToastContainer />
-          {getLayout(<Component {...pageProps} />)}
-          <Analytics />
-        </UserProvider>
-      </QueryClientProvider>
-    </StargazeProvider>
+    <main
+      className={`${robotoFlex.className} ${robotoFlex.variable} ${adventPro.variable}`}
+    >
+      <StargazeProvider client={stargazeClient}>
+        <QueryClientProvider client={queryClient}>
+          <UserProvider>
+            <GoogleAnalytics trackPageViews />
+            <ToastContainer />
+            {getLayout(<Component {...pageProps} />)}
+            <Analytics />;
+          </UserProvider>
+        </QueryClientProvider>
+      </StargazeProvider>{" "}
+    </main>
   ) as ReactElement;
 };
 

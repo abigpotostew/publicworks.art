@@ -16,6 +16,7 @@ import { Minter } from "../../../@stargazezone/client";
 import Countdown from "react-countdown";
 import { GrowingDot } from "../spinner/GrowingDot";
 import { generatePrices } from "../../lib/dutch-auction/prices";
+import { CountdownSale } from "./Countdown";
 
 const DutchAuctionPriceInfo = ({
   work,
@@ -62,31 +63,7 @@ const DutchAuctionPriceInfo = ({
           {fromCoin(da.rest_price)}
         </Card.Text>
       )}
-      {auctionBefore && (
-        <Card.Text>
-          Auction starts in:{" "}
-          <Countdown
-            date={fromTimestamp(da.next_price_timestamp)}
-            key={da.next_price_timestamp}
-            renderer={({
-              formatted: {
-                days: daysFmt,
-                hours: hoursFmt,
-                minutes: minutesFmt,
-                seconds: secondsFmt,
-              },
-              days,
-              hours,
-              minutes,
-              seconds,
-            }) => (
-              <span>{`${days > 0 ? `${daysFmt}d` : ""}${
-                hours > 0 ? `${hoursFmt}h` : ""
-              }${minutes > 0 ? `${minutesFmt}m` : ""}${secondsFmt}s`}</span>
-            )}
-          />
-        </Card.Text>
-      )}
+
       {auctionDuring && (
         <>
           <Card.Text className={"mb-3 text-sm fs-7"}>
@@ -276,6 +253,10 @@ export const MintPrice = ({ minter, work, className }: Props) => {
   const renderDutchAuction =
     !isSoldOut && !!work && !!d.dutch_auction_price && !!minterQuery.data;
 
+  const startDate = new Date(work?.startDate || new Date().toISOString());
+  const startDateInFuture =
+    !!work?.startDate && startDate.getTime() > new Date().getTime();
+
   return (
     <Card className={className}>
       <Card.Body>
@@ -283,6 +264,11 @@ export const MintPrice = ({ minter, work, className }: Props) => {
           Price: {fromCoin(current_price)} STARS{" "}
           {/*{priceChangeImminent && priceChangeImminentD}*/}
         </Card.Title>
+        {!d.dutch_auction_price && !!startDateInFuture && (
+          <Card.Text>
+            Sale starts in: <CountdownSale date={startDate} />
+          </Card.Text>
+        )}
         {isSoldOut && <Card.Text>Sold out.</Card.Text>}
         {!isSoldOut &&
           !!work &&

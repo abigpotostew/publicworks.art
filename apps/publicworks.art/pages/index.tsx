@@ -1,5 +1,5 @@
 import styles from "../styles/Home.module.scss";
-import { ReactElement } from "react";
+import React, { ReactElement } from "react";
 import MainLayout from "../src/layout/MainLayout";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import SketchAnimation from "../src/components/SketchAnimation";
@@ -20,6 +20,8 @@ import superjson from "superjson";
 import { GalleryComponent } from "src/components/gallery/GalleryComponent";
 import { ButtonPW } from "src/components/button/Button";
 import { createServerSideHelpers } from "@trpc/react-query/server";
+import { WorksGalleryComponent } from "../src/components/gallery/WorksGalleryComponent";
+import { RowWideContainer } from "../src/components/layout/RowWideContainer";
 
 function GroupDividerBottom() {
   return (
@@ -50,13 +52,13 @@ export async function getStaticProps(context: GetStaticPropsContext) {
   // const id = context.params?.id as string;
   // prefetch `post.byId`
   await ssg.works.listWorks.prefetch({
-    limit: 3,
+    limit: 4,
     order: "desc",
     cursor: undefined,
     includeHidden: false,
   });
   const works = await ssg.works.listWorks.fetch({
-    limit: 3,
+    limit: 4,
     order: "desc",
     cursor: undefined,
     includeHidden: false,
@@ -80,7 +82,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
 const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   const queryWorks = trpcNextPW.works.listWorks.useQuery(
     {
-      limit: 3,
+      limit: 4,
       order: "desc",
       cursor: undefined,
       includeHidden: false,
@@ -102,12 +104,16 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
     recentWorks = <>Loading...</>;
   } else {
     recentWorks = (
-      <Container fluid className={" gap-2"}>
-        <Row>
+      <Container fluid className={"gap-2"}>
+        <Row className={"row row-cols-1 row-cols-xl-2 g-4"}>
           {queryWorks.data.items.map((item, index) => {
             return (
-              <Col key={item.id} className={"col-12 col-sm-12 col-md-4"}>
-                <GalleryComponent work={item} className={""}></GalleryComponent>
+              <Col key={item.id} className={"col-12"}>
+                {/*<GalleryComponent work={item} className={""}></GalleryComponent>*/}
+                <WorksGalleryComponent
+                  key={item.id}
+                  work={item}
+                ></WorksGalleryComponent>
               </Col>
             );
           })}
@@ -172,11 +178,30 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
 
       <GroupDivider />
       <Container>
-        <RowMediumContainer>
-          <h1 className={"Margin-B-4"}>Recent Works</h1>
+        <RowWideContainer>
+          <div
+            className={
+              "tw-flex tw-flex-row tw-items-baseline tw-gap-4 Margin-B-4"
+            }
+          >
+            <div
+              className={" tw-font-sans tw-text-xl tw-font-title tw-text-4xl"}
+            >
+              Recent Works
+            </div>
+            <div>
+              {" "}
+              <Link
+                href={"/works"}
+                className={"tw-no-underline hover:tw-underline"}
+              >
+                See more →
+              </Link>
+            </div>
+          </div>
           {recentWorks}
           {/*{worksList.map((w)=>{return <div key=w.id>{w.name}</div>})}*/}
-        </RowMediumContainer>
+        </RowWideContainer>
       </Container>
 
       <GroupDivider />

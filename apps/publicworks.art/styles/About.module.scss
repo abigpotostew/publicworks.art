@@ -24,8 +24,6 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /*align-items: center;*/
-  /*font-family: "Roboto Flex", sans-serif;*/
   color: #ffffff;
 }
 
@@ -50,7 +48,7 @@
 
 .title {
   color: #0070f3;
-  font-family: "Advent Pro", sans-serif;
+  font-family: var(--font-title);
 }
 
 .titleheader {
@@ -197,7 +195,7 @@
 
 .navTitle {
   letter-spacing: 3px;
-  font-family: "Advent Pro", sans-serif;
+  font-family: var(--font-title);
 }
 
 @keyframes marching-ants {
