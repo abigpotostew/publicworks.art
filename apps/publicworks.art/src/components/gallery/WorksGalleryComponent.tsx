@@ -62,11 +62,13 @@ export const WorksGalleryComponent = ({
               "bg-gradient-transparent text-light rounded-top rounded-1 pt-3 pb-3 "
             }
           >
-            <div className={`${stylesWork.workSmallTitle}  ps-3 text-light`}>
+            <div
+              className={`${stylesWork.workSmallTitle}  tw-font-title tw-tracking-wider ps-3 text-light`}
+            >
               {w.name}
             </div>
 
-            <div className={"ps-3 text-decoration-none"}>{w.blurb}</div>
+            {/*<div className={"ps-3 text-decoration-none"}>{w.blurb}</div>*/}
           </Container>
         </Link>
       </Card.ImgOverlay>
