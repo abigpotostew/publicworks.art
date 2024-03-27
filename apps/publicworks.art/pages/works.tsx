@@ -89,7 +89,7 @@ const WorksPage = () => {
             </RowWideContainer>
           )}
           <RowWideContainer>
-            <div className={"row row-cols-1 row-cols-lg-2 g-4"}>
+            <div className={"row row-cols-1 row-cols-xl-2 g-4"}>
               {query.isSuccess &&
                 pages
                   ?.map((page, index) => {

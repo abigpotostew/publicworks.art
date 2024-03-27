@@ -16,21 +16,23 @@ todo:
 - Add additional description to the edit flow
 - add a button to open to fullscreen!
 - [x] user hidden visibility
-- delete project
+- [x] delete project
 - bring your own ipfs cid
 - consolidate create flow
 
-- index work tokens by contract address instead of work id so that replacing the contract doesn't screw up the tokens.
+- [x] index work tokens by contract address instead of work id so that replacing the contract doesn't screw up the tokens.
 - replace the live preview with a static image
-- load images from the gcp storage (requires making the image bucket public)
+- only show the live media on create on first page.
+- Allow collector exploration (random hash)
+- [x] load images from the gcp storage (requires making the image bucket public)
 - give user option to show live view or static image
 - [x] a page for users to see the status of a mint (ie progress in the render pipeline)
 
+- performance:
+  - use edge functions for most things
 
-design inspiration:
-- https://nouns.build/
-- a home for generative art in the cosmos
-
+visual bugs:
+- homepage feature works
 
 
 # todo

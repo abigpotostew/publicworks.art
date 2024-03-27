@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import p5Types from "p5"; //Import this for typechecking and intellisense
 import dynamic from "next/dynamic";
-import { Container } from "react-bootstrap";
 import useSize from "@react-hook/size";
 import { animationLibrary } from "src/components/animations/animations";
 // Will only import `react-p5` on client-side
