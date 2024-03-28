@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import p5Types from "p5"; //Import this for typechecking and intellisense
 import dynamic from "next/dynamic";
 import useSize from "@react-hook/size";

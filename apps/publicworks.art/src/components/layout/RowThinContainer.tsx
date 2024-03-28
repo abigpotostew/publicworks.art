@@ -1,5 +1,6 @@
-import { Col, Container, Row } from "react-bootstrap";
 import { ReactNode } from "react";
+import { Col, Row } from "react-bootstrap";
+import clsx from "clsx";
 
 export const RowThinContainer = ({
   children,
@@ -11,52 +12,32 @@ export const RowThinContainer = ({
   children: ReactNode;
 }) => {
   return (
-    <div>
-      <Row className={className}>
-        <Col />
-        <Col
-          className={"align-self-center " + innerClassName || ""}
-          xs={12}
-          sm={12}
-          md={10}
-          lg={8}
-          xl={7}
-          xxl={6}
-        >
+    <>
+      <div
+        className={clsx("mx-auto max-w-7xl px-4 sm:px-6 lg:px-8", className)}
+      >
+        <div className={clsx("mx-auto max-w-2xl", innerClassName)}>
           {children}
-        </Col>
-        <Col />
-      </Row>
-    </div>
+        </div>
+      </div>
+    </>
   );
 };
 export const RowLogoContainer = ({
   children,
   className,
-  colClassName,
 }: {
   className?: string;
   children: ReactNode;
   colClassName?: string;
 }) => {
   return (
-    <Container fluid className={className}>
-      <Row>
-        <Col />
-        <Col
-          className={" " + colClassName || ""}
-          xs={12}
-          sm={12}
-          md={12}
-          lg={10}
-          xl={9}
-          xxl={6}
-        >
-          {children}
-        </Col>
-        <Col />
-      </Row>
-    </Container>
+    <>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
+        <div className={clsx("mx-auto max-w-3xl", className)}>{children}</div>
+      </div>
+    </>
   );
 };
 

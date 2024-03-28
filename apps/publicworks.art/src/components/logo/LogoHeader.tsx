@@ -12,16 +12,13 @@ export const LogoHeader = () => {
       {/*  bswidth={2}*/}
       {/*  className={"d-inline text-center"}*/}
       {/*>*/}
-      <RowLogoContainer className={`text-center ${styles.logotext}`}>
+
+      <RowLogoContainer className={`text-center ${styles.logotext} `}>
         <span className={"font-weight-bold"}>A home </span>
         <span
-          style={{
-            width: aniSize,
-            height: aniSize,
-            minWidth: aniSize,
-            minHeight: aniSize,
-          }}
-          className={"d-inline-block"}
+          className={
+            "w-[120px] height-[120px] min-w-[120px] min-h-[120px] inline-block"
+          }
         >
           <SpinAnimation
             animation={"waveyFlower"}
@@ -31,13 +28,9 @@ export const LogoHeader = () => {
         </span>
         <span> for generative art </span>
         <span
-          style={{
-            width: aniSize,
-            height: aniSize,
-            minWidth: aniSize,
-            minHeight: aniSize,
-          }}
-          className={"d-inline-block"}
+          className={
+            "w-[120px] height-[120px] min-w-[120px] min-h-[120px] inline-block"
+          }
         >
           <SpinAnimation
             animation={"drawChasingTailMulti"}
@@ -52,13 +45,9 @@ export const LogoHeader = () => {
         {/*  height={aniSize}*/}
         {/*/>*/}
         <span
-          style={{
-            width: aniSize,
-            height: aniSize,
-            minWidth: aniSize,
-            minHeight: aniSize,
-          }}
-          className={"d-inline-block"}
+          className={
+            "w-[120px] height-[120px] min-w-[120px] min-h-[120px] inline-block"
+          }
         >
           <SpinAnimation
             animation={"orbits"}
