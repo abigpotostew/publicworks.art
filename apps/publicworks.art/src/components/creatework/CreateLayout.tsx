@@ -26,21 +26,21 @@ export const CreateLayout: FC<ICreateLayout> = ({
     <div
       className={cn(
         hideLiveMedia
-          ? "tw-w-full"
-          : "tw-grid-cols-1 lg:tw-grid-cols-3 tw-inline-grid tw-gap-6"
+          ? "w-full"
+          : "grid-cols-1 lg:grid-cols-3 inline-grid gap-6"
       )}
     >
       <div
         className={cn(
-          hideLiveMedia ? "tw-w-full" : "tw-col-span-2",
-          " tw-ring-slate-100 lg:tw-ring-1 tw-rounded-md tw-bg-white tw-sm:rounded-lg"
+          hideLiveMedia ? "w-full" : "col-span-2",
+          " ring-slate-100 lg:ring-1 rounded-md bg-white sm:rounded-lg"
         )}
       >
         {children}
       </div>
       {!hideLiveMedia && (
-        <div className={"tw-ring-1 tw-ring-slate-100 tw-rounded-md tw-pt-4 "}>
-          <div className={"mb-3 tw-p-4"}>
+        <div className={"ring-1 ring-slate-100 rounded-md pt-4 "}>
+          <div className={"mb-3 p-4"}>
             <div>
               {!codeCid && (
                 <>

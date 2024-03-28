@@ -63,19 +63,19 @@ export const DescribeWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
     });
   }, [formik.isValid, formik.dirty, props]);
   return (
-    <div className={"tw-pb-24 tw-flex tw-justify-center"}>
+    <div className={"pb-24 flex justify-center"}>
       <CreateLayout
         codeCid={defaults.codeCid ?? undefined}
         hideLiveMedia={false}
       >
-        <h2 className={"tw-pt-4 tw-px-4"}>Work Description</h2>
+        <h2 className={"pt-4 px-4"}>Work Description</h2>
         <Form
           onSubmit={(...a) => {
             return formik.handleSubmit(...a);
           }}
           noValidate
         >
-          <div className={"tw-px-4 tw-pb-4"}>
+          <div className={"px-4 pb-4"}>
             <Form.Group className="mt-3 mb-3" controlId="formWorkName">
               <Form.Label>
                 Name{" "}

@@ -179,22 +179,13 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
       <GroupDivider />
       <Container>
         <RowWideContainer>
-          <div
-            className={
-              "tw-flex tw-flex-row tw-items-baseline tw-gap-4 Margin-B-4"
-            }
-          >
-            <div
-              className={" tw-font-sans tw-text-xl tw-font-title tw-text-4xl"}
-            >
+          <div className={"flex flex-row items-baseline gap-4 Margin-B-4"}>
+            <div className={" font-sans text-xl font-title text-4xl"}>
               Recent Works
             </div>
             <div>
               {" "}
-              <Link
-                href={"/works"}
-                className={"tw-no-underline hover:tw-underline"}
-              >
+              <Link href={"/works"} className={"no-underline hover:underline"}>
                 See more →
               </Link>
             </div>
