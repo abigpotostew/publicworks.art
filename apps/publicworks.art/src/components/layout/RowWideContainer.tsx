@@ -1,5 +1,5 @@
-import { Col, Row } from "react-bootstrap";
 import React, { FC } from "react";
+import clsx from "clsx";
 
 interface RowWideContainerParams {
   children?: React.ReactNode;
@@ -11,12 +11,19 @@ export const RowWideContainer: FC<RowWideContainerParams> = ({
   children,
 }) => {
   return (
-    <Row className={className}>
-      <Col />
-      <Col xs={12} sm={12} md={12} lg={10} xl={10} xxl={12}>
-        {children}
-      </Col>
-      <Col />
-    </Row>
+    <>
+      <div
+        className={clsx("mx-auto max-w-8xl px-4 sm:px-6 lg:px-8", className)}
+      >
+        <div className={clsx("mx-auto max-w-8xl")}>{children}</div>
+      </div>
+    </>
+    // <Row className={className}>
+    //   <Col />
+    //   <Col xs={12} sm={12} md={12} lg={10} xl={10} xxl={12}>
+    //     {children}
+    //   </Col>
+    //   <Col />
+    // </Row>
   );
 };

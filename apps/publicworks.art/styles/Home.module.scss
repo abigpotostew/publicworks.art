@@ -1,26 +1,7 @@
 @import './styles/variables.module';
-@import "../../node_modules/bootstrap/scss/functions";
-@import "../../node_modules/bootstrap/scss/mixins";
-@import "../../node_modules/bootstrap/scss/variables";
 
 
-.container ::-webkit-scrollbar {
-  width: 0; /* Remove scrollbar space */
-  background: transparent; /* Optional: just make scrollbar invisible */
-}
 
-.container {
-  /*padding: 0 2rem;*/
-
-  /*background-color: #212529;*/
-
-  /*!*hide scrollbar*!*/
-  /*-ms-overflow-style: none;  !* Internet Explorer 10+ *!*/
-  /*scrollbar-width: none;  !* Firefox *!*/
-}
-/*.container::-webkit-scrollbar {*/
-/*    display: none;  !* Safari and Chrome *!*/
-/*}*/
 
 .main {
   /*min-height: 100vh;*/
@@ -128,9 +109,6 @@
 }
 .sectionGroupDivider {
   padding-top: 75px;
-}
-.group2 {
-  /*padding-top: 75px;*/
 }
 .flexWrapCenter {
   display: flex;

@@ -1,5 +1,5 @@
 
-@import './variables.module';
+//@import './variables.module';
 
 @tailwind base;
 @tailwind components;
@@ -52,19 +52,19 @@ body {
 /*  box-sizing: border-box;*/
 /*}*/
 
-input {
-  // Styling can be put here
-  font-family: var(--font-body);
-}
+//input {
+//  // Styling can be put here
+//  font-family: var(--font-body);
+//}
 
-a {
-    //color: $pw-text-color;
-    text-decoration: none;
-}
+//a {
+//    //color: $pw-text-color;
+//    text-decoration: none;
+//}
 
-.form-label{
-  font-size:  calc($font-size-base - 10%) ;
-}
+//.form-label{
+//  font-size:  calc($font-size-base - 10%) ;
+//}
 
 .bg-gradient-transparent {
   -webkit-transition: all .8s ease;
