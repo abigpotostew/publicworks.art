@@ -34,7 +34,7 @@ export const PaginationPw = ({
   }, [page, lastPage]);
 
   return (
-    <div className={"flex flex-row gap-1"}>
+    <div className={"tw-flex tw-flex-row tw-gap-1"}>
       <Pagination>
         <Pagination.First disabled={page === 1} onClick={() => changePage(1)} />
         <Pagination.Prev

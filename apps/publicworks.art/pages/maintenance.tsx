@@ -3,7 +3,11 @@ import SpinAnimation from "../src/components/animations/SpinAnimation";
 const aniSize = 200;
 export const Maintenance = () => {
   return (
-    <div className={"w-full flex flex-col items-center justify-center"}>
+    <div
+      className={
+        "tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center"
+      }
+    >
       <h1>
         <SpinAnimation animation={"orbits"} width={aniSize} height={aniSize} />
         Maintenance

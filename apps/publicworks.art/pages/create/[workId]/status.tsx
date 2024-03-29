@@ -149,7 +149,11 @@ const WorkStatusPage = () => {
           {!workIsLoading && !workQuery.data ? <h5>Work not found</h5> : null}
           {!!workQuery.data && (
             <>
-              <div className={"flex flex-col md:flex-row md:justify-between"}>
+              <div
+                className={
+                  "tw-flex tw-flex-col md:tw-flex-row md:tw-justify-between"
+                }
+              >
                 <h4>{workQuery.data?.name}</h4>
                 <PaginationPw
                   page={page}

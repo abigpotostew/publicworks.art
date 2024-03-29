@@ -113,7 +113,7 @@ export const UserWorks: FC<UserWorksProps> = (props: UserWorksProps) => {
       {userWorksPage.isSuccess && hasItems && (
         <div>
           <div className={"mt-3"}>
-            <div className={"flex flex-row gap-1"}>
+            <div className={"tw-flex tw-flex-row tw-gap-1"}>
               <ButtonPW
                 variant={"outline-secondary"}
                 onClick={() => prevPage()}
