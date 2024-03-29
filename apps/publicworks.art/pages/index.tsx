@@ -1,7 +1,7 @@
 import styles from "../styles/Home.module.scss";
 import React, { ReactElement } from "react";
 import MainLayout from "../src/layout/MainLayout";
-import { Button, Col, Row } from "react-bootstrap";
+import { Button, Col, Container, Row } from "react-bootstrap";
 import SketchAnimation from "../src/components/SketchAnimation";
 import Link from "next/link";
 import {
@@ -20,7 +20,6 @@ import { ButtonPW } from "src/components/button/Button";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import { WorksGalleryComponent } from "../src/components/gallery/WorksGalleryComponent";
 import { RowWideContainer } from "../src/components/layout/RowWideContainer";
-import { Badge, Container } from "@publicworks/ui";
 
 function GroupDividerBottom() {
   return (
@@ -104,11 +103,10 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   } else {
     recentWorks = (
       <Container fluid className={"gap-2"}>
-        {/*<div*/}
-        {/*  className={"flex flex-row flex-wrap grid grid-cols-1 xl:grid-cols2"}*/}
-        {/*></div>*/}
-        {/*<Row className={"row row-cols-1 row-cols-xl-2 g-4"}>*/}
-        <div className={"grid grid-cols-1 lg:grid-cols-2"}>
+        <div
+          className={"flex flex-row flex-wrap grid grid-cols-1 xl:grid-cols2"}
+        ></div>
+        <Row className={"row row-cols-1 row-cols-xl-2 g-4"}>
           {queryWorks.data.items.map((item, index) => {
             return (
               <div key={item.id} className={"col-span-1"}>
@@ -116,8 +114,7 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
               </div>
             );
           })}
-          {/*</Row>*/}
-        </div>
+        </Row>
       </Container>
     );
   }
@@ -170,9 +167,7 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
               <ButtonPW className={"me-2 fs-3 border-2"}>Create Work</ButtonPW>
             </Link>
             <Link href={"/docs"}>
-              <ButtonPW className={"fs-3"} outline={true}>
-                Read the Docs
-              </ButtonPW>
+              <ButtonPW className={"fs-3"}>Read the Docs</ButtonPW>
             </Link>
           </div>
         </RowThinContainer>

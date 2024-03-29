@@ -6,17 +6,7 @@
 @tailwind utilities;
 
 
-@layer base {
-  h1 {
-    @apply text-3xl;
-    @apply font-medium;
-    @apply tracking-wide;
-    @apply font-title;
-  }
-  h2 {
-    @apply text-xl;
-  }
-}
+
 
 /*html,*/
 html,
