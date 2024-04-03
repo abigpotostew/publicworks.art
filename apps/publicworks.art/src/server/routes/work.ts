@@ -58,7 +58,6 @@ const editWork = authorizedProcedure
       ...input,
       hidden: input.hidden === undefined ? work.hidden : input.hidden,
       startDate: startDate.toISOString(),
-      sg721: work.sg721,
     });
     if (!project.ok) {
       throw new TRPCError({ code: "BAD_REQUEST" });
@@ -332,7 +331,6 @@ const uploadPreviewImg = authorizedProcedure
       coverImageCid,
       hidden: work.hidden,
       startDate: (work.startDate || new Date(0)).toISOString(),
-      sg721: work.sg721,
     });
     if (!response.ok) {
       throw response.error;
