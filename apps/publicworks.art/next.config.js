@@ -78,11 +78,7 @@ const nextConfig = {
       },
     ];
   },
-  transpilePackages: [
-    "@publicworks.art/db-typeorm",
-    "@publicworks.art/ui",
-    "@publicworks.art/shared-utils",
-  ],
+  transpilePackages: ["@publicworks.art/db-typeorm"],
   redirects() {
     return [
       process.env.MAINTENANCE_MODE === "1"
