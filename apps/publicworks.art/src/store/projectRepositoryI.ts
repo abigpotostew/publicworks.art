@@ -5,6 +5,7 @@ import { Ok, Result } from "src/util/result";
 import { CreateProjectRequest, FullEditProjectRequest } from "./project.types";
 
 export interface ProjectRepositoryI extends IndexerStoreI {
+  deleteFileUploadEntry(uploadId: string): Promise<void>;
   getAllTokensWithStatus(
     status: TokenStatuses,
     limit?: number
