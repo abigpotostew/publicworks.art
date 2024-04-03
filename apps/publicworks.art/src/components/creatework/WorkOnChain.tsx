@@ -118,9 +118,9 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
   }
 
   return (
-    <div className={"pb-24 flex justify-center"}>
+    <div className={"tw-pb-24 tw-flex tw-justify-center"}>
       <CreateLayout codeCid={work?.codeCid ?? undefined} hideLiveMedia={false}>
-        <div className={"p-4"}>
+        <div className={"tw-p-4"}>
           <FlexBox>
             <ButtonPW
               variant={"outline-primary"}
@@ -139,7 +139,7 @@ export const WorkOnChain = ({ minter, slug, work }: Props) => {
               View on PublicWorks.art
             </ButtonPW>
           </FlexBox>
-          <div className={"pt-4"}>
+          <div className={"tw-pt-4"}>
             <a
               href={"#"}
               onClick={(event) => {

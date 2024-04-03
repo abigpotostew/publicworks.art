@@ -55,15 +55,15 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
         }}
         noValidate
       >
-        <div className={"flex justify-center"}>
+        <div className={"tw-flex tw-justify-center"}>
           <CreateLayout
             codeCid={defaults.codeCid ?? undefined}
             hideLiveMedia={!props.onUpload}
           >
             {!props.hideTitle && (
-              <h2 className={"pb-0 lg:px-4 lg:pt-4"}>Code Upload</h2>
+              <h2 className={"tw-pb-0 lg:tw-px-4 lg:tw-pt-4"}>Code Upload</h2>
             )}
-            <Form.Group className="lg:p-4" controlId="formWorkName">
+            <Form.Group className="lg:tw-p-4" controlId="formWorkName">
               <Form.Label>
                 Name{" "}
                 <TooltipInfo>
@@ -84,18 +84,18 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
               {/*  {"We'll never share your email with anyone else."}*/}
               {/*</Form.Text>*/}
             </Form.Group>
-            <div className={"px-4"}>
+            <div className={"tw-px-4"}>
               {!!user.data && (
                 <Button variant="primary" type="submit">
                   Save
                 </Button>
               )}
             </div>
-            <div className={"px-4 py-4"}>
+            <div className={"tw-px-4 tw-py-4"}>
               {!user.data && <NeedToLoginButton />}
             </div>
             {props.onUpload && (
-              <div className={"px-4 pb-4"}>
+              <div className={"tw-px-4 tw-pb-4"}>
                 <p>Upload your Work Zip</p>
                 <DropZone
                   accept={"zip"}
@@ -103,7 +103,9 @@ export const NameWork: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                     props?.onUpload && props.onUpload(files)
                   }
                 >
-                  <div className={"flex flex-row items-center gap-4"}>
+                  <div
+                    className={"tw-flex tw-flex-row tw-items-center tw-gap-4"}
+                  >
                     <ButtonPW variant={"outline-primary"}>
                       <FontAwesomeIcon icon={"upload"} width={16} /> Upload
                     </ButtonPW>

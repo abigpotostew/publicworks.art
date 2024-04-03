@@ -385,7 +385,7 @@ export const ChangePrice = ({ minter, work }: Props) => {
                     !!formik.errors.dutchAuctionDecayRate
                   }
                 />
-                {/*<InputGroup.Text className={"w-25"}>*/}
+                {/*<InputGroup.Text className={"tw-w-25"}>*/}
                 {/*  {formik.values.dutchAuctionDecayRate}*/}
                 {/*</InputGroup.Text>*/}
               </InputGroup>

@@ -59,7 +59,7 @@ export const DropZone: FC<DropZoneProps> = ({
   return (
     <div {...getRootProps()}>
       <input {...getInputProps()} />
-      <div className={"border-1 border-dashed p-4"}>
+      <div className={"tw-border-1 tw-border-dashed tw-p-4"}>
         {isDragActive ? (
           <p>Drop the files here...</p>
         ) : (
