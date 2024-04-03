@@ -511,12 +511,6 @@ export class RepositoryDdb extends DddTable {
     const id = createId();
     return this.models.WorkUploadFile.create({ chainId, id, filename, workId });
   }
-
-  deleteWorkUpload(uploadId: string) {
-    return this.models.WorkUploadFile.remove({
-      id: uploadId,
-    });
-  }
 }
 
 export type Direction = "asc" | "desc";

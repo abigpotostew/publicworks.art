@@ -7,8 +7,6 @@ export interface Step {
   active?: boolean;
   completed?: boolean;
   onClick?: (() => void) | (() => Promise<void>);
-  clickable: boolean;
-  conditionComplete: boolean;
 }
 export interface StepProgressBarProps {
   items: Step[];

@@ -31,7 +31,6 @@
     "@keplr-wallet/stores": "^0.12.64",
     "@publicworks/db-typeorm": "*",
     "@publicworks/shared-utils": "*",
-    "@publicworks/ui": "*",
     "@radix-ui/react-dialog": "^1.0.5",
     "@react-hook/size": "^2.1.2",
     "@sentry/nextjs": "^7.105.0",
@@ -65,7 +64,6 @@
     "form-data": "^4.0.0",
     "formik": "^2.2.9",
     "got": "^12.4.1",
-    "html-validate": "^8.18.1",
     "jsonwebtoken": "^8.5.1",
     "mime-types": "^2.1.35",
     "multiparty": "^4.2.3",
@@ -98,7 +96,8 @@
     "uuidv7": "^0.6.3",
     "valtio": "^1.13.0",
     "zod": "^3.22.4",
-    "zod-formik-adapter": "^1.2.0"
+    "zod-formik-adapter": "^1.2.0",
+    "@publicworks/ui": "*"
   },
   "devDependencies": {
     "@keplr-wallet/types": "0.12.64",
