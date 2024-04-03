@@ -155,6 +155,8 @@ export const MySchema = {
         value: "${_type}:${id:18:0}",
       },
 
+      //todo works that are minting now and not sold out
+
       created: {
         type: Date,
         required: true,
@@ -199,6 +201,7 @@ export const MySchema = {
         type: String,
         value: "${_type}:#sg721:${sg721}#${tokenId:18:0}",
       },
+      //todo recent mints gsi
 
       created: {
         type: Date,

@@ -359,6 +359,7 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                     Dutch Auctions gradually lower the mint price over time.
                   </TooltipInfo>
                 </Form.Label>
+
                 <Form.Check
                   name="isDutchAuction"
                   type="checkbox"

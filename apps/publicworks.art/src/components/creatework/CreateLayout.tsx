@@ -25,9 +25,8 @@ export const CreateLayout: FC<ICreateLayout> = ({
   return (
     <div
       className={cn(
-        hideLiveMedia
-          ? "tw-w-full"
-          : "tw-grid-cols-1 lg:tw-grid-cols-3 tw-inline-grid tw-gap-6"
+        hideLiveMedia ? "tw-w-full" : "tw-grid-cols-1 tw-inline-grid tw-gap-6",
+        "lg:tw-grid-cols-3"
       )}
     >
       <div
