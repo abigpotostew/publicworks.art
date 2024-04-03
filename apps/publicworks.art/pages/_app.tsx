@@ -24,9 +24,20 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
+const robotoFlex = Roboto_Flex({
+  weight: "variable",
+  subsets: ["latin"],
+  variable: "--font-body",
+});
+
+const adventPro = Advent_Pro({
+  weight: "variable",
+  subsets: ["latin"],
+  variable: "--font-title",
+});
+
 import "../styles/globals.scss";
 import "../styles/bootstrap-theme/theme-dark.scss";
-import { adventPro, robotoFlex } from "src/fonts/font";
 
 export function reportWebVitals(metric: NextWebVitalsMetric) {
   const { id, name, label, value } = metric;
@@ -45,18 +56,8 @@ const MyApp: FC<AppPropsWithLayout> = ({
   const getLayout = Component.getLayout || ((page) => page);
   return (
     <main
-    // className={`${robotoFlex.className} ${robotoFlex.variable} ${adventPro.className}`}
+      className={`${robotoFlex.className} ${robotoFlex.variable} ${adventPro.variable}`}
     >
-      <style jsx global>
-        {`
-          :root {
-            --font-body: ${robotoFlex.style.fontFamily};
-            // ${robotoFlex.variable}: ${robotoFlex.style.fontFamily};
-            --font-title: ${adventPro.style.fontFamily};
-            // ${robotoFlex.variable}: ${adventPro.style.fontFamily};
-          }
-        `}
-      </style>
       <StargazeProvider client={stargazeClient}>
         <QueryClientProvider client={queryClient}>
           <UserProvider>
