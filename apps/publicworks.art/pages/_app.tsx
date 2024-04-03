@@ -55,9 +55,17 @@ const MyApp: FC<AppPropsWithLayout> = ({
 }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout || ((page) => page);
   return (
-    <main
-      className={`${robotoFlex.className} ${robotoFlex.variable} ${adventPro.variable}`}
+    <div
+    // className={`${robotoFlex.className} ${robotoFlex.variable} ${adventPro.variable}`}
     >
+      <style jsx global>
+        {`
+          :root {
+            --font-body: ${robotoFlex.style.fontFamily};
+            --font-title: ${adventPro.style.fontFamily};
+          }
+        `}
+      </style>
       <StargazeProvider client={stargazeClient}>
         <QueryClientProvider client={queryClient}>
           <UserProvider>
@@ -68,7 +76,7 @@ const MyApp: FC<AppPropsWithLayout> = ({
           </UserProvider>
         </QueryClientProvider>
       </StargazeProvider>{" "}
-    </main>
+    </div>
   ) as ReactElement;
 };
 

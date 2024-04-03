@@ -382,7 +382,7 @@ const confirmWorkUpload = authorizedProcedure
     //it throws
     const confirmed = await confirmUpload(input.uploadId, work);
 
-    return;
+    return confirmed;
   });
 const uploadWorkCoverImageGenerateUrl = authorizedProcedure
   .input(

@@ -67,10 +67,14 @@ export const useUploadWorkMutation = (workId: number | null | undefined) => {
       );
       try {
         await login.mutateAsync();
-        await confirmWorkUploadFileMutation.mutateAsync({
+        const confirmed = await confirmWorkUploadFileMutation.mutateAsync({
           workId,
           uploadId: uploadTmp.uploadId,
         });
+        if (confirmed?.error) {
+          toast.error(confirmed.error);
+          return;
+        }
       } catch (e) {
         const msg =
           "Something went wrong. Failed to save work to IPFS. Try again.";

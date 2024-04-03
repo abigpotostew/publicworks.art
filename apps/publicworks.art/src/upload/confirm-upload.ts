@@ -2,22 +2,22 @@ import { WorkEntity } from "src/store/model";
 import { getBucket } from "src/upload/presignedUrl";
 import { stores } from "src/store/stores";
 import tmp from "tmp";
-import {
-  deleteCid,
-  getMetadataWorkId,
-  pinZipToPinata,
-  uploadFileToPinata,
-} from "src/ipfs/pinata";
+import { pinZipToPinata, uploadFileToPinata } from "src/ipfs/pinata";
 import { TRPCError } from "@trpc/server";
 import * as fs from "fs";
 import { containsValidIndexHtml } from "../zip/unzip";
 import chainInfo from "../stargaze/chainInfo";
+import {
+  invalidOrMissingHTMLFileError,
+  workCodeSizeLimitIs50mbError,
+} from "../constants/constants";
 
 function getFilesizeInBytes(filename: string) {
   const stats = fs.statSync(filename);
   const fileSizeInBytes = stats.size;
   return fileSizeInBytes;
 }
+
 export const confirmUpload = async (uploadId: string, work: WorkEntity) => {
   //download the file, it should be a zip
   const upload = await stores().project.getFileUploadById(uploadId, work);
@@ -36,15 +36,7 @@ export const confirmUpload = async (uploadId: string, work: WorkEntity) => {
   const filePt = getBucket().file(upload.filename);
   await filePt.download({ destination: tmpobj.name });
 
-  if (getFilesizeInBytes(tmpobj.name) > 50_000_000) {
-    throw new TRPCError({
-      message: "Work code size limit is 50mb.",
-      code: "BAD_REQUEST",
-    });
-  }
-
-  const { ok } = await containsValidIndexHtml(tmpPath);
-  if (!ok) {
+  const deleteFile = async () => {
     console.log(
       "invalid html file, deleting work upload",
       uploadId,
@@ -56,10 +48,17 @@ export const confirmUpload = async (uploadId: string, work: WorkEntity) => {
       ignoreNotFound: true,
     });
     const upload = await stores().project.deleteFileUploadEntry(uploadId);
-    throw new TRPCError({
-      message: "Invalid HTML file",
-      code: "BAD_REQUEST",
-    });
+  };
+
+  if (getFilesizeInBytes(tmpobj.name) > 50_000_000) {
+    await deleteFile();
+    return { ok: false, error: workCodeSizeLimitIs50mbError };
+  }
+
+  const { ok } = await containsValidIndexHtml(tmpPath);
+  if (!ok) {
+    await deleteFile();
+    return { ok: false, error: invalidOrMissingHTMLFileError };
   }
 
   const oldcid = work.codeCid;
@@ -96,7 +95,7 @@ export const confirmUpload = async (uploadId: string, work: WorkEntity) => {
   // }
   console.log("uploaded new code cid to work", cid, work.id);
   // tmpobj.removeCallback();
-  return true;
+  return { ok: true, error: null };
 };
 
 export const confirmCoverImageUpload = async (
