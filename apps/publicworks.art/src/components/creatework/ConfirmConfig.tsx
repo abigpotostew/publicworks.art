@@ -48,9 +48,9 @@ const ValueRender = ({
     const date = getDate(value);
     return (
       <>
-        <div className={"tw-flex tw-flex-col"}>
+        <div className={"flex flex-col"}>
           <span>{formatInLocalTimezone(date)}</span>
-          <span className={"tw-text-sm"}> ({formatInUTC(date)} UTC)</span>
+          <span className={"text-sm"}> ({formatInUTC(date)} UTC)</span>
         </div>
       </>
     );
@@ -119,14 +119,14 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
   // console.log("work is ", w);
   //https://react-bootstrap.netlify.app/forms/layout/#horizontal-form-label-sizing
   return (
-    <div className={"tw-pb-24 tw-flex tw-justify-center"}>
+    <div className={"pb-24 flex justify-center"}>
       <CreateLayout
         codeCid={props.work.codeCid ?? undefined}
         hideLiveMedia={false}
       >
-        <h2 className={"tw-pt-4 tw-px-4"}>Confirm Collection Configuration</h2>
+        <h2 className={"pt-4 px-4"}>Confirm Collection Configuration</h2>
         <>
-          <div className={"tw-p-4"}>
+          <div className={"p-4"}>
             {Object.keys(pairs)
               .filter((k) => !!pairs[k as keyof WorkSerializable])
               .map((k) => {
@@ -136,11 +136,11 @@ export const ConfirmConfig: FC<ConfirmConfigProps> = (
                       <Form.Label
                         column="sm"
                         lg={12}
-                        className={`${styles.labelTitle} tw-text-sm tw-text-gray-500`}
+                        className={`${styles.labelTitle} text-sm text-gray-500`}
                       >
                         {pairs[k as keyof WorkSerializable]}
                       </Form.Label>
-                      <Form.Label className={"tw-pt-0"} column="lg" size="sm">
+                      <Form.Label className={"pt-0"} column="lg" size="sm">
                         <ValueRender work={w} k={k as keyof WorkSerializable} />
                       </Form.Label>
                     </Form.Group>

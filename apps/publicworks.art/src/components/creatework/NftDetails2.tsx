@@ -248,13 +248,13 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
   }, [formik.isValid, formik.dirty, props]);
 
   return (
-    <div className={"tw-pb-24 tw-flex tw-justify-center"}>
+    <div className={"pb-24 flex justify-center"}>
       <CreateLayout
         codeCid={props.defaultValues?.codeCid ?? undefined}
         hideLiveMedia={false}
       >
-        <h2 className={"tw-pt-4 tw-px-4"}>On Chain Configuration</h2>
-        <div className={"tw-px-4 tw-pb-4"}>
+        <h2 className={"pt-4 px-4"}>On Chain Configuration</h2>
+        <div className={"px-4 pb-4"}>
           {!!props.defaultValues?.minter && (
             <Alert variant="info">
               Your work is already instantiated on chain. Changes here will not

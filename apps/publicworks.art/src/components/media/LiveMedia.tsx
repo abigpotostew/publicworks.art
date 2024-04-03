@@ -53,7 +53,7 @@ export const LiveMedia: FC<LiveMediaParams> = (params: LiveMediaParams) => {
   }, [url, frame, setAppIsLoading]);
 
   return (
-    <div className={"tw-w-full tw-aspect-square"}>
+    <div className={"w-full aspect-square"}>
       {(appLoading.appIsLoading || appLoading.appIsLoading) && (
         <div>
           <SpinnerLoading />

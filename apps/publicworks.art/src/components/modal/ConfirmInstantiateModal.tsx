@@ -28,7 +28,7 @@ export const ConfirmInstantiateModal: FC<ConfirmInstantiateModalI> = ({
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <div className={"tw-flex tw-flex-row tw-gap-2 tw-items-center"}>
+        <div className={"flex flex-row gap-2 items-center"}>
           <Button
             disabled={
               !sgwallet.wallet?.address ||
@@ -63,17 +63,17 @@ export const ConfirmInstantiateModal: FC<ConfirmInstantiateModalI> = ({
       <Dialog.Portal>
         <Dialog.Overlay
           className={
-            "tw-fixed tw-inset-0 tw-bg-gray-500 tw-bg-opacity-75 tw-transition-opacity tw-backdrop-blur-sm"
+            "fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity backdrop-blur-sm"
           }
         />
         <Dialog.Content
           className={
-            "tw-fixed tw-inset-0 tw-z-10 tw-w-screen tw-overflow-y-auto tw-flex tw-items-center tw-justify-center tw-p-0 sm:tw-p-0 tw-sm:tw-items-start tw-sm:tw-justify-start"
+            "fixed inset-0 z-10 w-screen overflow-y-auto flex items-center justify-center p-0 sm:p-0 sm:items-start sm:justify-start"
           }
         >
           <div
             className={
-              "tw-relative tw-transform tw-overflow-hidden tw-rounded-lg tw-bg-white tw-px-4 tw-pb-4 tw-pt-5 tw-text-left tw-shadow-xl tw-transition-all sm:tw-my-8 tw-w-full  sm:tw-max-w-lg sm:tw-p-6"
+              "relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 w-full  sm:max-w-lg sm:p-6"
             }
           >
             <Dialog.Title>Publish collection</Dialog.Title>
@@ -95,7 +95,7 @@ export const ConfirmInstantiateModal: FC<ConfirmInstantiateModalI> = ({
                 </>
               ) : null}
             </Dialog.Description>
-            <div className={"tw-flex tw-flex-row tw-gap-1 tw-justify-end"}>
+            <div className={"flex flex-row gap-1 justify-end"}>
               <Button
                 variant={"primary"}
                 disabled={instantiatePending}

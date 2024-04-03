@@ -118,10 +118,10 @@ const NavButtons: FC<INavButtons> = ({
     // <Container fluid={true}>
     <div
       className={
-        "tw-bg-white tw-w-full tw-fixed tw-left-0 tw-bottom-0 tw-p-3 tw-border-solid tw-border-1 tw-border-slate-100"
+        "bg-white w-full fixed left-0 bottom-0 p-3 border-solid border-1 border-slate-100"
       }
     >
-      <div className={"tw-flex tw-justify-center tw-items-center "}>
+      <div className={"flex justify-center items-center "}>
         <ButtonGroup>
           <Button
             variant={"outline-secondary"}
@@ -316,7 +316,7 @@ const EditWorkPage = () => {
         {testnetComponent}
         <StepProgressBar items={steps}></StepProgressBar>
         <>
-          <FlexBoxCenter fluid={false} className={"tw-pb-24"}>
+          <FlexBoxCenter fluid={false} className={"pb-24"}>
             {stage === "publish" && (
               <>
                 <div>
