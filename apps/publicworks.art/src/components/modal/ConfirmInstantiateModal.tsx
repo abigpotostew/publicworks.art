@@ -1,6 +1,6 @@
 // @flow
 import * as React from "react";
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useWallet } from "../../../@stargazezone/client";
@@ -76,10 +76,8 @@ export const ConfirmInstantiateModal: FC<ConfirmInstantiateModalI> = ({
               "tw-relative tw-transform tw-overflow-hidden tw-rounded-lg tw-bg-white tw-px-4 tw-pb-4 tw-pt-5 tw-text-left tw-shadow-xl tw-transition-all sm:tw-my-8 tw-w-full  sm:tw-max-w-lg sm:tw-p-6"
             }
           >
-            <Dialog.Title className={"tw-font-body"}>
-              Publish collection
-            </Dialog.Title>
-            <Dialog.Description className={"tw-font-body"}>
+            <Dialog.Title>Publish collection</Dialog.Title>
+            <Dialog.Description>
               {work.sg721 ? (
                 <>
                   Your collection is already deployed. Deploying again will

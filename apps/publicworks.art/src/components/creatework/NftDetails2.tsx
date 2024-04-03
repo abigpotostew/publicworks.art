@@ -15,6 +15,13 @@ import { isISODate } from "src/util/isISODate";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { CreateLayout } from "./CreateLayout";
+import {
+  Checkbox,
+  CheckboxField,
+  CheckboxGroup,
+  Description,
+  Label,
+} from "@publicworks/ui";
 
 // const formatInTimeZone = (date: Date, fmt: string, tz: string) =>
 //   format(utcToZonedTime(date, tz), fmt, { timeZone: tz });
@@ -352,26 +359,44 @@ export const NftDetails2: FC<CreateWorkProps> = (props: CreateWorkProps) => {
                 </Form.Control.Feedback>
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formIsDutchAuction">
-                <Form.Label>
-                  Dutch Auction{" "}
-                  <TooltipInfo>
+              <CheckboxGroup>
+                <CheckboxField>
+                  <Checkbox
+                    name="isDutchAuction"
+                    value="show_on_events_page"
+                    checked={formik.values.isDutchAuction}
+                    onChange={formik.handleChange}
+                    // isValid={
+                    //   formik.touched.isDutchAuction &&
+                    //   !formik.errors.isDutchAuction
+                    // }
+                  />
+                  <Label>Dutch Auction</Label>
+                  <Description>
                     Dutch Auctions gradually lower the mint price over time.
-                  </TooltipInfo>
-                </Form.Label>
+                  </Description>
+                </CheckboxField>
+              </CheckboxGroup>
+              {/*<Form.Group className="mb-3" controlId="formIsDutchAuction">*/}
+              {/*  <Form.Label>*/}
+              {/*    Dutch Auction{" "}*/}
+              {/*    <TooltipInfo>*/}
+              {/*      Dutch Auctions gradually lower the mint price over time.*/}
+              {/*    </TooltipInfo>*/}
+              {/*  </Form.Label>*/}
 
-                <Form.Check
-                  name="isDutchAuction"
-                  type="checkbox"
-                  checked={formik.values.isDutchAuction}
-                  // value={formik.values.isDutchAuction?.toString()}
-                  onChange={formik.handleChange}
-                  isValid={
-                    formik.touched.isDutchAuction &&
-                    !formik.errors.isDutchAuction
-                  }
-                />
-              </Form.Group>
+              {/*<Form.Check*/}
+              {/*  name="isDutchAuction"*/}
+              {/*  type="checkbox"*/}
+              {/*  checked={formik.values.isDutchAuction}*/}
+              {/*  // value={formik.values.isDutchAuction?.toString()}*/}
+              {/*  onChange={formik.handleChange}*/}
+              {/*  isValid={*/}
+              {/*    formik.touched.isDutchAuction &&*/}
+              {/*    !formik.errors.isDutchAuction*/}
+              {/*  }*/}
+              {/*/>*/}
+              {/*</Form.Group>*/}
 
               <Collapse in={formik.values.isDutchAuction}>
                 <div>
