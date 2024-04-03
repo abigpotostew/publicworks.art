@@ -10,7 +10,6 @@ import {
 import { TokenStatuses } from "../types";
 import { createId } from "../uuid";
 import { DddTable, isConditionFailedError } from "./ddb-schema";
-import chainInfo from "../../stargaze/chainInfo";
 
 export enum EntityDdbError {
   NotFound,
@@ -425,9 +424,7 @@ export class RepositoryDdb extends DddTable {
         | "ownerId"
         | "publishStatus"
       >
-    > &
-      NonNullable<Pick<WorkEntityDdb, "hidden" | "startDate">> &
-      Pick<WorkEntityDdb, "sg721">
+    >
   ): Promise<WorkEntityDdb> {
     const props = {
       chainId: work.chainId,
@@ -439,20 +436,6 @@ export class RepositoryDdb extends DddTable {
       partial: true,
     });
   }
-
-  async worksWithInvalidHidden(): Promise<WorkEntityDdb[]> {
-    return this.models.Work.scan(
-      {
-        chainId: chainInfo().chainId,
-        hidden: 1,
-        gsi2_pk: `Chain:${chainInfo().chainId}#hidden:0#publishStatus:1`,
-      },
-      {
-        partial: true,
-      }
-    );
-  }
-
   updatePartial(
     token: Pick<WorkTokenEntityDdb, "chainId" | "workId" | "tokenId">,
     updates: Partial<

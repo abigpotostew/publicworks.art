@@ -1,6 +1,5 @@
-import { ReactNode } from "react";
 import { Col, Container, Row } from "react-bootstrap";
-import clsx from "clsx";
+import { ReactNode } from "react";
 
 export const RowThinContainer = ({
   children,
