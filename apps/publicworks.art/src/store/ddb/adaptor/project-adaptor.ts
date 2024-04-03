@@ -584,4 +584,9 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
     }
     return Ok(mapWork(out.value));
   }
+
+  async deleteFileUploadEntry(uploadId: string) {
+    await this.repository.deleteWorkUpload(uploadId);
+    return;
+  }
 }

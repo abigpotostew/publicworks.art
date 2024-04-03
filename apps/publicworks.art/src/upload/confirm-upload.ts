@@ -10,6 +10,8 @@ import {
 } from "src/ipfs/pinata";
 import { TRPCError } from "@trpc/server";
 import * as fs from "fs";
+import { containsValidIndexHtml } from "../zip/unzip";
+import chainInfo from "../stargaze/chainInfo";
 
 function getFilesizeInBytes(filename: string) {
   const stats = fs.statSync(filename);
@@ -31,13 +33,31 @@ export const confirmUpload = async (uploadId: string, work: WorkEntity) => {
   console.log("Tmp File Created for confirm: ", tmpPath);
 
   //download it, check file size within limits
-  await getBucket()
-    .file(upload.filename)
-    .download({ destination: tmpobj.name });
+  const filePt = getBucket().file(upload.filename);
+  await filePt.download({ destination: tmpobj.name });
 
   if (getFilesizeInBytes(tmpobj.name) > 50_000_000) {
     throw new TRPCError({
       message: "Work code size limit is 50mb.",
+      code: "BAD_REQUEST",
+    });
+  }
+
+  const { ok } = await containsValidIndexHtml(tmpPath);
+  if (!ok) {
+    console.log(
+      "invalid html file, deleting work upload",
+      uploadId,
+      work.id,
+      chainInfo().chainId
+    );
+    //cleanup the file from gcp.
+    await filePt.delete({
+      ignoreNotFound: true,
+    });
+    const upload = await stores().project.deleteFileUploadEntry(uploadId);
+    throw new TRPCError({
+      message: "Invalid HTML file",
       code: "BAD_REQUEST",
     });
   }
@@ -76,7 +96,7 @@ export const confirmUpload = async (uploadId: string, work: WorkEntity) => {
   //   }
   // }
   console.log("uploaded new code cid to work", cid, work.id);
-
+  // tmpobj.removeCallback();
   return true;
 };
 

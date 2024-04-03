@@ -133,8 +133,8 @@ const NavButtons: FC<INavButtons> = ({
           <Button
             variant={"outline-primary"}
             className={""}
-            disabled={!onNextClick || nextDisabled}
-            onClick={onNextClick || (() => undefined)}
+            disabled={nextDisabled || !onNextClick}
+            onClick={onNextClick}
           >
             Next
           </Button>
@@ -263,7 +263,11 @@ const EditWorkPage = () => {
       );
       return prevStageComplete;
     };
-    const clickable = completed || work?.minter || isStageClickable(stageEnum);
+    const conditionComplete = !stageContinuationCondition[stageEnum].find(
+      (c) => !(work || {})[c]
+    );
+    const clickable =
+      completed || !!work?.minter || isStageClickable(stageEnum);
     return {
       label: (stages.indexOf(stageEnum) + 1).toString(),
       // @ts-ignore
@@ -271,6 +275,8 @@ const EditWorkPage = () => {
       active: stage === stageEnum,
       completed,
       onClick: clickable ? () => setStage(stageEnum) : undefined,
+      clickable,
+      conditionComplete,
     };
   };
 
@@ -281,13 +287,28 @@ const EditWorkPage = () => {
     setFormTouched(props.isTouched);
   };
 
-  const canOperate = !user.isLoading && !!user.data && hasToken;
-
-  const canMoveToNext =
-    canOperate && formTouched ? mutation.isSuccess && formValid : formValid;
-
   const steps = stages.map((s) => {
     return createStep(s);
+  });
+
+  const canOperate = !user.isLoading && !!user.data && hasToken;
+
+  const currStep = steps.findIndex((s) => s.active);
+  const thisStep = steps[currStep];
+  const canMoveToNext =
+    (["name_art", "cover_image", "publish"].includes(stages[currStep]) &&
+      !!thisStep?.conditionComplete) ||
+    (canOperate &&
+      (formTouched ? mutation.isSuccess && formValid : formValid) &&
+      !!thisStep?.clickable);
+  console.log("canMoveToNext", {
+    canOperate,
+    canMoveToNext,
+    nextStep: thisStep,
+    currStep,
+    isSuccess: mutation.isSuccess,
+    formValid,
+    formTouched,
   });
 
   // useEffect(() => {
@@ -338,6 +359,7 @@ const EditWorkPage = () => {
                 onNextClick={
                   work?.sg721 ? () => setStageNextFrom("publish") : undefined
                 }
+                nextDisabled={!canMoveToNext}
               ></NavButtons>
             </>
             // </Container>
@@ -348,6 +370,7 @@ const EditWorkPage = () => {
               <NavButtons
                 onPrevClick={() => setStagePrevFrom("view")}
                 onNextClick={undefined}
+                nextDisabled={true}
               ></NavButtons>
             </>
           )}
@@ -390,6 +413,7 @@ const EditWorkPage = () => {
                   <NavButtons
                     onPrevClick={() => setStagePrevFrom("cover_image")}
                     onNextClick={() => setStageNextFrom("cover_image")}
+                    nextDisabled={!canMoveToNext}
                   ></NavButtons>
                 </Container>
               )}
@@ -499,7 +523,8 @@ const EditWorkPage = () => {
 
                     <NavButtons
                       onNextClick={() => setStageNextFrom("name_art")}
-                      onPrevClick={() => setStagePrevFrom("name_art")}
+                      onPrevClick={undefined}
+                      nextDisabled={!canMoveToNext}
                     />
                   </div>
                 </>
