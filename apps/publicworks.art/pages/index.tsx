@@ -1,7 +1,7 @@
 import styles from "../styles/Home.module.scss";
 import React, { ReactElement } from "react";
 import MainLayout from "../src/layout/MainLayout";
-import { Button, Col, Row } from "react-bootstrap";
+import { Button, Col, Container, Row } from "react-bootstrap";
 import SketchAnimation from "../src/components/SketchAnimation";
 import Link from "next/link";
 import {
@@ -22,7 +22,6 @@ import { ButtonPW } from "src/components/button/Button";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import { WorksGalleryComponent } from "../src/components/gallery/WorksGalleryComponent";
 import { RowWideContainer } from "../src/components/layout/RowWideContainer";
-import { Container } from "@publicworks/ui";
 
 function GroupDividerBottom() {
   return (
@@ -132,14 +131,12 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
 
       <Container className={styles.group2}>
         <RowThinContainer>
-          <div className={"text-center"}>
-            <h1 className={"text-h1"}>
-              Everything you need to create generative art works
-            </h1>
+          <div style={{ textAlign: "center" }}>
+            <h1>Everything you need to create generative art works</h1>
           </div>
         </RowThinContainer>
       </Container>
-      <RowLogoContainer className={"mt-4 mb-18"}>
+      <RowLogoContainer className={"Margin-T-4 Margin-B-16"}>
         <div className={styles.wrappingFlex}>
           <Pill color={"red"}>🏃‍ Mint on demand</Pill>
           <Pill color={"orange"}>⚙️ Metadata Generation</Pill>
