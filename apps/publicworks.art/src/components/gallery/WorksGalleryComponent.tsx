@@ -1,6 +1,5 @@
 import { WorkSerializable } from "@publicworks/db-typeorm/serializable";
 import { trpcNextPW } from "src/server/utils/trpc";
-import { Card, Container } from "react-bootstrap";
 import styles from "../../../styles/Works.module.scss";
 import stylesWork from "../../../styles/Work.module.scss";
 import { useRouter } from "next/router";
@@ -11,7 +10,7 @@ import React from "react";
 import Link from "next/link";
 import { cn } from "../../lib/css/cs";
 import { useNumMintedOnChain } from "../../hooks/useNumMintedOnChain";
-
+import { Card, Container } from "@publicworks/ui";
 export const WorksGalleryComponent = ({
   work,
   className,
@@ -42,7 +41,12 @@ export const WorksGalleryComponent = ({
     // <Col key={w.sg721} className={className}>
     <Card
       // style={{ width: "24rem" }}
-      className={cn(styles.workCardContainer, className, "border-light")}
+      className={cn(
+        styles.workCardContainer,
+        className,
+        "border-light",
+        "max-w-3xl p-6"
+      )}
     >
       <Card.Img
         className={cn(

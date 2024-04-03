@@ -37,7 +37,7 @@ const adventPro = Advent_Pro({
 });
 
 import "../styles/globals.scss";
-import "../styles/bootstrap-theme/theme-dark.scss";
+// import "../styles/bootstrap-theme/theme-dark.scss";
 
 export function reportWebVitals(metric: NextWebVitalsMetric) {
   const { id, name, label, value } = metric;
