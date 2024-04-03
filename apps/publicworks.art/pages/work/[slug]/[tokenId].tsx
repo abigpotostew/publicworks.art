@@ -39,7 +39,7 @@ export async function getStaticPaths() {
   let i = 0;
   const getPublishedTokens = async () => {
     const works = await stores().project.getProjects({
-      limit: 100,
+      limit: 1,
       publishedState: "PUBLISHED",
       includeHidden: false,
     });
@@ -47,7 +47,7 @@ export async function getStaticPaths() {
     for (const work of works.items) {
       const tokens = await stores().project.getProjectTokens2({
         workId: work.id,
-        limit: 500,
+        limit: 1,
         publishedState: "PUBLISHED",
       });
 

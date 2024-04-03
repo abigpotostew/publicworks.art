@@ -91,6 +91,9 @@ const nextConfig = {
     ].filter(Boolean);
   },
 };
+
+module.exports = nextConfig;
+return;
 const analyze = process.env.ANALYZE === "true";
 let withBundleAnalyzer;
 if (analyze) {
