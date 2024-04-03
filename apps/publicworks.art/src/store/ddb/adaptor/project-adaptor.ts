@@ -503,7 +503,10 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
   async updateProject(
     id: number,
     request: Partial<FullEditProjectRequest> &
-      Pick<FullEditProjectRequest, "hidden" | "startDate">
+      Required<
+        NonNullable<Pick<FullEditProjectRequest, "hidden" | "startDate">>
+      > &
+      Pick<FullEditProjectRequest, "sg721">
   ): Promise<Result<WorkEntity>> {
     //
     const res = await this.repository.updateWorkPartial(
@@ -513,11 +516,10 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
         sg721: request.sg721 ?? undefined,
         minter: request.minter ?? undefined,
         sg721CodeId: request.sg721CodeId ?? undefined,
-        startDate: request.startDate ? new Date(request.startDate) : undefined,
+        startDate: new Date(request.startDate),
         license: request.license ?? undefined,
         externalLink: request.externalLink ?? undefined,
-        hidden:
-          request.hidden === undefined ? undefined : request.hidden ? 1 : 0,
+        hidden: request.hidden ? 1 : 0,
         dutchAuctionEndDate: request.dutchAuctionEndDate
           ? new Date(request.dutchAuctionEndDate)
           : undefined,

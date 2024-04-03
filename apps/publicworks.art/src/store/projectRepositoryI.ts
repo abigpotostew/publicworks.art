@@ -1,4 +1,10 @@
-import { TokenEntity, UserEntity, WorkEntity, WorkUploadFile } from "./model";
+import {
+  TokenEntity,
+  UserEntity,
+  WorkEntity,
+  WorkEntityDdb,
+  WorkUploadFile,
+} from "./model";
 import { TokenStatuses } from "./types";
 import { IndexerStoreI } from "./indexerStoreI";
 import { Ok, Result } from "src/util/result";
@@ -120,7 +126,10 @@ export interface ProjectRepositoryI extends IndexerStoreI {
   updateProject(
     id: number,
     request: Partial<FullEditProjectRequest> &
-      Required<Pick<FullEditProjectRequest, "hidden" | "startDate">>
+      Required<
+        NonNullable<Pick<FullEditProjectRequest, "hidden" | "startDate">>
+      > &
+      Pick<FullEditProjectRequest, "sg721">
   ): Promise<Result<WorkEntity>>;
   deleteWork({ id }: { id: number }): Promise<boolean>;
 

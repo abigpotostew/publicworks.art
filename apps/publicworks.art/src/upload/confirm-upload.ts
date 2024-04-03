@@ -61,6 +61,7 @@ export const confirmUpload = async (uploadId: string, work: WorkEntity) => {
     codeCid: cid,
     hidden: work.hidden,
     startDate: (work.startDate || new Date(0)).toISOString(),
+    sg721: work.sg721,
   });
 
   // if (updateRes.ok) {
@@ -113,6 +114,7 @@ export const confirmCoverImageUpload = async (
     coverImageCid: newCid,
     hidden: work.hidden,
     startDate: (work.startDate || new Date(0)).toISOString(),
+    sg721: work.sg721,
   });
 
   // if (updateRes.ok) {
