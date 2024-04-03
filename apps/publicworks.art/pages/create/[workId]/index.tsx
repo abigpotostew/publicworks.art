@@ -134,7 +134,7 @@ const NavButtons: FC<INavButtons> = ({
             variant={"outline-primary"}
             className={""}
             disabled={nextDisabled || !onNextClick}
-            onClick={onNextClick || (() => undefined)}
+            onClick={onNextClick}
           >
             Next
           </Button>
@@ -286,11 +286,10 @@ const EditWorkPage = () => {
     setFormValid(props.isValid);
     setFormTouched(props.isTouched);
   };
-  console.log("pizza hi i'm creating steps ");
+
   const steps = stages.map((s) => {
     return createStep(s);
   });
-  console.log("pizza hi i'm creating steps done,");
 
   const canOperate = !user.isLoading && !!user.data && hasToken;
 
@@ -302,6 +301,15 @@ const EditWorkPage = () => {
     (canOperate &&
       (formTouched ? mutation.isSuccess && formValid : formValid) &&
       !!thisStep?.clickable);
+  console.log("canMoveToNext", {
+    canOperate,
+    canMoveToNext,
+    nextStep: thisStep,
+    currStep,
+    isSuccess: mutation.isSuccess,
+    formValid,
+    formTouched,
+  });
 
   // useEffect(() => {
   //   if (workId && !hasToken) {
@@ -390,29 +398,29 @@ const EditWorkPage = () => {
               // </Container>
             )}
 
-            {stage === "cover_image" && (
-              <>
-                {getWorkQuery.isLoading && <SpinnerLoading></SpinnerLoading>}
-                {getWorkQuery.error && <div>{getWorkQuery.error.message}</div>}
-                {work && (
-                  <Container>
-                    <UploadCoverImage
-                      onCreateProject={onCreateProject}
-                      defaultValues={work}
-                    />
-                    {!mutation.isPending && mutation.error && (
-                      <div>{mutation.error.message}</div>
-                    )}
-                    {/*{mutation.isSuccess && <div>Successfully saved</div>}*/}
-                    <NavButtons
-                      onPrevClick={() => setStagePrevFrom("cover_image")}
-                      onNextClick={() => setStageNextFrom("cover_image")}
-                      nextDisabled={!canMoveToNext}
-                    ></NavButtons>
-                  </Container>
-                )}
-              </>
-            )}
+          {stage === "cover_image" && (
+            <>
+              {getWorkQuery.isLoading && <SpinnerLoading></SpinnerLoading>}
+              {getWorkQuery.error && <div>{getWorkQuery.error.message}</div>}
+              {work && (
+                <Container>
+                  <UploadCoverImage
+                    onCreateProject={onCreateProject}
+                    defaultValues={work}
+                  />
+                  {!mutation.isPending && mutation.error && (
+                    <div>{mutation.error.message}</div>
+                  )}
+                  {/*{mutation.isSuccess && <div>Successfully saved</div>}*/}
+                  <NavButtons
+                    onPrevClick={() => setStagePrevFrom("cover_image")}
+                    onNextClick={() => setStageNextFrom("cover_image")}
+                    nextDisabled={!canMoveToNext}
+                  ></NavButtons>
+                </Container>
+              )}
+            </>
+          )}
 
             {stage === "nft_detail" && (
               <>
@@ -517,17 +525,17 @@ const EditWorkPage = () => {
                       </>
                       {/*{mutation.isSuccess && <div>Successfully saved</div>}*/}
 
-                      <NavButtons
-                        onNextClick={() => setStageNextFrom("name_art")}
-                        onPrevClick={undefined}
-                        nextDisabled={!canMoveToNext}
-                      />
-                    </div>
-                  </>
-                  // </Container>
-                )}
-              </>
-            )}
+                    <NavButtons
+                      onNextClick={() => setStageNextFrom("name_art")}
+                      onPrevClick={undefined}
+                      nextDisabled={!canMoveToNext}
+                    />
+                  </div>
+                </>
+                // </Container>
+              )}
+            </>
+          )}
           </FlexBoxCenter>
         </>
       </Container>

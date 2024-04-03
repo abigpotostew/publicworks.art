@@ -29,7 +29,7 @@ import { useNumMintedOnChain } from "../../src/hooks/useNumMintedOnChain";
 export async function getStaticPaths() {
   console.log("getStaticPaths, works");
   const { items: works } = await stores().project.getProjects({
-    limit: 1,
+    limit: 500,
 
     publishedState: "PUBLISHED",
     includeHidden: true,

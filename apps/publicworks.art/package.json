@@ -31,6 +31,7 @@
     "@keplr-wallet/stores": "^0.12.64",
     "@publicworks/db-typeorm": "*",
     "@publicworks/shared-utils": "*",
+    "@publicworks/ui": "*",
     "@radix-ui/react-dialog": "^1.0.5",
     "@react-hook/size": "^2.1.2",
     "@sentry/nextjs": "^7.105.0",
