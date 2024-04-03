@@ -19,7 +19,7 @@ const Status = () => {
   const secondsLabel = `${secondsDiff} second${secondsDiff > 0 ? "s" : ""} ago`;
   return (
     <div>
-      <Container>
+      <Container className={styles.group2}>
         <RowThinContainer>
           <div>
             <h1>Indexer Status</h1>

@@ -11,16 +11,18 @@ import {
 import { FlexBoxCenter } from "../src/components/layout/FlexBoxCenter";
 import { Pill } from "src/components/content/Pill";
 import { LogoHeader } from "src/components/logo/LogoHeader";
+import { RowMediumContainer } from "src/components/layout/RowMediumContainer";
 import { trpcNextPW } from "src/server/utils/trpc";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import { appRouter } from "src/server/routes/_app";
 import { Context } from "src/server/context";
 import superjson from "superjson";
+import { GalleryComponent } from "src/components/gallery/GalleryComponent";
 import { ButtonPW } from "src/components/button/Button";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import { WorksGalleryComponent } from "../src/components/gallery/WorksGalleryComponent";
 import { RowWideContainer } from "../src/components/layout/RowWideContainer";
-import { Badge, Container } from "@publicworks/ui";
+import { Container } from "@publicworks/ui";
 
 function GroupDividerBottom() {
   return (
@@ -104,20 +106,19 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   } else {
     recentWorks = (
       <Container fluid className={"gap-2"}>
-        {/*<div*/}
-        {/*  className={"flex flex-row flex-wrap grid grid-cols-1 xl:grid-cols2"}*/}
-        {/*></div>*/}
-        {/*<Row className={"row row-cols-1 row-cols-xl-2 g-4"}>*/}
-        <div className={"grid grid-cols-1 lg:grid-cols-2"}>
+        <Row className={"row row-cols-1 row-cols-xl-2 g-4"}>
           {queryWorks.data.items.map((item, index) => {
             return (
-              <div key={item.id} className={"col-span-1"}>
-                <WorksGalleryComponent work={item}></WorksGalleryComponent>
-              </div>
+              <Col key={item.id} className={"col-12"}>
+                {/*<GalleryComponent work={item} className={""}></GalleryComponent>*/}
+                <WorksGalleryComponent
+                  key={item.id}
+                  work={item}
+                ></WorksGalleryComponent>
+              </Col>
             );
           })}
-          {/*</Row>*/}
-        </div>
+        </Row>
       </Container>
     );
   }
@@ -129,7 +130,7 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
       </div>
       <GroupDividerBottom />
 
-      <Container>
+      <Container className={styles.group2}>
         <RowThinContainer>
           <div className={"text-center"}>
             <h1 className={"text-h1"}>
@@ -152,7 +153,7 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
       </RowLogoContainer>
       <GroupDividerBottom />
 
-      {/*<Container >*/}
+      {/*<Container className={styles.group2}>*/}
       {/*  <RowThinContainer>*/}
       {/*    <div style={{ textAlign: "center" }}>*/}
       {/*      <p className={`${styles.subdescription} `}>*/}
@@ -163,14 +164,14 @@ const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
       {/*    </div>*/}
       {/*  </RowThinContainer>*/}
       {/*</Container>*/}
-      <Container>
+      <Container className={styles.group2}>
         <RowThinContainer>
-          <div className={"fs-2 text-center"}>
+          <div className={"fs-2"} style={{ textAlign: "center" }}>
             <Link href={"/create"}>
-              <ButtonPW className={"me-2 fs-3 border-2"}>Create Work</ButtonPW>
+              <ButtonPW className={"me-2 fs-3"}>Create Work</ButtonPW>
             </Link>
             <Link href={"/docs"}>
-              <ButtonPW className={"fs-3"} outline={true}>
+              <ButtonPW className={"fs-3"} variant={"secondary"}>
                 Read the Docs
               </ButtonPW>
             </Link>

@@ -8,7 +8,7 @@ import Link from "next/link";
 const Home = () => {
   return (
     <div>
-      <Container>
+      <Container className={styles.group2}>
         <RowThinContainer>
           <div style={{}}>
             <h1>Roadmap</h1>
