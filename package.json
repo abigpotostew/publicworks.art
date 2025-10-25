@@ -31,7 +31,6 @@
     "@keplr-wallet/stores": "^0.12.64",
     "@radix-ui/react-dialog": "^1.0.5",
     "@react-hook/size": "^2.1.2",
-    "@sentry/nextjs": "^7.105.0",
     "@stargazefi/api": "^0.4.1",
     "@stargazezone/types": "^0.9.0",
     "@tanstack/react-query": "^5.28.4",
@@ -101,8 +100,7 @@
     "@cosmjs/crypto": "0.32.4",
     "@cosmjs/encoding": "0.32.4",
     "@types/p5": "1",
-    "p5": "1",
-    "@sentry/browser": "10.22.0"
+    "p5": "1"
   },
   "devDependencies": {
     "@keplr-wallet/types": "0.12.64",

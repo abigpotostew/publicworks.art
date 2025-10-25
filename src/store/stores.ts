@@ -3,7 +3,7 @@ import {
   IndexerRepoDdb,
   IndexerRepoDdbAdaptor,
   RepositoryDbbAdaptor,
-  RepositoryDdbReadonly
+  RepositoryDdbReadonly,
 } from "./ddb";
 import { UserRepoDdbAdaptor } from "./ddb/adaptor/user-adaptor";
 import { UserRepoDdb } from "./ddb/user-repo-ddb";

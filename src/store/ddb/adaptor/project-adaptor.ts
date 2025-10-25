@@ -530,8 +530,9 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
     );
     return Ok(mapWork(res));
   }
-  deleteWork({ id }: { id: number }): Promise<boolean> {
-    return this.repository.deleteWork(chainInfo().chainId, id).then((x) => !!x);
+  async deleteWork({ id }: { id: number }): Promise<boolean> {
+    await this.repository.deleteWork(chainInfo().chainId, id);
+    return true;
   }
 
   async saveUploadId(

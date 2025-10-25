@@ -482,7 +482,7 @@ export class RepositoryDdb extends DddTable {
     return this.models.WorkUploadFile.get({ id: uploadId });
   }
 
-  async deleteWork(chainId: string, id: number):Promise<void> {
+  async deleteWork(chainId: string, id: number): Promise<void> {
     await this.models.Work.remove({ chainId, id });
   }
 
@@ -495,7 +495,7 @@ export class RepositoryDdb extends DddTable {
     return this.models.WorkUploadFile.create({ chainId, id, filename, workId });
   }
 
-  async deleteWorkUpload(uploadId: string):Promise<void> {
+  async deleteWorkUpload(uploadId: string): Promise<void> {
     await this.models.WorkUploadFile.remove({
       id: uploadId,
     });
@@ -510,23 +510,30 @@ export type WorkEntityDdbCreate = Omit<
   "startDate" | "resolution" | "selector"
 >;
 
-
-
-const readonlyError = "publicworks.art is now readonly. Thank you for your support!";
+const readonlyError =
+  "publicworks.art is now readonly. Thank you for your support!";
 export class RepositoryDdbReadonly extends RepositoryDdb {
   constructor(name: string, client: DynamoDBClient) {
-    super( name,client);
+    super(name, client);
   }
 
   //override all of the write methods to throw an error
-  override createWork(work: WorkEntityDdb): Promise<Result<WorkEntityDdb, EntityDdbError>> {
+  override createWork(
+    work: WorkEntityDdb
+  ): Promise<Result<WorkEntityDdb, EntityDdbError>> {
     throw new Error(readonlyError);
   }
-  override createWorkToken(workToken: WorkTokenEntityDdb): Promise<Result<WorkTokenEntityDdb, EntityDdbError> > {
+  override createWorkToken(
+    workToken: WorkTokenEntityDdb
+  ): Promise<Result<WorkTokenEntityDdb, EntityDdbError>> {
     throw new Error(readonlyError);
   }
 
-  override saveUploadId(chainId: string, workId: number, filename: string): Promise<WorkUploadFileEntityDdb> {
+  override saveUploadId(
+    chainId: string,
+    workId: number,
+    filename: string
+  ): Promise<WorkUploadFileEntityDdb> {
     throw new Error(readonlyError);
   }
   override deleteWork(chainId: string, id: number): Promise<void> {
@@ -535,32 +542,53 @@ export class RepositoryDdbReadonly extends RepositoryDdb {
   override deleteWorkUpload(uploadId: string): Promise<void> {
     throw new Error(readonlyError);
   }
-  override updateWorkPartial(work: WorkEntityDdb, updates: Partial<WorkEntityDdb>): Promise<WorkEntityDdb> {
+  override updateWorkPartial(
+    work: WorkEntityDdb,
+    updates: Partial<WorkEntityDdb>
+  ): Promise<WorkEntityDdb> {
     throw new Error(readonlyError);
   }
-  override createWorkUploadFileMigration(workUpload: WorkUploadFileEntityDdb): Promise<WorkUploadFileEntityDdb> {
+  override createWorkUploadFileMigration(
+    workUpload: WorkUploadFileEntityDdb
+  ): Promise<WorkUploadFileEntityDdb> {
     throw new Error(readonlyError);
   }
-  override updatePartial(token: WorkTokenEntityDdb, updates: Partial<WorkTokenEntityDdb>): Promise<WorkTokenEntityDdb> {
+  override updatePartial(
+    token: WorkTokenEntityDdb,
+    updates: Partial<WorkTokenEntityDdb>
+  ): Promise<WorkTokenEntityDdb> {
     throw new Error(readonlyError);
   }
-  override setTokenFinalMetadata(token: WorkTokenEntityDdb, metadata_uri: string): Promise<WorkTokenEntityDdb> {
+  override setTokenFinalMetadata(
+    token: WorkTokenEntityDdb,
+    metadata_uri: string
+  ): Promise<WorkTokenEntityDdb> {
     throw new Error(readonlyError);
   }
-  override setTokenImage(token: WorkTokenEntityDdb, image_url: string): Promise<WorkTokenEntityDdb> {
+  override setTokenImage(
+    token: WorkTokenEntityDdb,
+    image_url: string
+  ): Promise<WorkTokenEntityDdb> {
     throw new Error(readonlyError);
   }
-  override setTokenStatus(token: WorkTokenEntityDdb, status: TokenStatuses): Promise<WorkTokenEntityDdb> {
-        throw new Error(readonlyError);
+  override setTokenStatus(
+    token: WorkTokenEntityDdb,
+    status: TokenStatuses
+  ): Promise<WorkTokenEntityDdb> {
+    throw new Error(readonlyError);
   }
   override setLastSweptHeight(chainId: string, height: number): Promise<void> {
     throw new Error(readonlyError);
   }
-  override setCurrentPollHeightHeight(chainId: string, height: number): Promise<void> {
+  override setCurrentPollHeightHeight(
+    chainId: string,
+    height: number
+  ): Promise<void> {
     throw new Error(readonlyError);
   }
-  override createWorkTokenMigration(workToken: WorkTokenEntityDdb): Promise<WorkTokenEntityDdb> {
+  override createWorkTokenMigration(
+    workToken: WorkTokenEntityDdb
+  ): Promise<WorkTokenEntityDdb> {
     throw new Error(readonlyError);
   }
 }
-

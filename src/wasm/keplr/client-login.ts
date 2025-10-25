@@ -9,7 +9,6 @@ import {
   SignArbitraryVerification,
   SignatureVerify,
 } from "src/wasm/keplr/strategies";
-import * as Sentry from "@sentry/browser";
 
 export async function signMessageAndLoginIfNeeded(sg: StargazeClient) {
   const token = getToken();
@@ -35,7 +34,6 @@ export async function signMessageAndLoginIfNeeded(sg: StargazeClient) {
   if (!token || needsTokenRefresh) {
     const otp = Math.floor(Math.random() * 100_000).toString();
     const signedResult = signMessageAndLogin(otp, sg);
-    Sentry.setUser({ address: sg.wallet.address, chainId: sg.wallet.chainId });
     return signedResult;
   }
   return null;
