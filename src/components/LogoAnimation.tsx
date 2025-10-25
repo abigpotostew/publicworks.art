@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import p5Types from "p5"; //Import this for typechecking and intellisense
+// import p5Types from "p5"; //Import this for typechecking and intellisense
 import dynamic from "next/dynamic";
 import { Container } from "react-bootstrap";
 import useSize from "@react-hook/size";
-import { hashCode } from "../util/hashcode";
+import { p5Types } from "./animations/P5.types";
 // Will only import `react-p5` on client-side
 
 /**
@@ -30,7 +30,7 @@ function ease(x: number): number {
 }
 
 const containerHeight = 400;
-let fontRegular: p5Types.Font;
+let fontRegular: any;
 const LogoAnimation: React.FC = () => {
   const ref = useRef(null);
   const [sketchKey, setSketchKey] = useState(0);

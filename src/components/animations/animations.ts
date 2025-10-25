@@ -1,4 +1,6 @@
-import p5Types from "p5";
+import { p5Types } from "./P5.types";
+
+// import p5Types from "p5";
 function easeInOutQuart(x: number): number {
   return x < 0.5 ? 8 * x * x * x * x : 1 - Math.pow(-2 * x + 2, 4) / 2;
 }
@@ -11,7 +13,7 @@ interface Opts {
   w: number;
   h: number;
   weightScale?: number;
-  col?: p5Types.Color;
+  col?: any;//p5Types.Color;
 }
 const dottedCircle = (p5: p5Types, { size, weightScale }: Opts) => {
   weightScale = weightScale || 0.1;
@@ -180,7 +182,7 @@ const walkingCircle = (
   p5: p5Types,
   size: number,
   aniTime: number,
-  col: p5Types.Color,
+  col: any,//p5Types.Color,
   weight: number
 ) => {
   const duration = 2;

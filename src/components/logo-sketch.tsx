@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import type p5Types from "p5"; //Import this for typechecking and intellisense
 import dynamic from "next/dynamic";
 import { Container } from "react-bootstrap";
+import { p5Types } from "./animations/P5.types";
 // Will only import `react-p5` on client-side
 
 // @ts-ignore

@@ -98,9 +98,7 @@
     "utf-8-validate": "^5.0.2",
     "@cosmjs/proto-signing": "0.32.4",
     "@cosmjs/crypto": "0.32.4",
-    "@cosmjs/encoding": "0.32.4",
-    "@types/p5": "1",
-    "p5": "1"
+    "@cosmjs/encoding": "0.32.4"
   },
   "devDependencies": {
     "@keplr-wallet/types": "0.12.64",

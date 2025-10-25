@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import p5Types from "p5"; //Import this for typechecking and intellisense
+// import p5Types from "p5"; //Import this for typechecking and intellisense
 import dynamic from "next/dynamic";
 import useSize from "@react-hook/size";
 import { animationLibrary } from "src/components/animations/animations";
@@ -42,12 +42,12 @@ const SpinAnimaton: React.FC<Props> = ({ animation, width, height }) => {
   // }, []);
 
   //See annotations in JS for more information
-  const setup = (p5: p5Types, canvasParentRef: Element) => {
+  const setup = (p5: any, canvasParentRef: Element) => {
     p5.createCanvas(width, height).parent(canvasParentRef);
     p5.colorMode(p5.HSB);
   };
 
-  const draw = (p5: p5Types) => {
+  const draw = (p5: any) => {
     // console.log('vel',vel )
     p5.push();
     p5.background(255);
