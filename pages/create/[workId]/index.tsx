@@ -398,29 +398,29 @@ const EditWorkPage = () => {
               // </Container>
             )}
 
-          {stage === "cover_image" && (
-            <>
-              {getWorkQuery.isLoading && <SpinnerLoading></SpinnerLoading>}
-              {getWorkQuery.error && <div>{getWorkQuery.error.message}</div>}
-              {work && (
-                <Container>
-                  <UploadCoverImage
-                    onCreateProject={onCreateProject}
-                    defaultValues={work}
-                  />
-                  {!mutation.isPending && mutation.error && (
-                    <div>{mutation.error.message}</div>
-                  )}
-                  {/*{mutation.isSuccess && <div>Successfully saved</div>}*/}
-                  <NavButtons
-                    onPrevClick={() => setStagePrevFrom("cover_image")}
-                    onNextClick={() => setStageNextFrom("cover_image")}
-                    nextDisabled={!canMoveToNext}
-                  ></NavButtons>
-                </Container>
-              )}
-            </>
-          )}
+            {stage === "cover_image" && (
+              <>
+                {getWorkQuery.isLoading && <SpinnerLoading></SpinnerLoading>}
+                {getWorkQuery.error && <div>{getWorkQuery.error.message}</div>}
+                {work && (
+                  <Container>
+                    <UploadCoverImage
+                      onCreateProject={onCreateProject}
+                      defaultValues={work}
+                    />
+                    {!mutation.isPending && mutation.error && (
+                      <div>{mutation.error.message}</div>
+                    )}
+                    {/*{mutation.isSuccess && <div>Successfully saved</div>}*/}
+                    <NavButtons
+                      onPrevClick={() => setStagePrevFrom("cover_image")}
+                      onNextClick={() => setStageNextFrom("cover_image")}
+                      nextDisabled={!canMoveToNext}
+                    ></NavButtons>
+                  </Container>
+                )}
+              </>
+            )}
 
             {stage === "nft_detail" && (
               <>
@@ -525,17 +525,17 @@ const EditWorkPage = () => {
                       </>
                       {/*{mutation.isSuccess && <div>Successfully saved</div>}*/}
 
-                    <NavButtons
-                      onNextClick={() => setStageNextFrom("name_art")}
-                      onPrevClick={undefined}
-                      nextDisabled={!canMoveToNext}
-                    />
-                  </div>
-                </>
-                // </Container>
-              )}
-            </>
-          )}
+                      <NavButtons
+                        onNextClick={() => setStageNextFrom("name_art")}
+                        onPrevClick={undefined}
+                        nextDisabled={!canMoveToNext}
+                      />
+                    </div>
+                  </>
+                  // </Container>
+                )}
+              </>
+            )}
           </FlexBoxCenter>
         </>
       </Container>

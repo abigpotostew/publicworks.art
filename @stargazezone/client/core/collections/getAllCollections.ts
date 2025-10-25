@@ -1,7 +1,7 @@
-import type { CosmWasmClient } from '@cosmjs/cosmwasm-stargate/build/cosmwasmclient';
-import { MarketplaceQueryClient } from '@stargazezone/contracts/marketplace';
-import getCollection from './getCollection';
-import { GetCollectionOptions } from './types';
+import type { CosmWasmClient } from "@cosmjs/cosmwasm-stargate/build/cosmwasmclient";
+import { MarketplaceQueryClient } from "@stargazezone/contracts/marketplace";
+import getCollection from "./getCollection";
+import { GetCollectionOptions } from "./types";
 
 type Args = {
   codeId: number;
@@ -18,7 +18,7 @@ export default async function getAllCollections(
   exclude: string[] = []
 ) {
   if (!client) {
-    throw new Error('No CosmWasm client provided.');
+    throw new Error("No CosmWasm client provided.");
   }
 
   const collections = await client.getContracts(codeId);

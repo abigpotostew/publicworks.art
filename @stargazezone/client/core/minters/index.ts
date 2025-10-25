@@ -1,10 +1,10 @@
-const getMintersByListImport = import('./getMintersByList');
-const getAllMintersImport = import('./getAllMinters');
-const getMinterImport = import('./getMinter');
-const getNumTokensLeftImport = import('./getNumTokensLeft');
+const getMintersByListImport = import("./getMintersByList");
+const getAllMintersImport = import("./getAllMinters");
+const getMinterImport = import("./getMinter");
+const getNumTokensLeftImport = import("./getNumTokensLeft");
 
-import type { GetMintersOptions } from './types';
-import { StargazeClient } from '..';
+import type { GetMintersOptions } from "./types";
+import { StargazeClient } from "..";
 
 export default class Minters {
   private stargazeClient: StargazeClient;

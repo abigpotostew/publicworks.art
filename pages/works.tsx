@@ -125,8 +125,8 @@ const WorksPage = () => {
                 {loading || query.isFetchingNextPage
                   ? "Loading more..."
                   : query.hasNextPage
-                  ? "Load More"
-                  : "Nothing more to load"}
+                    ? "Load More"
+                    : "Nothing more to load"}
               </ButtonPW>
             </Container>
           </RowWideContainer>

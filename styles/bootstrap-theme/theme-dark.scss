@@ -1,12 +1,7 @@
-
-@import '/styles/variables.module';
-
-
+@import "/styles/variables.module";
 
 /*! `Custom` Bootstrap 5 theme */
 @import url(https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css);
-
-
 
 // dark theme: https://themestr.app/theme?start=1&font=Roboto&palette=2&icons=simpleline&border-width=3px&spacer=1.2rem&btn-border-radius=1.35rem&enable-gradients=false
 //light theme https://themestr.app/theme?start=1&font=Roboto&icons=fontawesome&border-width=1px&spacer=1.2rem&btn-border-radius=1.35rem&enable-gradients=false
@@ -19,13 +14,13 @@
 //$warning:#6e9fa5;
 //$light:#eceeec;
 //$dark:#1e2b37;
-$enable-gradients:false;
+$enable-gradients: false;
 //$spacer:1.5rem;
 //$border-width:3px;
 //$btn-border-radius:1.35rem;
 //$line-height-base:1.5;
 
-$enable-grid-classes:true;
+$enable-grid-classes: true;
 
 // dark theme
 $body-color: #000000;
@@ -36,4 +31,4 @@ $body-bg: $pw-bg-color;
 
 //:export
 
-@import '../../node_modules/bootstrap/scss/bootstrap.scss';
+@import "../../node_modules/bootstrap/scss/bootstrap.scss";

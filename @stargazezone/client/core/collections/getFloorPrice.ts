@@ -1,4 +1,4 @@
-import { MarketplaceQueryClient } from '@stargazezone/contracts/marketplace';
+import { MarketplaceQueryClient } from "@stargazezone/contracts/marketplace";
 
 export default async function getFloorPrice(
   marketplace: MarketplaceQueryClient,
@@ -9,5 +9,5 @@ export default async function getFloorPrice(
     limit: 1,
   });
 
-  return asks[0]?.price ?? '0';
+  return asks[0]?.price ?? "0";
 }

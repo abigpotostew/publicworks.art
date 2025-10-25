@@ -1,5 +1,5 @@
 // Careful to only import types -- and not heavy code here.
-import type { CollectionInfoResponse } from '@stargazezone/types/contracts/sg721';
+import type { CollectionInfoResponse } from "@stargazezone/types/contracts/sg721";
 
 export type SG721InfoResponse = {
   name: string;

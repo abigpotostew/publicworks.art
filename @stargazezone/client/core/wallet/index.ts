@@ -1,7 +1,7 @@
-import type { WalletInfo } from './types';
-import type { CosmWasmClient } from '@cosmjs/cosmwasm-stargate';
-import { ChainInfo } from '@keplr-wallet/types';
-const getKeplrWalletImport = import('./getKeplrWallet');
+import type { WalletInfo } from "./types";
+import type { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { ChainInfo } from "@keplr-wallet/types";
+const getKeplrWalletImport = import("./getKeplrWallet");
 export default class Wallet {
   cosmwasmClient: CosmWasmClient;
   chainId: string;
@@ -28,12 +28,12 @@ export default class Wallet {
       try {
         let result = await this.cosmwasmClient.getBalance(
           this.address,
-          'ustars'
+          "ustars"
         );
         this._walletInfo.balance = result;
         return result;
       } catch (e) {
-        console.log('error getting balance', e);
+        console.log("error getting balance", e);
       }
     }
     return this._walletInfo?.balance;
@@ -56,7 +56,7 @@ export default class Wallet {
   }
 
   public get address(): string {
-    return this._walletInfo?.address ?? '';
+    return this._walletInfo?.address ?? "";
   }
 
   public get name() {

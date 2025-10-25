@@ -8,8 +8,8 @@ import {
   CosmWasmClient,
   SigningCosmWasmClient,
   ExecuteResult,
-} from '@cosmjs/cosmwasm-stargate';
-import { Coin, StdFee } from '@cosmjs/amino';
+} from "@cosmjs/cosmwasm-stargate";
+import { Coin, StdFee } from "@cosmjs/amino";
 import {
   Decimal,
   Timestamp,
@@ -42,7 +42,7 @@ import {
   NumTokensResponse,
   SudoParams,
   NullableString,
-} from './Sg721Name.types';
+} from "./Sg721Name.types";
 export interface Sg721NameReadOnlyInterface {
   contractAddress: string;
   params: () => Promise<SudoParams>;
@@ -323,7 +323,7 @@ export interface Sg721NameInterface extends Sg721NameReadOnlyInterface {
     }: {
       address: string;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
@@ -335,7 +335,7 @@ export interface Sg721NameInterface extends Sg721NameReadOnlyInterface {
       address?: string;
       name: string;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
@@ -347,7 +347,7 @@ export interface Sg721NameInterface extends Sg721NameReadOnlyInterface {
       metadata?: Metadata;
       name: string;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
@@ -359,7 +359,7 @@ export interface Sg721NameInterface extends Sg721NameReadOnlyInterface {
       name: string;
       nft?: NFT;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
@@ -371,7 +371,7 @@ export interface Sg721NameInterface extends Sg721NameReadOnlyInterface {
       name: string;
       record: TextRecord;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
@@ -383,7 +383,7 @@ export interface Sg721NameInterface extends Sg721NameReadOnlyInterface {
       name: string;
       recordName: string;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
@@ -395,7 +395,7 @@ export interface Sg721NameInterface extends Sg721NameReadOnlyInterface {
       name: string;
       record: TextRecord;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
@@ -409,7 +409,7 @@ export interface Sg721NameInterface extends Sg721NameReadOnlyInterface {
       recordName: string;
       result: boolean;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
@@ -419,7 +419,7 @@ export interface Sg721NameInterface extends Sg721NameReadOnlyInterface {
     }: {
       verifier?: string;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
@@ -431,7 +431,7 @@ export interface Sg721NameInterface extends Sg721NameReadOnlyInterface {
       recipient: string;
       tokenId: string;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
@@ -445,7 +445,7 @@ export interface Sg721NameInterface extends Sg721NameReadOnlyInterface {
       msg: Binary;
       tokenId: string;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
@@ -459,7 +459,7 @@ export interface Sg721NameInterface extends Sg721NameReadOnlyInterface {
       spender: string;
       tokenId: string;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
@@ -471,7 +471,7 @@ export interface Sg721NameInterface extends Sg721NameReadOnlyInterface {
       spender: string;
       tokenId: string;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
@@ -483,7 +483,7 @@ export interface Sg721NameInterface extends Sg721NameReadOnlyInterface {
       expires?: Expiration;
       operator: string;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
@@ -493,7 +493,7 @@ export interface Sg721NameInterface extends Sg721NameReadOnlyInterface {
     }: {
       operator: string;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
@@ -509,7 +509,7 @@ export interface Sg721NameInterface extends Sg721NameReadOnlyInterface {
       tokenId: string;
       tokenUri?: string;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
@@ -519,7 +519,7 @@ export interface Sg721NameInterface extends Sg721NameReadOnlyInterface {
     }: {
       tokenId: string;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
@@ -529,17 +529,17 @@ export interface Sg721NameInterface extends Sg721NameReadOnlyInterface {
     }: {
       collectionInfo: UpdateCollectionInfoMsgForRoyaltyInfoResponse;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
   updateStartTradingTime: (
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
   freezeCollectionInfo: (
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
@@ -589,7 +589,7 @@ export class Sg721NameClient
     }: {
       address: string;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: Coin[]
   ): Promise<ExecuteResult> => {
@@ -614,7 +614,7 @@ export class Sg721NameClient
       address?: string;
       name: string;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: Coin[]
   ): Promise<ExecuteResult> => {
@@ -640,7 +640,7 @@ export class Sg721NameClient
       metadata?: Metadata;
       name: string;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: Coin[]
   ): Promise<ExecuteResult> => {
@@ -666,7 +666,7 @@ export class Sg721NameClient
       name: string;
       nft?: NFT;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: Coin[]
   ): Promise<ExecuteResult> => {
@@ -692,7 +692,7 @@ export class Sg721NameClient
       name: string;
       record: TextRecord;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: Coin[]
   ): Promise<ExecuteResult> => {
@@ -718,7 +718,7 @@ export class Sg721NameClient
       name: string;
       recordName: string;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: Coin[]
   ): Promise<ExecuteResult> => {
@@ -744,7 +744,7 @@ export class Sg721NameClient
       name: string;
       record: TextRecord;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: Coin[]
   ): Promise<ExecuteResult> => {
@@ -772,7 +772,7 @@ export class Sg721NameClient
       recordName: string;
       result: boolean;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: Coin[]
   ): Promise<ExecuteResult> => {
@@ -797,7 +797,7 @@ export class Sg721NameClient
     }: {
       verifier?: string;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: Coin[]
   ): Promise<ExecuteResult> => {
@@ -822,7 +822,7 @@ export class Sg721NameClient
       recipient: string;
       tokenId: string;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: Coin[]
   ): Promise<ExecuteResult> => {
@@ -850,7 +850,7 @@ export class Sg721NameClient
       msg: Binary;
       tokenId: string;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: Coin[]
   ): Promise<ExecuteResult> => {
@@ -879,7 +879,7 @@ export class Sg721NameClient
       spender: string;
       tokenId: string;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: Coin[]
   ): Promise<ExecuteResult> => {
@@ -906,7 +906,7 @@ export class Sg721NameClient
       spender: string;
       tokenId: string;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: Coin[]
   ): Promise<ExecuteResult> => {
@@ -932,7 +932,7 @@ export class Sg721NameClient
       expires?: Expiration;
       operator: string;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: Coin[]
   ): Promise<ExecuteResult> => {
@@ -956,7 +956,7 @@ export class Sg721NameClient
     }: {
       operator: string;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: Coin[]
   ): Promise<ExecuteResult> => {
@@ -985,7 +985,7 @@ export class Sg721NameClient
       tokenId: string;
       tokenUri?: string;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: Coin[]
   ): Promise<ExecuteResult> => {
@@ -1011,7 +1011,7 @@ export class Sg721NameClient
     }: {
       tokenId: string;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: Coin[]
   ): Promise<ExecuteResult> => {
@@ -1034,7 +1034,7 @@ export class Sg721NameClient
     }: {
       collectionInfo: UpdateCollectionInfoMsgForRoyaltyInfoResponse;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: Coin[]
   ): Promise<ExecuteResult> => {
@@ -1052,7 +1052,7 @@ export class Sg721NameClient
     );
   };
   updateStartTradingTime = async (
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: Coin[]
   ): Promise<ExecuteResult> => {
@@ -1068,7 +1068,7 @@ export class Sg721NameClient
     );
   };
   freezeCollectionInfo = async (
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: Coin[]
   ): Promise<ExecuteResult> => {

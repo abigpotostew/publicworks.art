@@ -1,10 +1,9 @@
-
-.hoverZoomContainer{
-  width:100px;
-  height:100px;
-  text-align:center;
-  border-radius:50%;
-  overflow:hidden;
+.hoverZoomContainer {
+  width: 100px;
+  height: 100px;
+  text-align: center;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
 .hoverZoom {
@@ -12,11 +11,10 @@
 
   display: block;
 
-  transform: scale(1.0);
+  transform: scale(1);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .hoverZoom:hover {
   transform: scale(1.5);
-
 }

@@ -8,8 +8,8 @@ import {
   CosmWasmClient,
   ExecuteResult,
   SigningCosmWasmClient,
-} from '@cosmjs/cosmwasm-stargate';
-import { StdFee } from '@cosmjs/amino';
+} from "@cosmjs/cosmwasm-stargate";
+import { StdFee } from "@cosmjs/amino";
 export interface AskCountResponse {
   count: number;
   [k: string]: unknown;
@@ -18,7 +18,7 @@ export type Addr = string;
 export type Timestamp = Uint64;
 export type Uint64 = string;
 export type Uint128 = string;
-export type SaleType = 'fixed_price' | 'auction';
+export type SaleType = "fixed_price" | "auction";
 export interface AskCreatedHooksResponse {
   ask: Ask;
   [k: string]: unknown;
@@ -813,7 +813,7 @@ export interface MarketplaceInterface extends MarketplaceReadOnlyInterface {
       saleType: SaleType;
       tokenId: number;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: readonly Coin[]
   ) => Promise<ExecuteResult>;
@@ -825,7 +825,7 @@ export interface MarketplaceInterface extends MarketplaceReadOnlyInterface {
       collection: string;
       tokenId: number;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: readonly Coin[]
   ) => Promise<ExecuteResult>;
@@ -839,7 +839,7 @@ export interface MarketplaceInterface extends MarketplaceReadOnlyInterface {
       price: Coin;
       tokenId: number;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: readonly Coin[]
   ) => Promise<ExecuteResult>;
@@ -859,7 +859,7 @@ export interface MarketplaceInterface extends MarketplaceReadOnlyInterface {
       tokenId: number;
       saleType: SaleType;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: readonly Coin[]
   ) => Promise<ExecuteResult>;
@@ -871,7 +871,7 @@ export interface MarketplaceInterface extends MarketplaceReadOnlyInterface {
       collection: string;
       tokenId: number;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: readonly Coin[]
   ) => Promise<ExecuteResult>;
@@ -887,7 +887,7 @@ export interface MarketplaceInterface extends MarketplaceReadOnlyInterface {
       finder?: string;
       tokenId: number;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: readonly Coin[]
   ) => Promise<ExecuteResult>;
@@ -901,7 +901,7 @@ export interface MarketplaceInterface extends MarketplaceReadOnlyInterface {
       expires: Timestamp;
       findersFeeBps?: number;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: readonly Coin[]
   ) => Promise<ExecuteResult>;
@@ -911,7 +911,7 @@ export interface MarketplaceInterface extends MarketplaceReadOnlyInterface {
     }: {
       collection: string;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: readonly Coin[]
   ) => Promise<ExecuteResult>;
@@ -927,7 +927,7 @@ export interface MarketplaceInterface extends MarketplaceReadOnlyInterface {
       finder?: string;
       tokenId: number;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: readonly Coin[]
   ) => Promise<ExecuteResult>;
@@ -939,7 +939,7 @@ export interface MarketplaceInterface extends MarketplaceReadOnlyInterface {
       collection: string;
       tokenId: number;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: readonly Coin[]
   ) => Promise<ExecuteResult>;
@@ -953,7 +953,7 @@ export interface MarketplaceInterface extends MarketplaceReadOnlyInterface {
       collection: string;
       tokenId: number;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: readonly Coin[]
   ) => Promise<ExecuteResult>;
@@ -965,7 +965,7 @@ export interface MarketplaceInterface extends MarketplaceReadOnlyInterface {
       bidder: string;
       collection: string;
     },
-    fee?: number | StdFee | 'auto',
+    fee?: number | StdFee | "auto",
     memo?: string,
     funds?: readonly Coin[]
   ) => Promise<ExecuteResult>;
@@ -1021,7 +1021,7 @@ export class MarketplaceClient
       saleType: SaleType;
       tokenId: number;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: readonly Coin[]
   ): Promise<ExecuteResult> => {
@@ -1053,7 +1053,7 @@ export class MarketplaceClient
       collection: string;
       tokenId: number;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: readonly Coin[]
   ): Promise<ExecuteResult> => {
@@ -1081,7 +1081,7 @@ export class MarketplaceClient
       price: Coin;
       tokenId: number;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: readonly Coin[]
   ): Promise<ExecuteResult> => {
@@ -1116,7 +1116,7 @@ export class MarketplaceClient
       tokenId: number;
       saleType: SaleType;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: readonly Coin[]
   ): Promise<ExecuteResult> => {
@@ -1146,7 +1146,7 @@ export class MarketplaceClient
       collection: string;
       tokenId: number;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: readonly Coin[]
   ): Promise<ExecuteResult> => {
@@ -1176,7 +1176,7 @@ export class MarketplaceClient
       finder?: string;
       tokenId: number;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: readonly Coin[]
   ): Promise<ExecuteResult> => {
@@ -1206,7 +1206,7 @@ export class MarketplaceClient
       expires: Timestamp;
       findersFeeBps?: number;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: readonly Coin[]
   ): Promise<ExecuteResult> => {
@@ -1231,7 +1231,7 @@ export class MarketplaceClient
     }: {
       collection: string;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: readonly Coin[]
   ): Promise<ExecuteResult> => {
@@ -1260,7 +1260,7 @@ export class MarketplaceClient
       finder?: string;
       tokenId: number;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: readonly Coin[]
   ): Promise<ExecuteResult> => {
@@ -1288,7 +1288,7 @@ export class MarketplaceClient
       collection: string;
       tokenId: number;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: readonly Coin[]
   ): Promise<ExecuteResult> => {
@@ -1316,7 +1316,7 @@ export class MarketplaceClient
       collection: string;
       tokenId: number;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: readonly Coin[]
   ): Promise<ExecuteResult> => {
@@ -1343,7 +1343,7 @@ export class MarketplaceClient
       bidder: string;
       collection: string;
     },
-    fee: number | StdFee | 'auto' = 'auto',
+    fee: number | StdFee | "auto" = "auto",
     memo?: string,
     funds?: readonly Coin[]
   ): Promise<ExecuteResult> => {

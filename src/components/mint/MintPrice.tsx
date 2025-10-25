@@ -129,8 +129,8 @@ const DutchAuctionPriceInfo = ({
                     const classname = ended
                       ? "text-secondary"
                       : past && !ended
-                      ? "text-success"
-                      : "";
+                        ? "text-success"
+                        : "";
                     return (
                       <td key={i}>
                         <span className={classname}>{prices[i - 1].price}</span>
@@ -162,8 +162,8 @@ const DutchAuctionPriceInfo = ({
                     const classname = ended
                       ? "text-secondary"
                       : past && !ended
-                      ? "text-success"
-                      : "";
+                        ? "text-success"
+                        : "";
                     return (
                       <td key={i}>
                         <span className={classname}>{labels[i - 1]}</span>

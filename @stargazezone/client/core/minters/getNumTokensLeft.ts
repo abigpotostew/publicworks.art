@@ -1,4 +1,4 @@
-import type { CosmWasmClient } from '@cosmjs/cosmwasm-stargate';
+import type { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 
 export default async function getNumTokensLeft(
   minterContract: string,

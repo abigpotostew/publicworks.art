@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 export type AsyncResult<T> = [
   result: T | undefined,
   error: Error | undefined,
-  loading: boolean
+  loading: boolean,
 ];
 
 const useAsync = <T>(

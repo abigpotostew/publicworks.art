@@ -30,7 +30,7 @@ Initialize the stargaze client in your app root:
 
 ```js
 // /src/components/MintersList.ts
-import { stargazeClient } from '/src/client';
+import { stargazeClient } from "/src/client";
 
 // connect
 await stargazeClient.connect();
@@ -43,7 +43,7 @@ const minters = await stargazeClient.minters.getAll();
 
 ```js
 // /src/components/MintersList.ts
-import { stargazeClient } from '/src/client';
+import { stargazeClient } from "/src/client";
 
 // connect
 await stargazeClient.connect();
@@ -68,7 +68,7 @@ Client hook/provider:
 App.tsx:
 
 ```js
-import { stargazeClient } from '/src/client';
+import { stargazeClient } from "/src/client";
 
 <StargazeClientProvider client={stargazeClient}>
   <App />

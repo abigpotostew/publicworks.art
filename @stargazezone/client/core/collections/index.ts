@@ -1,8 +1,8 @@
-import { StargazeClient } from '..';
-import type { GetCollectionOptions } from './types';
+import { StargazeClient } from "..";
+import type { GetCollectionOptions } from "./types";
 
-const getAllCollectionsImport = import('./getAllCollections');
-const getCollectionImport = import('./getCollection');
+const getAllCollectionsImport = import("./getAllCollections");
+const getCollectionImport = import("./getCollection");
 
 const defaultOptions: GetCollectionOptions = {
   includeNameAndSymbol: true,
@@ -57,7 +57,7 @@ export default class Collections {
         options
       );
     } catch {
-      throw new Error('Error fetching collection.');
+      throw new Error("Error fetching collection.");
     }
   }
 

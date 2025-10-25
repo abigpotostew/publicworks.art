@@ -70,8 +70,7 @@ export const MySchema = {
       },
       id: {
         type: Number,
-        required:
-          true /*generate: 'ulid', validate: /^[0123456789ABCDEFGHJKMNPQRSTVWXYZ]{26}$/i */,
+        required: true /*generate: 'ulid', validate: /^[0123456789ABCDEFGHJKMNPQRSTVWXYZ]{26}$/i */,
       },
       //todo validate some fields
       name: { type: String, required: true },

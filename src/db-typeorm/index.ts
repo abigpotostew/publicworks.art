@@ -1,2 +1,2 @@
-export * from './model'
-export * from './serializable'
+export * from "./model";
+export * from "./serializable";

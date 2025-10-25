@@ -1,5 +1,4 @@
-
-@import '../styles/variables.module';
+@import "../styles/variables.module";
 
 .workCardContainer {
   background-color: rgba(0, 245, 245, 0);
@@ -10,20 +9,16 @@
   margin-bottom: $spacer;
 }
 
-.workCardImage{
-
+.workCardImage {
   width: 100%;
   height: 20rem;
   object-fit: cover;
   transition: transform 0.5s ease;
-
-
 }
-.card-img-overlay > .workCardImage:hover{
-
+.card-img-overlay > .workCardImage:hover {
   transform: scale(1.05);
 }
 
-.card-img-overlay > .workCardImage{
+.card-img-overlay > .workCardImage {
   transition: transform 0.5s ease;
 }

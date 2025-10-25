@@ -525,7 +525,7 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
         descriptionAdditional:
           typeof request.additionalDescription === "undefined"
             ? undefined
-            : request.additionalDescription ?? undefined,
+            : (request.additionalDescription ?? undefined),
       }
     );
     return Ok(mapWork(res));

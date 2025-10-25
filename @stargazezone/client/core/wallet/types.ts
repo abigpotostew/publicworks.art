@@ -1,4 +1,4 @@
-import type { Coin } from '@cosmjs/proto-signing';
+import type { Coin } from "@cosmjs/proto-signing";
 
 export type WalletInfo = {
   address: string;

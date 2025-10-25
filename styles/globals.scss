@@ -1,5 +1,4 @@
-
-@import './variables.module';
+@import "./variables.module";
 
 @tailwind base;
 @tailwind components;
@@ -45,23 +44,31 @@ input {
 }
 
 a {
-    //color: $pw-text-color;
-    text-decoration: none;
+  //color: $pw-text-color;
+  text-decoration: none;
 }
 
-.form-label{
-  font-size:  calc($font-size-base - 10%) ;
+.form-label {
+  font-size: calc($font-size-base - 10%);
 }
 
 .bg-gradient-transparent {
-  -webkit-transition: all .8s ease;
-  -moz-transition: all .8s ease;
-  -ms-transition: all .8s ease;
-  -o-transition: all .8s ease;
-  transition: all .8s ease;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.5) 100%);
+  -webkit-transition: all 0.8s ease;
+  -moz-transition: all 0.8s ease;
+  -ms-transition: all 0.8s ease;
+  -o-transition: all 0.8s ease;
+  transition: all 0.8s ease;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.5) 100%
+  );
 }
 
-.card-img-overlay:hover >a> .bg-gradient-transparent {
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.55) 100%);
+.card-img-overlay:hover > a > .bg-gradient-transparent {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
 }

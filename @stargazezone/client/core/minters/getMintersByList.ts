@@ -1,6 +1,6 @@
-import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate';
-import { GetMintersOptions, Minter } from './types';
-import getMinter from './getMinter';
+import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { GetMintersOptions, Minter } from "./types";
+import getMinter from "./getMinter";
 
 export default async function getMintersByList(
   contracts: readonly string[],

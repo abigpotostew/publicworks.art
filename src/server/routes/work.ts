@@ -53,7 +53,7 @@ const editWork = authorizedProcedure
 
     const startDate = input.startDate
       ? new Date(input.startDate)
-      : work.startDate ?? new Date(0);
+      : (work.startDate ?? new Date(0));
     const project = await stores().project.updateProject(input.id, {
       ...input,
       hidden: input.hidden === undefined ? work.hidden : input.hidden,
