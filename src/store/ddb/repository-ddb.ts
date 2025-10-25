@@ -458,17 +458,17 @@ export class RepositoryDdb extends DddTable {
     );
   }
 
-  async createUser(user: Omit<UserEntityDdb, "created" | "updated">) {
-    return this.models.User.create(user);
-  }
+  // async createUser(user: Omit<UserEntityDdb, "created" | "updated">) {
+  //   return this.models.User.create(user);
+  // }
 
-  async createUserWithId(user: UserEntityDdb) {
-    return this.models.User.create(user, { timestamps: false });
-  }
+  // async createUserWithId(user: UserEntityDdb) {
+  //   return this.models.User.create(user, { timestamps: false });
+  // }
 
-  setIdCounter(chainId: string, maxId: number) {
-    return this.models.IdCounter.upsert({ chainId, count: maxId });
-  }
+  // setIdCounter(chainId: string, maxId: number) {
+  //   return this.models.IdCounter.upsert({ chainId, count: maxId });
+  // }
 
   async createWorkUploadFileMigration(
     workUpload: WorkUploadFileEntityDdb
@@ -482,8 +482,8 @@ export class RepositoryDdb extends DddTable {
     return this.models.WorkUploadFile.get({ id: uploadId });
   }
 
-  deleteWork(chainId: string, id: number) {
-    return this.models.Work.remove({ chainId, id });
+  async deleteWork(chainId: string, id: number):Promise<void> {
+    await this.models.Work.remove({ chainId, id });
   }
 
   saveUploadId(
@@ -495,10 +495,11 @@ export class RepositoryDdb extends DddTable {
     return this.models.WorkUploadFile.create({ chainId, id, filename, workId });
   }
 
-  deleteWorkUpload(uploadId: string) {
-    return this.models.WorkUploadFile.remove({
+  async deleteWorkUpload(uploadId: string):Promise<void> {
+    await this.models.WorkUploadFile.remove({
       id: uploadId,
     });
+    return;
   }
 }
 
@@ -508,3 +509,58 @@ export type WorkEntityDdbCreate = Omit<
   WorkEntityDdb,
   "startDate" | "resolution" | "selector"
 >;
+
+
+
+const readonlyError = "publicworks.art is now readonly. Thank you for your support!";
+export class RepositoryDdbReadonly extends RepositoryDdb {
+  constructor(name: string, client: DynamoDBClient) {
+    super( name,client);
+  }
+
+  //override all of the write methods to throw an error
+  override createWork(work: WorkEntityDdb): Promise<Result<WorkEntityDdb, EntityDdbError>> {
+    throw new Error(readonlyError);
+  }
+  override createWorkToken(workToken: WorkTokenEntityDdb): Promise<Result<WorkTokenEntityDdb, EntityDdbError> > {
+    throw new Error(readonlyError);
+  }
+
+  override saveUploadId(chainId: string, workId: number, filename: string): Promise<WorkUploadFileEntityDdb> {
+    throw new Error(readonlyError);
+  }
+  override deleteWork(chainId: string, id: number): Promise<void> {
+    throw new Error(readonlyError);
+  }
+  override deleteWorkUpload(uploadId: string): Promise<void> {
+    throw new Error(readonlyError);
+  }
+  override updateWorkPartial(work: WorkEntityDdb, updates: Partial<WorkEntityDdb>): Promise<WorkEntityDdb> {
+    throw new Error(readonlyError);
+  }
+  override createWorkUploadFileMigration(workUpload: WorkUploadFileEntityDdb): Promise<WorkUploadFileEntityDdb> {
+    throw new Error(readonlyError);
+  }
+  override updatePartial(token: WorkTokenEntityDdb, updates: Partial<WorkTokenEntityDdb>): Promise<WorkTokenEntityDdb> {
+    throw new Error(readonlyError);
+  }
+  override setTokenFinalMetadata(token: WorkTokenEntityDdb, metadata_uri: string): Promise<WorkTokenEntityDdb> {
+    throw new Error(readonlyError);
+  }
+  override setTokenImage(token: WorkTokenEntityDdb, image_url: string): Promise<WorkTokenEntityDdb> {
+    throw new Error(readonlyError);
+  }
+  override setTokenStatus(token: WorkTokenEntityDdb, status: TokenStatuses): Promise<WorkTokenEntityDdb> {
+        throw new Error(readonlyError);
+  }
+  override setLastSweptHeight(chainId: string, height: number): Promise<void> {
+    throw new Error(readonlyError);
+  }
+  override setCurrentPollHeightHeight(chainId: string, height: number): Promise<void> {
+    throw new Error(readonlyError);
+  }
+  override createWorkTokenMigration(workToken: WorkTokenEntityDdb): Promise<WorkTokenEntityDdb> {
+    throw new Error(readonlyError);
+  }
+}
+

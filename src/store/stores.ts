@@ -1,14 +1,14 @@
-import { ProjectRepositoryI } from "./projectRepositoryI";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
   IndexerRepoDdb,
   IndexerRepoDdbAdaptor,
   RepositoryDbbAdaptor,
-  RepositoryDdb,
+  RepositoryDdbReadonly
 } from "./ddb";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { UserRepoDdb } from "./ddb/user-repo-ddb";
 import { UserRepoDdbAdaptor } from "./ddb/adaptor/user-adaptor";
+import { UserRepoDdb } from "./ddb/user-repo-ddb";
 import { IndexerStoreI } from "./indexerStoreI";
+import { ProjectRepositoryI } from "./projectRepositoryI";
 import { UserRepoI } from "./user.types";
 
 type Stores = {
@@ -31,7 +31,7 @@ export const stores = (): Stores => {
   const user = new UserRepoDdbAdaptor(userStore);
   const storesNew: Stores = {
     project: new RepositoryDbbAdaptor(
-      new RepositoryDdb(tableName, client),
+      new RepositoryDdbReadonly(tableName, client),
       userStore
     ),
     user: user,
