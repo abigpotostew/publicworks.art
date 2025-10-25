@@ -1,26 +1,42 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "exclude": [
-    "packages/**/tests/**",
-    "packages/**/dist/**",
-    "packages/**/build/**",
-    "**/node_modules", "**/.*/", "dist", "build"
-  ],
   "compilerOptions": {
-    "incremental": true,
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipDefaultLibCheck": true,
+  "baseUrl": ".",
+//          "rootDir": ".",
+      
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
-    "moduleResolution": "node",
-    "strict": true,
     "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
+    "emitDecoratorMetadata": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "strictPropertyInitialization": false,
     "noImplicitThis": true,
-    "strictNullChecks": true,
-    "target": "es6"
-  }
+    "strictNullChecks": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+
 }

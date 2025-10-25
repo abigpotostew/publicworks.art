@@ -1,0 +1,18 @@
+@import './styles/variables.module';
+@import "./node_modules/bootstrap/scss/functions";
+@import "./node_modules/bootstrap/scss/mixins";
+@import "./node_modules/bootstrap/scss/variables";
+
+.filesListContainer{
+  height: 10rem;
+  border: 1px solid $secondary;
+  //padding: 1rem;
+}
+
+.height30rem{
+  height: 30rem;
+}
+
+.border2px{
+  border: 1px solid $secondary;
+}
