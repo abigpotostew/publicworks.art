@@ -13,7 +13,7 @@ interface Opts {
   w: number;
   h: number;
   weightScale?: number;
-  col?: any;//p5Types.Color;
+  col?: any; //p5Types.Color;
 }
 const dottedCircle = (p5: p5Types, { size, weightScale }: Opts) => {
   weightScale = weightScale || 0.1;
@@ -182,7 +182,7 @@ const walkingCircle = (
   p5: p5Types,
   size: number,
   aniTime: number,
-  col: any,//p5Types.Color,
+  col: any, //p5Types.Color,
   weight: number
 ) => {
   const duration = 2;

@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { Container } from "react-bootstrap";
-import { p5Types } from "./animations/P5.types";
-// Will only import `react-p5` on client-side
+import { type P5CanvasInstance } from "@p5-wrapper/react";
 
 // @ts-ignore
-const LogoSketch = dynamic(
+const ReactP5Wrapper = dynamic(
   // @ts-ignore
-  () => import("react-p5").then((mod) => mod.default),
+  () => import("@p5-wrapper/react").then((mod) => mod.ReactP5Wrapper),
   {
     ssr: false,
   }
@@ -23,20 +22,26 @@ let accel = 0;
 let previousHeading: any;
 
 const HomepageSketch: React.FC<ComponentProps> = (props: ComponentProps) => {
-  const [doRender, setDoRender] = useState(false);
+  return (
+    <Container
+      style={{ display: "flex", justifyContent: "center", height: 200 }}
+    >
+      {/* @ts-ignore */}
+      <ReactP5Wrapper sketch={homepageSketch} />
+    </Container>
+  );
+};
+export default HomepageSketch;
 
-  useEffect(() => {
-    console.log("i fire once");
-    setDoRender(true);
-  }, []);
-
+const homepageSketch = (p5: P5CanvasInstance) => {
+  let canvas;
   //See annotations in JS for more information
-  const setup = (p5: p5Types, canvasParentRef: Element) => {
-    p5.createCanvas(200, 200).parent(canvasParentRef);
+  p5.setup = () => {
+    p5.createCanvas(200, 200); //.parent(canvasParentRef);
     previousHeading = p5.createVector();
   };
 
-  const mouseMoved = (p5: p5Types) => {
+  p5.mouseMoved = () => {
     if (
       p5.mouseX < 0 ||
       p5.mouseX > p5.width ||
@@ -51,7 +56,7 @@ const HomepageSketch: React.FC<ComponentProps> = (props: ComponentProps) => {
     previousHeading = heading;
   };
 
-  const draw = (p5: p5Types) => {
+  p5.draw = () => {
     vel += accel;
     accel *= 0.95;
     vel *= 0.99;
@@ -90,15 +95,4 @@ const HomepageSketch: React.FC<ComponentProps> = (props: ComponentProps) => {
 
     p5.pop();
   };
-  return (
-    <Container
-      style={{ display: "flex", justifyContent: "center", height: 200 }}
-    >
-      {doRender && (
-        <LogoSketch setup={setup} draw={draw} mouseMoved={mouseMoved} />
-      )}
-    </Container>
-  );
-  // return <Sketch setup={setup} draw={draw} />;
 };
-export default HomepageSketch;
