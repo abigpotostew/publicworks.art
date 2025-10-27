@@ -121,6 +121,35 @@ Edition of 400. 500 $STARS each.
     creatorAddress: "stars15rce70qlpcztvvekjwpv4fx3s5k2ujjeedm5ng",
     createdAt: "2023-03-01T20:00:00.000Z",
   },
+
+  
+
+  {
+    slug: "thanks",
+    enabled: true,
+    title: "Thanks for the support!",
+    author: "skymagic.stars",
+    authorAddress: "stars1euu359d2cwe46j8a8fqkmcrhzjq6j642htt7rn",
+    blurb: `In this blog post, skymagic thanks the community for their support.`,
+
+    content: `Publicworks.art minted over 3500 one of a kind artworks on Stargaze. This would not have been possible without the support of the community.
+
+Thank you to all the artists who have created works on PublicWorks.art.
+
+Thank you to all the collectors who have supported the artists and the community.
+
+Thank you to all the community members who have supported the artists and the community.
+
+I'm moving this platform into archive mode. As of today, no more works can be created. Thanks for participating.
+
+-skymagic.stars
+`, //Secondary: [Plottable Golden Train on Staragaze Marketplace](https://www.stargaze.zone/marketplace/stars137r938q7942pjqy3ajfjt7yu3xl59xk2l046mqv3lrtcwdqw4qrqt5p84w)
+    creator: "greweb",
+    creatorAddress: "stars15rce70qlpcztvvekjwpv4fx3s5k2ujjeedm5ng",
+    createdAt: "2023-03-01T20:00:00.000Z",
+  },
+
+  
 ];
 
 export const getEnabledBlogs = () => {

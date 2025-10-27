@@ -216,7 +216,14 @@ const listWorks = baseProcedure
         offset: input.cursor || undefined,
       });
 
-    return { items: items.map(serializeWork), nextCursor };
+    return {
+      items: items
+        .filter(
+          (w) => w.slug !== "stones" && w.slug !== "wildflowers-in-the-wind"
+        )
+        .map(serializeWork),
+      nextCursor,
+    };
   });
 
 const listAddressWorks = baseProcedure
