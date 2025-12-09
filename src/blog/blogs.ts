@@ -121,9 +121,6 @@ Edition of 400. 500 $STARS each.
     creatorAddress: "stars15rce70qlpcztvvekjwpv4fx3s5k2ujjeedm5ng",
     createdAt: "2023-03-01T20:00:00.000Z",
   },
-
-  
-
   {
     slug: "thanks",
     enabled: true,
@@ -148,8 +145,6 @@ I'm moving this platform into archive mode. As of today, no more works can be cr
     creatorAddress: "stars15rce70qlpcztvvekjwpv4fx3s5k2ujjeedm5ng",
     createdAt: "2023-03-01T20:00:00.000Z",
   },
-
-  
 ];
 
 export const getEnabledBlogs = () => {
