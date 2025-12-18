@@ -13,8 +13,6 @@ RUN corepack enable
 # Copy and package.json files (turbo.json needed for prepare scripts)
 COPY package.json pnpm-lock.yaml  ./
 
-# Copy Prisma schema before install (needed for prepare script)
-COPY ./prisma ./prisma
 
 # enable corepack for pnpm
 RUN corepack enable
@@ -65,10 +63,6 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
-# Copy Prisma files - standalone output should include these in node_modules
-# If Prisma is used by the app, it will be in the standalone output
-# We also copy the schema for potential migrations
-COPY --from=builder /app/prisma ./prisma
 
 # Set correct permissions
 RUN chown -R nextjs:nodejs /app
