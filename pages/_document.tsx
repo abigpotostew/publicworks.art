@@ -18,11 +18,11 @@ class MyDocument extends Document {
           <Main />
           <NextScript />
         </body>
-        <script
+        {/* <script
           data-goatcounter="https://stats.stewart.codes/count"
           async
           src="//stats.stewart.codes/count.js"
-        />
+        /> */}
       </Html>
     );
   }
