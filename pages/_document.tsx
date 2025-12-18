@@ -23,6 +23,7 @@ class MyDocument extends Document {
           async
           src="//stats.stewart.codes/count.js"
         /> */}
+        {/* // this is my personal analytics trackers */}
         <script
           src="https://dingdong.stewart.codes/tracker.js"
           data-endpoint="https://dingdong.stewart.codes"
