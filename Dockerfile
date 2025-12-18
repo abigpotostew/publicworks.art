@@ -38,8 +38,6 @@ COPY . .
 # enable corepack for pnpm
 RUN corepack enable
 
-# Generate Prisma Client
-RUN pnpm exec prisma generate
 
 # Build the application using Turbo
 ENV NEXT_TELEMETRY_DISABLED=1

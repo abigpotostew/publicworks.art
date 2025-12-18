@@ -23,6 +23,7 @@ class MyDocument extends Document {
           async
           src="//stats.stewart.codes/count.js"
         /> */}
+        <script src="https://dingdong.stewart.codes/tracker.js" async></script>
       </Html>
     );
   }
